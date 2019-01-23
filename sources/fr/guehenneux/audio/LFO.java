@@ -1,5 +1,8 @@
 package fr.guehenneux.audio;
 
+/**
+ * @author Jonathan GuÃ©henneux
+ */
 public class LFO extends Module {
 
 	private OutputPort outputPort;
@@ -14,9 +17,8 @@ public class LFO extends Module {
 		super(name);
 
 		outputPort = new OutputPort();
-		wave = new SineWave(frequency);
+		wave = new SawtoothWave(frequency);
 		new PresentationLFO(this);
-
 	}
 
 	/**
@@ -34,20 +36,17 @@ public class LFO extends Module {
 	}
 
 	@Override
-	public void compute() {
+	public void compute() throws InterruptedException {
 
 		if (outputPort.isConnected()) {
 
-			FormatAudio formatAudio = FormatAudio.getInstance();
-			int sampleCount = formatAudio.getBufferSizeInFrames();
-			double sampleLength = formatAudio.getFrameLength();
+			int sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
+			double sampleLength = Settings.INSTANCE.getFrameLength();
 
 			float[] samples = wave.getSamples(sampleCount, sampleLength);
 
 			outputPort.write(samples);
-
 		}
-
 	}
 
 	/**
@@ -59,7 +58,6 @@ public class LFO extends Module {
 
 	/**
 	 * @param wave
-	 *            wave à définir
 	 */
 	public void setWave(Wave wave) {
 		this.wave = wave;

@@ -14,9 +14,7 @@ import javazoom.jl.decoder.Header;
 import javazoom.jl.decoder.SampleBuffer;
 
 /**
- * 
  * @author Jonathan
- * 
  */
 public class Mp3FilePlayer extends Module implements Player {
 
@@ -37,7 +35,7 @@ public class Mp3FilePlayer extends Module implements Player {
 	private int frameCount;
 
 	/**
-	 * 
+	 *
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
@@ -59,11 +57,9 @@ public class Mp3FilePlayer extends Module implements Player {
 	}
 
 	@Override
-	public void compute() {
+	public void compute() throws InterruptedException {
 
 		try {
-
-			System.out.println("compute");
 
 			header = bitStream.readFrame();
 
@@ -80,16 +76,17 @@ public class Mp3FilePlayer extends Module implements Player {
 				}
 			}
 
-		} catch (BitstreamException e) {
-			e.printStackTrace();
-		} catch (DecoderException e) {
-			e.printStackTrace();
-		}
+		} catch (BitstreamException bitStreamException) {
 
+			bitStreamException.printStackTrace();
+
+		} catch (DecoderException decoderException) {
+
+			decoderException.printStackTrace();
+		}
 	}
 
 	/**
-	 * 
 	 * @param sampleBuffer
 	 */
 	private final float[][] split(SampleBuffer sampleBuffer) {
@@ -117,25 +114,21 @@ public class Mp3FilePlayer extends Module implements Player {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void play() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void setTime(double time) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
 
 	}
 

@@ -1,18 +1,14 @@
-
-
 package fr.guehenneux.audio;
 
 /**
- * @author GUEHENNEUX
+ * @author Jonathan Guéhenneux
  */
-public class SquareWave
-    extends PulseWave {
+public class SquareWave extends PulseWave {
 
-    /**
-     * @param frequency
-     */
-    public SquareWave(double frequency) {
-        super(0.5f, frequency);
-    }
-
+	/**
+	 * @param frequency
+	 */
+	public SquareWave(double frequency) {
+		super(0.5f, frequency);
+	}
 }

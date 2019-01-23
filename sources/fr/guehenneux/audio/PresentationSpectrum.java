@@ -14,118 +14,45 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 /**
- * @author GUEHENNEUX
+ * @author Jonathan Guéhenneux
  */
 public class PresentationSpectrum extends JPanel {
 
-	/**
-     * 
-     */
-	private static final long serialVersionUID = 81458634838225184L;
-
 	private static final int PLOT_MARGIN = 5;
-
-	private static final float MAXIMUM_LEVEL = 20.0f;
-
-	private static final int LEVEL_COUNT = 20;
-
-	private static final double FREQUENCY_BAND_POW = 0.1;
-
+	private static final int LEVEL_COUNT = 50;
 	private static final Color COLOR_MAXIMUM = new Color(87, 40, 255);
-
 	private static final Color COLOR_MINIMUM = new Color(255, 255, 255);
 
-	private static final List<FrequencyBand> FREQUENCY_BANDS;
-
-	static {
-
-		FREQUENCY_BANDS = new ArrayList<FrequencyBand>();
-
-		double rf = Math.pow(2.0, FREQUENCY_BAND_POW);
-
-		double f1 = 0.0;
-		double f2 = 50.0;
-
-		FrequencyBand frequencyBand;
-
-		while (f2 < FormatAudio.getInstance().getFrameRate() / 2) {
-
-			frequencyBand = new FrequencyBand((float) f1, (float) f2);
-			FREQUENCY_BANDS.add(frequencyBand);
-			f1 = f2;
-			f2 *= rf;
-		}
-	}
-
 	private BufferedImage bufferImage;
-
 	private Graphics2D bufferGraphics;
-
-	private Map<FrequencyBand, FrequencyBandLevel> spectrum;
-
-	private Spectrum controle;
+	private float[] averages;
+	private Spectrum control;
 
 	/**
-     * 
-     *
-     */
-	public PresentationSpectrum(Spectrum controle) {
+	 * @param control
+	 */
+	public PresentationSpectrum(Spectrum control) {
 
-		this.controle = controle;
+		this.control = control;
 
-		spectrum = new TreeMap<FrequencyBand, FrequencyBandLevel>();
-		clearSpectrum();
-
-		JFrame fenetre = new JFrame(controle.getName());
-		fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		fenetre.setSize(400, 300);
-		fenetre.setLayout(new BorderLayout());
-		fenetre.add(this, BorderLayout.CENTER);
-		fenetre.setVisible(true);
+		JFrame frame = new JFrame(control.getName());
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(400, 300);
+		frame.setLayout(new BorderLayout());
+		frame.add(this, BorderLayout.CENTER);
+		frame.setVisible(true);
 		PainterThread painter = new PainterThread(this, 60);
 		painter.start();
 	}
 
-	private void clearSpectrum() {
-
-		for (FrequencyBand frequencyBand : FREQUENCY_BANDS) {
-			spectrum.put(frequencyBand, new FrequencyBandLevel());
-		}
-	}
-
 	/**
-	 * @param spectrumData
+	 * @param averages
 	 */
-	public void display(float[] spectrumData) {
-
-		clearSpectrum();
-
-		int binCount = spectrumData.length;
-		double resolution = FormatAudio.getInstance().getFrameRate() / 2.0 / binCount;
-
-		double real;
-		double imaginary;
-		double magnitude;
-		float frequency;
-
-		FrequencyBand frequencyBand;
-		FrequencyBandLevel frequencyBandLevel;
-
-		for (int binIndex = 0; binIndex < binCount; binIndex++) {
-
-			magnitude = spectrumData[binIndex];
-			frequency = (float) (resolution * binIndex);
-
-			frequencyBand = new FrequencyBand(frequency);
-
-			frequencyBandLevel = spectrum.get(frequencyBand);
-
-			if (frequencyBandLevel != null) {
-				frequencyBandLevel.add(Math.sqrt(magnitude));
-			}
-		}
+	public void display(float[] averages) {
+		this.averages = averages;
 	}
 
+	@Override
 	public void paint(Graphics graphics) {
 
 		int containerWidth = getWidth();
@@ -134,64 +61,54 @@ public class PresentationSpectrum extends JPanel {
 		int plotWidth = containerWidth - 2 * PLOT_MARGIN;
 		int plotHeight = containerHeight - 2 * PLOT_MARGIN;
 
-		if (bufferGraphics == null || containerWidth != bufferImage.getWidth()
-				|| containerHeight != bufferImage.getHeight()) {
+		if (bufferGraphics == null || containerWidth != bufferImage.getWidth() || containerHeight != bufferImage.getHeight()) {
 
 			bufferImage = new BufferedImage(containerWidth, containerHeight, BufferedImage.TYPE_INT_RGB);
-
 			bufferGraphics = bufferImage.createGraphics();
 		}
 
 		bufferGraphics.setColor(Color.BLACK);
 		bufferGraphics.fillRect(0, 0, containerWidth, containerHeight);
 
-		int barCount = FREQUENCY_BANDS.size();
+		if (averages != null) {
 
-		float barWidth = 0.8f * plotWidth / barCount;
-		float barLeftMargin = 0.1f * plotWidth / barCount;
-		float barHeight = 0.8f * plotHeight / LEVEL_COUNT;
-		float barTopMargin = 0.1f * plotHeight / LEVEL_COUNT;
+			int barCount = averages.length;
 
-		float barX;
-		float barY;
+			float barWidth = 0.8f * plotWidth / barCount;
+			float barLeftMargin = 0.1f * plotWidth / barCount;
+			float barHeight = 0.8f * plotHeight / LEVEL_COUNT;
+			float barTopMargin = 0.1f * plotHeight / LEVEL_COUNT;
 
-		int plotBottom = PLOT_MARGIN + plotHeight;
-		int barLevel;
-		double level;
-		FrequencyBand frequencyBand;
-		FrequencyBandLevel frequencyBandLevel;
+			float barX;
+			float barY;
 
-		Color barColor;
+			int plotBottom = PLOT_MARGIN + plotHeight;
+			int barLevel;
+			float magnitude;
 
-		for (int barIndex = 0; barIndex < barCount; barIndex++) {
+			Color barColor;
 
-			barX = PLOT_MARGIN + barIndex * plotWidth / barCount + barLeftMargin;
+			for (int barIndex = 0; barIndex < barCount; barIndex++) {
 
-			frequencyBand = FREQUENCY_BANDS.get(barIndex);
-			frequencyBandLevel = spectrum.get(frequencyBand);
+				barX = PLOT_MARGIN + barIndex * plotWidth / barCount + barLeftMargin;
+				magnitude = averages[barIndex];
+				barLevel = (int) Math.round(magnitude * LEVEL_COUNT / 200);
 
-			level = frequencyBandLevel.getLevel();
+				for (int levelIndex = 0; levelIndex <= Math.min(barLevel, LEVEL_COUNT - 1); levelIndex++) {
 
-			barLevel = (int) Math.round(level * LEVEL_COUNT / MAXIMUM_LEVEL);
+					barY = plotBottom - (levelIndex + 1) * plotHeight / LEVEL_COUNT + barTopMargin;
+					barColor = ColorUtils.getColorValue(0, COLOR_MINIMUM, LEVEL_COUNT, COLOR_MAXIMUM, levelIndex);
+					bufferGraphics.setColor(barColor);
+					bufferGraphics.fillRect(Math.round(barX), Math.round(barY), Math.round(barWidth), Math.round(barHeight));
+				}
 
-			for (int levelIndex = 0; levelIndex <= Math.min(barLevel, LEVEL_COUNT - 1); levelIndex++) {
+				for (int levelIndex = Math.max(0, barLevel); levelIndex < LEVEL_COUNT; levelIndex++) {
 
-				barY = plotBottom - (levelIndex + 1) * plotHeight / LEVEL_COUNT + barTopMargin;
-
-				barColor = ColorUtils.getColorValue(0, COLOR_MINIMUM, LEVEL_COUNT, COLOR_MAXIMUM, levelIndex);
-				bufferGraphics.setColor(barColor);
-				bufferGraphics
-						.fillRect(Math.round(barX), Math.round(barY), Math.round(barWidth), Math.round(barHeight));
-			}
-
-			for (int levelIndex = Math.max(0, barLevel); levelIndex < LEVEL_COUNT; levelIndex++) {
-
-				barY = plotBottom - (levelIndex + 1) * plotHeight / LEVEL_COUNT + barTopMargin;
-				barColor = ColorUtils.getColorValue(0, COLOR_MINIMUM, LEVEL_COUNT, COLOR_MAXIMUM, levelIndex);
-				bufferGraphics.setColor(barColor.darker().darker());
-				bufferGraphics
-						.fillRect(Math.round(barX), Math.round(barY), Math.round(barWidth), Math.round(barHeight));
-
+					barY = plotBottom - (levelIndex + 1) * plotHeight / LEVEL_COUNT + barTopMargin;
+					barColor = ColorUtils.getColorValue(0, COLOR_MINIMUM, LEVEL_COUNT, COLOR_MAXIMUM, levelIndex);
+					bufferGraphics.setColor(barColor.darker().darker());
+					bufferGraphics.fillRect(Math.round(barX), Math.round(barY), Math.round(barWidth), Math.round(barHeight));
+				}
 			}
 		}
 
@@ -199,9 +116,9 @@ public class PresentationSpectrum extends JPanel {
 	}
 
 	/**
-	 * @return the controle
+	 * @return the control
 	 */
-	public Spectrum getControle() {
-		return controle;
+	public Spectrum getControl() {
+		return control;
 	}
 }

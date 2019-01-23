@@ -1,9 +1,6 @@
-
-
 package fr.guehenneux.audio;
 
 import java.awt.Color;
-
 
 /**
  * @author GUEHENNEUX
@@ -17,8 +14,7 @@ public class ColorUtils {
      * @param colorMaximum
      * @return
      */
-    public static Color getColorValue(double minimum, Color colorMinimum, double maximum,
-        Color colorMaximum, double value) {
+    public static Color getColorValue(double minimum, Color colorMinimum, double maximum, Color colorMaximum, double value) {
 
         Color colorValue;
 
@@ -60,5 +56,4 @@ public class ColorUtils {
 
         return colorValue;
     }
-
 }

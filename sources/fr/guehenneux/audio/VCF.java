@@ -1,9 +1,9 @@
 package fr.guehenneux.audio;
 
 /**
- * 
+ *
  * @author Jonathan
- * 
+ *
  */
 public abstract class VCF extends Module {
 
@@ -29,7 +29,7 @@ public abstract class VCF extends Module {
 	protected PresentationVCF presentation;
 
 	/**
-	 * 
+	 *
 	 * @param name
 	 */
 	public VCF(String name) {
@@ -49,7 +49,7 @@ public abstract class VCF extends Module {
 	}
 
 	@Override
-	public void compute() {
+	public void compute() throws InterruptedException {
 
 		if (outputPort.isConnected() && inputPort.isConnected()) {
 
@@ -71,7 +71,7 @@ public abstract class VCF extends Module {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	protected abstract void filterSamples();

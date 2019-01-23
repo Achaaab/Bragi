@@ -5,46 +5,29 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 
 /**
- * @author GUEHENNEUX
+ * @author Jonathan Guéhenneux
  */
 public class WavFile {
 
 	private static final String READ_ONLY_MODE = "r";
-
 	public static final int WAV_HEADER_INDEX = 0;
-
 	public static final int WAV_HEADER_SIZE = 44;
 
 	private File file;
-
 	private RandomAccessFile fileReader;
-
 	private String fileType;
-
 	private int fileSize;
-
 	private String fileFormat;
-
 	private String formatChunkTitle;
-
 	private int formatChunkLength;
-
 	private short audioFormat;
-
 	private short channelCount;
-
 	private int frameRate;
-
 	private int byteRate;
-
 	private short frameSizeInBytes;
-
 	private short sampleSizeInBytes;
-
 	private short frameSizeInBits;
-
 	private String dataChunkTitle;
-
 	private int dataLength;
 
 	/**
@@ -58,11 +41,9 @@ public class WavFile {
 
 		fileReader = new RandomAccessFile(file, READ_ONLY_MODE);
 		readHeader();
-
 	}
 
 	/**
-	 * 
 	 * @param samples
 	 * @param offset
 	 * @return
@@ -71,13 +52,9 @@ public class WavFile {
 	public int read(float[][] samples, int offset) throws IOException {
 
 		int frameCount = samples[0].length;
-
 		fileReader.seek(WAV_HEADER_SIZE + offset);
-
 		byte[] buffer = new byte[frameCount * frameSizeInBytes];
-
 		int count = fileReader.read(buffer);
-
 		frameCount = count / frameSizeInBytes;
 
 		int frameIndex, channelIndex, sampleIndex;
@@ -95,7 +72,7 @@ public class WavFile {
 				if (sampleSizeInBytes == 1) {
 
 					b0 = buffer[sampleIndex + 0];
-					sample = (float) b0 / 128;
+					sample = (float) b0 / Byte.MAX_VALUE;
 
 				} else if (sampleSizeInBytes == 2) {
 
@@ -107,7 +84,6 @@ public class WavFile {
 				} else {
 
 					sample = 0.0f;
-
 				}
 
 				samples[channelIndex][frameIndex] = sample;
@@ -222,6 +198,10 @@ public class WavFile {
 		return dataLength;
 	}
 
+	/**
+	 * @throws IOException
+	 * @throws CorruptWavFileException
+	 */
 	private final void readHeader() throws IOException, CorruptWavFileException {
 
 		fileReader.seek(WAV_HEADER_INDEX);
@@ -229,9 +209,7 @@ public class WavFile {
 		int count = fileReader.read(header);
 
 		if (count < WAV_HEADER_SIZE) {
-
 			throw new CorruptWavFileException("incomplete header : " + count + " bytes / " + WAV_HEADER_SIZE);
-
 		}
 
 		int offset = 0;
@@ -342,7 +320,6 @@ public class WavFile {
 		offset += length;
 
 		sampleSizeInBytes = (short) (frameSizeInBytes / channelCount);
-
 	}
 
 	/**
@@ -351,5 +328,4 @@ public class WavFile {
 	public final void close() throws IOException {
 		fileReader.close();
 	}
-
 }

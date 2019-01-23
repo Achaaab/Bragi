@@ -1,38 +1,29 @@
 package fr.guehenneux.audio;
 
+import java.util.concurrent.BlockingQueue;
+
 /**
- * 
- * @author GUEHENNEUX
- *
+ * @author Jonathan GuÃ©henneux
  */
 public class InputPort {
 
-	private Buffer<float[]> inputBuffer;
+	private BlockingQueue<float[]> inputBuffer;
 
 	/**
-     * 
-     */
+	 *
+	 */
 	public InputPort() {
 
 	}
 
 	/**
-	 * @return inputBuffer
-	 */
-	public Buffer<float[]> getInputBuffer() {
-		return inputBuffer;
-	}
-
-	/**
 	 * @param inputBuffer
-	 *            inputBuffer à définir
 	 */
-	public void setInputBuffer(Buffer<float[]> inputBuffer) {
+	public void setInputBuffer(BlockingQueue<float[]> inputBuffer) {
 		this.inputBuffer = inputBuffer;
 	}
 
 	/**
-	 * 
 	 * @return
 	 */
 	public boolean isConnected() {
@@ -40,7 +31,6 @@ public class InputPort {
 	}
 
 	/**
-	 * 
 	 * @return
 	 */
 	public boolean isReady() {
@@ -48,10 +38,9 @@ public class InputPort {
 	}
 
 	/**
-	 * 
 	 * @return
 	 */
-	public float[] read() {
-		return inputBuffer.get();
+	public float[] read() throws InterruptedException {
+		return inputBuffer.take();
 	}
 }

@@ -1,32 +1,27 @@
 package fr.guehenneux.audio;
 
-import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine.Info;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
 /**
- * 
- * @author GUEHENNEUX
- * 
+ * @author Jonathan Guéhenneux
  */
 public class Speaker extends Module {
 
-	public static final int MAX_CHANNEL_COUNT = 2;
+	private static final int MAX_CHANNEL_COUNT = 2;
+
+	private static final int ONE_BYTE_MAX_VALUE = 1 << 7 - 1;
+	private static final int TWO_BYTES_MAX_VALUE = 1 << 15 - 1;
+	private static final int THREE_BYTES_MAX_VALUE = 1 << 23 - 1;
 
 	private InputPort[] inputPorts;
 
-	private SourceDataLine ligne;
+	private SourceDataLine sourceDataLine;
 
-	private static final int ONE_BYTE_MAX_VALUE = 1 << 7 - 1;
-
-	private static final int TWO_BYTES_MAX_VALUE = 1 << 15 - 1;
-
-	private static final int THREE_BYTES_MAX_VALUE = 1 << 23 - 1;
 
 	/**
-	 * 
 	 * @param name
 	 * @throws LineUnavailableException
 	 */
@@ -40,20 +35,20 @@ public class Speaker extends Module {
 			inputPorts[channelIndex] = new InputPort();
 		}
 
-		FormatAudio informationsFormat = FormatAudio.getInstance();
-		AudioFormat format = new AudioFormat(informationsFormat.getFrameRate(), informationsFormat.getSampleSize() * 8,
-				informationsFormat.getChannels(), true, true);
+		javax.sound.sampled.AudioFormat format = new javax.sound.sampled.AudioFormat(Settings.INSTANCE.getFrameRate(), Settings.INSTANCE.getSampleSize() * 8,
+				Settings.INSTANCE.getChannels(), true, true);
 
 		Info info = new Info(SourceDataLine.class, format);
 
-		ligne = (SourceDataLine) AudioSystem.getLine(info);
-		ligne.open(format, informationsFormat.getFrameRate() * informationsFormat.getFrameSizeInBytes() / 10);
-		ligne.start();
+		sourceDataLine = (SourceDataLine) AudioSystem.getLine(info);
+		sourceDataLine.open(format, Settings.INSTANCE.getFrameRate() * Settings.INSTANCE.getFrameSizeInBytes() / 10);
+		sourceDataLine.start();
 	}
 
-	public void compute() {
+	@Override
+	public void compute() throws InterruptedException {
 
-		int channelCount = FormatAudio.getInstance().getChannels();
+		int channelCount = Settings.INSTANCE.getChannels();
 		float[][] samples = new float[channelCount][];
 
 		for (int channelIndex = 0; channelIndex < channelCount; channelIndex++) {
@@ -61,8 +56,7 @@ public class Speaker extends Module {
 		}
 
 		byte[] donneesConverties = mix(samples);
-		ligne.write(donneesConverties, 0, donneesConverties.length);
-
+		sourceDataLine.write(donneesConverties, 0, donneesConverties.length);
 	}
 
 	private static byte[] mix(float[][] samples) {
@@ -76,7 +70,7 @@ public class Speaker extends Module {
 		float sample;
 		int sampleNormalise;
 
-		int sampleSizeInBytes = FormatAudio.getInstance().getSampleSize();
+		int sampleSizeInBytes = Settings.INSTANCE.getSampleSize();
 
 		byte b0, b1, b2;
 		byte[] mix = new byte[frameCount * channelCount * sampleSizeInBytes];
@@ -128,15 +122,11 @@ public class Speaker extends Module {
 
 				default:
 					break;
-
 				}
-
 			}
-
 		}
 
 		return mix;
-
 	}
 
 	/**
@@ -145,5 +135,4 @@ public class Speaker extends Module {
 	public InputPort[] getInputPorts() {
 		return inputPorts;
 	}
-
 }

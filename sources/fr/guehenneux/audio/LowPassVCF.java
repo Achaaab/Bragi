@@ -1,14 +1,11 @@
 package fr.guehenneux.audio;
 
 /**
- * 
- * @author Jonathan
- * 
+ * @author Jonathan Guéhenneux
  */
 public class LowPassVCF extends VCF {
 
 	/**
-	 * 
 	 * @param name
 	 */
 	public LowPassVCF(String name) {
@@ -20,7 +17,7 @@ public class LowPassVCF extends VCF {
 
 		int sampleCount = inputSamples.length;
 		outputSamples = new float[sampleCount];
-		float sampleRate = FormatAudio.getInstance().getFrameRate();
+		float sampleRate = Settings.INSTANCE.getFrameRate();
 
 		float inputSample;
 
@@ -34,7 +31,6 @@ public class LowPassVCF extends VCF {
 			} else {
 
 				actualCutOffFrequency = cutOffFrequency;
-
 			}
 
 			float f = 2 * (float) actualCutOffFrequency / sampleRate;
@@ -51,7 +47,7 @@ public class LowPassVCF extends VCF {
 			inputSample = inputSamples[sampleIndex] - r * y4;
 
 			/*
-			 * four cascaded onepole filters (bilinear transform)
+			 * four cascaded one-pole filters (bilinear transform)
 			 */
 
 			y1 = inputSample * p + oldx * p - k * y1;

@@ -6,52 +6,30 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-
 /**
- * 
- * @author GUEHENNEUX
- *
+ * @author Jonathan Guéhenneux
  */
 public class PresentationLFO extends JPanel {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 5223257961962194357L;
-    
-    private LFO lfo;
-    private JSlider frequencySlider;
-    
-    /**
-     * 
-     *
-     */
-    public PresentationLFO(LFO lfo) {
-       
-        this.lfo = lfo;
-        frequencySlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 30);
-        frequencySlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                getLfo().setFrequency(0.02 + frequencySlider.getValue() / 5);
-            }
-        });
-        
-        add(frequencySlider);
-        
-        JFrame container = new JFrame("LFO");
-        container.setSize(400, 300);
-        container.add(this);
-        container.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        container.setVisible(true);
-        
-    }
+	private LFO lfo;
+	private JSlider frequencySlider;
 
-    
-    /**
-     * @return lfo
-     */
-    public LFO getLfo() {
-        return lfo;
-    }
-    
+	/**
+	 * @param lfo
+	 */
+	public PresentationLFO(LFO lfo) {
+
+		this.lfo = lfo;
+
+		// from 0.1Hz to 25.6Hz
+		frequencySlider = new JSlider(JSlider.HORIZONTAL, 0, 800, 300);
+		frequencySlider.addChangeListener(changeEvent -> lfo.setFrequency(0.1 * Math.pow(2, frequencySlider.getValue() / 100.0)));
+		add(frequencySlider);
+
+		JFrame frame = new JFrame("LFO");
+		frame.setSize(400, 300);
+		frame.add(this);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+	}
 }

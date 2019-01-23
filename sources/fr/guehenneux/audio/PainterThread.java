@@ -3,36 +3,35 @@ package fr.guehenneux.audio;
 import java.awt.Component;
 
 /**
- * 
- * @author GUEHENNEUX
- *
+ * @author Jonathan Guéhenneux
  */
 public class PainterThread extends Thread {
-    
-    private Component composant;
-    private int fps;
 
-    /**
-     * @param composant
-     */
-    public PainterThread(Component composant, int fps) {
-        this.composant = composant;
-        this.fps = fps;
-    }
-    
-    public void run() {
-        
-        while (true) {
-            
-            composant.repaint();
-            
-            try {
-                sleep(1000 / fps);
-            } catch (InterruptedException e) {
-            }
-            
-        }
-        
-    }
+	private Component component;
+	private int fps;
 
+	/**
+	 * @param component
+	 * @param fps
+	 */
+	public PainterThread(Component component, int fps) {
+
+		this.component = component;
+		this.fps = fps;
+	}
+
+	@Override
+	public void run() {
+
+		while (true) {
+
+			component.repaint();
+
+			try {
+				sleep(1000 / fps);
+			} catch (InterruptedException cause) {
+				throw new RuntimeException(cause);
+			}
+		}
+	}
 }

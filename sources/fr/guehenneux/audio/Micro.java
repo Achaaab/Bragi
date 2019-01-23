@@ -6,13 +6,11 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 
 /**
- * 
- * @author Jonathan
- * 
+ * @author Jonathan Guéhenneux
  */
 public class Micro extends Module {
 
-	private TargetDataLine ligne;
+	private TargetDataLine targetDataLine;
 
 	private static final int MAX_CHANNEL_COUNT = 2;
 
@@ -28,28 +26,26 @@ public class Micro extends Module {
 			outputPorts[channelIndex] = new OutputPort();
 		}
 
-		FormatAudio informationsFormat = FormatAudio.getInstance();
-		AudioFormat format = new AudioFormat(informationsFormat.getFrameRate(), informationsFormat.getSampleSize() * 8,
-				informationsFormat.getChannels(), true, true);
+		AudioFormat format = new AudioFormat(Settings.INSTANCE.getFrameRate(), Settings.INSTANCE.getSampleSize() * 8,
+				Settings.INSTANCE.getChannels(), true, true);
 
-		ligne = AudioSystem.getTargetDataLine(format);
-		ligne.open(format, informationsFormat.getFrameRate() * informationsFormat.getFrameSizeInBytes() / 10);
+		targetDataLine = AudioSystem.getTargetDataLine(format);
+		targetDataLine.open(format, Settings.INSTANCE.getFrameRate() * Settings.INSTANCE.getFrameSizeInBytes() / 10);
 
-		ligne.start();
+		targetDataLine.start();
 	}
 
 	@Override
-	public void compute() {
+	public void compute() throws InterruptedException {
 
-		FormatAudio formatAudio = FormatAudio.getInstance();
-		int frameCount = formatAudio.getBufferSizeInFrames();
-		int sampleSizeInBytes = formatAudio.getSampleSize();
-		int frameSizeInBytes = formatAudio.getFrameSizeInBytes();
+		int frameCount = Settings.INSTANCE.getBufferSizeInFrames();
+		int sampleSizeInBytes = Settings.INSTANCE.getSampleSize();
+		int frameSizeInBytes = Settings.INSTANCE.getFrameSizeInBytes();
 		int byteCount = frameCount * frameSizeInBytes;
-		int channelCount = formatAudio.getChannels();
+		int channelCount = Settings.INSTANCE.getChannels();
 
 		byte[] input = new byte[byteCount];
-		ligne.read(input, 0, byteCount);
+		targetDataLine.read(input, 0, byteCount);
 
 		float[][] samples = new float[channelCount][frameCount];
 
@@ -79,26 +75,21 @@ public class Micro extends Module {
 				} else {
 
 					sample = 0.0f;
-
 				}
 
 				samples[channelIndex][frameIndex] = sample;
-
 			}
-
 		}
 
 		for (int channelIndex = 0; channelIndex < channelCount; channelIndex++) {
 			outputPorts[channelIndex].write(samples[channelIndex]);
 		}
-
 	}
 
 	/**
-	 * @return the outputPorts
+	 * @return outputPorts
 	 */
 	public OutputPort[] getOutputPorts() {
 		return outputPorts;
 	}
-
 }

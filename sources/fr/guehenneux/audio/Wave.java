@@ -31,5 +31,4 @@ public interface Wave {
      * @return
      */
     public float[] getSamples(float[] modulationSamples, int sampleCount, double sampleLength);
-
 }

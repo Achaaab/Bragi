@@ -13,7 +13,7 @@ public class Sampler extends Module {
 	private float[] samples;
 
 	/**
-	 * 
+	 *
 	 * @param name
 	 */
 	public Sampler(String name) {
@@ -25,7 +25,7 @@ public class Sampler extends Module {
 	}
 
 	@Override
-	public void compute() {
+	public void compute() throws InterruptedException {
 
 		if (outputPort.isConnected() && inputPort.isConnected()) {
 
@@ -40,21 +40,17 @@ public class Sampler extends Module {
 				sampleSum += samples[sampleIndex++];
 				groupSize++;
 
-				if (groupSize == FRAME_RATE_DIVISOR
-						|| sampleIndex == sampleCount) {
+				if (groupSize == FRAME_RATE_DIVISOR || sampleIndex == sampleCount) {
 
 					sampleMedium = sampleSum / groupSize;
-					sampleMedium = (float) Math.round(sampleMedium
-							* SAMPLE_SIZE)
-							/ SAMPLE_SIZE;
+					sampleMedium = (float) Math.round(sampleMedium * SAMPLE_SIZE) / SAMPLE_SIZE;
 
 					for (int i = 0; i < groupSize; i++) {
 						samples[sampleIndex - i - 1] = sampleMedium;
 					}
-					
+
 					groupSize = 0;
 					sampleSum = 0;
-
 				}
 			}
 

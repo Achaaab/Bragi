@@ -1,42 +1,39 @@
-
-
 package fr.guehenneux.audio;
 
 /**
- * @author GUEHENNEUX
+ * @author Jonathan Guéhenneux
  */
 public class ByteArrayUtils {
 
     /**
-     * @param datas
+     * @param data
      * @param offset
      * @param length
      * @return
      */
-    public static final String getString(final byte[] datas, final int offset, final int length) {
+    public static final String getString(final byte[] data, final int offset, final int length) {
 
         StringBuffer buffer = new StringBuffer();
 
         for (int index = offset; index < offset + length; index++) {
-            buffer.append((char) datas[index]);
+            buffer.append((char) data[index]);
         }
 
         return buffer.toString();
-
     }
 
     /**
-     * @param datas
+     * @param data
      * @param offset
      * @param bigEndian
      * @return
      */
-    public static final int getInteger(final byte[] datas, final int offset, final boolean bigEndian) {
+    public static final int getInteger(final byte[] data, final int offset, final boolean bigEndian) {
 
-        byte b0 = datas[offset + 0];
-        byte b1 = datas[offset + 1];
-        byte b2 = datas[offset + 2];
-        byte b3 = datas[offset + 3];
+        byte b0 = data[offset + 0];
+        byte b1 = data[offset + 1];
+        byte b2 = data[offset + 2];
+        byte b3 = data[offset + 3];
 
         int i0, i1, i2, i3;
 
@@ -57,19 +54,18 @@ public class ByteArrayUtils {
         }
 
         return i0 | i1 | i2 | i3;
-
     }
 
     /**
-     * @param datas
+     * @param data
      * @param offset
      * @param bigEndian
      * @return
      */
-    public static final short getShort(final byte[] datas, final int offset, final boolean bigEndian) {
+    public static final short getShort(final byte[] data, final int offset, final boolean bigEndian) {
 
-        byte b0 = datas[offset + 0];
-        byte b1 = datas[offset + 1];
+        byte b0 = data[offset + 0];
+        byte b1 = data[offset + 1];
 
         short s0, s1;
 
@@ -82,11 +78,8 @@ public class ByteArrayUtils {
 
             s0 = (short) (b0 << 0);
             s1 = (short) (b1 << 8);
-
         }
 
         return (short) (s0 | s1);
-
     }
-
 }

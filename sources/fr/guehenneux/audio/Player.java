@@ -1,20 +1,16 @@
 package fr.guehenneux.audio;
 
 /**
- * 
- * @author GUEHENNEUX
- *
+ * @author Jonathan Guéhenneux
  */
 public interface Player {
-    
-    
-    
-    void play();
-    
-    void pause();
-    
-    void stop();
-    
-    void setTime(double time);
 
+
+	void play();
+
+	void pause();
+
+	void stop();
+
+	void setTime(double time);
 }

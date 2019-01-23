@@ -5,7 +5,7 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 
 /**
- * @author Jonathan Guéhenneux
+ * @author Jonathan GuÃ©henneux
  */
 public class PresentationPlayer extends JPanel {
 
@@ -13,5 +13,4 @@ public class PresentationPlayer extends JPanel {
 	private JButton pause;
 	private JButton stop;
 	private JSlider timeSlider;
-
 }

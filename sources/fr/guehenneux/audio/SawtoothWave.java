@@ -1,86 +1,75 @@
-
-
 package fr.guehenneux.audio;
 
 /**
- * @author GUEHENNEUX
+ * @author Jonathan Guéhenneux
  */
 public class SawtoothWave implements Wave {
 
-    public static final double SINE_PERIOD = 2 * Math.PI;
+	private double frequency;
+	private double periodPercent;
 
-    private double frequency;
+	/**
+	 * @param frequency
+	 */
+	public SawtoothWave(double frequency) {
 
-    private double periodPercent;
+		this.frequency = frequency;
+		periodPercent = 0;
+	}
 
-    /**
-     * @param frequency
-     */
-    public SawtoothWave(double frequency) {
+	@Override
+	public float[] getSamples(int sampleCount, double sampleLength) {
 
-        this.frequency = frequency;
-        periodPercent = 0;
+		float[] samples = new float[sampleCount];
+		float sample;
 
-    }
+		for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 
-    public float[] getSamples(int sampleCount, double sampleLength) {
+			periodPercent %= 1;
 
-        float[] samples = new float[sampleCount];
-        float sample;
-        
-        double period = 1.0 / frequency;
-        
-        for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
-            
-            periodPercent %= 1;
-            
-            sample = (float) (2 * periodPercent - 1);
-            samples[sampleIndex] = sample;
+			sample = (float) (2 * periodPercent - 1);
+			samples[sampleIndex] = sample;
 
-            periodPercent += sampleLength / period;
+			periodPercent += sampleLength * frequency;
+		}
 
-        }
+		return samples;
+	}
 
-        return samples;
+	@Override
+	public float[] getSamples(float[] modulationSamples, int sampleCount, double sampleLength) {
 
-    }
+		float[] samples = new float[sampleCount];
+		float sample;
 
-    public float[] getSamples(float[] modulationSamples, int sampleCount, double sampleLength) {
+		float modulationSample;
+		double modulationFactor;
 
-        float[] samples = new float[sampleCount];
-        float sample;
-        
-        float modulationSample;
-        double modulationFactor;
+		double period;
 
-        double period;
+		for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 
-        for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
+			modulationSample = modulationSamples[sampleIndex];
+			modulationFactor = Math.pow(2, modulationSample);
 
-            modulationSample = modulationSamples[sampleIndex];
-            modulationFactor = Math.pow(2, modulationSample);
+			periodPercent %= 1;
 
-            period = 1.0 / frequency / modulationFactor;
+			sample = (float) (2 * periodPercent - 1);
+			samples[sampleIndex] = sample;
 
-            periodPercent %= 1;
-            
-            sample = (float) (2 * periodPercent - 1);
-            samples[sampleIndex] = sample;
+			periodPercent += sampleLength * frequency * modulationFactor;
+		}
 
-            periodPercent += sampleLength / period;
+		return samples;
+	}
 
-        }
+	@Override
+	public void setFrequency(double frequency) {
+		this.frequency = frequency;
+	}
 
-        return samples;
-
-    }
-
-    public void setFrequency(double frequency) {
-        this.frequency = frequency;
-    }
-
-    public double getFrequency() {
-        return frequency;
-    }
-
+	@Override
+	public double getFrequency() {
+		return frequency;
+	}
 }

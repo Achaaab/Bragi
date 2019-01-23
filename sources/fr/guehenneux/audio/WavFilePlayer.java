@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * 
- * @author Jonathan
- * 
+ * @author Jonathan Guéhenneux
  */
 public class WavFilePlayer extends Module implements Player {
 
@@ -15,13 +13,11 @@ public class WavFilePlayer extends Module implements Player {
 	private OutputPort[] outputPorts;
 
 	private WavFile wavFile;
-
 	private int offset;
-
 	private int channelCount;
 
 	/**
-	 * 
+	 *
 	 * @param name
 	 * @param file
 	 * @throws IOException
@@ -41,14 +37,12 @@ public class WavFilePlayer extends Module implements Player {
 		wavFile = new WavFile(file);
 		channelCount = wavFile.getChannelCount();
 		offset = 0;
-
 	}
 
 	@Override
-	public void compute() {
+	public void compute() throws InterruptedException {
 
-		int bufferSizeInFrames = FormatAudio.getInstance()
-				.getBufferSizeInFrames();
+		int bufferSizeInFrames = Settings.INSTANCE.getBufferSizeInFrames();
 		float[][] samples = new float[channelCount][bufferSizeInFrames];
 
 		try {
@@ -61,18 +55,17 @@ public class WavFilePlayer extends Module implements Player {
 				offset += count;
 			}
 
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException ioException) {
+
+			ioException.printStackTrace();
 		}
 
 		for (int channelIndex = 0; channelIndex < channelCount; channelIndex++) {
 			outputPorts[channelIndex].write(samples[channelIndex]);
 		}
-
 	}
 
 	/**
-	 * 
 	 * @return
 	 */
 	public OutputPort[] getOutputPorts() {
@@ -81,26 +74,21 @@ public class WavFilePlayer extends Module implements Player {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void play() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void setTime(double time) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
 
 	}
-
 }

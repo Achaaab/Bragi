@@ -8,54 +8,41 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 /**
- * @author GUEHENNEUX
+ * @author Jonathan Guéhenneux
  */
-public class PresentationOscillo extends JPanel {
-
-	/**
-     * 
-     */
-	private static final long serialVersionUID = 81458634838225184L;
+public class PresentationOscilloscope extends JComponent {
 
 	private static final int DEFAULT_PRECISION = 1600;
-
 	private static final int MARGIN = 5;
 
 	private BufferedImage bufferImage;
-
 	private Graphics2D bufferGraphics;
-
 	private int precision;
-
 	private int[] xValues;
-
 	private int[] yValues;
 
-	private Oscillo controle;
+	private Oscilloscope control;
 
 	/**
-     * 
-     *
-     */
-	public PresentationOscillo(Oscillo controle) {
+	 * @param control
+	 */
+	public PresentationOscilloscope(Oscilloscope control) {
 
-		this.controle = controle;
+		this.control = control;
 
 		precision = DEFAULT_PRECISION;
 
-		JFrame fenetre = new JFrame(controle.getName());
-		fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		fenetre.setSize(400, 300);
-		fenetre.setLayout(new BorderLayout());
-		fenetre.add(this, BorderLayout.CENTER);
-		fenetre.setVisible(true);
+		JFrame frame = new JFrame(control.getName());
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(400, 300);
+		frame.setLayout(new BorderLayout());
+		frame.add(this, BorderLayout.CENTER);
+		frame.setVisible(true);
 		PainterThread painter = new PainterThread(this, 60);
 		painter.start();
-
 	}
 
 	public synchronized void afficher(float[] samples) {
@@ -80,13 +67,9 @@ public class PresentationOscillo extends JPanel {
 
 			sampleIndex = displaySampleIndex * sampleCount / displaySampleCount;
 			sample = samples[sampleIndex];
-			xValues[displaySampleIndex] = MARGIN + plotWidth * sampleIndex
-					/ sampleCount;
-			yValues[displaySampleIndex] = MARGIN + plotHeight / 2
-					- Math.round(plotHeight * sample / 2);
-
+			xValues[displaySampleIndex] = MARGIN + plotWidth * sampleIndex / sampleCount;
+			yValues[displaySampleIndex] = MARGIN + plotHeight / 2 - Math.round(plotHeight * sample / 2);
 		}
-
 	}
 
 	public synchronized void paint(Graphics graphics) {
@@ -94,19 +77,12 @@ public class PresentationOscillo extends JPanel {
 		int containerWidth = getWidth();
 		int containerHeight = getHeight();
 
-		if (bufferGraphics == null || containerWidth != bufferImage.getWidth()
-				|| containerHeight != bufferImage.getHeight()) {
+		if (bufferGraphics == null || containerWidth != bufferImage.getWidth() || containerHeight != bufferImage.getHeight()) {
 
-			bufferImage = new BufferedImage(containerWidth, containerHeight,
-					BufferedImage.TYPE_INT_RGB);
-
+			bufferImage = new BufferedImage(containerWidth, containerHeight, BufferedImage.TYPE_INT_RGB);
 			bufferGraphics = bufferImage.createGraphics();
-
-			bufferGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_ON);
-
-			bufferGraphics.setStroke(new BasicStroke(4.0f));
-
+			bufferGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			bufferGraphics.setStroke(new BasicStroke(3.0f));
 		}
 
 		bufferGraphics.setColor(Color.BLACK);
@@ -116,18 +92,15 @@ public class PresentationOscillo extends JPanel {
 
 			bufferGraphics.setColor(new Color(64, 224, 224));
 			bufferGraphics.drawPolyline(xValues, yValues, xValues.length);
-
 		}
 
 		graphics.drawImage(bufferImage, 0, 0, null);
-
 	}
 
 	/**
-	 * @return the controle
+	 * @return the control
 	 */
-	public Oscillo getControle() {
-		return controle;
+	public Oscilloscope getControl() {
+		return control;
 	}
-
 }

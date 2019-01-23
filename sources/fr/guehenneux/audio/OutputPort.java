@@ -2,13 +2,15 @@ package fr.guehenneux.audio;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * @author Jonathan Guéhenneux
  */
 public class OutputPort {
 
-	private List<Buffer<float[]>> outputBuffers;
+	private List<BlockingQueue<float[]>> outputBuffers;
 
 	/**
 	 *
@@ -18,27 +20,12 @@ public class OutputPort {
 	}
 
 	/**
-	 * @return outputBuffers
+	 * @param chunk
 	 */
-	public List<Buffer<float[]>> getOutputBuffers() {
-		return outputBuffers;
-	}
+	public synchronized void write(float[] chunk) throws InterruptedException {
 
-	/**
-	 * @param outputBuffers
-	 *            outputBuffers à définir
-	 */
-	public void setOutputBuffers(List<Buffer<float[]>> outputBuffers) {
-		this.outputBuffers = outputBuffers;
-	}
-
-	/**
-	 * @param data
-	 */
-	public synchronized void write(float[] data) {
-
-		for (Buffer<float[]> outputBuffer : outputBuffers) {
-			outputBuffer.ajouter(data);
+		for (BlockingQueue<float[]> outputBuffer : outputBuffers) {
+			outputBuffer.put(chunk);
 		}
 	}
 
@@ -50,12 +37,12 @@ public class OutputPort {
 	}
 
 	/**
-	 * @param portEntree
+	 * @param inputPort
 	 */
-	public synchronized void connect(InputPort portEntree) {
+	public synchronized void connect(InputPort inputPort) {
 
-		Buffer<float[]> tampon = new Buffer<>(5);
-		outputBuffers.add(tampon);
-		portEntree.setInputBuffer(tampon);
+		BlockingQueue<float[]> buffer = new ArrayBlockingQueue<>(5);
+		outputBuffers.add(buffer);
+		inputPort.setInputBuffer(buffer);
 	}
 }

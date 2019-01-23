@@ -10,7 +10,7 @@ import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.jlp;
 
 /**
- * @author GUEHENNEUX
+ * @author Jonathan Guéhenneux
  */
 public class TestSon {
 
@@ -24,7 +24,7 @@ public class TestSon {
 	public static void main(String[] args) throws LineUnavailableException, IOException, CorruptWavFileException,
 			JavaLayerException {
 
-		testWav();
+		montage1();
 	}
 
 	/**
@@ -36,7 +36,7 @@ public class TestSon {
 		Speaker speaker = new Speaker("hauts-parleurs");
 
 		Mp3FilePlayer mp3FilePlayer = new Mp3FilePlayer("Lecteur de fichier MP3", new File(
-				"E:/Musique/Aaliyah/Aaliyah (2001)/15. Try Again.mp3"));
+				"G:/Musique/Aaliyah/Aaliyah (2001)/15. Try Again.mp3"));
 
 		VCF leftFilter = new LowPassVCF("filtre passe-bas gauche");
 		VCF rightFilter = new LowPassVCF("filtre passe-bas droit");
@@ -47,15 +47,10 @@ public class TestSon {
 		leftFilter.getOutputPort().connect(speaker.getInputPorts()[0]);
 		rightFilter.getOutputPort().connect(speaker.getInputPorts()[1]);
 
-		Thread threadSpeaker = new ThreadModule(speaker);
-		Thread threadPlayer = new ThreadModule(mp3FilePlayer);
-		Thread threadLeftFilter = new ThreadModule(leftFilter);
-		Thread threadRightFilter = new ThreadModule(rightFilter);
-
-		threadSpeaker.start();
-		threadPlayer.start();
-		threadLeftFilter.start();
-		threadRightFilter.start();
+		speaker.start();
+		mp3FilePlayer.start();
+		leftFilter.start();
+		rightFilter.start();
 	}
 
 	/**
@@ -71,8 +66,8 @@ public class TestSon {
 
 		Spectrum spectrumLeft = new Spectrum("Analyseur de spectre, gauche");
 		Spectrum spectrumRight = new Spectrum("Analyseur de spectre, droit");
-		Oscillo oscilloLeft = new Oscillo("Oscilloscope, gauche");
-		Oscillo oscilloRight = new Oscillo("Oscilloscope, droit");
+		Oscilloscope oscilloscopeLeft = new Oscilloscope("Oscilloscope, gauche");
+		Oscilloscope oscilloscopeRight = new Oscilloscope("Oscilloscope, droit");
 		VCF highFilterLeft = new HighPassVCF("Filtre passe-haut, gauche");
 		VCF highFilterRight = new HighPassVCF("Filtre passe-haut, droit");
 		VCF lowFilterLeft = new LowPassVCF("Filtre passe-bas, gauche");
@@ -99,35 +94,21 @@ public class TestSon {
 
 		outputPorts[0].connect(spectrumLeft.getInputPort());
 		outputPorts[1].connect(spectrumRight.getInputPort());
-		outputPorts[0].connect(oscilloLeft.getPortEntree());
-		outputPorts[1].connect(oscilloRight.getPortEntree());
+		outputPorts[0].connect(oscilloscopeLeft.getInputPort());
+		outputPorts[1].connect(oscilloscopeRight.getInputPort());
 
-		Thread threadSpeaker = new ThreadModule(speaker);
-		Thread threadHighFilterLeft = new ThreadModule(highFilterLeft);
-		Thread threadHighFilterRight = new ThreadModule(highFilterRight);
-		Thread threadLowFilterLeft = new ThreadModule(lowFilterLeft);
-		Thread threadLowFilterRight = new ThreadModule(lowFilterRight);
-		Thread threadPlayer = new ThreadModule(mp3FilePlayer);
-		Thread threadSpectrumLeft = new ThreadModule(spectrumLeft);
-		Thread threadSpectrumRight = new ThreadModule(spectrumRight);
-		Thread threadOscilloLeft = new ThreadModule(oscilloLeft);
-		Thread threadOscilloRight = new ThreadModule(oscilloRight);
-		Thread threadSpectrumFilterLeft = new ThreadModule(spectrumFilterLeft);
-		Thread threadSpectrumFilterRight = new ThreadModule(spectrumFilterRight);
-
-		threadSpeaker.start();
-		threadHighFilterLeft.start();
-		threadHighFilterRight.start();
-		threadSpectrumLeft.start();
-		threadSpectrumRight.start();
-		threadOscilloLeft.start();
-		threadOscilloRight.start();
-		threadPlayer.start();
-		threadSpectrumFilterLeft.start();
-		threadSpectrumFilterRight.start();
-		threadLowFilterLeft.start();
-		threadLowFilterRight.start();
-
+		speaker.start();
+		highFilterLeft.start();
+		highFilterRight.start();
+		spectrumLeft.start();
+		spectrumRight.start();
+		oscilloscopeLeft.start();
+		oscilloscopeRight.start();
+		mp3FilePlayer.start();
+		spectrumFilterLeft.start();
+		spectrumFilterRight.start();
+		lowFilterLeft.start();
+		lowFilterRight.start();
 	}
 
 	public static void testFiltrePasseHaut() throws LineUnavailableException, FileNotFoundException {
@@ -135,16 +116,16 @@ public class TestSon {
 		Speaker speaker = new Speaker("Hauts-parleurs");
 
 		Mp3FilePlayer mp3FilePlayer = new Mp3FilePlayer("Lecteur de fichier MP3", new File(
-				"E:/Musique/Aaliyah/Aaliyah (2001)/15. Try Again.mp3"));
+				"G:/Musique/Aaliyah/Aaliyah (2001)/15. Try Again.mp3"));
 
 		Spectrum spectrumLeft = new Spectrum("Analyseur de spectre, gauche");
 		Spectrum spectrumRight = new Spectrum("Analyseur de spectre, droit");
-		Oscillo oscilloLeft = new Oscillo("Oscilloscope, gauche");
-		Oscillo oscilloRight = new Oscillo("Oscilloscope, droit");
+		Oscilloscope oscilloscopeLeft = new Oscilloscope("Oscilloscope, gauche");
+		Oscilloscope oscilloscopeRight = new Oscilloscope("Oscilloscope, droit");
 		VCF filterLeft = new HighPassVCF("Filtre passe-haut, gauche");
 		VCF filterRight = new HighPassVCF("Filtre passe-haut, droit");
-		Spectrum spectrumFilterLeft = new Spectrum("Analyseur de spectre filtr�, gauche");
-		Spectrum spectrumFilterRight = new Spectrum("Analyseur de spectre filtr�, droit");
+		Spectrum spectrumFilterLeft = new Spectrum("Analyseur de spectre filtré, gauche");
+		Spectrum spectrumFilterRight = new Spectrum("Analyseur de spectre filtré, droit");
 
 		filterLeft.setCutOffFrequency(5000);
 		filterRight.setCutOffFrequency(5000);
@@ -160,30 +141,19 @@ public class TestSon {
 
 		outputPorts[0].connect(spectrumLeft.getInputPort());
 		outputPorts[1].connect(spectrumRight.getInputPort());
-		outputPorts[0].connect(oscilloLeft.getPortEntree());
-		outputPorts[1].connect(oscilloRight.getPortEntree());
+		outputPorts[0].connect(oscilloscopeLeft.getInputPort());
+		outputPorts[1].connect(oscilloscopeRight.getInputPort());
 
-		Thread threadSpeaker = new ThreadModule(speaker);
-		Thread threadFilterLeft = new ThreadModule(filterLeft);
-		Thread threadFilterRight = new ThreadModule(filterRight);
-		Thread threadPlayer = new ThreadModule(mp3FilePlayer);
-		Thread threadSpectrumLeft = new ThreadModule(spectrumLeft);
-		Thread threadSpectrumRight = new ThreadModule(spectrumRight);
-		Thread threadOscilloLeft = new ThreadModule(oscilloLeft);
-		Thread threadOscilloRight = new ThreadModule(oscilloRight);
-		Thread threadSpectrumFilterLeft = new ThreadModule(spectrumFilterLeft);
-		Thread threadSpectrumFilterRight = new ThreadModule(spectrumFilterRight);
-
-		threadSpeaker.start();
-		threadFilterLeft.start();
-		threadFilterRight.start();
-		threadSpectrumLeft.start();
-		threadSpectrumRight.start();
-		threadOscilloLeft.start();
-		threadOscilloRight.start();
-		threadPlayer.start();
-		threadSpectrumFilterLeft.start();
-		threadSpectrumFilterRight.start();
+		speaker.start();
+		filterLeft.start();
+		filterRight.start();
+		spectrumLeft.start();
+		spectrumRight.start();
+		oscilloscopeLeft.start();
+		oscilloscopeRight.start();
+		mp3FilePlayer.start();
+		spectrumFilterLeft.start();
+		spectrumFilterRight.start();
 	}
 
 	public static void lireMP3() throws FileNotFoundException, LineUnavailableException, JavaLayerException {
@@ -202,13 +172,9 @@ public class TestSon {
 		micro.getOutputPorts()[0].connect(speaker.getInputPorts()[0]);
 		micro.getOutputPorts()[0].connect(spectrum.getInputPort());
 
-		ThreadModule threadSpeeker = new ThreadModule(speaker);
-		ThreadModule threadMicro = new ThreadModule(micro);
-		ThreadModule threadSpectrum = new ThreadModule(spectrum);
-
-		threadMicro.start();
-		threadSpeeker.start();
-		threadSpectrum.start();
+		micro.start();
+		speaker.start();
+		spectrum.start();
 	}
 
 	public static void testMP3() throws FileNotFoundException, LineUnavailableException {
@@ -216,10 +182,10 @@ public class TestSon {
 		Speaker speaker = new Speaker("Hauts-parleurs");
 
 		Mp3FilePlayer mp3FilePlayer = new Mp3FilePlayer("Lecteur de fichier MP3", new File(
-				"C:\\Users\\guehenneux\\Downloads\\14086.mp3"));
+				"G:\\Musique\\Rage Against The Machine\\Battle Of Los Angeles (1999)\\03. Calm Like A Bomb.mp3"));
 
-		Oscillo oscilloLeft = new Oscillo("Oscilloscope, gauche");
-		Oscillo oscilloRight = new Oscillo("Oscilloscope, droit");
+		Oscilloscope oscilloscopeLeft = new Oscilloscope("Oscilloscope, gauche");
+		Oscilloscope oscilloscopeRight = new Oscilloscope("Oscilloscope, droit");
 
 		Spectrum spectrumLeft = new Spectrum("Spectrum, gauche");
 		Spectrum spectrumRight = new Spectrum("Spectrum, droit");
@@ -230,22 +196,15 @@ public class TestSon {
 		outputPorts[1].connect(speaker.getInputPorts()[1]);
 		outputPorts[0].connect(spectrumLeft.getInputPort());
 		outputPorts[1].connect(spectrumRight.getInputPort());
-		outputPorts[0].connect(oscilloLeft.getPortEntree());
-		outputPorts[1].connect(oscilloRight.getPortEntree());
+		outputPorts[0].connect(oscilloscopeLeft.getInputPort());
+		outputPorts[1].connect(oscilloscopeRight.getInputPort());
 
-		Thread threadSpeeker = new ThreadModule(speaker);
-		Thread threadPlayer = new ThreadModule(mp3FilePlayer);
-		Thread threadOscilloLeft = new ThreadModule(oscilloLeft);
-		Thread threadOscilloRight = new ThreadModule(oscilloRight);
-		Thread threadSpectrumLeft = new ThreadModule(spectrumLeft);
-		Thread threadSpectrumRight = new ThreadModule(spectrumRight);
-
-		threadSpeeker.start();
-		threadOscilloLeft.start();
-		threadOscilloRight.start();
-		threadPlayer.start();
-		threadSpectrumLeft.start();
-		threadSpectrumRight.start();
+		speaker.start();
+		oscilloscopeLeft.start();
+		oscilloscopeRight.start();
+		mp3FilePlayer.start();
+		spectrumLeft.start();
+		spectrumRight.start();
 	}
 
 	public static void testWav() throws IOException, LineUnavailableException, CorruptWavFileException {
@@ -255,8 +214,8 @@ public class TestSon {
 		WavFilePlayer waveFilePlayer = new WavFilePlayer("Lecteur de fichier WAV", new File(
 				"C:\\Users\\guehenneux\\Downloads\\a2002011001-e02.wav"));
 
-		Oscillo oscilloLeft = new Oscillo("Oscilloscope, gauche");
-		Oscillo oscilloRight = new Oscillo("Oscilloscope, droit");
+		Oscilloscope oscilloscopeLeft = new Oscilloscope("Oscilloscope, gauche");
+		Oscilloscope oscilloscopeRight = new Oscilloscope("Oscilloscope, droit");
 
 		Spectrum spectrumLeft = new Spectrum("Spectrum, gauche");
 		Spectrum spectrumRight = new Spectrum("Spectrum, droit");
@@ -267,22 +226,15 @@ public class TestSon {
 		outputPorts[1].connect(speaker.getInputPorts()[1]);
 		outputPorts[0].connect(spectrumLeft.getInputPort());
 		outputPorts[1].connect(spectrumRight.getInputPort());
-		outputPorts[0].connect(oscilloLeft.getPortEntree());
-		outputPorts[1].connect(oscilloRight.getPortEntree());
+		outputPorts[0].connect(oscilloscopeLeft.getInputPort());
+		outputPorts[1].connect(oscilloscopeRight.getInputPort());
 
-		Thread threadSpeeker = new ThreadModule(speaker);
-		Thread threadPlayer = new ThreadModule(waveFilePlayer);
-		Thread threadOscilloLeft = new ThreadModule(oscilloLeft);
-		Thread threadOscilloRight = new ThreadModule(oscilloRight);
-		Thread threadSpectrumLeft = new ThreadModule(spectrumLeft);
-		Thread threadSpectrumRight = new ThreadModule(spectrumRight);
-
-		threadSpeeker.start();
-		threadOscilloLeft.start();
-		threadOscilloRight.start();
-		threadPlayer.start();
-		threadSpectrumLeft.start();
-		threadSpectrumRight.start();
+		speaker.start();
+		oscilloscopeLeft.start();
+		oscilloscopeRight.start();
+		waveFilePlayer.start();
+		spectrumLeft.start();
+		spectrumRight.start();
 	}
 
 	public static void montage2() throws LineUnavailableException, IOException, CorruptWavFileException {
@@ -293,8 +245,8 @@ public class TestSon {
 
 		Spectrum spectrumLeft = new Spectrum("Analyseur de spectre, gauche");
 		Spectrum spectrumRight = new Spectrum("Analyseur de spectre, droit");
-		Oscillo oscilloLeft = new Oscillo("Oscilloscope, gauche");
-		Oscillo oscilloRight = new Oscillo("Oscilloscope, droit");
+		Oscilloscope oscilloscopeLeft = new Oscilloscope("Oscilloscope, gauche");
+		Oscilloscope oscilloscopeRight = new Oscilloscope("Oscilloscope, droit");
 
 		OutputPort[] outputPorts = wavFilePlayer.getOutputPorts();
 
@@ -302,48 +254,48 @@ public class TestSon {
 		outputPorts[1].connect(speaker.getInputPorts()[1]);
 		outputPorts[0].connect(spectrumLeft.getInputPort());
 		outputPorts[1].connect(spectrumRight.getInputPort());
-		outputPorts[0].connect(oscilloLeft.getPortEntree());
-		outputPorts[1].connect(oscilloRight.getPortEntree());
+		outputPorts[0].connect(oscilloscopeLeft.getInputPort());
+		outputPorts[1].connect(oscilloscopeRight.getInputPort());
 
-		Thread threadSpeeker = new ThreadModule(speaker);
-		Thread threadPlayer = new ThreadModule(wavFilePlayer);
-		Thread threadSpectrumLeft = new ThreadModule(spectrumLeft);
-		Thread threadSpectrumRight = new ThreadModule(spectrumRight);
-		Thread threadOscilloLeft = new ThreadModule(oscilloLeft);
-		Thread threadOscilloRight = new ThreadModule(oscilloRight);
-
-		threadSpeeker.start();
-		threadSpectrumLeft.start();
-		threadSpectrumRight.start();
-		threadOscilloLeft.start();
-		threadOscilloRight.start();
-		threadPlayer.start();
-
+		speaker.start();
+		spectrumLeft.start();
+		spectrumRight.start();
+		oscilloscopeLeft.start();
+		oscilloscopeRight.start();
+		wavFilePlayer.start();
 	}
 
 	public static void montage1() throws LineUnavailableException {
 
 		Speaker speaker = new Speaker("Hauts-parleurs");
 
+		LFO lfo = new LFO("LFO", 1);
 		VCO vco = new VCO("VCO", 440);
 
+		VCF highFilter = new HighPassVCF("Filtre passe-haut");
+		VCF lowFilter = new LowPassVCF("Filtre passe-bas");
+
+		lowFilter.setCutOffFrequency(220);
+		highFilter.setCutOffFrequency(880);
+
 		Spectrum spectrumVCO = new Spectrum("Analyseur de spectre");
-		Oscillo oscilloVCO = new Oscillo("Oscilloscope");
+		Oscilloscope oscilloscopeVCO = new Oscilloscope("Oscilloscope");
 
-		vco.getOutputPort().connect(speaker.getInputPorts()[0]);
-		vco.getOutputPort().connect(speaker.getInputPorts()[1]);
-		vco.getOutputPort().connect(spectrumVCO.getInputPort());
-		vco.getOutputPort().connect(oscilloVCO.getPortEntree());
+		lfo.getOutputPort().connect(vco.getModulationPort());
+		vco.getOutputPort().connect(lowFilter.getInputPort());
+		lowFilter.getOutputPort().connect(highFilter.getInputPort());
+		highFilter.getOutputPort().connect(speaker.getInputPorts()[0]);
+		highFilter.getOutputPort().connect(speaker.getInputPorts()[1]);
+		highFilter.getOutputPort().connect(spectrumVCO.getInputPort());
+		highFilter.getOutputPort().connect(oscilloscopeVCO.getInputPort());
 
-		ThreadModule threadSpeaker = new ThreadModule(speaker);
-		ThreadModule threadVCO = new ThreadModule(vco);
-		ThreadModule threadSpectrumVCO = new ThreadModule(spectrumVCO);
-		ThreadModule threadOscilloVCO = new ThreadModule(oscilloVCO);
-
-		threadVCO.start();
-		threadSpeaker.start();
-		threadSpectrumVCO.start();
-		threadOscilloVCO.start();
+		lfo.start();
+		vco.start();
+		lowFilter.start();
+		highFilter.start();
+		speaker.start();
+		spectrumVCO.start();
+		oscilloscopeVCO.start();
 	}
 
 	public static void montageConsonance() throws LineUnavailableException {
@@ -354,12 +306,8 @@ public class TestSon {
 		vco1.getOutputPort().connect(speaker.getInputPorts()[0]);
 		vco2.getOutputPort().connect(speaker.getInputPorts()[1]);
 
-		ThreadModule threadSpeaker = new ThreadModule(speaker);
-		ThreadModule threadVCO1 = new ThreadModule(vco1);
-		ThreadModule threadVCO2 = new ThreadModule(vco2);
-
-		threadSpeaker.start();
-		threadVCO1.start();
-		threadVCO2.start();
+		speaker.start();
+		vco1.start();
+		vco2.start();
 	}
 }

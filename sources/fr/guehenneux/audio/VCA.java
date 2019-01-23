@@ -1,14 +1,11 @@
 package fr.guehenneux.audio;
 
 /**
- * 
- * @author Jonathan
- * 
+ * @author Jonathan Guéhenneux
  */
 public class VCA extends Module {
 
 	/**
-	 * 
 	 * @param name
 	 */
 	public VCA(String name) {
@@ -18,7 +15,5 @@ public class VCA extends Module {
 	@Override
 	public void compute() {
 		// TODO Auto-generated method stub
-
 	}
-
 }

@@ -1,15 +1,16 @@
 package fr.guehenneux.audio;
 
+/**
+ * @author Jonathan GuÃ©henneux
+ */
 public class VCO extends Module {
 
 	private InputPort modulationPort;
-
 	private OutputPort outputPort;
 
 	private Wave wave;
 
 	/**
-	 * 
 	 * @param name
 	 * @param frequency
 	 */
@@ -38,17 +39,16 @@ public class VCO extends Module {
 	}
 
 	@Override
-	public void compute() {
+	public void compute() throws InterruptedException {
 
 		if (outputPort.isConnected()) {
 
-			FormatAudio formatAudio = FormatAudio.getInstance();
-			int sampleCount = formatAudio.getBufferSizeInFrames();
-			double sampleLength = formatAudio.getFrameLength();
+			int sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
+			double sampleLength = Settings.INSTANCE.getFrameLength();
 
 			float[] samples;
 
-			if (modulationPort.isConnected() && modulationPort.isReady()) {
+			if (modulationPort.isConnected()) {
 
 				float[] modulationSamples = modulationPort.read();
 				samples = wave.getSamples(modulationSamples, sampleCount, sampleLength);
@@ -56,7 +56,6 @@ public class VCO extends Module {
 			} else {
 
 				samples = wave.getSamples(sampleCount, sampleLength);
-
 			}
 
 			outputPort.write(samples);
@@ -79,7 +78,6 @@ public class VCO extends Module {
 
 	/**
 	 * @param wave
-	 *            wave à définir
 	 */
 	public void setWave(Wave wave) {
 		this.wave = wave;

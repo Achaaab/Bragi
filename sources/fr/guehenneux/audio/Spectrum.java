@@ -1,56 +1,52 @@
 package fr.guehenneux.audio;
 
-import java.util.Arrays;
-
 /**
- * @author GUEHENNEUX
+ * @author Jonathan Guéhenneux
  */
 public class Spectrum extends Module {
 
 	private static final int FFT_SAMPLE_COUNT = 1 << 10;
 
+	private InputPort inputPort;
+
+	private FFT fft;
 	private float[] fftSamples;
-
 	private int fftSampleIndex;
-
 	private int fftSampleCount;
-
-	private InputPort portEntree;
 
 	private PresentationSpectrum presentation;
 
-	private FFT fft;
-
 	/**
-	 * 
 	 * @param name
 	 */
 	public Spectrum(String name) {
 
 		super(name);
 
-		portEntree = new InputPort();
+		inputPort = new InputPort();
 		presentation = new PresentationSpectrum(this);
 
 		fftSampleIndex = 0;
 		fftSampleCount = 0;
 		fftSamples = new float[FFT_SAMPLE_COUNT];
 
-		fft = new FFT(FFT_SAMPLE_COUNT, FormatAudio.getInstance().getFrameRate());
+		fft = new FFT(FFT_SAMPLE_COUNT, Settings.INSTANCE.getFrameRate());
+		//fft.window(FourierTransform.HAMMING);
+		fft.logAverages(50, 6);
 	}
 
 	@Override
-	public void compute() {
+	public void compute() throws InterruptedException {
 
-		float[] inputSamples = portEntree.read();
+		float[] samples = inputPort.read();
 
-		int sampleCount = Math.min(inputSamples.length, FFT_SAMPLE_COUNT - fftSampleIndex);
+		int sampleCount = Math.min(samples.length, FFT_SAMPLE_COUNT - fftSampleIndex);
 
 		float sample;
 
 		for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 
-			sample = inputSamples[sampleIndex];
+			sample = samples[sampleIndex];
 
 			fftSamples[fftSampleIndex] = sample;
 			fftSampleIndex++;
@@ -61,18 +57,18 @@ public class Spectrum extends Module {
 		if (fftSampleCount == FFT_SAMPLE_COUNT) {
 
 			fft.forward(fftSamples);
-			float[] spectrum = fft.getSpectrum();
+			float[] averages = fft.getAverages();
 
-			presentation.display(spectrum);
+			presentation.display(averages);
 			fftSampleIndex = 0;
 			fftSampleCount = 0;
 		}
 	}
 
 	/**
-	 * @return portEntree
+	 * @return inputPort
 	 */
 	public InputPort getInputPort() {
-		return portEntree;
+		return inputPort;
 	}
 }

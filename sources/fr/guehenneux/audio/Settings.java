@@ -1,11 +1,11 @@
 package fr.guehenneux.audio;
 
 /**
- * @author GUEHENNEUX
+ * @author Jonathan Guéhenneux
  */
-public class FormatAudio {
+public class Settings {
 
-	private static FormatAudio instance;
+	public static final Settings INSTANCE = new Settings();
 
 	private static final int DEFAULT_CHANNELS = 2;
 	private static final int DEFAULT_SAMPLE_SIZE = 2;
@@ -18,21 +18,9 @@ public class FormatAudio {
 	private int bufferSizeInFrames;
 
 	/**
-	 * @return
+	 *
 	 */
-	public static FormatAudio getInstance() {
-
-		if (instance == null) {
-			instance = new FormatAudio();
-		}
-
-		return instance;
-	}
-
-	/**
-	 * 
-	 */
-	private FormatAudio() {
+	private Settings() {
 
 		channels = DEFAULT_CHANNELS;
 		frameRate = DEFAULT_FRAME_RATE;
@@ -49,7 +37,6 @@ public class FormatAudio {
 
 	/**
 	 * @param channels
-	 *            channels � d�finir
 	 */
 	public void setChannels(int channels) {
 		this.channels = channels;
@@ -64,7 +51,6 @@ public class FormatAudio {
 
 	/**
 	 * @param frameRate
-	 *            frameRate � d�finir
 	 */
 	public void setFrameRate(int frameRate) {
 		this.frameRate = frameRate;
@@ -79,7 +65,6 @@ public class FormatAudio {
 
 	/**
 	 * @param sampleSize
-	 *            sampleSize � d�finir
 	 */
 	public void setSampleSize(int sampleSize) {
 		this.sampleSize = sampleSize;
@@ -101,14 +86,13 @@ public class FormatAudio {
 
 	/**
 	 * @param bufferSizeInFrames
-	 *            bufferSizeInFrames � d�finir
+	 *            bufferSizeInFrames à définir
 	 */
 	public void setBufferSizeInFrames(int bufferSizeInFrames) {
 		this.bufferSizeInFrames = bufferSizeInFrames;
 	}
 
 	/**
-	 * 
 	 * @return
 	 */
 	public int getFrameSizeInBytes() {
