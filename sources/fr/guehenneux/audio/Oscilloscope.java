@@ -1,7 +1,7 @@
 package fr.guehenneux.audio;
 
 /**
- * @author GUEHENNEUX
+ * @author Jonathan Guéhenneux
  */
 public class Oscilloscope extends Module {
 

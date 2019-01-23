@@ -24,7 +24,7 @@ public class TestSon {
 	public static void main(String[] args) throws LineUnavailableException, IOException, CorruptWavFileException,
 			JavaLayerException {
 
-		montage1();
+		testMP3();
 	}
 
 	/**
@@ -167,14 +167,25 @@ public class TestSon {
 
 		Micro micro = new Micro("Entrée microphone");
 		Speaker speaker = new Speaker("Hauts-parleurs");
-		Spectrum spectrum = new Spectrum("Analyseur de spectre");
+		LowPassVCF leftFilter = new LowPassVCF("Filtre passe-bas, gauche");
+		LowPassVCF rightFilter = new LowPassVCF("Filtre passe-bas, droit");
+		Spectrum leftSpectrum = new Spectrum("Analyseur de spectre, gauche");
+		Spectrum rightSpectrum = new Spectrum("Analyseur de spectre, droit");
 
-		micro.getOutputPorts()[0].connect(speaker.getInputPorts()[0]);
-		micro.getOutputPorts()[0].connect(spectrum.getInputPort());
+		micro.getOutputPorts()[0].connect(leftFilter.getInputPort());
+		micro.getOutputPorts()[1].connect(rightFilter.getInputPort());
+
+		leftFilter.getOutputPort().connect(speaker.getInputPorts()[0]);
+		rightFilter.getOutputPort().connect(speaker.getInputPorts()[1]);
+		leftFilter.getOutputPort().connect(leftSpectrum.getInputPort());
+		rightFilter.getOutputPort().connect(rightSpectrum.getInputPort());
 
 		micro.start();
+		leftFilter.start();
+		rightFilter.start();
 		speaker.start();
-		spectrum.start();
+		leftSpectrum.start();
+		rightSpectrum.start();
 	}
 
 	public static void testMP3() throws FileNotFoundException, LineUnavailableException {

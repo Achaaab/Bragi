@@ -1,5 +1,6 @@
 package fr.guehenneux.audio;
 
+import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine.Info;
 import javax.sound.sampled.LineUnavailableException;
@@ -17,9 +18,7 @@ public class Speaker extends Module {
 	private static final int THREE_BYTES_MAX_VALUE = 1 << 23 - 1;
 
 	private InputPort[] inputPorts;
-
 	private SourceDataLine sourceDataLine;
-
 
 	/**
 	 * @param name
@@ -35,7 +34,7 @@ public class Speaker extends Module {
 			inputPorts[channelIndex] = new InputPort();
 		}
 
-		javax.sound.sampled.AudioFormat format = new javax.sound.sampled.AudioFormat(Settings.INSTANCE.getFrameRate(), Settings.INSTANCE.getSampleSize() * 8,
+		AudioFormat format = new AudioFormat(Settings.INSTANCE.getFrameRate(), Settings.INSTANCE.getSampleSize() * 8,
 				Settings.INSTANCE.getChannels(), true, true);
 
 		Info info = new Info(SourceDataLine.class, format);
@@ -55,10 +54,14 @@ public class Speaker extends Module {
 			samples[channelIndex] = inputPorts[channelIndex].read();
 		}
 
-		byte[] donneesConverties = mix(samples);
-		sourceDataLine.write(donneesConverties, 0, donneesConverties.length);
+		byte[] data = mix(samples);
+		sourceDataLine.write(data, 0, data.length);
 	}
 
+	/**
+	 * @param samples
+	 * @return
+	 */
 	private static byte[] mix(float[][] samples) {
 
 		int channelCount = samples.length;
@@ -68,7 +71,7 @@ public class Speaker extends Module {
 		int channelIndex;
 
 		float sample;
-		int sampleNormalise;
+		int normalizedSample;
 
 		int sampleSizeInBytes = Settings.INSTANCE.getSampleSize();
 
@@ -85,39 +88,27 @@ public class Speaker extends Module {
 				switch (sampleSizeInBytes) {
 
 				case 1:
-
-					sampleNormalise = (int) (ONE_BYTE_MAX_VALUE * sample);
-
-					b0 = (byte) sampleNormalise;
-
+					normalizedSample = (int) (ONE_BYTE_MAX_VALUE * sample);
+					b0 = (byte) normalizedSample;
 					mix[byteIndex++] = b0;
-
 					break;
 
 				case 2:
-
-					sampleNormalise = (int) (TWO_BYTES_MAX_VALUE * sample);
-
-					b0 = (byte) (sampleNormalise >> 8);
-					b1 = (byte) (sampleNormalise & 0xFF);
-
+					normalizedSample = (int) (TWO_BYTES_MAX_VALUE * sample);
+					b0 = (byte) (normalizedSample >> 8);
+					b1 = (byte) (normalizedSample & 0xFF);
 					mix[byteIndex++] = b0;
 					mix[byteIndex++] = b1;
-
 					break;
 
 				case 3:
-
-					sampleNormalise = (int) (THREE_BYTES_MAX_VALUE * (double) sample);
-
-					b0 = (byte) (sampleNormalise >> 16);
-					b1 = (byte) ((sampleNormalise >> 8) & 0xFF);
-					b2 = (byte) (sampleNormalise & 0xFF);
-
+					normalizedSample = (int) (THREE_BYTES_MAX_VALUE * (double) sample);
+					b0 = (byte) (normalizedSample >> 16);
+					b1 = (byte) ((normalizedSample >> 8) & 0xFF);
+					b2 = (byte) (normalizedSample & 0xFF);
 					mix[byteIndex++] = b0;
 					mix[byteIndex++] = b1;
 					mix[byteIndex++] = b2;
-
 					break;
 
 				default:

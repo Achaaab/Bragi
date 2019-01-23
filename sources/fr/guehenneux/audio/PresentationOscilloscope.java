@@ -45,7 +45,7 @@ public class PresentationOscilloscope extends JComponent {
 		painter.start();
 	}
 
-	public synchronized void afficher(float[] samples) {
+	public void afficher(float[] samples) {
 
 		int containerWidth = getWidth();
 		int containerHeight = getHeight();
@@ -72,7 +72,8 @@ public class PresentationOscilloscope extends JComponent {
 		}
 	}
 
-	public synchronized void paint(Graphics graphics) {
+	@Override
+	public void paint(Graphics graphics) {
 
 		int containerWidth = getWidth();
 		int containerHeight = getHeight();
