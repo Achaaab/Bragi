@@ -17,7 +17,7 @@ public class LFO extends Module {
 		super(name);
 
 		outputPort = new OutputPort();
-		wave = new SawtoothWave(frequency);
+		wave = new SineWave(frequency);
 		new PresentationLFO(this);
 	}
 

@@ -10,21 +10,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 /**
  * @author Jonathan Guéhenneux
  */
-public class PresentationSpectrum extends JPanel {
+public class PresentationSpectrum extends JComponent {
 
 	private static final int PLOT_MARGIN = 5;
 	private static final int LEVEL_COUNT = 50;
 	private static final Color COLOR_MAXIMUM = new Color(87, 40, 255);
 	private static final Color COLOR_MINIMUM = new Color(255, 255, 255);
 
-	private BufferedImage bufferImage;
-	private Graphics2D bufferGraphics;
 	private float[] averages;
 	private Spectrum control;
 
@@ -55,20 +52,15 @@ public class PresentationSpectrum extends JPanel {
 	@Override
 	public void paint(Graphics graphics) {
 
-		int containerWidth = getWidth();
-		int containerHeight = getHeight();
+		int width = getWidth();
+		int height = getHeight();
 
-		int plotWidth = containerWidth - 2 * PLOT_MARGIN;
-		int plotHeight = containerHeight - 2 * PLOT_MARGIN;
+		int plotWidth = width - 2 * PLOT_MARGIN;
+		int plotHeight = height - 2 * PLOT_MARGIN;
 
-		if (bufferGraphics == null || containerWidth != bufferImage.getWidth() || containerHeight != bufferImage.getHeight()) {
-
-			bufferImage = new BufferedImage(containerWidth, containerHeight, BufferedImage.TYPE_INT_RGB);
-			bufferGraphics = bufferImage.createGraphics();
-		}
-
-		bufferGraphics.setColor(Color.BLACK);
-		bufferGraphics.fillRect(0, 0, containerWidth, containerHeight);
+		Graphics2D graphics2D = (Graphics2D) graphics;
+		graphics2D.setColor(Color.BLACK);
+		graphics2D.fillRect(0, 0, width, height);
 
 		if (averages != null) {
 
@@ -98,21 +90,19 @@ public class PresentationSpectrum extends JPanel {
 
 					barY = plotBottom - (levelIndex + 1) * plotHeight / LEVEL_COUNT + barTopMargin;
 					barColor = ColorUtils.getColorValue(0, COLOR_MINIMUM, LEVEL_COUNT, COLOR_MAXIMUM, levelIndex);
-					bufferGraphics.setColor(barColor);
-					bufferGraphics.fillRect(Math.round(barX), Math.round(barY), Math.round(barWidth), Math.round(barHeight));
+					graphics2D.setColor(barColor);
+					graphics2D.fillRect(Math.round(barX), Math.round(barY), Math.round(barWidth), Math.round(barHeight));
 				}
 
 				for (int levelIndex = Math.max(0, barLevel); levelIndex < LEVEL_COUNT; levelIndex++) {
 
 					barY = plotBottom - (levelIndex + 1) * plotHeight / LEVEL_COUNT + barTopMargin;
 					barColor = ColorUtils.getColorValue(0, COLOR_MINIMUM, LEVEL_COUNT, COLOR_MAXIMUM, levelIndex);
-					bufferGraphics.setColor(barColor.darker().darker());
-					bufferGraphics.fillRect(Math.round(barX), Math.round(barY), Math.round(barWidth), Math.round(barHeight));
+					graphics2D.setColor(barColor.darker().darker());
+					graphics2D.fillRect(Math.round(barX), Math.round(barY), Math.round(barWidth), Math.round(barHeight));
 				}
 			}
 		}
-
-		graphics.drawImage(bufferImage, 0, 0, null);
 	}
 
 	/**

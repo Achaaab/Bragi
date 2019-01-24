@@ -24,7 +24,37 @@ public class TestSon {
 	public static void main(String[] args) throws LineUnavailableException, IOException, CorruptWavFileException,
 			JavaLayerException {
 
-		testMP3();
+		montage3();
+	}
+
+	/**
+	 * Modules:
+	 * <ul>
+	 *   <li>VCO</li>
+	 *   <li>spectrum analyzer</li>
+	 *   <li>stereo speaker</li>
+	 * </ul>
+	 *
+	 * Connections:
+	 * <ul>
+	 *   <li>VCO -> spectrum analyzer</li>
+	 *   <li>VCO -> left speaker</li>
+	 *   <li>VCO -> right speaker</li>
+	 * </ul>
+	 */
+	public static void montage3() throws LineUnavailableException {
+
+		VCO vco = new VCO("VCO", 440);
+		Speaker speaker = new Speaker("speaker");
+		Spectrum spectrum = new Spectrum("spectrum");
+
+		vco.getOutputPort().connect(spectrum.getInputPort());
+		vco.getOutputPort().connect(speaker.getInputPorts()[0]);
+		vco.getOutputPort().connect(speaker.getInputPorts()[1]);
+
+		vco.start();
+		spectrum.start();
+		speaker.start();
 	}
 
 	/**

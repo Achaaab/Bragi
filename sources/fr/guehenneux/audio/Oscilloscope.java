@@ -23,7 +23,7 @@ public class Oscilloscope extends Module {
 	public void compute() throws InterruptedException {
 
 		float[] samples = inputPort.read();
-		presentation.afficher(samples);
+		presentation.display(samples);
 	}
 
 	/**
