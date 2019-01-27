@@ -19,12 +19,12 @@ public class PresentationVCO extends JPanel {
 
 		this.vco = vco;
 
-		// from 50Hz to 12800Hz
-		frequencySlider = new JSlider(JSlider.HORIZONTAL, 0, 800, 300);
-		frequencySlider.addChangeListener(changeEvent -> vco.setFrequency(50 * Math.pow(2, frequencySlider.getValue() / 100.0)));
+		// from 25Hz to 12800Hz
+		frequencySlider = new JSlider(JSlider.HORIZONTAL, 0, 900, 300);
+		frequencySlider.addChangeListener(changeEvent -> vco.setFrequency(25 * Math.pow(2, frequencySlider.getValue() / 100.0)));
 		add(frequencySlider);
 
-		JFrame frame = new JFrame("VCO");
+		JFrame frame = new JFrame(vco.getName());
 		frame.setSize(400, 300);
 		frame.add(this);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

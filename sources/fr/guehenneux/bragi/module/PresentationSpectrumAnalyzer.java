@@ -7,14 +7,13 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 
 import javax.swing.*;
 
 /**
  * @author Jonathan Guéhenneux
  */
-public class PresentationSpectrum extends JComponent {
+public class PresentationSpectrumAnalyzer extends JComponent {
 
 	private static final int PLOT_MARGIN = 5;
 	private static final int LEVEL_COUNT = 50;
@@ -22,12 +21,12 @@ public class PresentationSpectrum extends JComponent {
 	private static final Color COLOR_MINIMUM = new Color(255, 255, 255);
 
 	private float[] averages;
-	private Spectrum control;
+	private SpectrumAnalyzer control;
 
 	/**
 	 * @param control
 	 */
-	public PresentationSpectrum(Spectrum control) {
+	public PresentationSpectrumAnalyzer(SpectrumAnalyzer control) {
 
 		this.control = control;
 
@@ -107,7 +106,7 @@ public class PresentationSpectrum extends JComponent {
 	/**
 	 * @return the control
 	 */
-	public Spectrum getControl() {
+	public SpectrumAnalyzer getControl() {
 		return control;
 	}
 }

@@ -1,5 +1,6 @@
 package fr.guehenneux.bragi.module;
 
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -7,20 +8,23 @@ import java.util.concurrent.BlockingQueue;
  */
 public class Input {
 
-	private BlockingQueue<float[]> buffer;
+	private String name;
+	private final BlockingQueue<float[]> buffer;
 
 	/**
-	 * @param buffer
+	 * @param name
 	 */
-	public void setBuffer(BlockingQueue<float[]> buffer) {
-		this.buffer = buffer;
+	public Input(String name) {
+
+		this.name = name;
+		buffer = new ArrayBlockingQueue<>(1);
 	}
 
 	/**
 	 * @return
 	 */
-	public boolean isConnected() {
-		return buffer != null;
+	public BlockingQueue<float[]> getBuffer() {
+		return buffer;
 	}
 
 	/**
@@ -31,9 +35,16 @@ public class Input {
 	}
 
 	/**
-	 * @return
+	 * Waits and returns the next chunk.
+	 *
+	 * @return read chunk
 	 */
 	public float[] read() throws InterruptedException {
 		return buffer.take();
+	}
+
+	@Override
+	public String toString() {
+		return name;
 	}
 }

@@ -12,10 +12,6 @@ import java.io.IOException;
  */
 public class WavFilePlayer extends Module implements Player {
 
-	private static final int MAX_CHANNEL_COUNT = 2;
-
-	private Output[] outputs;
-
 	private WavFile wavFile;
 	private int offset;
 	private int channelCount;
@@ -27,15 +23,12 @@ public class WavFilePlayer extends Module implements Player {
 	 * @throws IOException
 	 * @throws CorruptWavFileException
 	 */
-	public WavFilePlayer(String name, File file) throws IOException,
-			CorruptWavFileException {
+	public WavFilePlayer(String name, File file) throws IOException, CorruptWavFileException {
 
 		super(name);
 
-		outputs = new Output[MAX_CHANNEL_COUNT];
-
-		for (int channelIndex = 0; channelIndex < MAX_CHANNEL_COUNT; channelIndex++) {
-			outputs[channelIndex] = new Output();
+		while (outputs.size() < Settings.INSTANCE.getChannels()) {
+			addOutput(name + "_output_" + outputs.size());
 		}
 
 		wavFile = new WavFile(file);
@@ -59,21 +52,14 @@ public class WavFilePlayer extends Module implements Player {
 				offset += count;
 			}
 
-		} catch (IOException ioException) {
+		} catch (IOException cause) {
 
-			ioException.printStackTrace();
+			throw new RuntimeException(cause);
 		}
 
 		for (int channelIndex = 0; channelIndex < channelCount; channelIndex++) {
-			outputs[channelIndex].write(samples[channelIndex]);
+			outputs.get(channelIndex).write(samples[channelIndex]);
 		}
-	}
-
-	/**
-	 * @return
-	 */
-	public Output[] getOutputs() {
-		return outputs;
 	}
 
 	@Override

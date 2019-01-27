@@ -36,13 +36,15 @@ public class Mp3FilePlayer extends Module implements Player {
 		super(name);
 
 		while (outputs.size() < Settings.INSTANCE.getChannels()) {
-			addOutut();
+			addOutput(name + "_output_" + outputs.size());
 		}
 
 		FileInputStream fileInputStream = new FileInputStream(file);
 		InputStream inputStream = new BufferedInputStream(fileInputStream);
 		bitStream = new Bitstream(inputStream);
 		decoder = new Decoder();
+
+		start();
 	}
 
 	@Override

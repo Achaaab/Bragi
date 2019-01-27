@@ -22,29 +22,18 @@ public class VCO extends Module {
 
 		super(name);
 
-		modulationPort = new Input();
-		output = new Output();
+		modulationPort = addInput(name + "_modulation");
+		output = addOutput(name + "_output");
+
 		wave = new SquareWave(frequency);
 		new PresentationVCO(this);
-	}
-
-	/**
-	 * @return
-	 */
-	public double getFrequency() {
-		return wave.getFrequency();
-	}
-
-	/**
-	 * @param frequency
-	 */
-	public void setFrequency(double frequency) {
-		wave.setFrequency(frequency);
+		start();
 	}
 
 	@Override
 	public void compute() throws InterruptedException {
 
+		System.out.println("compute");
 		if (output.isConnected()) {
 
 			int sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
@@ -52,7 +41,7 @@ public class VCO extends Module {
 
 			float[] samples;
 
-			if (modulationPort.isConnected()) {
+			if (modulationPort.isReady()) {
 
 				float[] modulationSamples = modulationPort.read();
 				samples = wave.getSamples(modulationSamples, sampleCount, sampleLength);
@@ -67,10 +56,17 @@ public class VCO extends Module {
 	}
 
 	/**
-	 * @return the output port
+	 * @return
 	 */
-	public Output getOutput() {
-		return output;
+	public double getFrequency() {
+		return wave.getFrequency();
+	}
+
+	/**
+	 * @param frequency
+	 */
+	public void setFrequency(double frequency) {
+		wave.setFrequency(frequency);
 	}
 
 	/**

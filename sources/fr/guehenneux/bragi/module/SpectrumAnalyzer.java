@@ -1,30 +1,33 @@
-package fr.guehenneux.audio;
+package fr.guehenneux.bragi.module;
+
+import fr.guehenneux.bragi.FFT;
+import fr.guehenneux.bragi.Settings;
 
 /**
  * @author Jonathan Guéhenneux
  */
-public class Spectrum extends Module {
+public class SpectrumAnalyzer extends Module {
 
 	private static final int FFT_SAMPLE_COUNT = 1 << 10;
 
-	private InputPort inputPort;
+	private Input input;
 
 	private FFT fft;
 	private float[] fftSamples;
 	private int fftSampleIndex;
 	private int fftSampleCount;
 
-	private PresentationSpectrum presentation;
+	private PresentationSpectrumAnalyzer presentation;
 
 	/**
 	 * @param name
 	 */
-	public Spectrum(String name) {
+	public SpectrumAnalyzer(String name) {
 
 		super(name);
 
-		inputPort = new InputPort();
-		presentation = new PresentationSpectrum(this);
+		input = addInput(name + "_input");
+		presentation = new PresentationSpectrumAnalyzer(this);
 
 		fftSampleIndex = 0;
 		fftSampleCount = 0;
@@ -33,12 +36,14 @@ public class Spectrum extends Module {
 		fft = new FFT(FFT_SAMPLE_COUNT, Settings.INSTANCE.getFrameRate());
 		//fft.window(FourierTransform.HAMMING);
 		fft.logAverages(50, 6);
+
+		start();
 	}
 
 	@Override
 	public void compute() throws InterruptedException {
 
-		float[] samples = inputPort.read();
+		float[] samples = input.read();
 
 		int sampleCount = Math.min(samples.length, FFT_SAMPLE_COUNT - fftSampleIndex);
 
@@ -63,12 +68,5 @@ public class Spectrum extends Module {
 			fftSampleIndex = 0;
 			fftSampleCount = 0;
 		}
-	}
-
-	/**
-	 * @return inputPort
-	 */
-	public InputPort getInputPort() {
-		return inputPort;
 	}
 }

@@ -33,13 +33,9 @@ public abstract class VCF extends Module {
 
 		super(name);
 
-		modulationPort = new Input();
-		input = new Input();
-		output = new Output();
-
-		inputs.add(input);
-		inputs.add(modulationPort);
-		outputs.add(output);
+		input = addInput(name + "_input");
+		modulationPort = addInput(name + "_modulation");
+		output = addOutput(name + "_output");
 
 		rezLevel = 0.5f;
 		cutOffFrequency = 440.0f;
@@ -52,11 +48,11 @@ public abstract class VCF extends Module {
 	@Override
 	public void compute() throws InterruptedException {
 
-		if (input.isConnected() && output.isConnected()) {
+		if (output.isConnected()) {
 
 			inputSamples = input.read();
 
-			if (modulationPort.isConnected() && modulationPort.isReady()) {
+			if (modulationPort.isReady()) {
 
 				modulationSamples = modulationPort.read();
 				modulation = true;
@@ -82,20 +78,6 @@ public abstract class VCF extends Module {
 	 */
 	public Input getModulationPort() {
 		return modulationPort;
-	}
-
-	/**
-	 * @return the input
-	 */
-	public Input getInput() {
-		return input;
-	}
-
-	/**
-	 * @return the output
-	 */
-	public Output getOutput() {
-		return output;
 	}
 
 	/**

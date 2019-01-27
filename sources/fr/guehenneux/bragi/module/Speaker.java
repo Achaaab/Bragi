@@ -13,13 +13,10 @@ import javax.sound.sampled.SourceDataLine;
  */
 public class Speaker extends Module {
 
-	private static final int MAX_CHANNEL_COUNT = 2;
-
 	private static final int ONE_BYTE_MAX_VALUE = 1 << 7 - 1;
 	private static final int TWO_BYTES_MAX_VALUE = 1 << 15 - 1;
 	private static final int THREE_BYTES_MAX_VALUE = 1 << 23 - 1;
 
-	private Input[] inputs;
 	private SourceDataLine sourceDataLine;
 
 	/**
@@ -30,10 +27,8 @@ public class Speaker extends Module {
 
 		super(name);
 
-		inputs = new Input[MAX_CHANNEL_COUNT];
-
-		for (int channelIndex = 0; channelIndex < MAX_CHANNEL_COUNT; channelIndex++) {
-			inputs[channelIndex] = new Input();
+		while (inputs.size() < Settings.INSTANCE.getChannels()) {
+			addInput(name + "_input_" + inputs.size());
 		}
 
 		AudioFormat format = new AudioFormat(Settings.INSTANCE.getFrameRate(), Settings.INSTANCE.getSampleSize() * 8,
@@ -44,6 +39,7 @@ public class Speaker extends Module {
 		sourceDataLine = (SourceDataLine) AudioSystem.getLine(info);
 		sourceDataLine.open(format, Settings.INSTANCE.getFrameRate() * Settings.INSTANCE.getFrameSizeInBytes() / 10);
 		sourceDataLine.start();
+		start();
 	}
 
 	@Override
@@ -51,9 +47,12 @@ public class Speaker extends Module {
 
 		int channelCount = Settings.INSTANCE.getChannels();
 		float[][] samples = new float[channelCount][];
+		Input input;
+
+		int sampleCount;
 
 		for (int channelIndex = 0; channelIndex < channelCount; channelIndex++) {
-			samples[channelIndex] = inputs[channelIndex].read();
+			samples[channelIndex] = inputs.get(channelIndex).read();
 		}
 
 		byte[] data = mix(samples);
@@ -89,43 +88,36 @@ public class Speaker extends Module {
 
 				switch (sampleSizeInBytes) {
 
-				case 1:
-					normalizedSample = (int) (ONE_BYTE_MAX_VALUE * sample);
-					b0 = (byte) normalizedSample;
-					mix[byteIndex++] = b0;
-					break;
+					case 1:
+						normalizedSample = (int) (ONE_BYTE_MAX_VALUE * sample);
+						b0 = (byte) normalizedSample;
+						mix[byteIndex++] = b0;
+						break;
 
-				case 2:
-					normalizedSample = (int) (TWO_BYTES_MAX_VALUE * sample);
-					b0 = (byte) (normalizedSample >> 8);
-					b1 = (byte) (normalizedSample & 0xFF);
-					mix[byteIndex++] = b0;
-					mix[byteIndex++] = b1;
-					break;
+					case 2:
+						normalizedSample = (int) (TWO_BYTES_MAX_VALUE * sample);
+						b0 = (byte) (normalizedSample >> 8);
+						b1 = (byte) (normalizedSample & 0xFF);
+						mix[byteIndex++] = b0;
+						mix[byteIndex++] = b1;
+						break;
 
-				case 3:
-					normalizedSample = (int) (THREE_BYTES_MAX_VALUE * (double) sample);
-					b0 = (byte) (normalizedSample >> 16);
-					b1 = (byte) ((normalizedSample >> 8) & 0xFF);
-					b2 = (byte) (normalizedSample & 0xFF);
-					mix[byteIndex++] = b0;
-					mix[byteIndex++] = b1;
-					mix[byteIndex++] = b2;
-					break;
+					case 3:
+						normalizedSample = (int) (THREE_BYTES_MAX_VALUE * (double) sample);
+						b0 = (byte) (normalizedSample >> 16);
+						b1 = (byte) ((normalizedSample >> 8) & 0xFF);
+						b2 = (byte) (normalizedSample & 0xFF);
+						mix[byteIndex++] = b0;
+						mix[byteIndex++] = b1;
+						mix[byteIndex++] = b2;
+						break;
 
-				default:
-					break;
+					default:
+						break;
 				}
 			}
 		}
 
 		return mix;
-	}
-
-	/**
-	 * @return the input ports
-	 */
-	public Input[] getInputs() {
-		return inputs;
 	}
 }

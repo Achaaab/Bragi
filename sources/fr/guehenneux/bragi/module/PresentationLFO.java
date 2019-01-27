@@ -24,7 +24,7 @@ public class PresentationLFO extends JPanel {
 		frequencySlider.addChangeListener(changeEvent -> lfo.setFrequency(0.1 * Math.pow(2, frequencySlider.getValue() / 100.0)));
 		add(frequencySlider);
 
-		JFrame frame = new JFrame("LFO");
+		JFrame frame = new JFrame(lfo.getName());
 		frame.setSize(400, 300);
 		frame.add(this);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

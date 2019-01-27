@@ -10,12 +10,16 @@ import java.util.concurrent.BlockingQueue;
  */
 public class Output {
 
+	private String name;
 	private List<BlockingQueue<float[]>> buffers;
 
 	/**
-	 *
+	 * @param name
 	 */
-	public Output() {
+	public Output(String name) {
+
+		this.name = name;
+
 		buffers = new ArrayList<>();
 	}
 
@@ -41,8 +45,23 @@ public class Output {
 	 */
 	public synchronized void connect(Input input) {
 
-		BlockingQueue<float[]> buffer = new ArrayBlockingQueue<>(5);
+		BlockingQueue<float[]> buffer = input.getBuffer();
 		buffers.add(buffer);
-		input.setBuffer(buffer);
+
+		System.out.println(this + " connected to " + input);
+	}
+
+	/**
+	 * Connects this output to each input of the given module.
+	 *
+	 * @param module module to connect to
+	 */
+	public void connect(Module module) {
+		module.getInputs().forEach(this::connect);
+	}
+
+	@Override
+	public String toString() {
+		return name;
 	}
 }

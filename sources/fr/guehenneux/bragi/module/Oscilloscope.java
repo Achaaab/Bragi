@@ -1,9 +1,11 @@
 package fr.guehenneux.bragi.module;
 
+import fr.guehenneux.bragi.Settings;
+
 /**
  * @author Jonathan Guéhenneux
  */
-public class Oscilloscope extends Module {
+public class Oscilloscope extends RealTimeModule {
 
 	private Input input;
 	private PresentationOscilloscope presentation;
@@ -15,21 +17,20 @@ public class Oscilloscope extends Module {
 
 		super(name);
 
-		input = new Input();
+		input = addInput(name + "_input");
 		presentation = new PresentationOscilloscope(this);
+
+		start();
 	}
 
 	@Override
-	public void compute() throws InterruptedException {
+	protected double realTimeCompute() throws InterruptedException {
 
 		float[] samples = input.read();
 		presentation.display(samples);
-	}
 
-	/**
-	 * @return input
-	 */
-	public Input getInput() {
-		return input;
+		double sampleCount = samples.length;
+		int samplingRate = Settings.INSTANCE.getFrameRate();
+		return sampleCount / samplingRate;
 	}
 }

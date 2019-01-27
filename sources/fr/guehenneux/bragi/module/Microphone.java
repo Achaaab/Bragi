@@ -10,7 +10,7 @@ import javax.sound.sampled.TargetDataLine;
 /**
  * @author Jonathan Guéhenneux
  */
-public class Micro extends Module {
+public class Microphone extends Module {
 
 	private TargetDataLine targetDataLine;
 
@@ -18,12 +18,12 @@ public class Micro extends Module {
 	 * @param name
 	 * @throws LineUnavailableException
 	 */
-	public Micro(String name) throws LineUnavailableException {
+	public Microphone(String name) throws LineUnavailableException {
 
 		super(name);
 
 		while (outputs.size() < Settings.INSTANCE.getChannels()) {
-			addOutut();
+			addOutput(name + "_output_" + outputs.size());
 		}
 
 		AudioFormat format = new AudioFormat(Settings.INSTANCE.getFrameRate(), Settings.INSTANCE.getSampleSize() * 8,
@@ -33,6 +33,7 @@ public class Micro extends Module {
 		targetDataLine.open(format, Settings.INSTANCE.getFrameRate() * Settings.INSTANCE.getFrameSizeInBytes() / 10);
 
 		targetDataLine.start();
+		start();
 	}
 
 	@Override
