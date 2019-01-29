@@ -28,15 +28,11 @@ public class LFO extends Module {
 	@Override
 	public void compute() throws InterruptedException {
 
-		if (output.isConnected()) {
+		int sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
+		double sampleLength = Settings.INSTANCE.getFrameLength();
 
-			int sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
-			double sampleLength = Settings.INSTANCE.getFrameLength();
-
-			float[] samples = wave.getSamples(sampleCount, sampleLength);
-
-			output.write(samples);
-		}
+		float[] samples = wave.getSamples(sampleCount, sampleLength);
+		output.write(samples);
 	}
 
 	/**

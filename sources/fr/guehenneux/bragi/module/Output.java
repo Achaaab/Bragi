@@ -1,5 +1,8 @@
 package fr.guehenneux.bragi.module;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -9,6 +12,8 @@ import java.util.concurrent.BlockingQueue;
  * @author Jonathan Guéhenneux
  */
 public class Output {
+
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	private String name;
 	private List<BlockingQueue<float[]>> buffers;
@@ -28,16 +33,13 @@ public class Output {
 	 */
 	public synchronized void write(float[] chunk) throws InterruptedException {
 
+		while (buffers.isEmpty()) {
+			wait();
+		}
+
 		for (BlockingQueue<float[]> buffer : buffers) {
 			buffer.put(chunk);
 		}
-	}
-
-	/**
-	 * @return
-	 */
-	public boolean isConnected() {
-		return !buffers.isEmpty();
 	}
 
 	/**
@@ -47,8 +49,9 @@ public class Output {
 
 		BlockingQueue<float[]> buffer = input.getBuffer();
 		buffers.add(buffer);
+		notifyAll();
 
-		System.out.println(this + " connected to " + input);
+		LOGGER.info(this + " connected to " + input);
 	}
 
 	/**

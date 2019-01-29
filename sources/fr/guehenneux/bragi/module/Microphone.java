@@ -1,6 +1,8 @@
 package fr.guehenneux.bragi.module;
 
 import fr.guehenneux.bragi.Settings;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -11,6 +13,8 @@ import javax.sound.sampled.TargetDataLine;
  * @author Jonathan Guéhenneux
  */
 public class Microphone extends Module {
+
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	private TargetDataLine targetDataLine;
 
@@ -36,6 +40,21 @@ public class Microphone extends Module {
 		start();
 	}
 
+	/**
+	 *
+	 */
+	private void checkLineBufferHealth() {
+
+		int available = targetDataLine.available();
+		int bufferSize = targetDataLine.getBufferSize();
+
+		if (available == 0) {
+			LOGGER.warn("buffer underrun");
+		} else if (available == bufferSize) {
+			LOGGER.warn("buffer overrun");
+		}
+	}
+
 	@Override
 	public void compute() throws InterruptedException {
 
@@ -46,6 +65,8 @@ public class Microphone extends Module {
 		int channelCount = Settings.INSTANCE.getChannels();
 
 		byte[] input = new byte[byteCount];
+
+		checkLineBufferHealth();
 		targetDataLine.read(input, 0, byteCount);
 
 		float[][] samples = new float[channelCount][frameCount];

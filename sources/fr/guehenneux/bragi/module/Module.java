@@ -1,5 +1,8 @@
 package fr.guehenneux.bragi.module;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +10,8 @@ import java.util.List;
  * @author Jonathan Guéhenneux
  */
 public abstract class Module implements Runnable {
+
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	protected String name;
 	protected List<Input> inputs;
@@ -121,6 +126,8 @@ public abstract class Module implements Runnable {
 
 		Thread moduleThread = new Thread( this, name);
 		moduleThread.start();
+
+		LOGGER.info("module \"" + name + "\" started");
 	}
 
 	@Override

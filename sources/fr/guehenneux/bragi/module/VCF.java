@@ -48,23 +48,20 @@ public abstract class VCF extends Module {
 	@Override
 	public void compute() throws InterruptedException {
 
-		if (output.isConnected()) {
+		inputSamples = input.read();
 
-			inputSamples = input.read();
+		if (modulationPort.isReady()) {
 
-			if (modulationPort.isReady()) {
+			modulationSamples = modulationPort.read();
+			modulation = true;
 
-				modulationSamples = modulationPort.read();
-				modulation = true;
+		} else {
 
-			} else {
-
-				modulation = false;
-			}
-
-			filterSamples();
-			output.write(outputSamples);
+			modulation = false;
 		}
+
+		filterSamples();
+		output.write(outputSamples);
 	}
 
 	/**

@@ -33,26 +33,22 @@ public class VCO extends Module {
 	@Override
 	public void compute() throws InterruptedException {
 
-		System.out.println("compute");
-		if (output.isConnected()) {
+		int sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
+		double sampleLength = Settings.INSTANCE.getFrameLength();
 
-			int sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
-			double sampleLength = Settings.INSTANCE.getFrameLength();
+		float[] samples;
 
-			float[] samples;
+		if (modulationPort.isReady()) {
 
-			if (modulationPort.isReady()) {
+			float[] modulationSamples = modulationPort.read();
+			samples = wave.getSamples(modulationSamples, sampleCount, sampleLength);
 
-				float[] modulationSamples = modulationPort.read();
-				samples = wave.getSamples(modulationSamples, sampleCount, sampleLength);
+		} else {
 
-			} else {
-
-				samples = wave.getSamples(sampleCount, sampleLength);
-			}
-
-			output.write(samples);
+			samples = wave.getSamples(sampleCount, sampleLength);
 		}
+
+		output.write(samples);
 	}
 
 	/**

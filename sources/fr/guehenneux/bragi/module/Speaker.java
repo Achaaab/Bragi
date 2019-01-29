@@ -1,6 +1,8 @@
 package fr.guehenneux.bragi.module;
 
 import fr.guehenneux.bragi.Settings;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -37,8 +39,9 @@ public class Speaker extends Module {
 		Info info = new Info(SourceDataLine.class, format);
 
 		sourceDataLine = (SourceDataLine) AudioSystem.getLine(info);
-		sourceDataLine.open(format, Settings.INSTANCE.getFrameRate() * Settings.INSTANCE.getFrameSizeInBytes() / 10);
+		sourceDataLine.open(format, Settings.INSTANCE.getFrameRate() * Settings.INSTANCE.getFrameSizeInBytes() / 20);
 		sourceDataLine.start();
+
 		start();
 	}
 
@@ -47,9 +50,6 @@ public class Speaker extends Module {
 
 		int channelCount = Settings.INSTANCE.getChannels();
 		float[][] samples = new float[channelCount][];
-		Input input;
-
-		int sampleCount;
 
 		for (int channelIndex = 0; channelIndex < channelCount; channelIndex++) {
 			samples[channelIndex] = inputs.get(channelIndex).read();

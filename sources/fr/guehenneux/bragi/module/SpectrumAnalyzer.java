@@ -1,6 +1,7 @@
 package fr.guehenneux.bragi.module;
 
 import fr.guehenneux.bragi.FFT;
+import fr.guehenneux.bragi.FourierTransform;
 import fr.guehenneux.bragi.Settings;
 
 /**
@@ -34,7 +35,7 @@ public class SpectrumAnalyzer extends Module {
 		fftSamples = new float[FFT_SAMPLE_COUNT];
 
 		fft = new FFT(FFT_SAMPLE_COUNT, Settings.INSTANCE.getFrameRate());
-		//fft.window(FourierTransform.HAMMING);
+		fft.window(FourierTransform.HAMMING);
 		fft.logAverages(50, 6);
 
 		start();

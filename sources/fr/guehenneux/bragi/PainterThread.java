@@ -1,5 +1,8 @@
 package fr.guehenneux.bragi;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import java.lang.reflect.InvocationTargetException;
@@ -8,6 +11,8 @@ import java.lang.reflect.InvocationTargetException;
  * @author Jonathan Guéhenneux
  */
 public class PainterThread extends Thread {
+
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	private JComponent component;
 	private int fps;
@@ -67,7 +72,7 @@ public class PainterThread extends Thread {
 
 		} else {
 
-			//System.out.println("warning: paint takes too long !");
+			LOGGER.warn("unable to reach required frame rate");
 			loopEndTime = endTime;
 		}
 

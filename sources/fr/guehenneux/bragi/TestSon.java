@@ -26,7 +26,7 @@ public class TestSon {
 	public static void main(String[] args) throws LineUnavailableException, IOException, CorruptWavFileException,
 			JavaLayerException {
 
-		montage7();
+		montage4();
 	}
 
 	/**
@@ -207,20 +207,13 @@ public class TestSon {
 
 	public static void testMicro() throws LineUnavailableException {
 
-		Microphone microphone = new Microphone("Entrée microphone");
-		Speaker speaker = new Speaker("Hauts-parleurs");
-		LowPassVCF leftFilter = new LowPassVCF("Filtre passe-bas, gauche");
-		LowPassVCF rightFilter = new LowPassVCF("Filtre passe-bas, droit");
-		SpectrumAnalyzer leftSpectrumAnalyzer = new SpectrumAnalyzer("Analyseur de spectre, gauche");
-		SpectrumAnalyzer rightSpectrumAnalyzer = new SpectrumAnalyzer("Analyseur de spectre, droit");
-
-		microphone.getOutputs().get(0).connect(leftFilter.getInput());
-		microphone.getOutputs().get(0).connect(rightFilter.getInput());
-
-		leftFilter.getOutput().connect(speaker.getInputs().get(0));
-		rightFilter.getOutput().connect(speaker.getInputs().get(1));
-		leftFilter.getOutput().connect(leftSpectrumAnalyzer.getInput());
-		rightFilter.getOutput().connect(rightSpectrumAnalyzer.getInput());
+		Microphone microphone = new Microphone("microphone");
+		Speaker speaker = new Speaker("speaker");
+		SpectrumAnalyzer leftSpectrumAnalyzer = new SpectrumAnalyzer("left_spectrum_analyzer");
+		SpectrumAnalyzer rightSpectrumAnalyzer = new SpectrumAnalyzer("right_spectrum_analyzer");
+		microphone.connect(speaker);
+		microphone.getOutputs().get(0).connect(leftSpectrumAnalyzer);
+		microphone.getOutputs().get(1).connect(rightSpectrumAnalyzer);
 	}
 
 	public static void testMP3() throws FileNotFoundException, LineUnavailableException {

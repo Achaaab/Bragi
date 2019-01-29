@@ -21,9 +21,8 @@ public class PresentationOscilloscope extends JComponent {
 	private static final int DEFAULT_PRECISION = 1600;
 	private static final int MARGIN = 5;
 
+	private float[] samples;
 	private int precision;
-	private int[] xValues;
-	private int[] yValues;
 
 	private Oscilloscope control;
 
@@ -46,57 +45,51 @@ public class PresentationOscilloscope extends JComponent {
 		painter.start();
 	}
 
-	public void display(float[] samples) {
-
-		int width = getWidth();
-		int height = getHeight();
-
-		int plotWidth = width - 2 * MARGIN;
-		int plotHeight = height - 2 * MARGIN;
-
-		int sampleCount = samples.length;
-
-		int displaySampleCount = Math.min(sampleCount, precision);
-
-		xValues = new int[displaySampleCount];
-		yValues = new int[displaySampleCount];
-
-		int sampleIndex;
-		float sample;
-
-		for (int displaySampleIndex = 0; displaySampleIndex < displaySampleCount; displaySampleIndex++) {
-
-			sampleIndex = displaySampleIndex * sampleCount / displaySampleCount;
-			sample = samples[sampleIndex];
-			xValues[displaySampleIndex] = MARGIN + plotWidth * sampleIndex / sampleCount;
-			yValues[displaySampleIndex] = MARGIN + plotHeight / 2 - Math.round(plotHeight * sample / 2);
-		}
+	/**
+	 * @param samples samples to display
+	 */
+	public synchronized void display(float[] samples) {
+		this.samples = samples;
 	}
 
 	@Override
-	public void paint(Graphics graphics) {
+	public synchronized void paint(Graphics graphics) {
 
-		int width = getWidth();
-		int height = getHeight();
+		if (samples != null) {
 
-		Graphics2D graphics2D = (Graphics2D) graphics;
-		graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		graphics2D.setStroke(new BasicStroke(2.0f));
+			int width = getWidth();
+			int height = getHeight();
+			int plotWidth = width - 2 * MARGIN;
+			int plotHeight = height - 2 * MARGIN;
 
-		graphics2D.setColor(Color.BLACK);
-		graphics2D.fillRect(0, 0, width, height);
+			int sampleCount = samples.length;
+			int displaySampleCount = Math.min(sampleCount, precision);
+			int[] xValues = new int[displaySampleCount];
+			int[] yValues = new int[displaySampleCount];
 
-		if (xValues != null) {
+			int sampleIndex;
+			float sample;
 
-			graphics2D.setColor(new Color(64, 224, 224));
-			graphics2D.drawPolyline(xValues, yValues, xValues.length);
+			for (int displaySampleIndex = 0; displaySampleIndex < displaySampleCount; displaySampleIndex++) {
+
+				sampleIndex = displaySampleIndex * sampleCount / displaySampleCount;
+				sample = samples[sampleIndex];
+				xValues[displaySampleIndex] = MARGIN + plotWidth * sampleIndex / sampleCount;
+				yValues[displaySampleIndex] = MARGIN + plotHeight / 2 - Math.round(plotHeight * sample / 2);
+			}
+
+			Graphics2D graphics2D = (Graphics2D)graphics;
+			graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			graphics2D.setStroke(new BasicStroke(2.0f));
+
+			graphics2D.setColor(Color.BLACK);
+			graphics2D.fillRect(0, 0, width, height);
+
+			if (xValues != null) {
+
+				graphics2D.setColor(new Color(64, 224, 224));
+				graphics2D.drawPolyline(xValues, yValues, xValues.length);
+			}
 		}
-	}
-
-	/**
-	 * @return the control
-	 */
-	public Oscilloscope getControl() {
-		return control;
 	}
 }
