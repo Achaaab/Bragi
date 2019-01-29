@@ -2,32 +2,31 @@ package fr.guehenneux.bragi.module;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.util.List;
 
 /**
  * @author Jonathan Guéhenneux
  */
-public class PresentationKeyboard extends JPanel {
+public class KeyboardView extends JPanel {
 
-	private Keyboard keyboard;
+	private Keyboard model;
 
 	/**
-	 * @param keyboard
+	 * @param model
 	 */
-	public PresentationKeyboard(Keyboard keyboard) {
+	public KeyboardView(Keyboard model) {
 
-		this.keyboard = keyboard;
+		this.model = model;
 
 		setLayout(new GridLayout(1, 2));
 
-		List<Key> keys = keyboard.getKeys();
+		List<Key> keys = model.getKeys();
 
 		for (Key key : keys) {
-			add(new PresentationKey(key, keyboard));
+			add(new KeyView(key, model));
 		}
 
-		JFrame frame = new JFrame(keyboard.getName());
+		JFrame frame = new JFrame(model.getName());
 		frame.setSize(400, 300);
 		frame.add(this);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

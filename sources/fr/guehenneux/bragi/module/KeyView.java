@@ -6,20 +6,20 @@ import java.awt.event.ActionEvent;
 /**
  * @author Jonathan Guéhenneux
  */
-public class PresentationKey extends JButton {
+public class KeyView extends JButton {
 
-	private Key key;
+	private Key model;
 	private Keyboard keyboard;
 
 	/**
-	 * @param key
+	 * @param model
 	 * @param keyboard
 	 */
-	public PresentationKey(Key key, Keyboard keyboard) {
+	public KeyView(Key model, Keyboard keyboard) {
 
-		super(Double.toString(key.getFrequency()));
+		super(Double.toString(model.getFrequency()));
 
-		this.key = key;
+		this.model = model;
 		this.keyboard = keyboard;
 
 		addActionListener(this::press);
@@ -29,6 +29,6 @@ public class PresentationKey extends JButton {
 	 * @param event
 	 */
 	private void press(ActionEvent event) {
-		keyboard.setFrequency(key.getFrequency());
+		keyboard.setFrequency(model.getFrequency());
 	}
 }

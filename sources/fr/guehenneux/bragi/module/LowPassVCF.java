@@ -3,6 +3,8 @@ package fr.guehenneux.bragi.module;
 import fr.guehenneux.bragi.Settings;
 
 /**
+ * Voltage-Controlled Filter with lowpass response
+ *
  * @author Jonathan Guéhenneux
  */
 public class LowPassVCF extends VCF {

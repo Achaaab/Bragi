@@ -9,21 +9,21 @@ import javax.swing.event.ChangeEvent;
 /**
  * @author Jonathan Guéhenneux
  */
-public class PresentationVCF extends JPanel {
+public class VCFView extends JPanel {
 
-	private VCF vcf;
+	private VCF model;
 
 	private JSlider cutOffFrequencySlider;
 	private JLabel cutOffFrequencyLabel;
 
 	/**
-	 * @param vcf
+	 * @param model
 	 */
-	public PresentationVCF(VCF vcf) {
+	public VCFView(VCF model) {
 
-		this.vcf = vcf;
+		this.model = model;
 
-		cutOffFrequencySlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
+		cutOffFrequencySlider = new JSlider(JSlider.HORIZONTAL, 0, 900, 300);
 		cutOffFrequencySlider.setPaintLabels(false);
 		cutOffFrequencySlider.setPaintTicks(true);
 
@@ -34,7 +34,7 @@ public class PresentationVCF extends JPanel {
 
 		cutOffFrequencySlider.addChangeListener(this::updateCutOffFrequency);
 
-		JFrame container = new JFrame(vcf.getName());
+		JFrame container = new JFrame(model.getName());
 		container.setSize(400, 300);
 		container.add(this);
 		container.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -46,9 +46,9 @@ public class PresentationVCF extends JPanel {
 	 */
 	private void updateCutOffFrequency(ChangeEvent changeEvent) {
 
-		int sliderValue = cutOffFrequencySlider.getValue();
-		float cutOffFrequency = (float) (Math.pow(1.1, sliderValue));
+		// from 25Hz to 12800Hz
+		float cutOffFrequency = (float) (25 * Math.pow(2, cutOffFrequencySlider.getValue() / 100.0));
 		cutOffFrequencyLabel.setText((int) cutOffFrequency + "Hz");
-		vcf.setCutOffFrequency(cutOffFrequency);
+		model.setCutOffFrequency(cutOffFrequency);
 	}
 }

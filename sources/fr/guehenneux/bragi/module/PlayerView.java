@@ -7,7 +7,7 @@ import javax.swing.JSlider;
 /**
  * @author Jonathan Guéhenneux
  */
-public class PresentationPlayer extends JPanel {
+public class PlayerView extends JPanel {
 
 	private JButton play;
 	private JButton pause;

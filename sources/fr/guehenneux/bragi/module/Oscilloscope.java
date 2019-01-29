@@ -8,7 +8,7 @@ import fr.guehenneux.bragi.Settings;
 public class Oscilloscope extends RealTimeModule {
 
 	private Input input;
-	private PresentationOscilloscope presentation;
+	private OscilloscopeView presentation;
 
 	/**
 	 * @param name
@@ -18,7 +18,7 @@ public class Oscilloscope extends RealTimeModule {
 		super(name);
 
 		input = addInput(name + "_input");
-		presentation = new PresentationOscilloscope(this);
+		presentation = new OscilloscopeView(this);
 
 		start();
 	}

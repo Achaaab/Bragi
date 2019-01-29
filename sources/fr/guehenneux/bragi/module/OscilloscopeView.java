@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 /**
  * @author Jonathan Guéhenneux
  */
-public class PresentationOscilloscope extends JComponent {
+public class OscilloscopeView extends JComponent {
 
 	private static final int DEFAULT_PRECISION = 1600;
 	private static final int MARGIN = 5;
@@ -24,18 +24,18 @@ public class PresentationOscilloscope extends JComponent {
 	private float[] samples;
 	private int precision;
 
-	private Oscilloscope control;
+	private Oscilloscope model;
 
 	/**
-	 * @param control
+	 * @param model
 	 */
-	public PresentationOscilloscope(Oscilloscope control) {
+	public OscilloscopeView(Oscilloscope model) {
 
-		this.control = control;
+		this.model = model;
 
 		precision = DEFAULT_PRECISION;
 
-		JFrame frame = new JFrame(control.getName());
+		JFrame frame = new JFrame(model.getName());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(400, 300);
 		frame.setLayout(new BorderLayout());
@@ -55,10 +55,18 @@ public class PresentationOscilloscope extends JComponent {
 	@Override
 	public synchronized void paint(Graphics graphics) {
 
+		int width = getWidth();
+		int height = getHeight();
+
+		Graphics2D graphics2D = (Graphics2D)graphics;
+		graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		graphics2D.setStroke(new BasicStroke(2.0f));
+
+		graphics2D.setColor(Color.BLACK);
+		graphics2D.fillRect(0, 0, width, height);
+
 		if (samples != null) {
 
-			int width = getWidth();
-			int height = getHeight();
 			int plotWidth = width - 2 * MARGIN;
 			int plotHeight = height - 2 * MARGIN;
 
@@ -78,18 +86,8 @@ public class PresentationOscilloscope extends JComponent {
 				yValues[displaySampleIndex] = MARGIN + plotHeight / 2 - Math.round(plotHeight * sample / 2);
 			}
 
-			Graphics2D graphics2D = (Graphics2D)graphics;
-			graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			graphics2D.setStroke(new BasicStroke(2.0f));
-
-			graphics2D.setColor(Color.BLACK);
-			graphics2D.fillRect(0, 0, width, height);
-
-			if (xValues != null) {
-
-				graphics2D.setColor(new Color(64, 224, 224));
-				graphics2D.drawPolyline(xValues, yValues, xValues.length);
-			}
+			graphics2D.setColor(new Color(64, 224, 224));
+			graphics2D.drawPolyline(xValues, yValues, xValues.length);
 		}
 	}
 }

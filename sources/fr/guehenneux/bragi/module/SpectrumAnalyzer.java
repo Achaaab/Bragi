@@ -18,7 +18,7 @@ public class SpectrumAnalyzer extends Module {
 	private int fftSampleIndex;
 	private int fftSampleCount;
 
-	private PresentationSpectrumAnalyzer presentation;
+	private SpectrumAnalyzerView presentation;
 
 	/**
 	 * @param name
@@ -28,7 +28,7 @@ public class SpectrumAnalyzer extends Module {
 		super(name);
 
 		input = addInput(name + "_input");
-		presentation = new PresentationSpectrumAnalyzer(this);
+		presentation = new SpectrumAnalyzerView(this);
 
 		fftSampleIndex = 0;
 		fftSampleCount = 0;

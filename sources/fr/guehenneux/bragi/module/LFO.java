@@ -5,6 +5,8 @@ import fr.guehenneux.bragi.Settings;
 import fr.guehenneux.bragi.wave.Wave;
 
 /**
+ * Low Frequency Oscillator
+ *
  * @author Jonathan Guéhenneux
  */
 public class LFO extends Module {
@@ -22,7 +24,10 @@ public class LFO extends Module {
 
 		output = addOutput(name + "_output");
 		wave = new SawtoothWave(frequency);
-		new PresentationLFO(this);
+
+		new LFOView(this);
+
+		start();
 	}
 
 	@Override

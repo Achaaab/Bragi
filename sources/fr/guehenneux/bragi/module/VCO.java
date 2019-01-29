@@ -5,6 +5,8 @@ import fr.guehenneux.bragi.wave.SquareWave;
 import fr.guehenneux.bragi.wave.Wave;
 
 /**
+ * Voltage-Controlled Oscillator
+ *
  * @author Jonathan Guéhenneux
  */
 public class VCO extends Module {
@@ -26,7 +28,7 @@ public class VCO extends Module {
 		output = addOutput(name + "_output");
 
 		wave = new SquareWave(frequency);
-		new PresentationVCO(this);
+		new VCOView(this);
 		start();
 	}
 

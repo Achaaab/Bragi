@@ -2,7 +2,6 @@ package fr.guehenneux.bragi.module;
 
 import fr.guehenneux.bragi.Settings;
 import fr.guehenneux.bragi.wave.SineWave;
-import fr.guehenneux.bragi.wave.SquareWave;
 import fr.guehenneux.bragi.wave.Wave;
 
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class Keyboard extends Module {
 		keys.add(new Key(440));
 		keys.add(new Key(500));
 
-		new PresentationKeyboard(this);
+		new KeyboardView(this);
 		start();
 	}
 

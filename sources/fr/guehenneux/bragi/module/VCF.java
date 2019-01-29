@@ -1,6 +1,8 @@
 package fr.guehenneux.bragi.module;
 
 /**
+ * Voltage-Controlled Filter
+ *
  * @author Jonathan Guéhenneux
  */
 public abstract class VCF extends Module {
@@ -24,7 +26,7 @@ public abstract class VCF extends Module {
 
 	protected boolean modulation;
 
-	protected PresentationVCF presentation;
+	protected VCFView presentation;
 
 	/**
 	 * @param name
@@ -42,7 +44,9 @@ public abstract class VCF extends Module {
 
 		f0 = f1 = y1 = y2 = y3 = y4 = oldx = oldy1 = oldy2 = oldy3 = 0.0f;
 
-		presentation = new PresentationVCF(this);
+		presentation = new VCFView(this);
+
+		start();
 	}
 
 	@Override

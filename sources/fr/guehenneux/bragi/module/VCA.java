@@ -1,6 +1,8 @@
 package fr.guehenneux.bragi.module;
 
 /**
+ * Voltage-Controlled Amplifier
+ *
  * @author Jonathan Guéhenneux
  */
 public class VCA extends Module {

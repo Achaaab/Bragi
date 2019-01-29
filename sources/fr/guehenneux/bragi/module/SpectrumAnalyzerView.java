@@ -13,7 +13,7 @@ import javax.swing.*;
 /**
  * @author Jonathan Guéhenneux
  */
-public class PresentationSpectrumAnalyzer extends JComponent {
+public class SpectrumAnalyzerView extends JComponent {
 
 	private static final int PLOT_MARGIN = 5;
 	private static final int LEVEL_COUNT = 50;
@@ -21,16 +21,17 @@ public class PresentationSpectrumAnalyzer extends JComponent {
 	private static final Color COLOR_MINIMUM = new Color(255, 255, 255);
 
 	private float[] averages;
-	private SpectrumAnalyzer control;
+
+	private SpectrumAnalyzer model;
 
 	/**
-	 * @param control
+	 * @param model
 	 */
-	public PresentationSpectrumAnalyzer(SpectrumAnalyzer control) {
+	public SpectrumAnalyzerView(SpectrumAnalyzer model) {
 
-		this.control = control;
+		this.model = model;
 
-		JFrame frame = new JFrame(control.getName());
+		JFrame frame = new JFrame(model.getName());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(400, 300);
 		frame.setLayout(new BorderLayout());
@@ -101,12 +102,5 @@ public class PresentationSpectrumAnalyzer extends JComponent {
 				}
 			}
 		}
-	}
-
-	/**
-	 * @return the control
-	 */
-	public SpectrumAnalyzer getControl() {
-		return control;
 	}
 }
