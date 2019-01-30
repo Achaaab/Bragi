@@ -27,7 +27,7 @@ public class TestSon {
 	public static void main(String[] args) throws LineUnavailableException, IOException, CorruptWavFileException,
 			JavaLayerException {
 
-		testWav();
+		montage3();
 	}
 
 	/**
@@ -47,10 +47,13 @@ public class TestSon {
 	 */
 	public static void montage3() throws LineUnavailableException {
 
-		VCO vco = new VCO("VCO", 344.53125);
+		VCO vco = new VCO("VCO", 1);
+		vco.getOutput().connect(vco.getModulationPort());
 		Speaker speaker = new Speaker("speaker");
 		SpectrumAnalyzer spectrumAnalyzer = new SpectrumAnalyzer("spectrumAnalyzer");
+		Oscilloscope oscilloscope = new Oscilloscope("oscilloscope");
 
+		vco.connect(oscilloscope);
 		vco.connect(spectrumAnalyzer);
 		vco.getOutput().connect(speaker);
 	}
@@ -285,17 +288,22 @@ public class TestSon {
 		Speaker speaker = new Speaker("speaker");
 		LFO lfo = new LFO("lfo", 1);
 		VCO vco = new VCO("vco", 440);
+		LFO lfoFilter = new LFO("lfo_vcf", 1);
 		VCF highPassFilter = new HighPassVCF("highpass_vcf");
 		VCF lowPassFilter = new LowPassVCF("lowpass_vcf");
 		SpectrumAnalyzer spectrumAnalyzer = new SpectrumAnalyzer("spectrum_analyzer");
 		Oscilloscope oscilloscope = new Oscilloscope("oscilloscope");
+		Oscilloscope oscilloscopeVco = new Oscilloscope("oscilloscope_vco");
 
 		lfo.connect(vco);
 		vco.connect(lowPassFilter);
+		vco.connect(oscilloscopeVco);
 		lowPassFilter.connect(highPassFilter);
 		highPassFilter.getOutput().connect(speaker);
 		highPassFilter.getOutput().connect(spectrumAnalyzer);
 		highPassFilter.getOutput().connect(oscilloscope);
+		lfoFilter.getOutput().connect(lowPassFilter.getModulationPort());
+		lfoFilter.getOutput().connect(highPassFilter.getModulationPort());
 	}
 
 	public static void montageConsonance() throws LineUnavailableException {

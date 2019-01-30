@@ -82,6 +82,8 @@ public class OscilloscopeView extends JComponent {
 
 				sampleIndex = displaySampleIndex * sampleCount / displaySampleCount;
 				sample = samples[sampleIndex];
+				sample = Math.max(-1.0f, Math.min(1.0f, sample));
+
 				xValues[displaySampleIndex] = MARGIN + plotWidth * sampleIndex / sampleCount;
 				yValues[displaySampleIndex] = MARGIN + plotHeight / 2 - Math.round(plotHeight * sample / 2);
 			}

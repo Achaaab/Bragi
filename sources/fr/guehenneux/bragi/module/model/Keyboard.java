@@ -21,7 +21,7 @@ public class Keyboard extends Module {
 	private Wave wave;
 
 	/**
-	 * @param name
+	 * @param name keyboard name
 	 */
 	public Keyboard(String name) {
 
@@ -50,28 +50,28 @@ public class Keyboard extends Module {
 	}
 
 	/**
-	 * @return
+	 * @return keyboard frequency
 	 */
 	public double getFrequency() {
 		return wave.getFrequency();
 	}
 
 	/**
-	 * @param frequency
+	 * @param frequency keyboard frequency
 	 */
 	public void setFrequency(double frequency) {
 		wave.setFrequency(frequency);
 	}
 
 	/**
-	 * @param wave
+	 * @param wave wave
 	 */
 	public void setWave(Wave wave) {
 		this.wave = wave;
 	}
 
 	/**
-	 * @return keys
+	 * @return keys keys
 	 */
 	public List<Key> getKeys() {
 		return keys;

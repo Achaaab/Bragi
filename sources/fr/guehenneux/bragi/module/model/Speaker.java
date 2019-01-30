@@ -55,9 +55,7 @@ public class Speaker extends Module {
 		int available = sourceDataLine.available();
 		int bufferSize = sourceDataLine.getBufferSize();
 
-		if (available == 0) {
-			LOGGER.warn("buffer overrun");
-		} else if (available == bufferSize) {
+		if (available == bufferSize) {
 			LOGGER.warn("buffer underrun");
 		}
 	}
@@ -103,6 +101,7 @@ public class Speaker extends Module {
 			for (channelIndex = 0; channelIndex < channelCount; channelIndex++) {
 
 				sample = samples[channelIndex][frameIndex];
+				sample = Math.max(-1.0f, Math.min(1.0f, sample));
 
 				switch (sampleSizeInBytes) {
 

@@ -37,32 +37,24 @@ public class LowPassVCF extends VCF {
 				actualCutOffFrequency = cutOffFrequency;
 			}
 
-			float f = 2 * (float) actualCutOffFrequency / sampleRate;
+			float f = 2 * actualCutOffFrequency / sampleRate;
 
-			/*
-			 * empirical tuning
-			 */
-
+			// empirical tuning
 			float k = 3.6f * f - 1.6f * f * f - 1;
 			float p = (k + 1) * 0.5f;
 			float scale = (float) Math.exp((1 - p) * 1.386249);
-			float r = (float) (rezLevel / 100 * scale);
+			float r = rezLevel / 100 * scale;
 
 			inputSample = inputSamples[sampleIndex] - r * y4;
 
-			/*
-			 * four cascaded one-pole filters (bilinear transform)
-			 */
-
+			// four cascaded one-pole filters (bilinear transform)
 			y1 = inputSample * p + oldx * p - k * y1;
+
 			y2 = y1 * p + oldy1 * p - k * y2;
 			y3 = y2 * p + oldy2 * p - k * y3;
 			y4 = y3 * p + oldy3 * p - k * y4;
 
-			/*
-			 * clipper band limited sigmoid
-			 */
-
+			// clipper band limited sigmoid
 			y4 = y4 - (y4 * y4 * y4) / 6;
 
 			oldx = inputSample;

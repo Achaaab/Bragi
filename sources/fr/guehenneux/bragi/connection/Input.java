@@ -1,6 +1,5 @@
 package fr.guehenneux.bragi.connection;
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -12,7 +11,7 @@ public class Input {
 	private BlockingQueue<float[]> buffer;
 
 	/**
-	 * @param name
+	 * @param name input name
 	 */
 	public Input(String name) {
 
@@ -21,7 +20,7 @@ public class Input {
 	}
 
 	/**
-	 * @param buffer
+	 * @param buffer buffer to read from
 	 */
 	public synchronized void setBuffer(BlockingQueue<float[]> buffer) {
 
@@ -31,14 +30,7 @@ public class Input {
 	}
 
 	/**
-	 * @return
-	 */
-	public BlockingQueue<float[]> getBuffer() {
-		return buffer;
-	}
-
-	/**
-	 * @return
+	 * @return whether an output port is connected to this input port
 	 */
 	public boolean isConnected() {
 		return buffer != null;

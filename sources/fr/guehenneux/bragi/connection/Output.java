@@ -20,7 +20,7 @@ public class Output {
 	private List<BlockingQueue<float[]>> buffers;
 
 	/**
-	 * @param name
+	 * @param name output name
 	 */
 	public Output(String name) {
 
@@ -30,7 +30,10 @@ public class Output {
 	}
 
 	/**
-	 * @param chunk
+	 * First, waits until this output is connected to at least 1 input.
+	 * Then, writes the given chunk in each buffer (1 buffer per input connected).
+	 *
+	 * @param chunk chunk to write
 	 */
 	public synchronized void write(float[] chunk) throws InterruptedException {
 
@@ -44,7 +47,7 @@ public class Output {
 	}
 
 	/**
-	 * @param input
+	 * @param input input to connect
 	 */
 	public synchronized void connect(Input input) {
 

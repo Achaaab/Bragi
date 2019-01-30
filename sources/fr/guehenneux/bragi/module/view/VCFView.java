@@ -6,51 +6,46 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
+import java.awt.*;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * @author Jonathan Guéhenneux
  */
 public class VCFView extends JPanel {
 
-	private VCF model;
+  /**
+   * @param model
+   */
+  public VCFView(VCF model) {
 
-	private JSlider cutOffFrequencySlider;
-	private JLabel cutOffFrequencyLabel;
+    FrequencySlider cutOffFrequencySlider = new FrequencySlider(25, 8);
 
-	/**
-	 * @param model
-	 */
-	public VCFView(VCF model) {
+    JSlider emphasisSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+    emphasisSlider.setMajorTickSpacing(25);
+    emphasisSlider.setMinorTickSpacing(5);
+    emphasisSlider.setPaintTicks(true);
+    emphasisSlider.setPaintLabels(true);
+    emphasisSlider.setBorder(new TitledBorder("Emphasis (%)"));
 
-		this.model = model;
+    setLayout(new GridLayout(2, 1));
+    add(cutOffFrequencySlider);
+    add(emphasisSlider);
 
-		cutOffFrequencySlider = new JSlider(JSlider.HORIZONTAL, 0, 900, 300);
-		cutOffFrequencySlider.setPaintLabels(false);
-		cutOffFrequencySlider.setPaintTicks(true);
+    cutOffFrequencySlider.addChangeListener(changeEvent -> model.setCutOffFrequency((float)cutOffFrequencySlider.getFrequency()));
+    emphasisSlider.addChangeListener(changeEvent -> model.setRezLevel(emphasisSlider.getValue()));
 
-		cutOffFrequencyLabel = new JLabel();
-
-		add(cutOffFrequencySlider);
-		add(cutOffFrequencyLabel);
-
-		cutOffFrequencySlider.addChangeListener(this::updateCutOffFrequency);
-
-		JFrame container = new JFrame(model.getName());
-		container.setSize(400, 300);
-		container.add(this);
-		container.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		container.setVisible(true);
-	}
-
-	/**
-	 * @param changeEvent
-	 */
-	private void updateCutOffFrequency(ChangeEvent changeEvent) {
-
-		// from 25Hz to 12800Hz
-		float cutOffFrequency = (float) (25 * Math.pow(2, cutOffFrequencySlider.getValue() / 100.0));
-		cutOffFrequencyLabel.setText((int) cutOffFrequency + "Hz");
-		model.setCutOffFrequency(cutOffFrequency);
-	}
+    JFrame frame = new JFrame(model.getName());
+    frame.setSize(400, 300);
+    frame.add(this);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setVisible(true);
+  }
 }

@@ -10,7 +10,7 @@ import fr.guehenneux.bragi.Settings;
 public class HighPassVCF extends VCF {
 
 	/**
-	 * @param name
+	 * @param name high-pass VCF name
 	 */
 	public HighPassVCF(String name) {
 		super(name);
@@ -37,12 +37,9 @@ public class HighPassVCF extends VCF {
 				actualCutOffFrequency = cutOffFrequency;
 			}
 
-			float f = 2 * (float) actualCutOffFrequency / sampleRate;
+			float f = 2 * actualCutOffFrequency / sampleRate;
 
-			/*
-			 * empirical tuning
-			 */
-
+			// empirical tuning
 			float k = 3.6f * f - 1.6f * f * f - 1;
 			float p = (k + 1) * 0.5f;
 			float scale = (float) Math.exp((1 - p) * 1.386249);
@@ -50,19 +47,13 @@ public class HighPassVCF extends VCF {
 
 			inputSample = inputSamples[sampleIndex] - r * y4;
 
-			/*
-			 * four cascaded one-pole filters (bilinear transform)
-			 */
-
+			// four cascaded one-pole filters (bilinear transform)
 			y1 = inputSample * p + oldx * p - k * y1;
 			y2 = y1 * p + oldy1 * p - k * y2;
 			y3 = y2 * p + oldy2 * p - k * y3;
 			y4 = y3 * p + oldy3 * p - k * y4;
 
-			/*
-			 * clipper band limited sigmoid
-			 */
-
+			// clipper band limited sigmoid
 			y4 = y4 - (y4 * y4 * y4) / 6;
 
 			oldx = inputSample;
