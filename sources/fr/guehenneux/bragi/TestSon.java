@@ -7,7 +7,8 @@ import java.util.List;
 
 import javax.sound.sampled.LineUnavailableException;
 
-import fr.guehenneux.bragi.module.*;
+import fr.guehenneux.bragi.connection.Output;
+import fr.guehenneux.bragi.module.model.*;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.jlp;
 
@@ -26,7 +27,7 @@ public class TestSon {
 	public static void main(String[] args) throws LineUnavailableException, IOException, CorruptWavFileException,
 			JavaLayerException {
 
-		montage1();
+		testWav();
 	}
 
 	/**
@@ -46,7 +47,7 @@ public class TestSon {
 	 */
 	public static void montage3() throws LineUnavailableException {
 
-		VCO vco = new VCO("VCO", 440);
+		VCO vco = new VCO("VCO", 344.53125);
 		Speaker speaker = new Speaker("speaker");
 		SpectrumAnalyzer spectrumAnalyzer = new SpectrumAnalyzer("spectrumAnalyzer");
 
@@ -241,25 +242,22 @@ public class TestSon {
 
 	public static void testWav() throws IOException, LineUnavailableException, CorruptWavFileException {
 
-		Speaker speaker = new Speaker("Hauts-parleurs");
+		Speaker speaker = new Speaker("speaker");
 
-		WavFilePlayer waveFilePlayer = new WavFilePlayer("Lecteur de fichier WAV", new File(
+		WavFilePlayer waveFilePlayer = new WavFilePlayer("wav_player", new File(
 				"C:\\Users\\guehenneux\\Downloads\\a2002011001-e02.wav"));
 
-		Oscilloscope oscilloscopeLeft = new Oscilloscope("Oscilloscope, gauche");
-		Oscilloscope oscilloscopeRight = new Oscilloscope("Oscilloscope, droit");
+		Oscilloscope oscilloscopeLeft = new Oscilloscope("left_oscilloscope");
+		Oscilloscope oscilloscopeRight = new Oscilloscope("right_oscilloscope");
 
-		SpectrumAnalyzer spectrumAnalyzerLeft = new SpectrumAnalyzer("SpectrumAnalyzer, gauche");
-		SpectrumAnalyzer spectrumAnalyzerRight = new SpectrumAnalyzer("SpectrumAnalyzer, droit");
+		SpectrumAnalyzer spectrumAnalyzerLeft = new SpectrumAnalyzer("left_spectrum_analyzer");
+		SpectrumAnalyzer spectrumAnalyzerRight = new SpectrumAnalyzer("right_spectrum_analyzer");
 
-		List<Output> outputs = waveFilePlayer.getOutputs();
-
-		outputs.get(0).connect(speaker.getInputs().get(0));
-		outputs.get(1).connect(speaker.getInputs().get(1));
-		outputs.get(0).connect(spectrumAnalyzerLeft.getInput());
-		outputs.get(1).connect(spectrumAnalyzerRight.getInput());
-		outputs.get(0).connect(oscilloscopeLeft.getInput());
-		outputs.get(1).connect(oscilloscopeRight.getInput());
+		waveFilePlayer.connect(speaker);
+		waveFilePlayer.getOutputs().get(0).connect(oscilloscopeLeft);
+		waveFilePlayer.getOutputs().get(1).connect(oscilloscopeRight);
+		waveFilePlayer.getOutputs().get(0).connect(spectrumAnalyzerLeft);
+		waveFilePlayer.getOutputs().get(1).connect(spectrumAnalyzerRight);
 	}
 
 	public static void montage2() throws LineUnavailableException, IOException, CorruptWavFileException {

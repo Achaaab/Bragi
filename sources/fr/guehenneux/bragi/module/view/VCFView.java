@@ -1,4 +1,6 @@
-package fr.guehenneux.bragi.module;
+package fr.guehenneux.bragi.module.view;
+
+import fr.guehenneux.bragi.module.model.VCF;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;

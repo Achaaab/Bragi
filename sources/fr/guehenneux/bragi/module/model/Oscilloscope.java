@@ -1,6 +1,8 @@
-package fr.guehenneux.bragi.module;
+package fr.guehenneux.bragi.module.model;
 
 import fr.guehenneux.bragi.Settings;
+import fr.guehenneux.bragi.connection.Input;
+import fr.guehenneux.bragi.module.view.OscilloscopeView;
 
 /**
  * @author Jonathan Guéhenneux

@@ -1,4 +1,7 @@
-package fr.guehenneux.bragi.module;
+package fr.guehenneux.bragi.module.view;
+
+import fr.guehenneux.bragi.module.model.Key;
+import fr.guehenneux.bragi.module.model.Keyboard;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

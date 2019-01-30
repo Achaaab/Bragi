@@ -1,4 +1,8 @@
-package fr.guehenneux.bragi.module;
+package fr.guehenneux.bragi.module.model;
+
+import fr.guehenneux.bragi.connection.Input;
+import fr.guehenneux.bragi.connection.Output;
+import fr.guehenneux.bragi.module.view.VCFView;
 
 /**
  * Voltage-Controlled Filter
@@ -54,7 +58,7 @@ public abstract class VCF extends Module {
 
 		inputSamples = input.read();
 
-		if (modulationPort.isReady()) {
+		if (modulationPort.isConnected()) {
 
 			modulationSamples = modulationPort.read();
 			modulation = true;

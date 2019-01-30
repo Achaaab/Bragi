@@ -1,4 +1,4 @@
-package fr.guehenneux.bragi.module;
+package fr.guehenneux.bragi.module.model;
 
 /**
  * @author Jonathan Guéhenneux

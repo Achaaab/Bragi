@@ -1,4 +1,4 @@
-package fr.guehenneux.bragi.module;
+package fr.guehenneux.bragi.module.view;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;

@@ -1,7 +1,8 @@
-package fr.guehenneux.bragi.module;
+package fr.guehenneux.bragi.module.view;
 
 import fr.guehenneux.bragi.ColorUtils;
 import fr.guehenneux.bragi.PainterThread;
+import fr.guehenneux.bragi.module.model.SpectrumAnalyzer;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -44,12 +45,12 @@ public class SpectrumAnalyzerView extends JComponent {
 	/**
 	 * @param averages
 	 */
-	public void display(float[] averages) {
+	public synchronized void display(float[] averages) {
 		this.averages = averages;
 	}
 
 	@Override
-	public void paint(Graphics graphics) {
+	public synchronized void paint(Graphics graphics) {
 
 		int width = getWidth();
 		int height = getHeight();

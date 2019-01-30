@@ -1,4 +1,7 @@
-package fr.guehenneux.bragi.module;
+package fr.guehenneux.bragi.module.model;
+
+import fr.guehenneux.bragi.connection.Input;
+import fr.guehenneux.bragi.connection.Output;
 
 /**
  * @author Jonathan Guéhenneux

@@ -1,5 +1,7 @@
-package fr.guehenneux.bragi.module;
+package fr.guehenneux.bragi.module.model;
 
+import fr.guehenneux.bragi.connection.Input;
+import fr.guehenneux.bragi.connection.Output;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -1,4 +1,4 @@
-package fr.guehenneux.bragi.module;
+package fr.guehenneux.bragi.module.model;
 
 import fr.guehenneux.bragi.CorruptWavFileException;
 import fr.guehenneux.bragi.Settings;
@@ -34,6 +34,8 @@ public class WavFilePlayer extends Module implements Player {
 		wavFile = new WavFile(file);
 		channelCount = wavFile.getChannelCount();
 		offset = 0;
+
+		start();
 	}
 
 	@Override

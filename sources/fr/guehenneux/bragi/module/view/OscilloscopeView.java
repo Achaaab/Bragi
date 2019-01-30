@@ -1,6 +1,7 @@
-package fr.guehenneux.bragi.module;
+package fr.guehenneux.bragi.module.view;
 
 import fr.guehenneux.bragi.PainterThread;
+import fr.guehenneux.bragi.module.model.Oscilloscope;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -8,7 +9,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;

@@ -1,4 +1,4 @@
-package fr.guehenneux.bragi.module;
+package fr.guehenneux.bragi.module.model;
 
 import fr.guehenneux.bragi.Settings;
 import org.apache.logging.log4j.LogManager;
@@ -14,6 +14,8 @@ import javax.sound.sampled.SourceDataLine;
  * @author Jonathan Guéhenneux
  */
 public class Speaker extends Module {
+
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	private static final int ONE_BYTE_MAX_VALUE = 1 << 7 - 1;
 	private static final int TWO_BYTES_MAX_VALUE = 1 << 15 - 1;
@@ -39,10 +41,25 @@ public class Speaker extends Module {
 		Info info = new Info(SourceDataLine.class, format);
 
 		sourceDataLine = (SourceDataLine) AudioSystem.getLine(info);
-		sourceDataLine.open(format, Settings.INSTANCE.getFrameRate() * Settings.INSTANCE.getFrameSizeInBytes() / 20);
+		sourceDataLine.open(format, Settings.INSTANCE.getFrameRate() * Settings.INSTANCE.getFrameSizeInBytes() / 10);
 		sourceDataLine.start();
 
 		start();
+	}
+
+	/**
+	 *
+	 */
+	private void checkLineBufferHealth() {
+
+		int available = sourceDataLine.available();
+		int bufferSize = sourceDataLine.getBufferSize();
+
+		if (available == 0) {
+			LOGGER.warn("buffer overrun");
+		} else if (available == bufferSize) {
+			LOGGER.warn("buffer underrun");
+		}
 	}
 
 	@Override
@@ -56,6 +73,7 @@ public class Speaker extends Module {
 		}
 
 		byte[] data = mix(samples);
+		checkLineBufferHealth();
 		sourceDataLine.write(data, 0, data.length);
 	}
 

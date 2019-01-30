@@ -1,40 +1,34 @@
-package fr.guehenneux.bragi.module;
+package fr.guehenneux.bragi.module.model;
 
+import fr.guehenneux.bragi.connection.Output;
+import fr.guehenneux.bragi.module.view.LFOView;
 import fr.guehenneux.bragi.Settings;
-import fr.guehenneux.bragi.wave.SineWave;
+import fr.guehenneux.bragi.wave.TriangleWave;
 import fr.guehenneux.bragi.wave.Wave;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
+ * Low Frequency Oscillator
+ *
  * @author Jonathan Guéhenneux
  */
-public class Keyboard extends Module {
+public class LFO extends Module {
 
 	private Output output;
-	private Output gate;
-
-	private List<Key> keys;
 	private Wave wave;
 
 	/**
 	 * @param name
+	 * @param frequency
 	 */
-	public Keyboard(String name) {
+	public LFO(String name, double frequency) {
 
 		super(name);
 
 		output = addOutput(name + "_output");
-		gate = addOutput(name + "_gate");
+		wave = new TriangleWave(frequency);
 
-		wave = new SineWave(440);
+		new LFOView(this);
 
-		keys = new ArrayList<>();
-		keys.add(new Key(440));
-		keys.add(new Key(500));
-
-		new KeyboardView(this);
 		start();
 	}
 
@@ -43,6 +37,7 @@ public class Keyboard extends Module {
 
 		int sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
 		double sampleLength = Settings.INSTANCE.getFrameLength();
+
 		float[] samples = wave.getSamples(sampleCount, sampleLength);
 		output.write(samples);
 	}
@@ -66,12 +61,5 @@ public class Keyboard extends Module {
 	 */
 	public void setWave(Wave wave) {
 		this.wave = wave;
-	}
-
-	/**
-	 * @return keys
-	 */
-	public List<Key> getKeys() {
-		return keys;
 	}
 }

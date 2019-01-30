@@ -11,7 +11,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package fr.guehenneux.bragi;
+package fr.guehenneux.bragi.algorithm;
 
 /** FFT stands for Fast Fourier Transform. It is an efficient way to calculate the Complex Discrete Fourier Transform. There is not
  * much to say about this class other than the fact that when you want to analyze the spectrum of an bragi buffer you will almost

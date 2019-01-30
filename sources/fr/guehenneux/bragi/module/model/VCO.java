@@ -1,6 +1,10 @@
-package fr.guehenneux.bragi.module;
+package fr.guehenneux.bragi.module.model;
 
 import fr.guehenneux.bragi.Settings;
+import fr.guehenneux.bragi.connection.Input;
+import fr.guehenneux.bragi.connection.Output;
+import fr.guehenneux.bragi.module.view.VCOView;
+import fr.guehenneux.bragi.wave.SineWave;
 import fr.guehenneux.bragi.wave.SquareWave;
 import fr.guehenneux.bragi.wave.Wave;
 
@@ -27,7 +31,7 @@ public class VCO extends Module {
 		modulationPort = addInput(name + "_modulation");
 		output = addOutput(name + "_output");
 
-		wave = new SquareWave(frequency);
+		wave = new SineWave(frequency);
 		new VCOView(this);
 		start();
 	}
@@ -40,7 +44,7 @@ public class VCO extends Module {
 
 		float[] samples;
 
-		if (modulationPort.isReady()) {
+		if (modulationPort.isConnected()) {
 
 			float[] modulationSamples = modulationPort.read();
 			samples = wave.getSamples(modulationSamples, sampleCount, sampleLength);
@@ -68,7 +72,7 @@ public class VCO extends Module {
 	}
 
 	/**
-	 * @return the modulation prot
+	 * @return the modulation port
 	 */
 	public Input getModulationPort() {
 		return modulationPort;

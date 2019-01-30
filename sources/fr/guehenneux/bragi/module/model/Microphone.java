@@ -1,4 +1,4 @@
-package fr.guehenneux.bragi.module;
+package fr.guehenneux.bragi.module.model;
 
 import fr.guehenneux.bragi.Settings;
 import org.apache.logging.log4j.LogManager;

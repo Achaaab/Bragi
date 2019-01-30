@@ -1,4 +1,6 @@
-package fr.guehenneux.bragi.module;
+package fr.guehenneux.bragi.module.view;
+
+import fr.guehenneux.bragi.module.model.VCO;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -7,21 +9,21 @@ import javax.swing.JSlider;
 /**
  * @author Jonathan Guéhenneux
  */
-public class LFOView extends JPanel {
+public class VCOView extends JPanel {
 
-	private LFO model;
+	private VCO model;
 	private JSlider frequencySlider;
 
 	/**
 	 * @param model
 	 */
-	public LFOView(LFO model) {
+	public VCOView(VCO model) {
 
 		this.model = model;
 
-		// from 0.1Hz to 25.6Hz
-		frequencySlider = new JSlider(JSlider.HORIZONTAL, 0, 800, 300);
-		frequencySlider.addChangeListener(changeEvent -> model.setFrequency(0.1 * Math.pow(2, frequencySlider.getValue() / 100.0)));
+		// from 25Hz to 12800Hz
+		frequencySlider = new JSlider(JSlider.HORIZONTAL, 0, 900, 300);
+		frequencySlider.addChangeListener(changeEvent -> model.setFrequency(25 * Math.pow(2, frequencySlider.getValue() / 100.0)));
 		add(frequencySlider);
 
 		JFrame frame = new JFrame(model.getName());

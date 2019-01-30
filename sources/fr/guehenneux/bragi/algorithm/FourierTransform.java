@@ -11,7 +11,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package fr.guehenneux.bragi;
+package fr.guehenneux.bragi.algorithm;
 
 /** A Fourier Transform is an algorithm that transforms a signal in the time domain, such as a sample buffer, into a signal in the
  * frequency domain, often called the spectrum. The spectrum does not represent individual frequencies, but actually represents
