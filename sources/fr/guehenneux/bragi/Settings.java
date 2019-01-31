@@ -10,7 +10,7 @@ public class Settings {
 	private static final int DEFAULT_CHANNELS = 2;
 	private static final int DEFAULT_SAMPLE_SIZE = 2;
 	private static final int DEFAULT_FRAME_RATE = 44100;
-	private static final int DEFAULT_BUFFER_SIZE_IN_FRAMES = DEFAULT_FRAME_RATE / 100; // 1/100s buffer
+	private static final int DEFAULT_BUFFER_SIZE_IN_FRAMES = 10; // 1/100s buffer
 
 	private int channels;
 	private int sampleSize;

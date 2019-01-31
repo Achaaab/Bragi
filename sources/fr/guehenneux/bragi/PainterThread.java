@@ -19,8 +19,8 @@ public class PainterThread extends Thread {
 	private long loopTime;
 
 	/**
-	 * @param component
-	 * @param fps
+	 * @param component component to repaint
+	 * @param fps required number of frames per second
 	 */
 	public PainterThread(JComponent component, int fps) {
 
@@ -72,7 +72,10 @@ public class PainterThread extends Thread {
 
 		} else {
 
-			LOGGER.warn("unable to reach required frame rate");
+			if (true || paintTime > 10 * loopTime){
+				LOGGER.warn("frame rate drops under 10% of requirement");
+			}
+
 			loopEndTime = endTime;
 		}
 

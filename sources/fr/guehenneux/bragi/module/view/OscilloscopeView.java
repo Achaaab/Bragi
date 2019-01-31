@@ -1,6 +1,7 @@
 package fr.guehenneux.bragi.module.view;
 
 import fr.guehenneux.bragi.PainterThread;
+import fr.guehenneux.bragi.ShiftingFloatArray;
 import fr.guehenneux.bragi.module.model.Oscilloscope;
 
 import java.awt.BasicStroke;
@@ -18,11 +19,7 @@ import javax.swing.JFrame;
  */
 public class OscilloscopeView extends JComponent {
 
-	private static final int DEFAULT_PRECISION = 1600;
 	private static final int MARGIN = 5;
-
-	private float[] samples;
-	private int precision;
 
 	private Oscilloscope model;
 
@@ -32,8 +29,6 @@ public class OscilloscopeView extends JComponent {
 	public OscilloscopeView(Oscilloscope model) {
 
 		this.model = model;
-
-		precision = DEFAULT_PRECISION;
 
 		JFrame frame = new JFrame(model.getName());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,18 +40,13 @@ public class OscilloscopeView extends JComponent {
 		painter.start();
 	}
 
-	/**
-	 * @param samples samples to display
-	 */
-	public synchronized void display(float[] samples) {
-		this.samples = samples;
-	}
-
 	@Override
-	public synchronized void paint(Graphics graphics) {
+	public void paint(Graphics graphics) {
 
 		int width = getWidth();
 		int height = getHeight();
+		int plotWidth = width - 2 * MARGIN;
+		int plotHeight = height - 2 * MARGIN;
 
 		Graphics2D graphics2D = (Graphics2D)graphics;
 		graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -65,31 +55,25 @@ public class OscilloscopeView extends JComponent {
 		graphics2D.setColor(Color.BLACK);
 		graphics2D.fillRect(0, 0, width, height);
 
-		if (samples != null) {
+		ShiftingFloatArray buffer = model.getBuffer();
+		int sampleCount = buffer.getLength();
+		float sample;
+		int[] xValues = new int[sampleCount];
+		int[] yValues = new int[sampleCount];
 
-			int plotWidth = width - 2 * MARGIN;
-			int plotHeight = height - 2 * MARGIN;
+		synchronized (buffer) {
 
-			int sampleCount = samples.length;
-			int displaySampleCount = Math.min(sampleCount, precision);
-			int[] xValues = new int[displaySampleCount];
-			int[] yValues = new int[displaySampleCount];
+			for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 
-			int sampleIndex;
-			float sample;
-
-			for (int displaySampleIndex = 0; displaySampleIndex < displaySampleCount; displaySampleIndex++) {
-
-				sampleIndex = displaySampleIndex * sampleCount / displaySampleCount;
-				sample = samples[sampleIndex];
+				sample = buffer.read(sampleIndex);
 				sample = Math.max(-1.0f, Math.min(1.0f, sample));
 
-				xValues[displaySampleIndex] = MARGIN + plotWidth * sampleIndex / sampleCount;
-				yValues[displaySampleIndex] = MARGIN + plotHeight / 2 - Math.round(plotHeight * sample / 2);
+				xValues[sampleIndex] = MARGIN + plotWidth * sampleIndex / sampleCount;
+				yValues[sampleIndex] = MARGIN + plotHeight / 2 - Math.round(plotHeight * sample / 2);
 			}
-
-			graphics2D.setColor(new Color(64, 224, 224));
-			graphics2D.drawPolyline(xValues, yValues, xValues.length);
 		}
+
+		graphics2D.setColor(new Color(64, 224, 224));
+		graphics2D.drawPolyline(xValues, yValues, xValues.length);
 	}
 }

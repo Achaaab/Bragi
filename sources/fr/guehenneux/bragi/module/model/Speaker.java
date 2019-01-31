@@ -41,7 +41,7 @@ public class Speaker extends Module {
 		Info info = new Info(SourceDataLine.class, format);
 
 		sourceDataLine = (SourceDataLine) AudioSystem.getLine(info);
-		sourceDataLine.open(format, Settings.INSTANCE.getFrameRate() * Settings.INSTANCE.getFrameSizeInBytes() / 10);
+		sourceDataLine.open(format, Settings.INSTANCE.getFrameRate() * Settings.INSTANCE.getFrameSizeInBytes() / 20);
 		sourceDataLine.start();
 
 		start();
