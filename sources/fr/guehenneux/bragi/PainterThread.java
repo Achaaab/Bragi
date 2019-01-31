@@ -27,7 +27,7 @@ public class PainterThread extends Thread {
 		this.component = component;
 		this.fps = fps;
 
-		loopTime = Math.round(1_000_000_000 / fps);
+		loopTime = Math.round(1_000_000_000.0 / fps);
 		component.setIgnoreRepaint(true);
 	}
 

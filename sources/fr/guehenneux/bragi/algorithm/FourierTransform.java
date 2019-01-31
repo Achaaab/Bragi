@@ -150,7 +150,7 @@ public abstract class FourierTransform {
 		}
 
 		if (whichAverage == LINAVG) {
-			int avgWidth = (int)spectrum.length / averages.length;
+			int avgWidth = spectrum.length / averages.length;
 			for (int i = 0; i < averages.length; i++) {
 				float avg = 0;
 				int j;
@@ -171,9 +171,9 @@ public abstract class FourierTransform {
 				if (i == 0) {
 					lowFreq = 0;
 				} else {
-					lowFreq = (sampleRate / 2) / (float)Math.pow(2, octaves - i);
+					lowFreq = (sampleRate / 2.0f) / (float)Math.pow(2, octaves - i);
 				}
-				hiFreq = (sampleRate / 2) / (float)Math.pow(2, octaves - i - 1);
+				hiFreq = (sampleRate / 2.0f) / (float)Math.pow(2, octaves - i - 1);
 				freqStep = (hiFreq - lowFreq) / avgPerOctave;
 				float f = lowFreq;
 				for (int j = 0; j < avgPerOctave; j++) {
@@ -322,7 +322,7 @@ public abstract class FourierTransform {
 		if (i == 0) return bw * 0.25f;
 		// special case: the width of the last bin is half that of the others.
 		if (i == spectrum.length - 1) {
-			float lastBinBeginFreq = (sampleRate / 2) - (bw / 2);
+			float lastBinBeginFreq = (sampleRate / 2.0f) - (bw / 2);
 			float binHalfWidth = bw * 0.25f;
 			return lastBinBeginFreq + binHalfWidth;
 		}
@@ -339,7 +339,7 @@ public abstract class FourierTransform {
 	public float getAverageCenterFrequency (int i) {
 		if (whichAverage == LINAVG) {
 			// an average represents a certain number of bands in the spectrum
-			int avgWidth = (int)spectrum.length / averages.length;
+			int avgWidth = spectrum.length / averages.length;
 			// the "center" bin of the average, this is fudgy.
 			int centerBinIndex = i * avgWidth + avgWidth / 2;
 			return indexToFreq(centerBinIndex);
@@ -354,10 +354,10 @@ public abstract class FourierTransform {
 			if (octave == 0) {
 				lowFreq = 0;
 			} else {
-				lowFreq = (sampleRate / 2) / (float)Math.pow(2, octaves - octave);
+				lowFreq = (sampleRate / 2.0f) / (float)Math.pow(2, octaves - octave);
 			}
 			// and the high frequency for this octave
-			hiFreq = (sampleRate / 2) / (float)Math.pow(2, octaves - octave - 1);
+			hiFreq = (sampleRate / 2.0f) / (float)Math.pow(2, octaves - octave - 1);
 			// each average band within the octave will be this big
 			freqStep = (hiFreq - lowFreq) / avgPerOctave;
 			// figure out the low frequency of the band we care about

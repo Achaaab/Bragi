@@ -55,8 +55,8 @@ public class SpectrumAnalyzerView extends JComponent {
 		int width = getWidth();
 		int height = getHeight();
 
-		int plotWidth = width - 2 * PLOT_MARGIN;
-		int plotHeight = height - 2 * PLOT_MARGIN;
+		float plotWidth = width - 2 * PLOT_MARGIN;
+		float plotHeight = height - 2 * PLOT_MARGIN;
 
 		Graphics2D graphics2D = (Graphics2D) graphics;
 		graphics2D.setColor(Color.BLACK);
@@ -74,7 +74,7 @@ public class SpectrumAnalyzerView extends JComponent {
 			float barX;
 			float barY;
 
-			int plotBottom = PLOT_MARGIN + plotHeight;
+			float plotBottom = PLOT_MARGIN + plotHeight;
 			int barLevel;
 			float magnitude;
 
@@ -84,7 +84,7 @@ public class SpectrumAnalyzerView extends JComponent {
 
 				barX = PLOT_MARGIN + barIndex * plotWidth / barCount + barLeftMargin;
 				magnitude = averages[barIndex];
-				barLevel = (int) Math.round(magnitude * LEVEL_COUNT / 200);
+				barLevel = Math.round(magnitude * LEVEL_COUNT / 200);
 
 				for (int levelIndex = 0; levelIndex <= Math.min(barLevel, LEVEL_COUNT - 1); levelIndex++) {
 
