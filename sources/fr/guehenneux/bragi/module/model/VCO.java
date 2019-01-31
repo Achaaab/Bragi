@@ -5,8 +5,6 @@ import fr.guehenneux.bragi.connection.Input;
 import fr.guehenneux.bragi.connection.Output;
 import fr.guehenneux.bragi.module.view.VCOView;
 import fr.guehenneux.bragi.wave.PulseWave;
-import fr.guehenneux.bragi.wave.SineWave;
-import fr.guehenneux.bragi.wave.SquareWave;
 import fr.guehenneux.bragi.wave.Wave;
 
 /**
@@ -16,7 +14,7 @@ import fr.guehenneux.bragi.wave.Wave;
  */
 public class VCO extends Module {
 
-	private Input modulationPort;
+	private Input modulation;
 	private Output output;
 
 	private Wave wave;
@@ -29,7 +27,7 @@ public class VCO extends Module {
 
 		super(name);
 
-		modulationPort = addInput(name + "_modulation");
+		modulation = addInput(name + "_modulation");
 		output = addOutput(name + "_output");
 
 		wave = new PulseWave(0.25f, frequency);
@@ -45,9 +43,9 @@ public class VCO extends Module {
 
 		float[] samples;
 
-		if (modulationPort.isConnected()) {
+		if (modulation.isConnected()) {
 
-			float[] modulationSamples = modulationPort.read();
+			float[] modulationSamples = modulation.read();
 			samples = wave.getSamples(modulationSamples, sampleCount, sampleLength);
 
 		} else {
@@ -75,8 +73,8 @@ public class VCO extends Module {
 	/**
 	 * @return the modulation port
 	 */
-	public Input getModulationPort() {
-		return modulationPort;
+	public Input getModulation() {
+		return modulation;
 	}
 
 	/**

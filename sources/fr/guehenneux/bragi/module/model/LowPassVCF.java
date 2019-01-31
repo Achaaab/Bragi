@@ -27,14 +27,14 @@ public class LowPassVCF extends VCF {
 
 		for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 
-			if (modulation) {
+			if (modulationSamples == null) {
 
-				modulationSample = modulationSamples[sampleIndex];
-				actualCutOffFrequency = (float) (cutOffFrequency * Math.pow(2.0, modulationSample));
+				actualCutOffFrequency = cutOffFrequency;
 
 			} else {
 
-				actualCutOffFrequency = cutOffFrequency;
+				modulationSample = modulationSamples[sampleIndex];
+				actualCutOffFrequency = (float) (cutOffFrequency * Math.pow(2.0, 4 * modulationSample - 3));
 			}
 
 			float f = 2 * actualCutOffFrequency / sampleRate;

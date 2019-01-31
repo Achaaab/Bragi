@@ -30,14 +30,20 @@ public class Output {
 	}
 
 	/**
-	 * First, waits until this output is connected to at least 1 input.
+	 * @return whether this output is connected to at least 1 input
+	 */
+	public boolean isConnected() {
+		return !buffers.isEmpty();
+	}
+	/**
+	 * First, waits until this output is connected.
 	 * Then, writes the given chunk in each buffer (1 buffer per input connected).
 	 *
 	 * @param chunk chunk to write
 	 */
 	public synchronized void write(float[] chunk) throws InterruptedException {
 
-		while (buffers.isEmpty()) {
+		while (!isConnected()) {
 			wait();
 		}
 

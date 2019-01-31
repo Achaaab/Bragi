@@ -110,6 +110,6 @@ public class Settings {
 	 * @return
 	 */
 	public double getBufferLength() {
-		return bufferSizeInFrames / frameRate;
+		return (double) bufferSizeInFrames / frameRate;
 	}
 }
