@@ -27,7 +27,29 @@ public class TestSon {
 	public static void main(String[] args) throws LineUnavailableException, IOException, CorruptWavFileException,
 			JavaLayerException {
 
-		montage3();
+		montage8();
+	}
+
+	public static void montage8() throws LineUnavailableException {
+
+		LFO lfoKeyboard = new LFO("lfo_keyboard", 1);
+		Keyboard keyboard = new Keyboard("keyboard");
+		ADSR adsrVca = new ADSR("adsr_piano");
+		ADSR adsr_filter = new ADSR("adsr_filter");
+		VCA vca = new VCA("vca");
+		Speaker speaker = new Speaker("speaker");
+		Oscilloscope oscilloscope = new Oscilloscope("oscilloscope");
+		LowPassVCF filter = new LowPassVCF("filter");
+
+		lfoKeyboard.getOutput().connect(keyboard.getModulation());
+		keyboard.getOutput().connect(vca.getInput());
+		keyboard.getGate().connect(adsrVca.getGate());
+		keyboard.getGate().connect(adsr_filter.getGate());
+		adsrVca.getOutput().connect(vca.getGain());
+		adsr_filter.getOutput().connect(filter.getModulation());
+		vca.getOutput().connect(filter.getInput());
+		filter.getOutput().connect(speaker);
+		filter.getOutput().connect(oscilloscope);
 	}
 
 	/**
@@ -48,7 +70,7 @@ public class TestSon {
 	public static void montage3() throws LineUnavailableException {
 
 		VCO vco = new VCO("VCO", 1);
-		vco.getOutput().connect(vco.getModulationPort());
+		vco.getOutput().connect(vco.getModulation());
 		Speaker speaker = new Speaker("speaker");
 		SpectrumAnalyzer spectrumAnalyzer = new SpectrumAnalyzer("spectrumAnalyzer");
 		Oscilloscope oscilloscope = new Oscilloscope("oscilloscope");
@@ -302,8 +324,8 @@ public class TestSon {
 		highPassFilter.getOutput().connect(speaker);
 		highPassFilter.getOutput().connect(spectrumAnalyzer);
 		highPassFilter.getOutput().connect(oscilloscope);
-		lfoFilter.getOutput().connect(lowPassFilter.getModulationPort());
-		lfoFilter.getOutput().connect(highPassFilter.getModulationPort());
+		lfoFilter.getOutput().connect(lowPassFilter.getModulation());
+		lfoFilter.getOutput().connect(highPassFilter.getModulation());
 	}
 
 	public static void montageConsonance() throws LineUnavailableException {

@@ -11,7 +11,7 @@ import fr.guehenneux.bragi.module.view.VCFView;
  */
 public abstract class VCF extends Module {
 
-	protected Input modulationPort;
+	protected Input modulation;
 	protected Input input;
 	protected Output output;
 
@@ -28,10 +28,6 @@ public abstract class VCF extends Module {
 
 	protected float y1, y2, y3, y4, oldx, oldy1, oldy2, oldy3;
 
-	protected boolean modulation;
-
-	protected VCFView presentation;
-
 	/**
 	 * @param name
 	 */
@@ -40,7 +36,7 @@ public abstract class VCF extends Module {
 		super(name);
 
 		input = addInput(name + "_input");
-		modulationPort = addInput(name + "_modulation");
+		modulation = addInput(name + "_modulation");
 		output = addOutput(name + "_output");
 
 		rezLevel = 0.5f;
@@ -48,7 +44,7 @@ public abstract class VCF extends Module {
 
 		f0 = f1 = y1 = y2 = y3 = y4 = oldx = oldy1 = oldy2 = oldy3 = 0.0f;
 
-		presentation = new VCFView(this);
+		new VCFView(this);
 
 		start();
 	}
@@ -58,17 +54,14 @@ public abstract class VCF extends Module {
 
 		inputSamples = input.read();
 
-		if (modulationPort.isConnected()) {
-
-			modulationSamples = modulationPort.read();
-			modulation = true;
-
+		if (modulation.isConnected()) {
+			modulationSamples = modulation.read();
 		} else {
-
-			modulation = false;
+			modulationSamples = null;
 		}
 
 		filterSamples();
+
 		output.write(outputSamples);
 	}
 
@@ -79,10 +72,10 @@ public abstract class VCF extends Module {
 	protected abstract void filterSamples();
 
 	/**
-	 * @return the modulationPort
+	 * @return the modulation
 	 */
-	public Input getModulationPort() {
-		return modulationPort;
+	public Input getModulation() {
+		return modulation;
 	}
 
 	/**
