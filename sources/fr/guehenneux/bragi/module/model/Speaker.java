@@ -106,13 +106,13 @@ public class Speaker extends Module {
 				switch (sampleSizeInBytes) {
 
 					case 1:
-						normalizedSample = (int) (ONE_BYTE_MAX_VALUE * sample);
+						normalizedSample = Math.round(ONE_BYTE_MAX_VALUE * sample);
 						b0 = (byte) normalizedSample;
 						mix[byteIndex++] = b0;
 						break;
 
 					case 2:
-						normalizedSample = (int) (TWO_BYTES_MAX_VALUE * sample);
+						normalizedSample = Math.round(TWO_BYTES_MAX_VALUE * sample);
 						b0 = (byte) (normalizedSample >> 8);
 						b1 = (byte) (normalizedSample & 0xFF);
 						mix[byteIndex++] = b0;
@@ -120,7 +120,7 @@ public class Speaker extends Module {
 						break;
 
 					case 3:
-						normalizedSample = (int) (THREE_BYTES_MAX_VALUE * (double) sample);
+						normalizedSample = (int) Math.round(THREE_BYTES_MAX_VALUE * (double) sample);
 						b0 = (byte) (normalizedSample >> 16);
 						b1 = (byte) ((normalizedSample >> 8) & 0xFF);
 						b2 = (byte) (normalizedSample & 0xFF);
