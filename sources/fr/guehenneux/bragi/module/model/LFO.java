@@ -3,7 +3,7 @@ package fr.guehenneux.bragi.module.model;
 import fr.guehenneux.bragi.connection.Output;
 import fr.guehenneux.bragi.module.view.LFOView;
 import fr.guehenneux.bragi.Settings;
-import fr.guehenneux.bragi.wave.TriangleWave;
+import fr.guehenneux.bragi.wave.Sine;
 import fr.guehenneux.bragi.wave.Wave;
 
 /**
@@ -25,7 +25,8 @@ public class LFO extends Module {
 		super(name);
 
 		output = addOutput(name + "_output");
-		wave = new TriangleWave(frequency);
+
+		wave = new Wave(Sine.INSTANCE, frequency);
 
 		new LFOView(this);
 

@@ -1,16 +1,29 @@
 package fr.guehenneux.bragi;
 
+import fr.guehenneux.bragi.connection.Output;
+import fr.guehenneux.bragi.module.model.ADSR;
+import fr.guehenneux.bragi.module.model.HighPassVCF;
+import fr.guehenneux.bragi.module.model.Keyboard;
+import fr.guehenneux.bragi.module.model.LFO;
+import fr.guehenneux.bragi.module.model.LowPassVCF;
+import fr.guehenneux.bragi.module.model.Microphone;
+import fr.guehenneux.bragi.module.model.Mp3FilePlayer;
+import fr.guehenneux.bragi.module.model.Oscilloscope;
+import fr.guehenneux.bragi.module.model.Sampler;
+import fr.guehenneux.bragi.module.model.Speaker;
+import fr.guehenneux.bragi.module.model.SpectrumAnalyzer;
+import fr.guehenneux.bragi.module.model.VCA;
+import fr.guehenneux.bragi.module.model.VCF;
+import fr.guehenneux.bragi.module.model.VCO;
+import fr.guehenneux.bragi.module.model.WavFilePlayer;
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.jlp;
+
+import javax.sound.sampled.LineUnavailableException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-
-import javax.sound.sampled.LineUnavailableException;
-
-import fr.guehenneux.bragi.connection.Output;
-import fr.guehenneux.bragi.module.model.*;
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.jlp;
 
 /**
  * @author Jonathan Guéhenneux
@@ -42,14 +55,14 @@ public class TestSon {
 		LowPassVCF filter = new LowPassVCF("filter");
 
 		lfoKeyboard.getOutput().connect(keyboard.getModulation());
-		keyboard.getOutput().connect(vca.getInput());
+		keyboard.getOutput().connect(filter.getInput());
 		keyboard.getGate().connect(adsrVca.getGate());
 		keyboard.getGate().connect(adsr_filter.getGate());
 		adsrVca.getOutput().connect(vca.getGain());
 		adsr_filter.getOutput().connect(filter.getModulation());
-		vca.getOutput().connect(filter.getInput());
-		filter.getOutput().connect(speaker);
-		filter.getOutput().connect(oscilloscope);
+		filter.getOutput().connect(vca.getInput());
+		vca.getOutput().connect(speaker);
+		vca.getOutput().connect(oscilloscope);
 	}
 
 	/**
@@ -121,7 +134,12 @@ public class TestSon {
 
 		Keyboard keyboard = new Keyboard("keyboard");
 		Speaker speaker = new Speaker("speaker");
-		keyboard.getOutput().connect(speaker);
+		ADSR adsr = new ADSR("adsr");
+		VCA vca = new VCA("vca");
+		keyboard.getOutput().connect(vca.getInput());
+		keyboard.getGate().connect(adsr.getGate());
+		adsr.getOutput().connect(vca.getGain());
+		vca.getOutput().connect(speaker);
 	}
 
 	/**
