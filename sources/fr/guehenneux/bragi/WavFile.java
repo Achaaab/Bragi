@@ -202,7 +202,7 @@ public class WavFile {
 	 * @throws IOException
 	 * @throws CorruptWavFileException
 	 */
-	private final void readHeader() throws IOException, CorruptWavFileException {
+	private void readHeader() throws IOException, CorruptWavFileException {
 
 		fileReader.seek(WAV_HEADER_INDEX);
 		byte[] header = new byte[WAV_HEADER_SIZE];

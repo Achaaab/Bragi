@@ -4,8 +4,7 @@ import fr.guehenneux.bragi.module.model.VCO;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
-import java.awt.*;
+import java.awt.GridLayout;
 
 /**
  * @author Jonathan Guéhenneux

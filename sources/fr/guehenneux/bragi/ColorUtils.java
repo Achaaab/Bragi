@@ -3,57 +3,52 @@ package fr.guehenneux.bragi;
 import java.awt.Color;
 
 /**
- * @author GUEHENNEUX
+ * @author Jonathan Guéhenneux
  */
 public class ColorUtils {
 
-    /**
-     * @param minimum
-     * @param colorMinimum
-     * @param maximum
-     * @param colorMaximum
-     * @return
-     */
-    public static Color getColorValue(double minimum, Color colorMinimum, double maximum, Color colorMaximum, double value) {
+	/**
+	 * @param minimum minimum value
+	 * @param colorMinimum color for minimum value
+	 * @param maximum maximum value
+	 * @param colorMaximum color for maximum value
+	 * @param value value
+	 * @return color
+	 */
+	public static Color getColorValue(double minimum, Color colorMinimum, double maximum, Color colorMaximum, double value) {
 
-        Color colorValue;
+		Color colorValue;
 
-        if (minimum > maximum) {
+		if (minimum > maximum) {
 
-            colorValue = Color.BLACK;
+			colorValue = Color.BLACK;
 
-        } else if (value < minimum) {
+		} else if (value < minimum) {
 
-            colorValue = colorMinimum;
+			colorValue = colorMinimum;
 
-        } else if (value > maximum) {
+		} else if (value > maximum) {
 
-            colorValue = colorMaximum;
+			colorValue = colorMaximum;
 
-        } else {
+		} else {
 
-            double range = maximum - minimum;
-            double relativeValue = value - minimum;
-            double colorMaximumPart = relativeValue / range;
-            double colorMinimumPart = 1.0 - colorMaximumPart;
+			double range = maximum - minimum;
+			double relativeValue = value - minimum;
+			double colorMaximumPart = relativeValue / range;
+			double colorMinimumPart = 1.0 - colorMaximumPart;
 
-            double r = colorMinimumPart * colorMinimum.getRed() + colorMaximumPart
-                * colorMaximum.getRed();
+			double r = colorMinimumPart * colorMinimum.getRed() + colorMaximumPart * colorMaximum.getRed();
+			double g = colorMinimumPart * colorMinimum.getGreen() + colorMaximumPart * colorMaximum.getGreen();
+			double b = colorMinimumPart * colorMinimum.getBlue() + colorMaximumPart * colorMaximum.getBlue();
 
-            double g = colorMinimumPart * colorMinimum.getGreen() + colorMaximumPart
-                * colorMaximum.getGreen();
+			int red = (int) Math.round(r);
+			int green = (int) Math.round(g);
+			int blue = (int) Math.round(b);
 
-            double b = colorMinimumPart * colorMinimum.getBlue() + colorMaximumPart
-                * colorMaximum.getBlue();
+			colorValue = new Color(red, green, blue);
+		}
 
-            int red = (int) Math.round(r);
-            int green = (int) Math.round(g);
-            int blue = (int) Math.round(b);
-
-            colorValue = new Color(red, green, blue);
-
-        }
-
-        return colorValue;
-    }
+		return colorValue;
+	}
 }

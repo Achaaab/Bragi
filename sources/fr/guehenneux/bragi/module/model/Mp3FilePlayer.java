@@ -20,11 +20,8 @@ import javazoom.jl.decoder.SampleBuffer;
 public class Mp3FilePlayer extends Module implements Player {
 
 	private Bitstream bitStream;
-	private Header header;
-	private SampleBuffer sampleBuffer;
 	private Decoder decoder;
 	private int channelCount;
-	private int frameCount;
 
 	/**
 	 * @param name
@@ -52,11 +49,11 @@ public class Mp3FilePlayer extends Module implements Player {
 
 		try {
 
-			header = bitStream.readFrame();
+			Header header = bitStream.readFrame();
 
 			if (header != null) {
 
-				sampleBuffer = (SampleBuffer) decoder.decodeFrame(header, bitStream);
+				SampleBuffer sampleBuffer = (SampleBuffer) decoder.decodeFrame(header, bitStream);
 
 				bitStream.closeFrame();
 
@@ -76,10 +73,10 @@ public class Mp3FilePlayer extends Module implements Player {
 	/**
 	 * @param sampleBuffer
 	 */
-	private final float[][] split(SampleBuffer sampleBuffer) {
+	private float[][] split(SampleBuffer sampleBuffer) {
 
 		channelCount = sampleBuffer.getChannelCount();
-		frameCount = sampleBuffer.getBufferLength() / channelCount;
+		int frameCount = sampleBuffer.getBufferLength() / channelCount;
 		short[] buffer = sampleBuffer.getBuffer();
 
 		float[][] samples = new float[channelCount][frameCount];

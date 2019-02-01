@@ -1,7 +1,7 @@
 package fr.guehenneux.bragi;
 
 /**
- *
+ * @author Jonathan Guéhenneux
  */
 public class ShiftingFloatArray {
 

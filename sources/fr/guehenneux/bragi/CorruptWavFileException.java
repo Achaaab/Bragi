@@ -5,10 +5,10 @@ package fr.guehenneux.bragi;
  */
 public class CorruptWavFileException extends Exception {
 
-    /**
-     * @param message
-     */
-    public CorruptWavFileException(String message) {
-        super(message);
-    }
+	/**
+	 * @param message exception message
+	 */
+	public CorruptWavFileException(String message) {
+		super(message);
+	}
 }

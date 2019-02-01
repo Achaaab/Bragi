@@ -11,12 +11,11 @@ public class Sampler extends Module {
 	private static final int SAMPLE_SIZE = 63;
 	private static final int FRAME_RATE_DIVISOR = 8;
 
-	protected Input input;
-	protected Output output;
-	private float[] samples;
+	private Input input;
+	private Output output;
 
 	/**
-	 * @param name
+	 * @param name sampler name
 	 */
 	public Sampler(String name) {
 
@@ -31,15 +30,16 @@ public class Sampler extends Module {
 	@Override
 	public void compute() throws InterruptedException {
 
-		samples = input.read();
+		float[] inputSamples = input.read();
+		int sampleCount = inputSamples.length;
+		float[] outputSamples = new float[sampleCount];
 
-		int sampleCount = samples.length;
 		float sampleSum = 0, sampleMedium;
 		int groupSize = 0;
 
 		for (int sampleIndex = 0; sampleIndex < sampleCount; ) {
 
-			sampleSum += samples[sampleIndex++];
+			sampleSum += inputSamples[sampleIndex++];
 			groupSize++;
 
 			if (groupSize == FRAME_RATE_DIVISOR || sampleIndex == sampleCount) {
@@ -48,7 +48,7 @@ public class Sampler extends Module {
 				sampleMedium = (float) Math.round(sampleMedium * SAMPLE_SIZE) / SAMPLE_SIZE;
 
 				for (int i = 0; i < groupSize; i++) {
-					samples[sampleIndex - i - 1] = sampleMedium;
+					outputSamples[sampleIndex - i - 1] = sampleMedium;
 				}
 
 				groupSize = 0;
@@ -56,6 +56,6 @@ public class Sampler extends Module {
 			}
 		}
 
-		output.write(samples);
+		output.write(outputSamples);
 	}
 }

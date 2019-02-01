@@ -309,8 +309,7 @@ public abstract class FourierTransform {
 		if (freq > sampleRate / 2 - getBandWidth() / 2) return spectrum.length - 1;
 		// all other cases
 		float fraction = freq / (float)sampleRate;
-		int i = Math.round(timeSize * fraction);
-		return i;
+		return Math.round(timeSize * fraction);
 	}
 
 	/** Returns the middle frequency of the i<sup>th</sup> band.

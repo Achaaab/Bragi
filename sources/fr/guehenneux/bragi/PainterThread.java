@@ -15,7 +15,6 @@ public class PainterThread extends Thread {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private JComponent component;
-	private int fps;
 	private long loopTime;
 
 	/**
@@ -25,7 +24,6 @@ public class PainterThread extends Thread {
 	public PainterThread(JComponent component, int fps) {
 
 		this.component = component;
-		this.fps = fps;
 
 		loopTime = Math.round(1_000_000_000.0 / fps);
 		component.setIgnoreRepaint(true);
@@ -72,7 +70,7 @@ public class PainterThread extends Thread {
 
 		} else {
 
-			if (true || paintTime > 10 * loopTime){
+			if (paintTime > 10 * loopTime){
 				LOGGER.warn("frame rate drops under 10% of requirement");
 			}
 
@@ -83,7 +81,7 @@ public class PainterThread extends Thread {
 	}
 
 	/**
-	 *
+	 * Paints the component.
 	 */
 	private void paint() {
 		component.paintImmediately(component.getBounds());

@@ -4,7 +4,6 @@ import fr.guehenneux.bragi.module.model.LFO;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
 import java.awt.GridLayout;
 
 /**

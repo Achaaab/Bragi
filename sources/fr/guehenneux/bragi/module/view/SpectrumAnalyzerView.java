@@ -23,14 +23,10 @@ public class SpectrumAnalyzerView extends JComponent {
 
 	private float[] averages;
 
-	private SpectrumAnalyzer model;
-
 	/**
-	 * @param model
+	 * @param model spectrum analyzer model
 	 */
 	public SpectrumAnalyzerView(SpectrumAnalyzer model) {
-
-		this.model = model;
 
 		JFrame frame = new JFrame(model.getName());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

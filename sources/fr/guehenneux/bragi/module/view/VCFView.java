@@ -3,18 +3,10 @@ package fr.guehenneux.bragi.module.view;
 import fr.guehenneux.bragi.module.model.VCF;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeEvent;
-import java.awt.*;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import java.awt.GridLayout;
 
 /**
  * @author Jonathan Guéhenneux

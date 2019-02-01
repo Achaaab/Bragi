@@ -12,9 +12,7 @@ public class Oscilloscope extends Module {
 
 	private Input input;
 
-	private ShiftingFloatArray buffer;
-
-	private OscilloscopeView presentation;
+	private final ShiftingFloatArray buffer;
 
 	/**
 	 * @param name oscilloscope name
@@ -28,7 +26,7 @@ public class Oscilloscope extends Module {
 		int oscilloscopeSampleCount = Settings.INSTANCE.getFrameRate() / 60;
 		buffer = new ShiftingFloatArray(oscilloscopeSampleCount);
 
-		presentation = new OscilloscopeView(this);
+		new OscilloscopeView(this);
 		start();
 	}
 
