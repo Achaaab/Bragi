@@ -17,9 +17,9 @@ public class Speaker extends Module {
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private static final int ONE_BYTE_MAX_VALUE = 1 << 7 - 1;
-	private static final int TWO_BYTES_MAX_VALUE = 1 << 15 - 1;
-	private static final int THREE_BYTES_MAX_VALUE = 1 << 23 - 1;
+	private static final int ONE_BYTE_MAX_VALUE = 0b01111111;
+	private static final int TWO_BYTES_MAX_VALUE = 0b01111111_11111111;
+	private static final int THREE_BYTES_MAX_VALUE = 0b01111111_11111111_11111111;
 
 	private SourceDataLine sourceDataLine;
 

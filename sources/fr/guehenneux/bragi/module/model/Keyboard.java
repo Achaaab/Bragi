@@ -5,6 +5,7 @@ import fr.guehenneux.bragi.connection.Input;
 import fr.guehenneux.bragi.connection.Output;
 import fr.guehenneux.bragi.module.view.KeyboardView;
 import fr.guehenneux.bragi.wave.Pulse;
+import fr.guehenneux.bragi.wave.Sawtooth;
 import fr.guehenneux.bragi.wave.Wave;
 
 import java.awt.event.KeyEvent;
@@ -36,7 +37,7 @@ public class Keyboard extends Module {
 		output = addOutput(name + "_output");
 		gate = addOutput(name + "_gate");
 
-		wave = new Wave(Pulse.SQUARE, 440);
+		wave = new Wave(Sawtooth.INSTANCE, 440);
 
 		keys = new ArrayList<>();
 

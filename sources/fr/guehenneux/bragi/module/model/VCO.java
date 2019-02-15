@@ -5,6 +5,7 @@ import fr.guehenneux.bragi.connection.Input;
 import fr.guehenneux.bragi.connection.Output;
 import fr.guehenneux.bragi.module.view.VCOView;
 import fr.guehenneux.bragi.wave.Pulse;
+import fr.guehenneux.bragi.wave.Sine;
 import fr.guehenneux.bragi.wave.Wave;
 
 /**
@@ -30,7 +31,7 @@ public class VCO extends Module {
 		modulation = addInput(name + "_modulation");
 		output = addOutput(name + "_output");
 
-		wave = new Wave(Pulse.PULSE_25, frequency);
+		wave = new Wave(Sine.INSTANCE, frequency);
 
 		new VCOView(this);
 

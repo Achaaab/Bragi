@@ -9,7 +9,7 @@ import fr.guehenneux.bragi.connection.Output;
 public class Sampler extends Module {
 
 	private static final int SAMPLE_SIZE = 63;
-	private static final int FRAME_RATE_DIVISOR = 8;
+	private static final int FRAME_RATE_DIVISOR = 1;
 
 	private Input input;
 	private Output output;

@@ -100,7 +100,7 @@ public class Settings {
 	}
 
 	/**
-	 * @return
+	 * @return frame length in seconds
 	 */
 	public double getFrameLength() {
 		return 1.0 / frameRate;

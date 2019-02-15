@@ -74,7 +74,7 @@ public class Wave {
 		for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 
 			modulationSample = modulationSamples[sampleIndex];
-			modulationFactor = Math.pow(2, modulationSample / 10);
+			modulationFactor = Math.pow(2, modulationSample / 20);
 
 			sample = waveform.getSample(periodPercent);
 			samples[sampleIndex] = sample;

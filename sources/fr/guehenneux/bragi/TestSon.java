@@ -2,6 +2,7 @@ package fr.guehenneux.bragi;
 
 import fr.guehenneux.bragi.connection.Output;
 import fr.guehenneux.bragi.module.model.ADSR;
+import fr.guehenneux.bragi.module.model.Ditherer;
 import fr.guehenneux.bragi.module.model.HighPassVCF;
 import fr.guehenneux.bragi.module.model.Keyboard;
 import fr.guehenneux.bragi.module.model.LFO;
@@ -16,6 +17,7 @@ import fr.guehenneux.bragi.module.model.VCA;
 import fr.guehenneux.bragi.module.model.VCF;
 import fr.guehenneux.bragi.module.model.VCO;
 import fr.guehenneux.bragi.module.model.WavFilePlayer;
+import fr.guehenneux.bragi.module.model.WhiteNoiseGenerator;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.jlp;
 
@@ -43,6 +45,13 @@ public class TestSon {
 		montage8();
 	}
 
+	public static void montage9() throws LineUnavailableException {
+
+		WhiteNoiseGenerator whiteNoiseGenerator = new WhiteNoiseGenerator("white_noise_generator");
+		Speaker speaker = new Speaker("speaker");
+		whiteNoiseGenerator.getOutput().connect(speaker);
+	}
+
 	public static void montage8() throws LineUnavailableException {
 
 		LFO lfoKeyboard = new LFO("lfo_keyboard", 1);
@@ -61,8 +70,8 @@ public class TestSon {
 		adsrVca.getOutput().connect(vca.getGain());
 		adsr_filter.getOutput().connect(filter.getModulation());
 		filter.getOutput().connect(vca.getInput());
+		vca.connect(oscilloscope);
 		vca.getOutput().connect(speaker);
-		vca.getOutput().connect(oscilloscope);
 	}
 
 	/**
@@ -135,10 +144,12 @@ public class TestSon {
 		Keyboard keyboard = new Keyboard("keyboard");
 		Speaker speaker = new Speaker("speaker");
 		ADSR adsr = new ADSR("adsr");
+		Oscilloscope oscilloscope = new Oscilloscope("oscilloscope");
 		VCA vca = new VCA("vca");
 		keyboard.getOutput().connect(vca.getInput());
 		keyboard.getGate().connect(adsr.getGate());
 		adsr.getOutput().connect(vca.getGain());
+		adsr.getOutput().connect(oscilloscope);
 		vca.getOutput().connect(speaker);
 	}
 

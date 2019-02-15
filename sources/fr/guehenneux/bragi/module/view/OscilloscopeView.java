@@ -20,6 +20,7 @@ import javax.swing.JFrame;
 public class OscilloscopeView extends JComponent {
 
 	private static final int MARGIN = 5;
+	private static final int HORIZONTAL_DIVISION_COUNT = 10;
 
 	private Oscilloscope model;
 
@@ -49,11 +50,34 @@ public class OscilloscopeView extends JComponent {
 		int plotHeight = height - 2 * MARGIN;
 
 		Graphics2D graphics2D = (Graphics2D)graphics;
-		graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		graphics2D.setStroke(new BasicStroke(2.0f));
-
+		graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		graphics2D.setColor(Color.BLACK);
 		graphics2D.fillRect(0, 0, width, height);
+
+		graphics2D.setStroke(new BasicStroke(1.0f));
+		graphics2D.setPaint(Color.LIGHT_GRAY);
+
+		for (int horizontalDivisionIndex = 0; horizontalDivisionIndex <= HORIZONTAL_DIVISION_COUNT; horizontalDivisionIndex++) {
+
+			graphics2D.drawLine(MARGIN + horizontalDivisionIndex * plotWidth / HORIZONTAL_DIVISION_COUNT, MARGIN,
+					MARGIN + horizontalDivisionIndex * plotWidth / HORIZONTAL_DIVISION_COUNT, MARGIN + plotHeight);
+		}
+
+		int verticalDivision = 0;
+
+		while (verticalDivision <= plotHeight / 2) {
+
+			graphics2D.drawLine(MARGIN, MARGIN + plotHeight / 2 + verticalDivision,
+					MARGIN + plotWidth, MARGIN + plotHeight / 2 + verticalDivision);
+
+			graphics2D.drawLine(MARGIN, MARGIN + plotHeight / 2 - verticalDivision,
+					MARGIN + plotWidth, MARGIN + plotHeight / 2 - verticalDivision);
+
+			verticalDivision += plotWidth / HORIZONTAL_DIVISION_COUNT;
+		}
+
+		graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		graphics2D.setStroke(new BasicStroke(2.0f));
 
 		ShiftingFloatArray buffer = model.getBuffer();
 		int sampleCount = buffer.getLength();

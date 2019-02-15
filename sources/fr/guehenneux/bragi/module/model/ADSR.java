@@ -1,5 +1,8 @@
 package fr.guehenneux.bragi.module.model;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import fr.guehenneux.bragi.Settings;
 import fr.guehenneux.bragi.connection.Input;
 import fr.guehenneux.bragi.connection.Output;
@@ -10,6 +13,11 @@ import fr.guehenneux.bragi.module.view.ADSRView;
  */
 public class ADSR extends Module {
 
+  public static final float MINIMAL_GAIN = -1.0f;
+  public static final float MAXIMAL_GAIN = 1.0f;
+
+  private static final Logger LOGGER = LogManager.getLogger();
+
   private Input gate;
   private Output output;
 
@@ -18,9 +26,12 @@ public class ADSR extends Module {
   private double sustain;
   private double release;
 
+  private double gain;
+  private double sampleLength;
+
   private float previousGateSample;
-  private double envelopeTime;
-  private double releaseTime;
+
+  private ADSRState state;
 
   /**
    * @param name ADSR name
@@ -32,13 +43,14 @@ public class ADSR extends Module {
     gate = addInput(name + "_gate");
     output = addOutput(name + "_output");
 
-    attack = 0.50;
-    decay = 0.05;
-    sustain = 0.5;
-    release = 1.0;
+    attack = 40;
+    decay = 40;
+    sustain = 0.9;
+    release = 2;
 
+    gain = MINIMAL_GAIN;
+    state = ADSRState.IDLE;
     previousGateSample = 0.0f;
-    envelopeTime = 0.0;
 
     new ADSRView(this);
     start();
@@ -50,63 +62,64 @@ public class ADSR extends Module {
     float gateSample = gate.read()[0];
 
     int sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
-    double sampleLength = Settings.INSTANCE.getFrameLength();
-    float[] outputSamples = new float[sampleCount];
-    double outputSample;
+    sampleLength = Settings.INSTANCE.getFrameLength();
+    float[] gains = new float[sampleCount];
 
-    if (gateSample == 1.0f && previousGateSample != 1.0f) {
-
-      // reset envelope
-      envelopeTime = 0.0;
-
-    } else if (gateSample == -1.0f && previousGateSample != -1.0f) {
-
-      // @TODO when releasing before sustain level is reached there is a gap in the sound
-
-      // start release
-      releaseTime = envelopeTime;
+    if (gateSample > 0 && previousGateSample <= 0) {
+      state = ADSRState.ATTACK;
+    } else if (gateSample < 0 && previousGateSample >= 0) {
+      state = ADSRState.RELEASE;
     }
 
     previousGateSample = gateSample;
 
     for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 
-      if (gateSample == 0.0f) {
+      switch (state) {
 
-        // nothing
+      case IDLE:
+        gain = MINIMAL_GAIN;
+        break;
 
-        outputSample = 0.0f;
+      case SUSTAIN:
+        gain = sustain;
+        break;
 
-      } else if (gateSample == 1.0f) {
+      case ATTACK:
+        step(MAXIMAL_GAIN, attack, ADSRState.DECAY);
+        break;
 
-        // attack, decay or sustain
+      case DECAY:
+        step(sustain, decay, ADSRState.SUSTAIN);
+        break;
 
-        if (envelopeTime < attack) {
-          outputSample = envelopeTime / attack;
-        }
-        else if (envelopeTime < attack + decay) {
-          outputSample = 1.0 + (sustain - 1.0) * (envelopeTime - attack) / decay;
-        }
-        else {
-          outputSample = sustain;
-        }
-
-      } else {
-
-        // release
-
-        if (envelopeTime - releaseTime < release) {
-          outputSample = sustain * (1 + (releaseTime - envelopeTime) / release);
-        } else {
-          outputSample = 0.0f;
-        }
+      case RELEASE:
+        step(MINIMAL_GAIN, release, ADSRState.IDLE);
+        break;
       }
 
-      outputSamples[sampleIndex] = (float) outputSample;
-      envelopeTime += sampleLength;
+      gains[sampleIndex] = (float) gain;
     }
 
-    output.write(outputSamples);
+    output.write(gains);
+  }
+
+  /**
+   * @param targetGain
+   * @param speed
+   * @param targetState
+   */
+  private void step(double targetGain, double speed, ADSRState targetState) {
+
+    if (gain < targetGain) {
+      gain = Math.min(gain + speed * sampleLength, targetGain);
+    } else {
+      gain = Math.max(gain - speed * sampleLength, targetGain);
+    }
+
+    if (gain == targetGain) {
+      state = targetState;
+    }
   }
 
   /**
@@ -117,28 +130,38 @@ public class ADSR extends Module {
   }
 
   /**
-   * @param attack attack time (s)
+   * Attack speed must be strictly positive.
+   *
+   * @param attack attack speed (V/s)
    */
   public void setAttack(double attack) {
     this.attack = attack;
   }
 
   /**
-   * @param decay decay time (s)
+   * Decay speed must be strictly negative.
+   *
+   * @param decay decay speed (V/s)
    */
   public void setDecay(double decay) {
     this.decay = decay;
   }
 
   /**
-   * @param sustain sustain level from 0.0 to 1.0
+   * Sustain gainSample must be in range [MINIMAL_GAIN, MAXIMAL_GAIN].
+   *
+   * @param sustain sustain gain
+   * @see #MINIMAL_GAIN
+   * @see #MAXIMAL_GAIN
    */
   public void setSustain(double sustain) {
     this.sustain = sustain;
   }
 
   /**
-   * @param release release time (s)
+   * Release speed must be strictly negative.
+   *
+   * @param release release speed (V/s)
    */
   public void setRelease(double release) {
     this.release = release;

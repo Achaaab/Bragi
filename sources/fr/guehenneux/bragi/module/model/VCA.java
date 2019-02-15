@@ -45,7 +45,7 @@ public class VCA extends Module {
 
 			inputSample = inputSamples[sampleIndex];
 			gainSample = gainSamples[sampleIndex];
-			outputSample = inputSample * gainSample;
+			outputSample = (float) (inputSample * Math.pow(2, 4 * (gainSample - 1)));
 			outputSamples[sampleIndex] = outputSample;
 		}
 
