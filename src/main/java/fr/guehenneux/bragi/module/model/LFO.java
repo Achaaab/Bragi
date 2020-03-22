@@ -17,8 +17,8 @@ public class LFO extends Module {
 	private Wave wave;
 
 	/**
-	 * @param name
-	 * @param frequency
+	 * @param name name of the LFO
+	 * @param frequency initial frequency of the LFO in hertz
 	 */
 	public LFO(String name, double frequency) {
 
@@ -34,33 +34,29 @@ public class LFO extends Module {
 	}
 
 	@Override
-	public void compute() throws InterruptedException {
+	public int compute() throws InterruptedException {
 
-		int sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
-		double sampleLength = Settings.INSTANCE.getFrameLength();
+		var sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
+		var sampleLength = Settings.INSTANCE.getFrameLength();
 
-		float[] samples = wave.getSamples(sampleCount, sampleLength);
+		var samples = wave.getSamples(null, sampleCount, sampleLength);
+
 		output.write(samples);
+
+		return sampleCount;
 	}
 
 	/**
-	 * @return
+	 * @return frequency of the LFO in hertz
 	 */
 	public double getFrequency() {
 		return wave.getFrequency();
 	}
 
 	/**
-	 * @param frequency
+	 * @param frequency frequency of the LFO in hertz
 	 */
 	public void setFrequency(double frequency) {
 		wave.setFrequency(frequency);
-	}
-
-	/**
-	 * @param wave
-	 */
-	public void setWave(Wave wave) {
-		this.wave = wave;
 	}
 }

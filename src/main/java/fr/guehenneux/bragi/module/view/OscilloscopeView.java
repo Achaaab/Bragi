@@ -1,18 +1,25 @@
 package fr.guehenneux.bragi.module.view;
 
 import fr.guehenneux.bragi.PainterThread;
-import fr.guehenneux.bragi.ShiftingFloatArray;
 import fr.guehenneux.bragi.module.model.Oscilloscope;
 
+import javax.swing.JComponent;
+import javax.swing.JFrame;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 
-import javax.swing.JComponent;
-import javax.swing.JFrame;
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.RenderingHints.KEY_ANTIALIASING;
+import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.Math.round;
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
  * @author Jonathan Guéhenneux
@@ -21,49 +28,56 @@ public class OscilloscopeView extends JComponent {
 
 	private static final int MARGIN = 5;
 	private static final int HORIZONTAL_DIVISION_COUNT = 10;
+	private static final Color PLOT_COLOR = new Color(64, 224, 224);
+	private static final Color BACKGROUND_COLOR = new Color(0, 0, 0);
+	private static final Color DIVISION_COLOR = new Color(192, 192, 192);
+	private static final Stroke PLOT_STROKE = new BasicStroke(2.0f);
+	private static final Stroke DIVISION_STROKE = new BasicStroke(1.0f);
 
 	private Oscilloscope model;
 
 	/**
-	 * @param model
+	 * @param model model
 	 */
 	public OscilloscopeView(Oscilloscope model) {
 
 		this.model = model;
 
-		JFrame frame = new JFrame(model.getName());
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		var frame = new JFrame(model.getName());
+		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		frame.setSize(400, 300);
 		frame.setLayout(new BorderLayout());
-		frame.add(this, BorderLayout.CENTER);
+		frame.add(this, CENTER);
 		frame.setVisible(true);
-		PainterThread painter = new PainterThread(this, 60);
+
+		var painter = new PainterThread(this, 60);
 		painter.start();
 	}
 
 	@Override
 	public void paint(Graphics graphics) {
 
-		int width = getWidth();
-		int height = getHeight();
-		int plotWidth = width - 2 * MARGIN;
-		int plotHeight = height - 2 * MARGIN;
+		var width = getWidth();
+		var height = getHeight();
+		var plotWidth = width - 2 * MARGIN;
+		var plotHeight = height - 2 * MARGIN;
 
-		Graphics2D graphics2D = (Graphics2D)graphics;
-		graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-		graphics2D.setColor(Color.BLACK);
+		var graphics2D = (Graphics2D) graphics;
+		graphics2D.setRenderingHint(KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+
+		graphics2D.setColor(BACKGROUND_COLOR);
 		graphics2D.fillRect(0, 0, width, height);
 
-		graphics2D.setStroke(new BasicStroke(1.0f));
-		graphics2D.setPaint(Color.LIGHT_GRAY);
+		graphics2D.setStroke(DIVISION_STROKE);
+		graphics2D.setPaint(DIVISION_COLOR);
 
-		for (int horizontalDivisionIndex = 0; horizontalDivisionIndex <= HORIZONTAL_DIVISION_COUNT; horizontalDivisionIndex++) {
+		for (var horizontalDivisionIndex = 0; horizontalDivisionIndex <= HORIZONTAL_DIVISION_COUNT; horizontalDivisionIndex++) {
 
 			graphics2D.drawLine(MARGIN + horizontalDivisionIndex * plotWidth / HORIZONTAL_DIVISION_COUNT, MARGIN,
 					MARGIN + horizontalDivisionIndex * plotWidth / HORIZONTAL_DIVISION_COUNT, MARGIN + plotHeight);
 		}
 
-		int verticalDivision = 0;
+		var verticalDivision = 0;
 
 		while (verticalDivision <= plotHeight / 2) {
 
@@ -76,28 +90,25 @@ public class OscilloscopeView extends JComponent {
 			verticalDivision += plotWidth / HORIZONTAL_DIVISION_COUNT;
 		}
 
-		graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		graphics2D.setStroke(new BasicStroke(2.0f));
-
-		ShiftingFloatArray buffer = model.getBuffer();
-		int sampleCount = buffer.getLength();
-		float sample;
-		int[] xValues = new int[sampleCount];
-		int[] yValues = new int[sampleCount];
+		var buffer = model.getBuffer();
+		var sampleCount = buffer.getLength();
+		var xValues = new int[sampleCount];
+		var yValues = new int[sampleCount];
 
 		synchronized (buffer) {
 
-			for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
+			for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 
-				sample = buffer.read(sampleIndex);
-				sample = Math.max(-1.0f, Math.min(1.0f, sample));
+				var sample = max(-1.0f, min(1.0f, buffer.read(sampleIndex)));
 
 				xValues[sampleIndex] = MARGIN + plotWidth * sampleIndex / sampleCount;
-				yValues[sampleIndex] = MARGIN + plotHeight / 2 - Math.round(plotHeight * sample / 2);
+				yValues[sampleIndex] = MARGIN + plotHeight / 2 - round(plotHeight * sample / 2);
 			}
 		}
 
-		graphics2D.setColor(new Color(64, 224, 224));
+		graphics2D.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+		graphics2D.setStroke(PLOT_STROKE);
+		graphics2D.setColor(PLOT_COLOR);
 		graphics2D.drawPolyline(xValues, yValues, xValues.length);
 	}
 }

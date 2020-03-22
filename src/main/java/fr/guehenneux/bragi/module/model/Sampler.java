@@ -30,10 +30,11 @@ public class Sampler extends Module {
 	}
 
 	@Override
-	public void compute() throws InterruptedException {
+	public int compute() throws InterruptedException {
 
 		var inputSamples = input.read();
 		var sampleCount = inputSamples.length;
+
 		var outputSamples = new float[sampleCount];
 
 		var sampleSum = 0.0f;
@@ -59,5 +60,7 @@ public class Sampler extends Module {
 		}
 
 		output.write(outputSamples);
+
+		return sampleCount;
 	}
 }

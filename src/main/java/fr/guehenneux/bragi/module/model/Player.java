@@ -5,7 +5,6 @@ package fr.guehenneux.bragi.module.model;
  */
 public interface Player {
 
-
 	void play();
 
 	void pause();

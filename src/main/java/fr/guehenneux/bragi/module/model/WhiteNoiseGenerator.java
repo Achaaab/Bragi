@@ -5,6 +5,8 @@ import java.util.Arrays;
 import fr.guehenneux.bragi.Settings;
 import fr.guehenneux.bragi.connection.Output;
 
+import static java.lang.Math.random;
+
 /**
  * @author Jonathan Guéhenneux
  */
@@ -24,15 +26,17 @@ public class WhiteNoiseGenerator extends Module {
   }
 
   @Override
-  protected void compute() throws InterruptedException {
+  protected int compute() throws InterruptedException {
 
-    int sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
-    float[] outputSamples = new float[sampleCount];
+    var sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
+    var outputSamples = new float[sampleCount];
 
-    for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
-      outputSamples[sampleIndex] = (float) Math.random();
+    for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
+      outputSamples[sampleIndex] = (float) random();
     }
 
     output.write(outputSamples);
+
+    return sampleCount;
   }
 }

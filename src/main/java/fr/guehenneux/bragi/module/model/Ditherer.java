@@ -3,38 +3,43 @@ package fr.guehenneux.bragi.module.model;
 import fr.guehenneux.bragi.connection.Input;
 import fr.guehenneux.bragi.connection.Output;
 
+import static java.lang.Math.random;
+
 /**
  * @author Jonathan Guéhenneux
  */
 public class Ditherer extends Module {
 
-  private Input input;
-  private Output output;
+	private Input input;
+	private Output output;
 
-  /**
-   * @param name ditherer name
-   */
-  public Ditherer(String name) {
+	/**
+	 * @param name ditherer name
+	 */
+	public Ditherer(String name) {
 
-    super(name);
+		super(name);
 
-    input = addInput(name + "_input");
-    output = addOutput(name + "_output");
+		input = addInput(name + "_input");
+		output = addOutput(name + "_output");
 
-    start();
-  }
+		start();
+	}
 
-  @Override
-  protected void compute() throws InterruptedException {
+	@Override
+	protected int compute() throws InterruptedException {
 
-    float[] inputSamples = input.read();
-    int sampleCount = inputSamples.length;
-    float[] outputSamples = new float[sampleCount];
+		var inputSamples = input.read();
+		var sampleCount = inputSamples.length;
 
-    for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
-      outputSamples[sampleIndex] = inputSamples[sampleIndex] + (float) Math.random() / 100;
-    }
+		var outputSamples = new float[sampleCount];
 
-    output.write(outputSamples);
-  }
+		for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
+			outputSamples[sampleIndex] = inputSamples[sampleIndex] + (float) random() / 100;
+		}
+
+		output.write(outputSamples);
+
+		return sampleCount;
+	}
 }

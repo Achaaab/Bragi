@@ -8,7 +8,7 @@ import fr.guehenneux.bragi.module.view.OscilloscopeView;
 /**
  * @author Jonathan Guéhenneux
  */
-public class Oscilloscope extends RealTimeModule {
+public class Oscilloscope extends Module {
 
 	private Input input;
 
@@ -23,17 +23,18 @@ public class Oscilloscope extends RealTimeModule {
 
 		input = addInput(name + "_input");
 
-		int oscilloscopeSampleCount = Settings.INSTANCE.getFrameRate() / 60;
+		var oscilloscopeSampleCount = Settings.INSTANCE.getFrameRate() / 60;
 		buffer = new ShiftingFloatArray(oscilloscopeSampleCount);
 
 		new OscilloscopeView(this);
+
 		start();
 	}
 
 	@Override
-	protected int realTimeCompute() throws InterruptedException {
+	protected int compute() throws InterruptedException {
 
-		float[] samples = input.read();
+		var samples = input.read();
 
 		synchronized (buffer) {
 			buffer.write(samples);

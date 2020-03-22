@@ -7,6 +7,9 @@ import org.slf4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Math.round;
+import static java.lang.System.nanoTime;
+import static java.lang.Thread.sleep;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -20,6 +23,9 @@ public abstract class Module implements Runnable {
 	protected List<Input> inputs;
 	protected List<Output> outputs;
 
+	protected boolean started;
+	protected double computingFrameRate;
+
 	/**
 	 * @param name name of the module
 	 */
@@ -29,6 +35,9 @@ public abstract class Module implements Runnable {
 
 		inputs = new ArrayList<>();
 		outputs = new ArrayList<>();
+
+		started = false;
+		computingFrameRate = 0.0;
 	}
 
 	/**
@@ -88,18 +97,12 @@ public abstract class Module implements Runnable {
 	}
 
 	/**
-	 * Connect outputs of this module to inputs of given module.
+	 * Connect the main output of this module to the main input of the given output module.
 	 *
 	 * @param module output module
 	 */
 	public void connectTo(Module module) {
-
-		for (int index = 0; index < outputs.size(); index++) {
-
-			var output = outputs.get(index);
-			var input = module.inputs.get(index);
-			output.connect(input);
-		}
+		getOutput().connect(module.getInput());
 	}
 
 	/**
@@ -112,6 +115,15 @@ public abstract class Module implements Runnable {
 	}
 
 	/**
+	 * Connect the main output of this module to given inputs.
+	 *
+	 * @param inputs inputs to connect
+	 */
+	public void connect(Iterable<Input> inputs) {
+		inputs.forEach(this::connect);
+	}
+
+	/**
 	 * Add an input to this module.
 	 *
 	 * @param name input name
@@ -119,7 +131,7 @@ public abstract class Module implements Runnable {
 	 */
 	protected Input addInput(String name) {
 
-		Input input = new Input(name);
+		var input = new Input(name);
 		inputs.add(input);
 		return input;
 	}
@@ -132,7 +144,7 @@ public abstract class Module implements Runnable {
 	 */
 	protected Output addOutput(String name) {
 
-		Output output = new Output(name);
+		var output = new Output(name);
 		outputs.add(output);
 		return output;
 	}
@@ -158,16 +170,49 @@ public abstract class Module implements Runnable {
 
 		new Thread(this, name).start();
 
+		started = true;
+
 		LOGGER.info("module \"" + name + "\" started");
+	}
+
+	/**
+	 * Stop the module.
+	 */
+	protected void stop() {
+		started = false;
 	}
 
 	@Override
 	public void run() {
 
-		while (true) {
+		while (started) {
 
 			try {
-				compute();
+
+				if (computingFrameRate > 0.0) {
+
+					var startTime = nanoTime();
+					var computedFrameCount = compute();
+					var endTime = nanoTime();
+
+					var duration = endTime - startTime;
+					var expectedDuration = round(1_000_000_000L * computedFrameCount / computingFrameRate);
+
+					if (duration < expectedDuration) {
+
+						var waitTime = expectedDuration - duration;
+						sleep(waitTime / 1_000_000, (int) (waitTime % 1_000_000));
+
+					} else {
+
+						LOGGER.warn("computing rate lower than configured");
+					}
+
+				} else {
+
+					compute();
+				}
+
 			} catch (InterruptedException cause) {
 				throw new RuntimeException(cause);
 			}
@@ -175,7 +220,23 @@ public abstract class Module implements Runnable {
 	}
 
 	/**
+	 * @param computingSampleRate number of frames to compute per second, {@code 0.0} for maximal speed computing
+	 */
+	public void setComputingFrameRate(double computingSampleRate) {
+		this.computingFrameRate = computingSampleRate;
+	}
+
+	/**
+	 * Typically, modules computing is done in 4 optional steps :
+	 * <ol start="0">
+	 *     <li>Read current tuning.</li>
+	 *     <li>Read chunks from inputs.</li>
+	 *     <li>Compute chunks from input chunks and tuning.</li>
+	 *     <li>Write chunks to outputs.</li>
+	 * </ol>
+	 *
+	 * @return number of computed frames
 	 * @throws InterruptedException if computing was interrupted
 	 */
-	protected abstract void compute() throws InterruptedException;
+	protected abstract int compute() throws InterruptedException;
 }

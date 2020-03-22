@@ -1,6 +1,6 @@
-
-
 package fr.guehenneux.bragi.wave;
+
+import static java.lang.Math.pow;
 
 /**
  * @author Jonathan Guéhenneux
@@ -12,7 +12,7 @@ public class Wave {
 	private double periodPercent;
 
 	/**
-	 * @param waveform waveform
+	 * @param waveform  waveform
 	 * @param frequency frequency in hertz (number of oscillations per second)
 	 */
 	public Wave(Waveform waveform, double frequency) {
@@ -45,46 +45,19 @@ public class Wave {
 	}
 
 	/**
-	 * @param sampleCount number of samples to generate
-	 * @param sampleLength duration of a sample in seconds
-	 * @return generated samples
-	 */
-	public float[] getSamples(int sampleCount, double sampleLength) {
-
-		float[] samples = new float[sampleCount];
-		float sample;
-
-		for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
-
-			sample = waveform.getSample(periodPercent);
-			samples[sampleIndex] = sample;
-			periodPercent = (periodPercent + sampleLength * frequency) % 1.0;
-		}
-
-		return samples;
-	}
-
-	/**
 	 * @param modulationSamples modulation samples
-	 * @param sampleCount number of samples to generate
-	 * @param sampleLength duration of a sample in seconds
+	 * @param sampleCount       number of samples to generate
+	 * @param sampleLength      duration of a sample in seconds
 	 * @return generated samples
 	 */
 	public float[] getSamples(float[] modulationSamples, int sampleCount, double sampleLength) {
 
-		float[] samples = new float[sampleCount];
-		float sample;
+		var samples = new float[sampleCount];
 
-		float modulationSample;
-		double modulationFactor;
+		for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 
-		for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
-
-			modulationSample = modulationSamples[sampleIndex];
-			modulationFactor = Math.pow(2, modulationSample / 20);
-
-			sample = waveform.getSample(periodPercent);
-			samples[sampleIndex] = sample;
+			samples[sampleIndex] = waveform.getSample(periodPercent);
+			var modulationFactor = modulationSamples == null ? 1.0 : pow(2.0, modulationSamples[sampleIndex]);
 			periodPercent = (periodPercent + sampleLength * frequency * modulationFactor) % 1.0;
 		}
 

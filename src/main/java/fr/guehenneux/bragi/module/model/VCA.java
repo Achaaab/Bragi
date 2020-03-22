@@ -2,6 +2,10 @@ package fr.guehenneux.bragi.module.model;
 
 import fr.guehenneux.bragi.connection.Input;
 import fr.guehenneux.bragi.connection.Output;
+import org.slf4j.Logger;
+
+import static java.lang.Math.pow;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Voltage-Controlled Amplifier
@@ -9,6 +13,8 @@ import fr.guehenneux.bragi.connection.Output;
  * @author Jonathan Guéhenneux
  */
 public class VCA extends Module {
+
+	private static final Logger LOGGER = getLogger(VCA.class);
 
 	private Input input;
 	private Input gain;
@@ -29,27 +35,26 @@ public class VCA extends Module {
 	}
 
 	@Override
-	public void compute() throws InterruptedException {
+	public int compute() throws InterruptedException {
 
-		float[] inputSamples = input.read();
-		float[] gainSamples = gain.read();
+		var inputSamples = input.read();
+		var sampleCount = inputSamples.length;
+		var outputSamples = new float[sampleCount];
 
-		int sampleCount = inputSamples.length;
-		float[] outputSamples = new float[sampleCount];
+		var gainSamples = gain.read();
 
-		float inputSample;
-		float gainSample;
-		float outputSample;
+		for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 
-		for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
+			var inputSample = inputSamples[sampleIndex];
+			var gainSample = gainSamples == null ? 0 : gainSamples[sampleIndex];
+			var outputSample = (float) (inputSample * pow(2, 4 * (gainSample - 1)));
 
-			inputSample = inputSamples[sampleIndex];
-			gainSample = gainSamples[sampleIndex];
-			outputSample = (float) (inputSample * Math.pow(2, 4 * (gainSample - 1)));
 			outputSamples[sampleIndex] = outputSample;
 		}
 
 		output.write(outputSamples);
+
+		return sampleCount;
 	}
 
 	/**

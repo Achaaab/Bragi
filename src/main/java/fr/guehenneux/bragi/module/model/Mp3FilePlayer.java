@@ -44,11 +44,12 @@ public class Mp3FilePlayer extends Module implements Player {
 	}
 
 	@Override
-	public void compute() throws InterruptedException {
+	public int compute() throws InterruptedException {
 
 		try {
 
 			var header = bitStream.readFrame();
+			var frameCount = 0;
 
 			if (header != null) {
 
@@ -58,10 +59,14 @@ public class Mp3FilePlayer extends Module implements Player {
 
 				var samples = split(sampleBuffer);
 
-				for (int channelIndex = 0; channelIndex < channelCount; channelIndex++) {
+				for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
 					outputs.get(channelIndex).write(samples[channelIndex]);
 				}
+
+				frameCount = samples[0].length;
 			}
+
+			return frameCount;
 
 		} catch (BitstreamException | DecoderException cause) {
 

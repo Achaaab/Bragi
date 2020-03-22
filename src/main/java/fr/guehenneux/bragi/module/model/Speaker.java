@@ -61,18 +61,22 @@ public class Speaker extends Module {
 	}
 
 	@Override
-	public void compute() throws InterruptedException {
+	public int compute() throws InterruptedException {
 
-		int channelCount = Settings.INSTANCE.getChannels();
-		float[][] samples = new float[channelCount][];
+		var channelCount = Settings.INSTANCE.getChannels();
 
-		for (int channelIndex = 0; channelIndex < channelCount; channelIndex++) {
+		var samples = new float[channelCount][];
+
+		for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
 			samples[channelIndex] = inputs.get(channelIndex).read();
 		}
 
-		byte[] data = mix(samples);
+		var data = mix(samples);
+
 		checkLineBufferHealth();
 		sourceDataLine.write(data, 0, data.length);
+
+		return samples[0].length;
 	}
 
 	/**

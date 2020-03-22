@@ -4,11 +4,9 @@ import fr.guehenneux.bragi.Settings;
 import fr.guehenneux.bragi.connection.Input;
 import fr.guehenneux.bragi.connection.Output;
 import fr.guehenneux.bragi.module.view.KeyboardView;
-import fr.guehenneux.bragi.wave.Pulse;
 import fr.guehenneux.bragi.wave.Sawtooth;
 import fr.guehenneux.bragi.wave.Wave;
 import fr.guehenneux.bragi.wave.Waveform;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.awt.event.KeyEvent;
@@ -97,24 +95,20 @@ public class Keyboard extends Module {
 	}
 
 	@Override
-	public void compute() throws InterruptedException {
+	public int compute() throws InterruptedException {
 
-		int sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
-		double sampleLength = Settings.INSTANCE.getFrameLength();
+		var sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
+		var sampleLength = Settings.INSTANCE.getFrameLength();
 
-		if (modulation.isConnected()) {
+		var modulationSamples = modulation.tryRead();
 
-			float[] modulationSamples = modulation.read();
-			output.write(wave.getSamples(modulationSamples, sampleCount, sampleLength));
+		var samples = wave.getSamples(modulationSamples, sampleCount, sampleLength);
+		var gateSamples = new float[] { gateSample };
 
-		} else {
+		output.write(samples);
+		gate.tryWrite(gateSamples);
 
-			output.write(wave.getSamples(sampleCount, sampleLength));
-		}
-
-		if (gate.isConnected()) {
-			gate.write(new float[]{gateSample});
-		}
+		return sampleCount;
 	}
 
 	/**

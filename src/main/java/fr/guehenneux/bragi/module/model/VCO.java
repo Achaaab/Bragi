@@ -21,8 +21,8 @@ public class VCO extends Module {
 	private Wave wave;
 
 	/**
-	 * @param name
-	 * @param frequency
+	 * @param name name of the VCO
+	 * @param frequency initial frequency of the VCO in hertz
 	 */
 	public VCO(String name, double frequency) {
 
@@ -39,24 +39,17 @@ public class VCO extends Module {
 	}
 
 	@Override
-	public void compute() throws InterruptedException {
+	public int compute() throws InterruptedException {
 
-		int sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
-		double sampleLength = Settings.INSTANCE.getFrameLength();
+		var sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
+		var sampleLength = Settings.INSTANCE.getFrameLength();
 
-		float[] samples;
-
-		if (modulation.isConnected()) {
-
-			float[] modulationSamples = modulation.read();
-			samples = wave.getSamples(modulationSamples, sampleCount, sampleLength);
-
-		} else {
-
-			samples = wave.getSamples(sampleCount, sampleLength);
-		}
+		var modulationSamples = modulation.tryRead();
+		var samples = wave.getSamples(modulationSamples, sampleCount, sampleLength);
 
 		output.write(samples);
+
+		return sampleCount;
 	}
 
 	/**

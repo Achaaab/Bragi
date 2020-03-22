@@ -39,14 +39,14 @@ public class WavFilePlayer extends Module implements Player {
 	}
 
 	@Override
-	public void compute() throws InterruptedException {
+	public int compute() throws InterruptedException {
 
-		int bufferSizeInFrames = Settings.INSTANCE.getBufferSizeInFrames();
-		float[][] samples = new float[channelCount][bufferSizeInFrames];
+		var bufferSizeInFrames = Settings.INSTANCE.getBufferSizeInFrames();
+		var samples = new float[channelCount][bufferSizeInFrames];
 
 		try {
 
-			int count = wavFile.read(samples, offset);
+			var count = wavFile.read(samples, offset);
 
 			if (count <= 0) {
 				offset = 0;
@@ -59,9 +59,11 @@ public class WavFilePlayer extends Module implements Player {
 			throw new RuntimeException(cause);
 		}
 
-		for (int channelIndex = 0; channelIndex < channelCount; channelIndex++) {
+		for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
 			outputs.get(channelIndex).write(samples[channelIndex]);
 		}
+
+		return bufferSizeInFrames;
 	}
 
 	@Override

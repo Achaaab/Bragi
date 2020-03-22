@@ -6,6 +6,11 @@ import fr.guehenneux.bragi.connection.Output;
 import fr.guehenneux.bragi.module.view.ADSRView;
 import org.slf4j.Logger;
 
+import static fr.guehenneux.bragi.module.model.ADSRState.ATTACK;
+import static fr.guehenneux.bragi.module.model.ADSRState.DECAY;
+import static fr.guehenneux.bragi.module.model.ADSRState.IDLE;
+import static fr.guehenneux.bragi.module.model.ADSRState.RELEASE;
+import static fr.guehenneux.bragi.module.model.ADSRState.SUSTAIN;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -51,7 +56,7 @@ public class ADSR extends Module {
 		release = 2;
 
 		gain = MINIMAL_GAIN;
-		state = ADSRState.IDLE;
+		state = IDLE;
 		previousGateSample = 0.0f;
 
 		new ADSRView(this);
@@ -59,18 +64,18 @@ public class ADSR extends Module {
 	}
 
 	@Override
-	protected void compute() throws InterruptedException {
+	protected int compute() throws InterruptedException {
+
+		sampleLength = Settings.INSTANCE.getFrameLength();
 
 		var gateSample = gate.read()[0];
-
-		int sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
-		sampleLength = Settings.INSTANCE.getFrameLength();
-		float[] gains = new float[sampleCount];
+		var sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
+		var gains = new float[sampleCount];
 
 		if (gateSample > 0 && previousGateSample <= 0) {
-			state = ADSRState.ATTACK;
+			state = ATTACK;
 		} else if (gateSample < 0 && previousGateSample >= 0) {
-			state = ADSRState.RELEASE;
+			state = RELEASE;
 		}
 
 		previousGateSample = gateSample;
@@ -88,15 +93,15 @@ public class ADSR extends Module {
 					break;
 
 				case ATTACK:
-					step(MAXIMAL_GAIN, attack, ADSRState.DECAY);
+					step(MAXIMAL_GAIN, attack, DECAY);
 					break;
 
 				case DECAY:
-					step(sustain, decay, ADSRState.SUSTAIN);
+					step(sustain, decay, SUSTAIN);
 					break;
 
 				case RELEASE:
-					step(MINIMAL_GAIN, release, ADSRState.IDLE);
+					step(MINIMAL_GAIN, release, IDLE);
 					break;
 			}
 
@@ -104,6 +109,8 @@ public class ADSR extends Module {
 		}
 
 		output.write(gains);
+
+		return sampleCount;
 	}
 
 	/**

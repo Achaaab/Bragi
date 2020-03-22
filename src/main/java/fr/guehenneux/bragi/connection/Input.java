@@ -43,11 +43,20 @@ public class Input {
 	 */
 	public synchronized float[] read() throws InterruptedException {
 
-		while (buffer == null) {
+		while (!isConnected()) {
 			wait();
 		}
 
 		return buffer.take();
+	}
+
+	/**
+	 * Returns the next chunk, or {@code null} if the buffer is empty. Does not wait.
+	 *
+	 * @return next chunk
+	 */
+	public synchronized float[] tryRead() {
+		return isConnected() ? buffer.poll() : null;
 	}
 
 	@Override

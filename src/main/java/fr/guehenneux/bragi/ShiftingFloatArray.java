@@ -1,5 +1,8 @@
 package fr.guehenneux.bragi;
 
+import static java.lang.Math.max;
+import static java.lang.System.arraycopy;
+
 /**
  * @author Jonathan Guéhenneux
  */
@@ -42,25 +45,25 @@ public class ShiftingFloatArray {
 	 */
 	public void write(float[] source) {
 
-		int sourceLength = source.length;
-		int sourceIndex = Math.max(0, sourceLength - length);
-		int writeLength = sourceLength - sourceIndex;
-		int remainingLength = length - index;
+		var sourceLength = source.length;
+		var sourceIndex = max(0, sourceLength - length);
+		var writeLength = sourceLength - sourceIndex;
+		var remainingLength = length - index;
 
 		if (writeLength > remainingLength) {
 
-			System.arraycopy(source, sourceIndex, array, index, remainingLength);
-			System.arraycopy(source, sourceIndex + remainingLength, array, 0, writeLength - remainingLength);
+			arraycopy(source, sourceIndex, array, index, remainingLength);
+			arraycopy(source, sourceIndex + remainingLength, array, 0, writeLength - remainingLength);
 			index = writeLength - remainingLength;
 
 		} else if (writeLength < remainingLength){
 
-			System.arraycopy(source, sourceIndex, array, index, writeLength);
+			arraycopy(source, sourceIndex, array, index, writeLength);
 			index += writeLength;
 
 		} else {
 
-			System.arraycopy(source, sourceIndex, array, index, writeLength);
+			arraycopy(source, sourceIndex, array, index, writeLength);
 			index = 0;
 		}
 	}

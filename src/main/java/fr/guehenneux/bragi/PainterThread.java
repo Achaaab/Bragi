@@ -7,6 +7,11 @@ import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import java.lang.reflect.InvocationTargetException;
 
+import static java.lang.Math.round;
+import static java.lang.System.nanoTime;
+import static java.lang.Thread.sleep;
+import static javax.swing.SwingUtilities.invokeAndWait;
+
 /**
  * @author Jonathan Guéhenneux
  */
@@ -25,7 +30,7 @@ public class PainterThread extends Thread {
 
 		this.component = component;
 
-		loopTime = Math.round(1_000_000_000.0 / fps);
+		loopTime = round(1_000_000_000.0 / fps);
 		component.setIgnoreRepaint(true);
 	}
 
@@ -33,7 +38,7 @@ public class PainterThread extends Thread {
 	public void run() {
 
 		long startTime;
-		long endTime = System.nanoTime();
+		var endTime = nanoTime();
 
 		while (true) {
 
@@ -41,7 +46,7 @@ public class PainterThread extends Thread {
 
 			try {
 
-				SwingUtilities.invokeAndWait(this::paint);
+				invokeAndWait(this::paint);
 				endTime = waitLoopTime(startTime);
 
 			} catch (InterruptedException | InvocationTargetException cause) {
@@ -59,14 +64,15 @@ public class PainterThread extends Thread {
 	private long waitLoopTime(long startTime) throws InterruptedException {
 
 		long loopEndTime;
-		long endTime = System.nanoTime();
-		long paintTime = endTime - startTime;
+
+		var endTime = nanoTime();
+		var paintTime = endTime - startTime;
 
 		if (paintTime < loopTime) {
 
-			long waitTime = (loopTime - paintTime) / 1_000_000;
-			Thread.sleep(waitTime);
-			loopEndTime = System.nanoTime();
+			var waitTime = (loopTime - paintTime) / 1_000_000;
+			sleep(waitTime);
+			loopEndTime = nanoTime();
 
 		} else {
 

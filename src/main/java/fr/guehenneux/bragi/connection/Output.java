@@ -1,26 +1,27 @@
 package fr.guehenneux.bragi.connection;
 
 import fr.guehenneux.bragi.module.model.Module;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 /**
  * @author Jonathan Guéhenneux
  */
 public class Output {
 
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = getLogger(Output.class);
 
 	private String name;
 	private List<BlockingQueue<float[]>> buffers;
 
 	/**
-	 * @param name output name
+	 * @param name name of the output
 	 */
 	public Output(String name) {
 
@@ -50,6 +51,21 @@ public class Output {
 
 		for (var buffer : buffers) {
 			buffer.put(chunk);
+		}
+	}
+
+	/**
+	 * If this output is connected, try to write the given chunk in each buffer (1 buffer per input connected).
+	 *
+	 * @param chunk optional chunk to write
+	 */
+	public synchronized void tryWrite(float[] chunk) {
+
+		if (isConnected()) {
+
+			for (var buffer : buffers) {
+				buffer.offer(chunk);
+			}
 		}
 	}
 

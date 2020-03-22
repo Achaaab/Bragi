@@ -6,6 +6,9 @@ import fr.guehenneux.bragi.Settings;
 import fr.guehenneux.bragi.connection.Input;
 import fr.guehenneux.bragi.module.view.SpectrumAnalyzerView;
 
+import static java.lang.Math.min;
+import static java.lang.System.arraycopy;
+
 /**
  * @author Jonathan Guéhenneux
  */
@@ -42,18 +45,16 @@ public class SpectrumAnalyzer extends Module {
 	}
 
 	@Override
-	public void compute() throws InterruptedException {
+	public int compute() throws InterruptedException {
 
-		float[] samples = input.read();
-		int sampleIndex = 0;
-		int sampleCount = samples.length;
-		int readSampleCount;
-		float[] magnitudes;
+		var samples = input.read();
+		var sampleCount = samples.length;
+		var sampleIndex = 0;
 
 		while (sampleIndex < sampleCount) {
 
-			readSampleCount = Math.min(sampleCount - sampleIndex, FFT_SAMPLE_COUNT - fftSampleIndex);
-			System.arraycopy(samples, sampleIndex, fftSamples, fftSampleIndex, readSampleCount);
+			var readSampleCount = min(sampleCount - sampleIndex, FFT_SAMPLE_COUNT - fftSampleIndex);
+			arraycopy(samples, sampleIndex, fftSamples, fftSampleIndex, readSampleCount);
 
 			sampleIndex += readSampleCount;
 			fftSampleIndex += readSampleCount;
@@ -61,10 +62,11 @@ public class SpectrumAnalyzer extends Module {
 			if (fftSampleIndex == FFT_SAMPLE_COUNT) {
 
 				fft.forward(fftSamples);
-				magnitudes = fft.getAverages();
-				presentation.display(magnitudes);
+				presentation.display(fft.getAverages());
 				fftSampleIndex = 0;
 			}
 		}
+
+		return sampleCount;
 	}
 }

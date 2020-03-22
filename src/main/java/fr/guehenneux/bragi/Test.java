@@ -31,9 +31,9 @@ import static org.slf4j.LoggerFactory.getLogger;
 /**
  * @author Jonathan Guéhenneux
  */
-public class TestSon {
+public class Test {
 
-	private static final Logger LOGGER = getLogger(TestSon.class);
+	private static final Logger LOGGER = getLogger(Test.class);
 
 	private static final Path TEST_MP3_PATH = Paths.get(
 			"/media/jonathan/media/Musique/Aaliyah/Aaliyah (2001)/15. Try Again.mp3");
@@ -48,7 +48,38 @@ public class TestSon {
 	public static void main(String... arguments) throws LineUnavailableException, IOException, CorruptWavFileException,
 			JavaLayerException {
 
-		montage4();
+		testOscilloscope();
+	}
+
+	/**
+	 * @throws IOException
+	 * @throws LineUnavailableException
+	 */
+	public static void testOscilloscope() throws IOException, LineUnavailableException {
+
+		var vco = new VCO("vco", 440);
+		var oscilloscope = new Oscilloscope("oscilloscope");
+
+		oscilloscope.setComputingFrameRate(44100);
+
+		new Thread(() -> vco.connectTo(oscilloscope)).start();
+	}
+
+	/**
+	 * Test computing frame rate. When there is no speaker to pace the other modules but we still want modules to
+	 * respect a given frame rate, we can set a computing frame rate on one of the output modules.
+	 *
+	 * @throws IOException
+	 */
+	public static void testComputingFrameRate() throws IOException {
+
+		var player = new Mp3FilePlayer("player", TEST_MP3_PATH);
+		var leftSpectrum = new SpectrumAnalyzer("left_spectrum");
+		var rightSpectrum = new SpectrumAnalyzer("right spectrum");
+
+		leftSpectrum.setComputingFrameRate(4410);
+
+		player.connectTo(leftSpectrum, rightSpectrum);
 	}
 
 	/**
@@ -176,23 +207,23 @@ public class TestSon {
 		var oscilloscope = new Oscilloscope("oscilloscope");
 		var vca = new VCA("vca");
 
-		keyboard.getOutput().connect(vca.getInput());
-		keyboard.getGate().connect(adsr.getGate());
-		adsr.getOutput().connect(vca.getGain());
-		adsr.getOutput().connect(oscilloscope);
-		vca.getOutput().connect(speaker);
+		new Thread(() -> keyboard.connectTo(vca)).start();
+		new Thread(() -> vca.connect(speaker.getInputs())).start();
+		new Thread(() -> keyboard.getGate().connect(adsr.getGate())).start();
+		new Thread(() -> adsr.connect(vca.getGain())).start();
+		new Thread(() -> vca.connectTo(oscilloscope)).start();
 	}
 
 	/**
 	 * @throws FileNotFoundException
 	 * @throws LineUnavailableException
 	 */
-	public static void testFiltrePasseBas() throws IOException, LineUnavailableException {
+	public static void testLowPassFilter() throws IOException, LineUnavailableException {
 
-		var speaker = new Speaker("hauts-parleurs");
-		var player = new Mp3FilePlayer("Lecteur de fichier MP3", TEST_MP3_PATH);
-		var leftFilter = new LowPassVCF("filtre passe-bas gauche");
-		var rightFilter = new LowPassVCF("filtre passe-bas droit");
+		var speaker = new Speaker("speaker");
+		var player = new Mp3FilePlayer("player", TEST_MP3_PATH);
+		var leftFilter = new LowPassVCF("left_filter");
+		var rightFilter = new LowPassVCF("rightFilter");
 
 		new Thread(() -> player.connectTo(leftFilter, rightFilter)).start();
 		new Thread(() -> speaker.connectFrom(leftFilter, rightFilter)).start();
