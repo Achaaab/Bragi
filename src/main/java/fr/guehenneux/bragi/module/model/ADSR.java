@@ -4,21 +4,21 @@ import fr.guehenneux.bragi.Settings;
 import fr.guehenneux.bragi.connection.Input;
 import fr.guehenneux.bragi.connection.Output;
 import fr.guehenneux.bragi.module.view.ADSRView;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author Jonathan Guéhenneux
  */
 public class ADSR extends Module {
 
+	private static final Logger LOGGER = getLogger(ADSR.class);
+
 	public static final float MINIMAL_GAIN = -1.0f;
 	public static final float MAXIMAL_GAIN = 1.0f;
-
-	private static final Logger LOGGER = LogManager.getLogger();
 
 	private Input gate;
 	private Output output;

@@ -3,13 +3,15 @@ package fr.guehenneux.bragi.module.model;
 import fr.guehenneux.bragi.connection.Input;
 import fr.guehenneux.bragi.connection.Output;
 
+import static java.lang.Math.round;
+
 /**
  * @author Jonathan Guéhenneux
  */
 public class Sampler extends Module {
 
-	private static final int SAMPLE_SIZE = 63;
-	private static final int FRAME_RATE_DIVISOR = 1;
+	private static final int SAMPLE_SIZE = 64;
+	private static final int FRAME_RATE_DIVISOR = 4;
 
 	private Input input;
 	private Output output;
@@ -30,22 +32,22 @@ public class Sampler extends Module {
 	@Override
 	public void compute() throws InterruptedException {
 
-		float[] inputSamples = input.read();
-		int sampleCount = inputSamples.length;
-		float[] outputSamples = new float[sampleCount];
+		var inputSamples = input.read();
+		var sampleCount = inputSamples.length;
+		var outputSamples = new float[sampleCount];
 
-		float sampleSum = 0, sampleMedium;
-		int groupSize = 0;
+		var sampleSum = 0.0f;
+		var groupSize = 0;
 
-		for (int sampleIndex = 0; sampleIndex < sampleCount; ) {
+		for (var sampleIndex = 0; sampleIndex < sampleCount; ) {
 
 			sampleSum += inputSamples[sampleIndex++];
 			groupSize++;
 
 			if (groupSize == FRAME_RATE_DIVISOR || sampleIndex == sampleCount) {
 
-				sampleMedium = sampleSum / groupSize;
-				sampleMedium = (float) Math.round(sampleMedium * SAMPLE_SIZE) / SAMPLE_SIZE;
+				var sampleMedium = sampleSum / groupSize;
+				sampleMedium = (float) round(sampleMedium * SAMPLE_SIZE) / SAMPLE_SIZE;
 
 				for (int i = 0; i < groupSize; i++) {
 					outputSamples[sampleIndex - i - 1] = sampleMedium;

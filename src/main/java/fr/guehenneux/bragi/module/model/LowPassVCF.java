@@ -2,6 +2,8 @@ package fr.guehenneux.bragi.module.model;
 
 import fr.guehenneux.bragi.Settings;
 
+import static java.lang.Math.exp;
+
 /**
  * Voltage-Controlled Filter with lowpass response
  *
@@ -42,7 +44,7 @@ public class LowPassVCF extends VCF {
 			// empirical tuning
 			float k = 3.6f * f - 1.6f * f * f - 1;
 			float p = (k + 1) * 0.5f;
-			float scale = (float) Math.exp((1 - p) * 1.386249);
+			float scale = (float) exp((1 - p) * 1.386249);
 			float r = rezLevel / 100 * scale;
 
 			inputSample = inputSamples[sampleIndex] - r * y4;

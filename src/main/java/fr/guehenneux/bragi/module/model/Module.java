@@ -2,26 +2,26 @@ package fr.guehenneux.bragi.module.model;
 
 import fr.guehenneux.bragi.connection.Input;
 import fr.guehenneux.bragi.connection.Output;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.apache.logging.log4j.LogManager.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author Jonathan Guéhenneux
  */
 public abstract class Module implements Runnable {
 
-	private static final Logger LOGGER = getLogger();
+	private static final Logger LOGGER = getLogger(Module.class);
 
 	protected String name;
 	protected List<Input> inputs;
 	protected List<Output> outputs;
 
 	/**
-	 * @param name
+	 * @param name name of the module
 	 */
 	public Module(String name) {
 
@@ -48,15 +48,43 @@ public abstract class Module implements Runnable {
 	/**
 	 * @return the first input (by convention it is the main input), {@code null} if there is no input
 	 */
-	public final Input getInput() {
+	public Input getInput() {
 		return inputs.isEmpty() ? null : inputs.get(0);
 	}
 
 	/**
 	 * @return the first output (by convention it is the main output), {@code null} if there is no output
 	 */
-	public final Output getOutput() {
+	public Output getOutput() {
 		return outputs.isEmpty() ? null : outputs.get(0);
+	}
+
+	/**
+	 * Connect outputs of this module to inputs of output modules.
+	 *
+	 * @param modules output modules
+	 */
+	public void connectTo(Module... modules) {
+
+		var channelCount = modules.length;
+
+		for (var channel = 0; channel < channelCount; channel++) {
+			getOutputs().get(channel).connect(modules[channel].getInput());
+		}
+	}
+
+	/**
+	 * Connect outputs of input modules to inputs of this module.
+	 *
+	 * @param modules input modules
+	 */
+	public void connectFrom(Module... modules) {
+
+		var channelCount = modules.length;
+
+		for (var channel = 0; channel < channelCount; channel++) {
+			modules[channel].getOutput().connect(getInputs().get(channel));
+		}
 	}
 
 	/**
@@ -64,17 +92,23 @@ public abstract class Module implements Runnable {
 	 *
 	 * @param module output module
 	 */
-	public void connect(Module module) {
+	public void connectTo(Module module) {
 
-		var outputCount = outputs.size();
-		var inputCount = module.inputs.size();
-
-		for (int index = 0; index < outputCount && index < inputCount; index++) {
+		for (int index = 0; index < outputs.size(); index++) {
 
 			var output = outputs.get(index);
-			var input = module.inputs.get(index++);
+			var input = module.inputs.get(index);
 			output.connect(input);
 		}
+	}
+
+	/**
+	 * Connect the first output of this module to the given input.
+	 *
+	 * @param input input to connect
+	 */
+	public void connect(Input input) {
+		getOutput().connect(input);
 	}
 
 	/**

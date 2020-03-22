@@ -18,7 +18,6 @@ import fr.guehenneux.bragi.module.model.WhiteNoiseGenerator;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.jlp;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.sound.sampled.LineUnavailableException;
 import java.io.File;
@@ -49,7 +48,7 @@ public class TestSon {
 	public static void main(String... arguments) throws LineUnavailableException, IOException, CorruptWavFileException,
 			JavaLayerException {
 
-		montage8();
+		montage4();
 	}
 
 	/**
@@ -68,9 +67,9 @@ public class TestSon {
 	 */
 	public static void montage8() throws LineUnavailableException {
 
-		var lfoKeyboard = new LFO("lfo_keyboard", 1);
+		var lfo = new LFO("lfo", 1);
 		var keyboard = new Keyboard("keyboard");
-		var adsrVca = new ADSR("adsr_piano");
+		var adsrVca = new ADSR("adsr_vca");
 		var adsrFilter = new ADSR("adsr_filter");
 		var vca = new VCA("vca");
 		var speaker = new Speaker("speaker");
@@ -79,17 +78,17 @@ public class TestSon {
 		var oscilloscopeAdsrVca = new Oscilloscope("oscilloscope_adsr_vca");
 		var oscilloscopeAdsrFilter = new Oscilloscope("oscilloscope_adsr_filter");
 
-		lfoKeyboard.getOutput().connect(keyboard.getModulation());
-		keyboard.getOutput().connect(filter.getInput());
-		keyboard.getGate().connect(adsrVca.getGate());
-		keyboard.getGate().connect(adsrFilter.getGate());
-		adsrVca.getOutput().connect(vca.getGain());
-		adsrVca.getOutput().connect(oscilloscopeAdsrVca);
-		adsrFilter.getOutput().connect(filter.getModulation());
-		adsrFilter.getOutput().connect(oscilloscopeAdsrFilter);
-		filter.getOutput().connect(vca.getInput());
-		vca.connect(oscilloscope);
-		vca.getOutput().connect(speaker);
+		new Thread(() -> lfo.connectTo(keyboard)).start();
+		new Thread(() -> keyboard.getOutput().connect(filter.getInput())).start();
+		new Thread(() -> keyboard.getGate().connect(adsrVca.getGate())).start();
+		new Thread(() -> keyboard.getGate().connect(adsrFilter.getGate())).start();
+		new Thread(() -> adsrVca.connect(vca.getGain())).start();
+		new Thread(() -> adsrVca.connectTo(oscilloscopeAdsrVca)).start();
+		new Thread(() -> adsrFilter.connect(filter.getModulation())).start();
+		new Thread(() -> adsrFilter.connectTo(oscilloscopeAdsrFilter)).start();
+		new Thread(() -> filter.connect(vca.getInput())).start();
+		new Thread(() -> vca.connectTo(oscilloscope)).start();
+		new Thread(() -> vca.connectTo(speaker)).start();
 	}
 
 	/**
@@ -114,8 +113,8 @@ public class TestSon {
 		var spectrumAnalyzer = new SpectrumAnalyzer("spectrumAnalyzer");
 		var oscilloscope = new Oscilloscope("oscilloscope");
 
-		vco.connect(oscilloscope);
-		vco.connect(spectrumAnalyzer);
+		vco.connectTo(oscilloscope);
+		vco.connectTo(spectrumAnalyzer);
 		vco.getOutput().connect(speaker);
 	}
 
@@ -126,10 +125,18 @@ public class TestSon {
 		var rightSampler = new Sampler("right_sampler");
 		var speaker = new Speaker("speaker");
 
-		microphone.getOutputs().get(0).connect(leftSampler);
-		microphone.getOutputs().get(1).connect(rightSampler);
-		leftSampler.getOutput().connect(speaker.getInputs().get(0));
-		rightSampler.getOutput().connect(speaker.getInputs().get(1));
+		var leftFilter = new LowPassVCF("left_filter");
+		var rightFilter = new LowPassVCF("right_filter");
+
+		new Thread(() -> microphone.connectTo(leftFilter, rightFilter)).start();
+		new Thread(() -> speaker.connectFrom(leftFilter, rightFilter)).start();
+
+		/*
+		new Thread(() -> microphone.connectTo(leftSampler, rightSampler)).start();
+		new Thread(() -> leftSampler.connectTo(leftFilter)).start();
+		new Thread(() -> rightSampler.connectTo(rightFilter)).start();
+		new Thread(() -> speaker.connectFrom(leftFilter, rightFilter)).start();
+		*/
 	}
 
 	public static void montage5() throws IOException, LineUnavailableException {
@@ -154,7 +161,7 @@ public class TestSon {
 		var oscilloscope = new Oscilloscope("oscilloscope");
 		var speaker = new Speaker("speaker");
 
-		vco.connect(oscilloscope);
+		vco.connectTo(oscilloscope);
 		vco.getOutput().connect(speaker);
 	}
 
@@ -183,15 +190,12 @@ public class TestSon {
 	public static void testFiltrePasseBas() throws IOException, LineUnavailableException {
 
 		var speaker = new Speaker("hauts-parleurs");
-		var mp3FilePlayer = new Mp3FilePlayer("Lecteur de fichier MP3", TEST_MP3_PATH);
+		var player = new Mp3FilePlayer("Lecteur de fichier MP3", TEST_MP3_PATH);
 		var leftFilter = new LowPassVCF("filtre passe-bas gauche");
 		var rightFilter = new LowPassVCF("filtre passe-bas droit");
 
-		mp3FilePlayer.getOutputs().get(0).connect(leftFilter.getInput());
-		mp3FilePlayer.getOutputs().get(1).connect(rightFilter.getInput());
-
-		leftFilter.getOutput().connect(speaker.getInputs().get(0));
-		rightFilter.getOutput().connect(speaker.getInputs().get(1));
+		new Thread(() -> player.connectTo(leftFilter, rightFilter)).start();
+		new Thread(() -> speaker.connectFrom(leftFilter, rightFilter)).start();
 	}
 
 	/**
@@ -201,7 +205,7 @@ public class TestSon {
 	public static void testFiltrePasseBande() throws LineUnavailableException, IOException {
 
 		var speaker = new Speaker("Hauts-parleurs");
-		var mp3FilePlayer = new Mp3FilePlayer("Lecteur de fichier MP3", TEST_MP3_PATH);
+		var player = new Mp3FilePlayer("Lecteur de fichier MP3", TEST_MP3_PATH);
 		var spectrumAnalyzerLeft = new SpectrumAnalyzer("Analyseur de spectre, gauche");
 		var spectrumAnalyzerRight = new SpectrumAnalyzer("Analyseur de spectre, droit");
 		var oscilloscopeLeft = new Oscilloscope("Oscilloscope, gauche");
@@ -218,21 +222,14 @@ public class TestSon {
 		highFilterLeft.setCutOffFrequency(880);
 		highFilterRight.setCutOffFrequency(880);
 
-		var outputs = mp3FilePlayer.getOutputs();
-
-		outputs.get(0).connect(highFilterLeft.getInput());
-		outputs.get(1).connect(highFilterRight.getInput());
-		highFilterLeft.getOutput().connect(lowFilterLeft.getInput());
-		highFilterRight.getOutput().connect(lowFilterRight.getInput());
-		lowFilterLeft.getOutput().connect(speaker.getInputs().get(0));
-		lowFilterRight.getOutput().connect(speaker.getInputs().get(1));
-		lowFilterLeft.getOutput().connect(spectrumAnalyzerFilterLeft.getInput());
-		lowFilterRight.getOutput().connect(spectrumAnalyzerFilterRight.getInput());
-
-		outputs.get(0).connect(spectrumAnalyzerLeft.getInput());
-		outputs.get(1).connect(spectrumAnalyzerRight.getInput());
-		outputs.get(0).connect(oscilloscopeLeft.getInput());
-		outputs.get(1).connect(oscilloscopeRight.getInput());
+		new Thread(() -> player.connectTo(highFilterLeft, highFilterRight)).start();
+		new Thread(() -> player.connectTo(spectrumAnalyzerLeft, spectrumAnalyzerRight)).start();
+		new Thread(() -> player.connectTo(oscilloscopeLeft, oscilloscopeRight)).start();
+		new Thread(() -> highFilterLeft.connectTo(lowFilterLeft)).start();
+		new Thread(() -> highFilterRight.connectTo(lowFilterRight)).start();
+		new Thread(() -> speaker.connectFrom(lowFilterLeft, lowFilterRight)).start();
+		new Thread(() -> lowFilterLeft.connectTo(spectrumAnalyzerFilterLeft)).start();
+		new Thread(() -> lowFilterRight.connectTo(spectrumAnalyzerFilterRight)).start();
 	}
 
 	public static void testFiltrePasseHaut() throws LineUnavailableException, IOException {
@@ -283,7 +280,7 @@ public class TestSon {
 		var leftSpectrumAnalyzer = new SpectrumAnalyzer("left_spectrum_analyzer");
 		var rightSpectrumAnalyzer = new SpectrumAnalyzer("right_spectrum_analyzer");
 
-		microphone.connect(speaker);
+		microphone.connectTo(speaker);
 		microphone.getOutputs().get(0).connect(leftSpectrumAnalyzer);
 		microphone.getOutputs().get(1).connect(rightSpectrumAnalyzer);
 	}
@@ -325,7 +322,7 @@ public class TestSon {
 		var spectrumAnalyzerLeft = new SpectrumAnalyzer("left_spectrum_analyzer");
 		var spectrumAnalyzerRight = new SpectrumAnalyzer("right_spectrum_analyzer");
 
-		waveFilePlayer.connect(speaker);
+		waveFilePlayer.connectTo(speaker);
 		waveFilePlayer.getOutputs().get(0).connect(oscilloscopeLeft);
 		waveFilePlayer.getOutputs().get(1).connect(oscilloscopeRight);
 		waveFilePlayer.getOutputs().get(0).connect(spectrumAnalyzerLeft);
@@ -346,7 +343,7 @@ public class TestSon {
 		var oscilloscopeLeft = new Oscilloscope("Oscilloscope, gauche");
 		var oscilloscopeRight = new Oscilloscope("Oscilloscope, droit");
 
-		wavFilePlayer.connect(speaker);
+		wavFilePlayer.connectTo(speaker);
 
 		var outputs = wavFilePlayer.getOutputs();
 		outputs.get(0).connect(spectrumAnalyzerLeft.getInput());
@@ -370,10 +367,10 @@ public class TestSon {
 		var oscilloscope = new Oscilloscope("oscilloscope");
 		var oscilloscopeVco = new Oscilloscope("oscilloscope_vco");
 
-		lfo.connect(vco);
-		vco.connect(lowPassFilter);
-		vco.connect(oscilloscopeVco);
-		lowPassFilter.connect(highPassFilter);
+		lfo.connectTo(vco);
+		vco.connectTo(lowPassFilter);
+		vco.connectTo(oscilloscopeVco);
+		lowPassFilter.connectTo(highPassFilter);
 		highPassFilter.getOutput().connect(speaker);
 		highPassFilter.getOutput().connect(spectrumAnalyzer);
 		highPassFilter.getOutput().connect(oscilloscope);

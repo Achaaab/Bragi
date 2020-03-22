@@ -35,6 +35,7 @@ public class Output {
 	public boolean isConnected() {
 		return !buffers.isEmpty();
 	}
+
 	/**
 	 * First, waits until this output is connected.
 	 * Then, writes the given chunk in each buffer (1 buffer per input connected).
