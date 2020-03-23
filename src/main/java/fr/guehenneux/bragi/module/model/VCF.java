@@ -35,8 +35,8 @@ public abstract class VCF extends Module {
 
 		super(name);
 
-		input = addInput(name + "_input");
-		modulation = addInput(name + "_modulation");
+		input = addPrimaryInput(name + "_input");
+		modulation = addSecondaryInput(name + "_modulation");
 		output = addOutput(name + "_output");
 
 		rezLevel = 0.5f;
@@ -53,7 +53,7 @@ public abstract class VCF extends Module {
 	public int compute() throws InterruptedException {
 
 		inputSamples = input.read();
-		modulationSamples = modulation.tryRead();
+		modulationSamples = modulation.read();
 
 		filterSamples();
 
@@ -63,43 +63,40 @@ public abstract class VCF extends Module {
 	}
 
 	/**
-	 *
-	 * @return
+	 * filter samples
 	 */
 	protected abstract void filterSamples();
 
 	/**
-	 * @return the modulation
+	 * @return modulation input
 	 */
 	public Input getModulation() {
 		return modulation;
 	}
 
 	/**
-	 * @return the rezLevel
+	 * @return rezLevel
 	 */
 	public float getRezLevel() {
 		return rezLevel;
 	}
 
 	/**
-	 * @param rezLevel
-	 *            the rezLevel to set
+	 * @param rezLevel rezLevel to set
 	 */
 	public void setRezLevel(float rezLevel) {
 		this.rezLevel = rezLevel;
 	}
 
 	/**
-	 * @return the cutOffFrequency
+	 * @return cutOffFrequency
 	 */
 	public float getCutOffFrequency() {
 		return cutOffFrequency;
 	}
 
 	/**
-	 * @param cutOffFrequency
-	 *            the cutOffFrequency to set
+	 * @param cutOffFrequency cutOffFrequency to set
 	 */
 	public void setCutOffFrequency(float cutOffFrequency) {
 		this.cutOffFrequency = cutOffFrequency;

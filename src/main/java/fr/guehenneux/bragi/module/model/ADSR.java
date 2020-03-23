@@ -47,7 +47,7 @@ public class ADSR extends Module {
 
 		super(name);
 
-		gate = addInput(name + "_gate");
+		gate = addPrimaryInput(name + "_gate");
 		output = addOutput(name + "_output");
 
 		attack = 40;
@@ -69,7 +69,7 @@ public class ADSR extends Module {
 		sampleLength = Settings.INSTANCE.getFrameLength();
 
 		var gateSample = gate.read()[0];
-		var sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
+		var sampleCount = Settings.INSTANCE.getChunkSize();
 		var gains = new float[sampleCount];
 
 		if (gateSample > 0 && previousGateSample <= 0) {
@@ -114,9 +114,9 @@ public class ADSR extends Module {
 	}
 
 	/**
-	 * @param targetGain
-	 * @param speed
-	 * @param targetState
+	 * @param targetGain  target gain in volts
+	 * @param speed       gain change speed (V/s)
+	 * @param targetState new state to set when target gain is reached
 	 */
 	private void step(double targetGain, double speed, ADSRState targetState) {
 

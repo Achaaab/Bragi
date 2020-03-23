@@ -1,7 +1,9 @@
 package fr.guehenneux.bragi.module.model;
 
 import fr.guehenneux.bragi.connection.Input;
+import fr.guehenneux.bragi.connection.PrimaryInput;
 import fr.guehenneux.bragi.connection.Output;
+import fr.guehenneux.bragi.connection.SecondaryInput;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -41,21 +43,21 @@ public abstract class Module implements Runnable {
 	}
 
 	/**
-	 * @return module inputs
+	 * @return inputs of this module
 	 */
 	public List<Input> getInputs() {
 		return inputs;
 	}
 
 	/**
-	 * @return module outputs
+	 * @return outputs of this module
 	 */
 	public List<Output> getOutputs() {
 		return outputs;
 	}
 
 	/**
-	 * @return the first input (by convention it is the main input), {@code null} if there is no input
+	 * @return first input (by convention it is the main input), {@code null} if there is no input
 	 */
 	public Input getInput() {
 		return inputs.isEmpty() ? null : inputs.get(0);
@@ -129,11 +131,24 @@ public abstract class Module implements Runnable {
 	 * @param name input name
 	 * @return created input
 	 */
-	protected Input addInput(String name) {
+	protected PrimaryInput addPrimaryInput(String name) {
 
-		var input = new Input(name);
+		var input = new PrimaryInput(name);
 		inputs.add(input);
 		return input;
+	}
+
+	/**
+	 * Create and add a secondary input to this module.
+	 *
+	 * @param name name of the secondary input to create.
+	 * @return created and added secondary input
+	 */
+	protected SecondaryInput addSecondaryInput(String name) {
+
+		var secondaryInput = new SecondaryInput(name);
+		inputs.add(secondaryInput);
+		return secondaryInput;
 	}
 
 	/**
@@ -168,9 +183,9 @@ public abstract class Module implements Runnable {
 	 */
 	protected void start() {
 
-		new Thread(this, name).start();
-
 		started = true;
+
+		new Thread(this, name).start();
 
 		LOGGER.info("module \"" + name + "\" started");
 	}

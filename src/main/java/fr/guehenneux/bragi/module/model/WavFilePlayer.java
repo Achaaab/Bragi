@@ -27,7 +27,7 @@ public class WavFilePlayer extends Module implements Player {
 
 		super(name);
 
-		while (outputs.size() < Settings.INSTANCE.getChannels()) {
+		while (outputs.size() < Settings.INSTANCE.getChannelCount()) {
 			addOutput(name + "_output_" + outputs.size());
 		}
 
@@ -41,7 +41,7 @@ public class WavFilePlayer extends Module implements Player {
 	@Override
 	public int compute() throws InterruptedException {
 
-		var bufferSizeInFrames = Settings.INSTANCE.getBufferSizeInFrames();
+		var bufferSizeInFrames = Settings.INSTANCE.getChunkSize();
 		var samples = new float[channelCount][bufferSizeInFrames];
 
 		try {

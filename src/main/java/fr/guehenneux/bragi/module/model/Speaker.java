@@ -1,61 +1,68 @@
 package fr.guehenneux.bragi.module.model;
 
 import fr.guehenneux.bragi.Settings;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine.Info;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
+
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.Math.round;
+import static javax.sound.sampled.AudioSystem.getLine;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author Jonathan Guéhenneux
  */
 public class Speaker extends Module {
 
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = getLogger(Speaker.class);
 
 	private static final int ONE_BYTE_MAX_VALUE = 0b01111111;
 	private static final int TWO_BYTES_MAX_VALUE = 0b01111111_11111111;
 	private static final int THREE_BYTES_MAX_VALUE = 0b01111111_11111111_11111111;
 
-	private SourceDataLine sourceDataLine;
+	private SourceDataLine line;
 
 	/**
-	 * @param name
-	 * @throws LineUnavailableException
+	 * @param name name of the speaker to create
+	 * @throws LineUnavailableException if no source data line is available
 	 */
 	public Speaker(String name) throws LineUnavailableException {
 
 		super(name);
 
-		while (inputs.size() < Settings.INSTANCE.getChannels()) {
-			addInput(name + "_input_" + inputs.size());
+		addPrimaryInput(name + "_input_" + inputs.size());
+
+		while (inputs.size() < Settings.INSTANCE.getChannelCount()) {
+			addSecondaryInput(name + "_input_" + inputs.size());
 		}
 
-		AudioFormat format = new AudioFormat(Settings.INSTANCE.getFrameRate(), Settings.INSTANCE.getSampleSize() * 8,
-				Settings.INSTANCE.getChannels(), true, true);
+		var format = new AudioFormat(
+				Settings.INSTANCE.getFrameRate(),
+				Settings.INSTANCE.getSampleSize() * 8,
+				Settings.INSTANCE.getChannelCount(),
+				true, true);
 
-		Info info = new Info(SourceDataLine.class, format);
+		var info = new Info(SourceDataLine.class, format);
 
-		sourceDataLine = (SourceDataLine) AudioSystem.getLine(info);
-		sourceDataLine.open(format, Settings.INSTANCE.getFrameRate() * Settings.INSTANCE.getFrameSizeInBytes() / 20);
-		sourceDataLine.start();
+		line = (SourceDataLine) getLine(info);
+		line.open(format, Settings.INSTANCE.getByteRate() / 20);
+		line.start();
 
 		start();
 	}
 
 	/**
-	 *
+	 * Check if the line buffer is not empty.
+	 * If it is empty, that means it is not written fast enough and sound will not be continuous.
 	 */
 	private void checkLineBufferHealth() {
 
-		int available = sourceDataLine.available();
-		int bufferSize = sourceDataLine.getBufferSize();
-
-		if (available == bufferSize) {
+		if (line.available() == line.getBufferSize()) {
 			LOGGER.warn("buffer underrun");
 		}
 	}
@@ -63,7 +70,7 @@ public class Speaker extends Module {
 	@Override
 	public int compute() throws InterruptedException {
 
-		var channelCount = Settings.INSTANCE.getChannels();
+		var channelCount = Settings.INSTANCE.getChannelCount();
 
 		var samples = new float[channelCount][];
 
@@ -74,49 +81,49 @@ public class Speaker extends Module {
 		var data = mix(samples);
 
 		checkLineBufferHealth();
-		sourceDataLine.write(data, 0, data.length);
+
+		line.write(data, 0, data.length);
 
 		return samples[0].length;
 	}
 
 	/**
-	 * @param samples
-	 * @return
+	 * @param samples samples to mix
+	 * @return mixed samples
 	 */
 	private static byte[] mix(float[][] samples) {
 
-		int channelCount = samples.length;
-		int frameCount = samples[0].length;
+		var sampleSize = Settings.INSTANCE.getSampleSize();
+		var channelCount = samples.length;
+		var frameCount = samples[0].length;
 
-		int frameIndex;
-		int channelIndex;
+		var mix = new byte[frameCount * channelCount * sampleSize];
 
-		float sample;
-		int normalizedSample;
+		var byteIndex = 0;
 
-		int sampleSizeInBytes = Settings.INSTANCE.getSampleSize();
+		byte b0;
+		byte b1;
+		byte b2;
 
-		byte b0, b1, b2;
-		byte[] mix = new byte[frameCount * channelCount * sampleSizeInBytes];
-		int byteIndex = 0;
+		for (var frameIndex = 0; frameIndex < frameCount; frameIndex++) {
 
-		for (frameIndex = 0; frameIndex < frameCount; frameIndex++) {
+			for (var channelSamples : samples) {
 
-			for (channelIndex = 0; channelIndex < channelCount; channelIndex++) {
+				var sample = channelSamples == null ? 0.0f : channelSamples[frameIndex];
+				sample = max(-1.0f, min(1.0f, sample));
 
-				sample = samples[channelIndex][frameIndex];
-				sample = Math.max(-1.0f, Math.min(1.0f, sample));
+				int normalizedSample;
 
-				switch (sampleSizeInBytes) {
+				switch (sampleSize) {
 
 					case 1:
-						normalizedSample = Math.round(ONE_BYTE_MAX_VALUE * sample);
+						normalizedSample = round(ONE_BYTE_MAX_VALUE * sample);
 						b0 = (byte) normalizedSample;
 						mix[byteIndex++] = b0;
 						break;
 
 					case 2:
-						normalizedSample = Math.round(TWO_BYTES_MAX_VALUE * sample);
+						normalizedSample = round(TWO_BYTES_MAX_VALUE * sample);
 						b0 = (byte) (normalizedSample >> 8);
 						b1 = (byte) (normalizedSample & 0xFF);
 						mix[byteIndex++] = b0;
@@ -124,7 +131,7 @@ public class Speaker extends Module {
 						break;
 
 					case 3:
-						normalizedSample = (int) Math.round(THREE_BYTES_MAX_VALUE * (double) sample);
+						normalizedSample = round(THREE_BYTES_MAX_VALUE * sample);
 						b0 = (byte) (normalizedSample >> 16);
 						b1 = (byte) ((normalizedSample >> 8) & 0xFF);
 						b2 = (byte) (normalizedSample & 0xFF);

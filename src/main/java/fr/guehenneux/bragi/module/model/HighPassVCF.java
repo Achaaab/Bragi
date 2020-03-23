@@ -10,7 +10,7 @@ import fr.guehenneux.bragi.Settings;
 public class HighPassVCF extends VCF {
 
 	/**
-	 * @param name high-pass VCF name
+	 * @param name name of the high-pass filter
 	 */
 	public HighPassVCF(String name) {
 		super(name);
@@ -19,13 +19,12 @@ public class HighPassVCF extends VCF {
 	@Override
 	protected void filterSamples() {
 
-		int sampleCount = inputSamples.length;
+		var sampleRate = Settings.INSTANCE.getFrameRate();
+		var sampleCount = inputSamples.length;
+
 		outputSamples = new float[sampleCount];
-		float sampleRate = Settings.INSTANCE.getFrameRate();
 
-		float inputSample;
-
-		for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
+		for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 
 			if (modulationSamples == null) {
 
@@ -37,15 +36,15 @@ public class HighPassVCF extends VCF {
 				actualCutOffFrequency = (float) (cutOffFrequency * Math.pow(2.0, 4 * modulationSample - 3));
 			}
 
-			float f = 2 * actualCutOffFrequency / sampleRate;
+			var f = 2 * actualCutOffFrequency / sampleRate;
 
 			// empirical tuning
-			float k = 3.6f * f - 1.6f * f * f - 1;
-			float p = (k + 1) * 0.5f;
-			float scale = (float) Math.exp((1 - p) * 1.386249);
-			float r = rezLevel / 100 * scale;
+			var k = 3.6f * f - 1.6f * f * f - 1;
+			var p = (k + 1) * 0.5f;
+			var scale = (float) Math.exp((1 - p) * 1.386249);
+			var r = rezLevel / 100 * scale;
 
-			inputSample = inputSamples[sampleIndex] - r * y4;
+			var inputSample = inputSamples[sampleIndex] - r * y4;
 
 			// four cascaded one-pole filters (bilinear transform)
 			y1 = inputSample * p + oldx * p - k * y1;

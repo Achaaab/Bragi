@@ -2,101 +2,87 @@ package fr.guehenneux.bragi;
 
 /**
  * @author Jonathan Guéhenneux
+ * @since 0.0.1
  */
 public class Settings {
 
 	public static final Settings INSTANCE = new Settings();
 
-	private static final int DEFAULT_CHANNELS = 2;
+	private static final int DEFAULT_CHANNELS_COUNT = 2;
 	private static final int DEFAULT_SAMPLE_SIZE = 2;
 	private static final int DEFAULT_FRAME_RATE = 44100;
-	private static final int DEFAULT_BUFFER_SIZE_IN_FRAMES = 100;
+	private static final int DEFAULT_CHUNK_SIZE = 100;
 
-	private int channels;
+	private int channelCount;
 	private int sampleSize;
 	private int frameRate;
-	private int bufferSizeInFrames;
+	private int chunkSize;
 
 	/**
-	 *
+	 * Create new default settings.
 	 */
 	private Settings() {
 
-		channels = DEFAULT_CHANNELS;
+		channelCount = DEFAULT_CHANNELS_COUNT;
 		frameRate = DEFAULT_FRAME_RATE;
 		sampleSize = DEFAULT_SAMPLE_SIZE;
-		bufferSizeInFrames = DEFAULT_BUFFER_SIZE_IN_FRAMES;
+		chunkSize = DEFAULT_CHUNK_SIZE;
 	}
 
 	/**
-	 * @return channels
+	 * @return number of channels
 	 */
-	public int getChannels() {
-		return channels;
+	public int getChannelCount() {
+		return channelCount;
 	}
 
 	/**
-	 * @param channels
+	 * @param channelCount number of channels
 	 */
-	public void setChannels(int channels) {
-		this.channels = channels;
+	public void setChannelCount(int channelCount) {
+		this.channelCount = channelCount;
 	}
 
 	/**
-	 * @return frameRate
+	 * @return number of frames per second
 	 */
 	public int getFrameRate() {
 		return frameRate;
 	}
 
 	/**
-	 * @param frameRate
+	 * @param frameRate number of frames per second
 	 */
 	public void setFrameRate(int frameRate) {
 		this.frameRate = frameRate;
 	}
 
 	/**
-	 * @return sampleSize
+	 * @return number of bytes per sample
 	 */
 	public int getSampleSize() {
 		return sampleSize;
 	}
 
 	/**
-	 * @param sampleSize
+	 * @param sampleSize number of bytes per sample
 	 */
 	public void setSampleSize(int sampleSize) {
 		this.sampleSize = sampleSize;
 	}
 
 	/**
-	 * @return bufferSizeInFrames
+	 * @return number of frames per chunk
 	 */
-	public int getBufferSizeInFrames() {
-		return bufferSizeInFrames;
+	public int getChunkSize() {
+		return chunkSize;
 	}
 
 	/**
-	 * @return
+	 * @return number of bytes per frame
 	 */
-	public int getBufferSizeInSamples() {
-		return bufferSizeInFrames * channels;
-	}
-
-	/**
-	 * @param bufferSizeInFrames
-	 *            bufferSizeInFrames à définir
-	 */
-	public void setBufferSizeInFrames(int bufferSizeInFrames) {
-		this.bufferSizeInFrames = bufferSizeInFrames;
-	}
-
-	/**
-	 * @return
-	 */
-	public int getFrameSizeInBytes() {
-		return channels * sampleSize;
+	public int getFrameSize() {
+		return channelCount * sampleSize;
 	}
 
 	/**
@@ -107,9 +93,9 @@ public class Settings {
 	}
 
 	/**
-	 * @return
+	 * @return number of bytes per second
 	 */
-	public double getBufferLength() {
-		return (double) bufferSizeInFrames / frameRate;
+	public int getByteRate() {
+		return frameRate * getFrameSize();
 	}
 }

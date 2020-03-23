@@ -1,66 +1,28 @@
 package fr.guehenneux.bragi.connection;
 
-import java.util.concurrent.BlockingQueue;
-
 /**
+ * Input of a module.
+ *
  * @author Jonathan Guéhenneux
+ * @since 0.0.1
  */
-public class Input {
-
-	private String name;
-	private BlockingQueue<float[]> buffer;
-
-	/**
-	 * @param name input name
-	 */
-	public Input(String name) {
-
-		this.name = name;
-		buffer = null;
-	}
-
-	/**
-	 * @param buffer buffer to read from
-	 */
-	public synchronized void setBuffer(BlockingQueue<float[]> buffer) {
-
-		this.buffer = buffer;
-
-		notifyAll();
-	}
+public interface Input {
 
 	/**
 	 * @return whether an output port is connected to this input port
 	 */
-	public boolean isConnected() {
-		return buffer != null;
-	}
+	boolean isConnected();
 
 	/**
-	 * Waits and returns the next chunk.
-	 *
-	 * @return read chunk
+	 * @param buffer buffer to read from
 	 */
-	public synchronized float[] read() throws InterruptedException {
-
-		while (!isConnected()) {
-			wait();
-		}
-
-		return buffer.take();
-	}
+	void setBuffer(Buffer buffer);
 
 	/**
-	 * Returns the next chunk, or {@code null} if the buffer is empty. Does not wait.
+	 * Read a chunk from this input.
 	 *
-	 * @return next chunk
+	 * @return read chunk, {@code null} if no chunk was read
+	 * @throws InterruptedException if interrupted while waiting for an available chunk
 	 */
-	public synchronized float[] tryRead() {
-		return isConnected() ? buffer.poll() : null;
-	}
-
-	@Override
-	public String toString() {
-		return name;
-	}
+	float[] read() throws InterruptedException;
 }

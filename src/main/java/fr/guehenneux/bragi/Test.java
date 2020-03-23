@@ -48,7 +48,7 @@ public class Test {
 	public static void main(String... arguments) throws LineUnavailableException, IOException, CorruptWavFileException,
 			JavaLayerException {
 
-		testOscilloscope();
+		montage8();
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class Test {
 		new Thread(() -> adsrFilter.connectTo(oscilloscopeAdsrFilter)).start();
 		new Thread(() -> filter.connect(vca.getInput())).start();
 		new Thread(() -> vca.connectTo(oscilloscope)).start();
-		new Thread(() -> vca.connectTo(speaker)).start();
+		new Thread(() -> vca.connect(speaker.getInputs())).start();
 	}
 
 	/**
@@ -204,14 +204,16 @@ public class Test {
 		var keyboard = new Keyboard("keyboard");
 		var speaker = new Speaker("speaker");
 		var adsr = new ADSR("adsr");
-		var oscilloscope = new Oscilloscope("oscilloscope");
 		var vca = new VCA("vca");
+		var oscilloscope = new Oscilloscope("oscilloscope");
+		var spectrum = new SpectrumAnalyzer("spectrum");
 
 		new Thread(() -> keyboard.connectTo(vca)).start();
 		new Thread(() -> vca.connect(speaker.getInputs())).start();
 		new Thread(() -> keyboard.getGate().connect(adsr.getGate())).start();
 		new Thread(() -> adsr.connect(vca.getGain())).start();
 		new Thread(() -> vca.connectTo(oscilloscope)).start();
+		new Thread(() -> vca.connectTo(spectrum)).start();
 	}
 
 	/**

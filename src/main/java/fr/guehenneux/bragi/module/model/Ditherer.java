@@ -1,6 +1,6 @@
 package fr.guehenneux.bragi.module.model;
 
-import fr.guehenneux.bragi.connection.Input;
+import fr.guehenneux.bragi.connection.PrimaryInput;
 import fr.guehenneux.bragi.connection.Output;
 
 import static java.lang.Math.random;
@@ -10,7 +10,7 @@ import static java.lang.Math.random;
  */
 public class Ditherer extends Module {
 
-	private Input input;
+	private PrimaryInput input;
 	private Output output;
 
 	/**
@@ -20,7 +20,7 @@ public class Ditherer extends Module {
 
 		super(name);
 
-		input = addInput(name + "_input");
+		input = addPrimaryInput(name + "_input");
 		output = addOutput(name + "_output");
 
 		start();

@@ -5,8 +5,6 @@ import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -18,7 +16,7 @@ public class Output {
 	private static final Logger LOGGER = getLogger(Output.class);
 
 	private String name;
-	private List<BlockingQueue<float[]>> buffers;
+	private final List<Buffer> buffers;
 
 	/**
 	 * @param name name of the output
@@ -42,29 +40,41 @@ public class Output {
 	 * Then, writes the given chunk in each buffer (1 buffer per input connected).
 	 *
 	 * @param chunk chunk to write
+	 * @throws InterruptedException if interrupted while waiting for available space in buffers
 	 */
-	public synchronized void write(float[] chunk) throws InterruptedException {
+	public void write(float[] chunk) throws InterruptedException {
 
-		while (!isConnected()) {
-			wait();
-		}
+		synchronized (buffers) {
 
-		for (var buffer : buffers) {
-			buffer.put(chunk);
+			while (!isConnected()) {
+				buffers.wait();
+			}
+
+			LOGGER.debug("write chunk to " + this);
+
+			for (var buffer : buffers) {
+				buffer.write(chunk);
+			}
 		}
 	}
 
 	/**
-	 * If this output is connected, try to write the given chunk in each buffer (1 buffer per input connected).
+	 * If this output is connected, write the given chunk in each buffer (1 buffer per input connected).
 	 *
 	 * @param chunk optional chunk to write
+	 * @throws InterruptedException if interrupted while waiting for available space in buffers
 	 */
-	public synchronized void tryWrite(float[] chunk) {
+	public void tryWrite(float[] chunk) throws InterruptedException {
 
-		if (isConnected()) {
+		synchronized (buffers) {
 
-			for (var buffer : buffers) {
-				buffer.offer(chunk);
+			if (isConnected()) {
+
+				LOGGER.debug("write chunk to " + this);
+
+				for (var buffer : buffers) {
+					buffer.write(chunk);
+				}
 			}
 		}
 	}
@@ -72,13 +82,17 @@ public class Output {
 	/**
 	 * @param input input to connect
 	 */
-	public synchronized void connect(Input input) {
+	public void connect(Input input) {
 
-		var buffer = new ArrayBlockingQueue<float[]>(1);
+		var buffer = new Buffer();
 
 		input.setBuffer(buffer);
-		buffers.add(buffer);
-		notifyAll();
+
+		synchronized (buffers) {
+
+			buffers.add(buffer);
+			buffers.notifyAll();
+		}
 
 		LOGGER.info(this + " connected to " + input);
 	}

@@ -8,6 +8,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 
+import static javax.sound.sampled.AudioSystem.getTargetDataLine;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -27,43 +28,42 @@ public class Microphone extends Module {
 
 		super(name);
 
-		while (outputs.size() < Settings.INSTANCE.getChannels()) {
+		while (outputs.size() < Settings.INSTANCE.getChannelCount()) {
 			addOutput(name + "_output_" + outputs.size());
 		}
 
-		AudioFormat format = new AudioFormat(Settings.INSTANCE.getFrameRate(), Settings.INSTANCE.getSampleSize() * 8,
-				Settings.INSTANCE.getChannels(), true, true);
+		var format = new AudioFormat(
+				Settings.INSTANCE.getFrameRate(),
+				Settings.INSTANCE.getSampleSize() * 8,
+				Settings.INSTANCE.getChannelCount(),
+				true, true);
 
-		targetDataLine = AudioSystem.getTargetDataLine(format);
-		targetDataLine.open(format, Settings.INSTANCE.getFrameRate() * Settings.INSTANCE.getFrameSizeInBytes() / 10);
-
+		targetDataLine = getTargetDataLine(format);
+		targetDataLine.open(format, Settings.INSTANCE.getByteRate() / 20);
 		targetDataLine.start();
+
 		start();
 	}
 
 	/**
-	 *
+	 * Check if the line buffer is not full.
+	 * If it is full, that means it is not read fast enough and data are being lost.
 	 */
 	private void checkLineBufferHealth() {
 
-		int available = targetDataLine.available();
-		int bufferSize = targetDataLine.getBufferSize();
-
-		if (available == 0) {
-			LOGGER.warn("buffer underrun");
-		} else if (available == bufferSize) {
-			LOGGER.warn("buffer overrun");
+		if (targetDataLine.available() == targetDataLine.getBufferSize()) {
+			LOGGER.warn("microphone line is not read fast enough, some data may be lost");
 		}
 	}
 
 	@Override
 	public int compute() throws InterruptedException {
 
-		var frameCount = Settings.INSTANCE.getBufferSizeInFrames();
+		var frameCount = Settings.INSTANCE.getChunkSize();
 		var sampleSizeInBytes = Settings.INSTANCE.getSampleSize();
-		var frameSizeInBytes = Settings.INSTANCE.getFrameSizeInBytes();
+		var frameSizeInBytes = Settings.INSTANCE.getFrameSize();
 		var byteCount = frameCount * frameSizeInBytes;
-		var channelCount = Settings.INSTANCE.getChannels();
+		var channelCount = Settings.INSTANCE.getChannelCount();
 
 		var input = new byte[byteCount];
 		checkLineBufferHealth();

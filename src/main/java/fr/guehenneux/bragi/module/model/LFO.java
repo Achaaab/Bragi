@@ -36,7 +36,7 @@ public class LFO extends Module {
 	@Override
 	public int compute() throws InterruptedException {
 
-		var sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
+		var sampleCount = Settings.INSTANCE.getChunkSize();
 		var sampleLength = Settings.INSTANCE.getFrameLength();
 
 		var samples = wave.getSamples(null, sampleCount, sampleLength);

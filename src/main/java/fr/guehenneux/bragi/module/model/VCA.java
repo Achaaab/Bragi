@@ -27,8 +27,8 @@ public class VCA extends Module {
 
 		super(name);
 
-		input = addInput(name + "_input");
-		gain = addInput(name + "_gain");
+		input = addPrimaryInput(name + "_input");
+		gain = addSecondaryInput(name + "_gain");
 		output = addOutput(name + "_output");
 
 		start();

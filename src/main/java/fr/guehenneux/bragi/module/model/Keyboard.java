@@ -7,20 +7,20 @@ import fr.guehenneux.bragi.module.view.KeyboardView;
 import fr.guehenneux.bragi.wave.Sawtooth;
 import fr.guehenneux.bragi.wave.Wave;
 import fr.guehenneux.bragi.wave.Waveform;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.apache.logging.log4j.LogManager.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author Jonathan Guéhenneux
  */
 public class Keyboard extends Module {
 
-	private static final Logger LOGGER = getLogger();
+	private static final Logger LOGGER = getLogger(Keyboard.class);
 
 	private Input modulation;
 	private Output output;
@@ -38,7 +38,7 @@ public class Keyboard extends Module {
 
 		super(name);
 
-		modulation = addInput(name + "_modulation");
+		modulation = addSecondaryInput(name + "_modulation");
 		output = addOutput(name + "_output");
 		gate = addOutput(name + "_gate");
 
@@ -97,10 +97,10 @@ public class Keyboard extends Module {
 	@Override
 	public int compute() throws InterruptedException {
 
-		var sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
+		var sampleCount = Settings.INSTANCE.getChunkSize();
 		var sampleLength = Settings.INSTANCE.getFrameLength();
 
-		var modulationSamples = modulation.tryRead();
+		var modulationSamples = modulation.read();
 
 		var samples = wave.getSamples(modulationSamples, sampleCount, sampleLength);
 		var gateSamples = new float[] { gateSample };

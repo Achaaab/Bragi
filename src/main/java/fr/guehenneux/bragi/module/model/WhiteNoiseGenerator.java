@@ -1,7 +1,5 @@
 package fr.guehenneux.bragi.module.model;
 
-import java.util.Arrays;
-
 import fr.guehenneux.bragi.Settings;
 import fr.guehenneux.bragi.connection.Output;
 
@@ -28,7 +26,7 @@ public class WhiteNoiseGenerator extends Module {
   @Override
   protected int compute() throws InterruptedException {
 
-    var sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
+    var sampleCount = Settings.INSTANCE.getChunkSize();
     var outputSamples = new float[sampleCount];
 
     for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {

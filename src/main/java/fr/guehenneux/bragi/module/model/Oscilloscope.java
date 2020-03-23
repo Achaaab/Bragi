@@ -11,7 +11,6 @@ import fr.guehenneux.bragi.module.view.OscilloscopeView;
 public class Oscilloscope extends Module {
 
 	private Input input;
-
 	private final ShiftingFloatArray buffer;
 
 	/**
@@ -21,7 +20,7 @@ public class Oscilloscope extends Module {
 
 		super(name);
 
-		input = addInput(name + "_input");
+		input = addPrimaryInput(name + "_input");
 
 		var oscilloscopeSampleCount = Settings.INSTANCE.getFrameRate() / 60;
 		buffer = new ShiftingFloatArray(oscilloscopeSampleCount);

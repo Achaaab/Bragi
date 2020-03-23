@@ -1,7 +1,6 @@
 package fr.guehenneux.bragi.module.model;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import fr.guehenneux.bragi.Settings;
@@ -9,7 +8,6 @@ import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.DecoderException;
-import javazoom.jl.decoder.Header;
 import javazoom.jl.decoder.SampleBuffer;
 
 import static java.nio.file.Files.newInputStream;
@@ -32,7 +30,7 @@ public class Mp3FilePlayer extends Module implements Player {
 
 		super(name);
 
-		while (outputs.size() < Settings.INSTANCE.getChannels()) {
+		while (outputs.size() < Settings.INSTANCE.getChannelCount()) {
 			addOutput(name + "_output_" + outputs.size());
 		}
 

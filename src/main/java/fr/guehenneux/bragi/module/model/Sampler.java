@@ -23,7 +23,7 @@ public class Sampler extends Module {
 
 		super(name);
 
-		input = addInput(name + "_input");
+		input = addPrimaryInput(name + "_input");
 		output = addOutput(name + "_output");
 
 		start();

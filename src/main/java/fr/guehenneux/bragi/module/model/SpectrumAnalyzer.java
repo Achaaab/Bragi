@@ -1,8 +1,8 @@
 package fr.guehenneux.bragi.module.model;
 
+import fr.guehenneux.bragi.Settings;
 import fr.guehenneux.bragi.algorithm.FFT;
 import fr.guehenneux.bragi.algorithm.FourierTransform;
-import fr.guehenneux.bragi.Settings;
 import fr.guehenneux.bragi.connection.Input;
 import fr.guehenneux.bragi.module.view.SpectrumAnalyzerView;
 
@@ -25,13 +25,13 @@ public class SpectrumAnalyzer extends Module {
 	private SpectrumAnalyzerView presentation;
 
 	/**
-	 * @param name
+	 * @param name name of the spectrum analyzer to create
 	 */
 	public SpectrumAnalyzer(String name) {
 
 		super(name);
 
-		input = addInput(name + "_input");
+		input = addPrimaryInput(name + "_input");
 		presentation = new SpectrumAnalyzerView(this);
 
 		fftSamples = new float[FFT_SAMPLE_COUNT];

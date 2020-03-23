@@ -4,7 +4,6 @@ import fr.guehenneux.bragi.Settings;
 import fr.guehenneux.bragi.connection.Input;
 import fr.guehenneux.bragi.connection.Output;
 import fr.guehenneux.bragi.module.view.VCOView;
-import fr.guehenneux.bragi.wave.Pulse;
 import fr.guehenneux.bragi.wave.Sine;
 import fr.guehenneux.bragi.wave.Wave;
 
@@ -28,7 +27,7 @@ public class VCO extends Module {
 
 		super(name);
 
-		modulation = addInput(name + "_modulation");
+		modulation = addSecondaryInput(name + "_modulation");
 		output = addOutput(name + "_output");
 
 		wave = new Wave(Sine.INSTANCE, frequency);
@@ -41,10 +40,10 @@ public class VCO extends Module {
 	@Override
 	public int compute() throws InterruptedException {
 
-		var sampleCount = Settings.INSTANCE.getBufferSizeInFrames();
+		var sampleCount = Settings.INSTANCE.getChunkSize();
 		var sampleLength = Settings.INSTANCE.getFrameLength();
 
-		var modulationSamples = modulation.tryRead();
+		var modulationSamples = modulation.read();
 		var samples = wave.getSamples(modulationSamples, sampleCount, sampleLength);
 
 		output.write(samples);
@@ -67,7 +66,7 @@ public class VCO extends Module {
 	}
 
 	/**
-	 * @return the modulation port
+	 * @return modulation input
 	 */
 	public Input getModulation() {
 		return modulation;
