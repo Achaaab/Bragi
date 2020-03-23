@@ -51,7 +51,7 @@ public class SecondaryInput extends AbstractInput {
 			if (firstRead) {
 
 				chunk = buffer.tryRead();
-				firstRead = false;
+				firstRead = chunk == null;
 
 			} else {
 

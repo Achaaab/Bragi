@@ -48,7 +48,7 @@ public class Test {
 	public static void main(String... arguments) throws LineUnavailableException, IOException, CorruptWavFileException,
 			JavaLayerException {
 
-		montage8();
+		montage7();
 	}
 
 	/**

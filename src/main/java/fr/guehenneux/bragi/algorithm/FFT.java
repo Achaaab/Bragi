@@ -13,8 +13,6 @@
 
 package fr.guehenneux.bragi.algorithm;
 
-import java.util.stream.IntStream;
-
 import static java.lang.Math.PI;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
@@ -60,9 +58,9 @@ public class FFT extends FourierTransform {
 	@Override
 	protected void allocateArrays() {
 
-		spectrum = new float[timeSize / 2 + 1];
-		real = new float[timeSize];
-		imag = new float[timeSize];
+		spectrum = new float[size / 2 + 1];
+		real = new float[size];
+		imag = new float[size];
 	}
 
 	@Override
@@ -81,10 +79,10 @@ public class FFT extends FourierTransform {
 			imag[i] *= spectrum[i];
 		}
 
-		if (i != 0 && i != timeSize / 2) {
+		if (i != 0 && i != size / 2) {
 
-			real[timeSize - i] = real[i];
-			imag[timeSize - i] = -imag[i];
+			real[size - i] = real[i];
+			imag[size - i] = -imag[i];
 		}
 	}
 
@@ -109,10 +107,10 @@ public class FFT extends FourierTransform {
 			imag[i] *= spectrum[i];
 		}
 
-		if (i != 0 && i != timeSize / 2) {
+		if (i != 0 && i != size / 2) {
 
-			real[timeSize - i] = real[i];
-			imag[timeSize - i] = -imag[i];
+			real[size - i] = real[i];
+			imag[size - i] = -imag[i];
 		}
 	}
 
@@ -155,7 +153,7 @@ public class FFT extends FourierTransform {
 	@Override
 	public void forward(float[] buffer) {
 
-		if (buffer.length != timeSize) {
+		if (buffer.length != size) {
 			throw new IllegalArgumentException(
 					"FFT.forward: The length of the passed sample buffer must be equal to timeSize().");
 		}
@@ -180,7 +178,7 @@ public class FFT extends FourierTransform {
 	 */
 	public void forward(float[] buffReal, float[] buffImag) {
 
-		if (buffReal.length != timeSize || buffImag.length != timeSize) {
+		if (buffReal.length != size || buffImag.length != size) {
 			throw new IllegalArgumentException(
 					"FFT.forward: The length of the passed buffers must be equal to timeSize().");
 		}
@@ -199,7 +197,7 @@ public class FFT extends FourierTransform {
 		}
 
 		// conjugate
-		for (int i = 0; i < timeSize; i++) {
+		for (int i = 0; i < size; i++) {
 			imag[i] *= -1;
 		}
 
@@ -217,7 +215,7 @@ public class FFT extends FourierTransform {
 	 */
 	private void buildReverseTable() {
 
-		int N = timeSize;
+		int N = size;
 		reverse = new int[N];
 
 		// set up the bit reversing table
@@ -285,10 +283,10 @@ public class FFT extends FourierTransform {
 	 */
 	private void buildTrigTables() {
 
-		sinlookup = new float[timeSize];
-		coslookup = new float[timeSize];
+		sinlookup = new float[size];
+		coslookup = new float[size];
 
-		for (int t = 0; t < timeSize; t++) {
+		for (int t = 0; t < size; t++) {
 
 			sinlookup[t] = (float) sin(-PI / t);
 			coslookup[t] = (float) cos(-PI / t);
