@@ -29,7 +29,8 @@ public class KeyView extends JButton implements MouseListener {
 		this.model = model;
 		this.keyboard = keyboard;
 
-		setPreferredSize(new Dimension(60, 300));
+		setFocusTraversalKeysEnabled(false);
+		setPreferredSize(new Dimension(65, 300));
 		setBackground(model.toString().contains("#") ? Color.BLACK : Color.WHITE);
 		setForeground(model.toString().contains("#") ? Color.WHITE : Color.BLACK);
 

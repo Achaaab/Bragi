@@ -13,10 +13,15 @@ public class Settings {
 	private static final int DEFAULT_FRAME_RATE = 44100;
 	private static final int DEFAULT_CHUNK_SIZE = 100;
 
+	private static final float DEFAULT_MINIMAL_VOLTAGE = -1.0f;
+	private static final float DEFAULT_MAXIMAL_VOLTAGE = 1.0f;
+
 	private int channelCount;
 	private int sampleSize;
 	private int frameRate;
 	private int chunkSize;
+	private float minimalVoltage;
+	private float maximalVoltage;
 
 	/**
 	 * Create new default settings.
@@ -27,6 +32,8 @@ public class Settings {
 		frameRate = DEFAULT_FRAME_RATE;
 		sampleSize = DEFAULT_SAMPLE_SIZE;
 		chunkSize = DEFAULT_CHUNK_SIZE;
+		minimalVoltage = DEFAULT_MINIMAL_VOLTAGE;
+		maximalVoltage = DEFAULT_MAXIMAL_VOLTAGE;
 	}
 
 	/**
@@ -76,6 +83,20 @@ public class Settings {
 	 */
 	public int getChunkSize() {
 		return chunkSize;
+	}
+
+	/**
+	 * @return minimal voltage
+	 */
+	public float getMinimalVoltage() {
+		return minimalVoltage;
+	}
+
+	/**
+	 * @return maximal voltage
+	 */
+	public float getMaximalVoltage() {
+		return maximalVoltage;
 	}
 
 	/**

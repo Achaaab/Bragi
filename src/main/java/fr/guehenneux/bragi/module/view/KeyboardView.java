@@ -1,8 +1,8 @@
 package fr.guehenneux.bragi.module.view;
 
-import fr.guehenneux.bragi.module.model.Key;
 import fr.guehenneux.bragi.module.model.Keyboard;
 import fr.guehenneux.bragi.wave.Pulse;
+import fr.guehenneux.bragi.wave.ReverseSawtooth;
 import fr.guehenneux.bragi.wave.Sawtooth;
 import fr.guehenneux.bragi.wave.Sine;
 import fr.guehenneux.bragi.wave.Triangle;
@@ -13,14 +13,14 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
+import static javax.swing.KeyStroke.getKeyStroke;
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
  * @author Jonathan Guéhenneux
@@ -32,23 +32,39 @@ public class KeyboardView extends JPanel {
 	 */
 	public KeyboardView(Keyboard model) {
 
-		Waveform[] waveforms = {Sine.INSTANCE, Triangle.INSTANCE, Sawtooth.INSTANCE, Pulse.SQUARE, Pulse.PULSE_25, Pulse.PULSE_125};
-		JComboBox<Waveform> waveformsComboBox = new JComboBox<>(waveforms);
-		waveformsComboBox.addActionListener(actionEvent -> model.setWaveform((Waveform) waveformsComboBox.getSelectedItem()));
+		var waveforms = new Waveform[]{
+				Sine.INSTANCE,
+				Triangle.INSTANCE,
+				Sawtooth.INSTANCE,
+				ReverseSawtooth.INSTANCE,
+				Pulse.SQUARE,
+				Pulse.PULSE_4,
+				Pulse.PULSE_8
+		};
 
-		List<Key> keys = model.getKeys();
-		int keyCount = keys.size();
+		var waveformsComboBox = new JComboBox<>(waveforms);
 
-		JPanel keysPanel = new JPanel();
+		waveformsComboBox.addActionListener(actionEvent ->
+				model.setWaveform((Waveform) waveformsComboBox.getSelectedItem()));
+
+		var keys = model.getKeys();
+		var keyCount = keys.size();
+
+		var keysPanel = new JPanel();
 		keysPanel.setLayout(new GridLayout(1, keyCount));
 
-		for (Key key : keys) {
+		keysPanel.setFocusTraversalKeysEnabled(false);
+		setFocusTraversalKeysEnabled(false);
 
-			KeyView keyView = new KeyView(key, model);
+		for (var key : keys) {
+
+			var keyView = new KeyView(key, model);
 			keysPanel.add(keyView);
-			int code = key.getCode();
-			KeyStroke keyPressed = KeyStroke.getKeyStroke(code, 0, false);
-			KeyStroke keyReleased = KeyStroke.getKeyStroke(code, 0, true);
+
+			var code = key.getCode();
+			var keyPressed = getKeyStroke(code, 0, false);
+			var keyReleased = getKeyStroke(code, 0, true);
+
 			getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyPressed, key.toString() + "_pressed");
 			getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyReleased, key.toString() + "_released");
 
@@ -59,6 +75,7 @@ public class KeyboardView extends JPanel {
 					keyView.press();
 				}
 			});
+
 			getActionMap().put(key.toString() + "_released", new AbstractAction() {
 
 				@Override
@@ -75,7 +92,7 @@ public class KeyboardView extends JPanel {
 		var frame = new JFrame(model.getName());
 		frame.add(this);
 		frame.pack();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}
 }

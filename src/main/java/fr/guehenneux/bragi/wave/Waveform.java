@@ -6,7 +6,7 @@ package fr.guehenneux.bragi.wave;
 public interface Waveform {
 
 	/**
-	 * @param periodFraction period fraction in range [0, 1[
+	 * @param periodFraction {@code periodFraction ∈ [0.0, 1.0[}
 	 * @return sample at given fraction of waveform period
 	 */
 	float getSample(double periodFraction);

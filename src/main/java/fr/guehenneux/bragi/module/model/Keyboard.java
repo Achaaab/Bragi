@@ -46,26 +46,26 @@ public class Keyboard extends Module {
 
 		keys = new ArrayList<>();
 
-		keys.add(new Key("F3", 174.6141, KeyEvent.VK_A));
-		keys.add(new Key("F#3", 184.9972, KeyEvent.VK_2));
-		keys.add(new Key("G3", 195.9977, KeyEvent.VK_Z));
-		keys.add(new Key("G#3", 207.6523, KeyEvent.VK_3));
-		keys.add(new Key("A3", 220.0000, KeyEvent.VK_E));
-		keys.add(new Key("A#3", 233.0819, KeyEvent.VK_4));
-		keys.add(new Key("B3", 246.9417, KeyEvent.VK_R));
+		keys.add(new Key("F3", 174.6141, KeyEvent.VK_TAB));
+		keys.add(new Key("F#3", 184.9972, KeyEvent.getExtendedKeyCodeForChar('&')));
+		keys.add(new Key("G3", 195.9977, KeyEvent.VK_A));
+		keys.add(new Key("G#3", 207.6523, KeyEvent.getExtendedKeyCodeForChar('é')));
+		keys.add(new Key("A3", 220.0000, KeyEvent.VK_Z));
+		keys.add(new Key("A#3", 233.0819, KeyEvent.getExtendedKeyCodeForChar('"')));
+		keys.add(new Key("B3", 246.9417, KeyEvent.VK_E));
 
-		keys.add(new Key("C4", 261.6256, KeyEvent.VK_T));
-		keys.add(new Key("C#4", 277.1826, KeyEvent.VK_6));
-		keys.add(new Key("D4", 293.6648, KeyEvent.VK_Y));
-		keys.add(new Key("D#4", 311.1270, KeyEvent.VK_7));
-		keys.add(new Key("E4", 329.6276, KeyEvent.VK_U));
-		keys.add(new Key("F4", 349.2282, KeyEvent.VK_I));
-		keys.add(new Key("F#4", 369.9944, KeyEvent.VK_9));
-		keys.add(new Key("G4", 391.9954, KeyEvent.VK_O));
-		keys.add(new Key("G#4", 415.3047, KeyEvent.VK_0));
-		keys.add(new Key("A4", 440.0000, KeyEvent.VK_P));
-		keys.add(new Key("A#4", 466.1638, KeyEvent.VK_RIGHT_PARENTHESIS));
-		keys.add(new Key("B4", 493.8833, KeyEvent.VK_DEAD_CIRCUMFLEX));
+		keys.add(new Key("C4", 261.6256, KeyEvent.VK_R));
+		keys.add(new Key("C#4", 277.1826, KeyEvent.getExtendedKeyCodeForChar('(')));
+		keys.add(new Key("D4", 293.6648, KeyEvent.VK_T));
+		keys.add(new Key("D#4", 311.1270, KeyEvent.getExtendedKeyCodeForChar('-')));
+		keys.add(new Key("E4", 329.6276, KeyEvent.VK_Y));
+		keys.add(new Key("F4", 349.2282, KeyEvent.VK_U));
+		keys.add(new Key("F#4", 369.9944, KeyEvent.getExtendedKeyCodeForChar('_')));
+		keys.add(new Key("G4", 391.9954, KeyEvent.VK_I));
+		keys.add(new Key("G#4", 415.3047, KeyEvent.getExtendedKeyCodeForChar('ç')));
+		keys.add(new Key("A4", 440.0000, KeyEvent.VK_O));
+		keys.add(new Key("A#4", 466.1638, KeyEvent.getExtendedKeyCodeForChar('à')));
+		keys.add(new Key("B4", 493.8833, KeyEvent.VK_P));
 
 		keys.add(new Key("C5", 523.2511, KeyEvent.VK_LESS));
 		keys.add(new Key("C#5", 554.3653, KeyEvent.VK_Q));

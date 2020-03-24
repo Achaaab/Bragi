@@ -3,7 +3,7 @@ package fr.guehenneux.bragi.wave;
 /**
  * @author Jonathan Guéhenneux
  */
-public class Sawtooth implements Waveform {
+public class Sawtooth extends BoundedWaveform {
 
 	public static final Sawtooth INSTANCE = new Sawtooth();
 
@@ -11,16 +11,11 @@ public class Sawtooth implements Waveform {
 	 * Use singleton.
 	 */
 	private Sawtooth() {
-
+		super("Sawtooth");
 	}
 
 	@Override
 	public float getSample(double periodFraction) {
-		return (float) (2 * periodFraction - 1);
-	}
-
-	@Override
-	public String toString() {
-		return "Sawtooth";
+		return (float) (minimum + amplitude * periodFraction);
 	}
 }

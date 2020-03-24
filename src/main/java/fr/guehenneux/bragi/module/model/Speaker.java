@@ -21,9 +21,9 @@ public class Speaker extends Module {
 
 	private static final Logger LOGGER = getLogger(Speaker.class);
 
-	private static final int ONE_BYTE_MAX_VALUE = 0b01111111;
-	private static final int TWO_BYTES_MAX_VALUE = 0b01111111_11111111;
-	private static final int THREE_BYTES_MAX_VALUE = 0b01111111_11111111_11111111;
+	private static final int ONE_BYTE_MAX_VALUE = 0x7F;
+	private static final int TWO_BYTES_MAX_VALUE = 0x7F_FF;
+	private static final int THREE_BYTES_MAX_VALUE = 0x7F_FF_FF;
 
 	private SourceDataLine line;
 

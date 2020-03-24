@@ -2,14 +2,14 @@ package fr.guehenneux.bragi.wave;
 
 /**
  * @author Jonathan Guéhenneux
+ * @since 0.0.2
  */
-public class Pulse implements Waveform {
+public class Pulse extends BoundedWaveform {
 
 	public static final Pulse SQUARE = new Pulse("Square", 0.5);
-	public static final Pulse PULSE_25 = new Pulse("Rectangle 1/4", 0.25);
-	public static final Pulse PULSE_125 = new Pulse("Rectangle 1/8", 0.125);
+	public static final Pulse PULSE_4 = new Pulse("Rectangle 1/4", 0.25);
+	public static final Pulse PULSE_8 = new Pulse("Rectangle 1/8", 0.125);
 
-	private String name;
 	private double pulseFraction;
 
 	/**
@@ -18,17 +18,13 @@ public class Pulse implements Waveform {
 	 */
 	public Pulse(String name, double pulseFraction) {
 
-		this.name = name;
+		super(name);
+
 		this.pulseFraction = pulseFraction;
 	}
 
 	@Override
 	public float getSample(double periodFraction) {
-		return periodFraction < pulseFraction ? 1.0f : -1.0f;
-	}
-
-	@Override
-	public String toString() {
-		return name;
+		return periodFraction < pulseFraction ? maximum : minimum;
 	}
 }
