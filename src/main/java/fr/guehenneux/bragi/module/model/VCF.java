@@ -37,7 +37,7 @@ public abstract class VCF extends Module {
 
 		input = addPrimaryInput(name + "_input");
 		modulation = addSecondaryInput(name + "_modulation");
-		output = addOutput(name + "_output");
+		output = addPrimaryOutput(name + "_output");
 
 		rezLevel = 0.5f;
 		cutOffFrequency = 440.0f;

@@ -12,6 +12,8 @@ public class Triangle extends BoundedWaveform {
 
 	public static final Triangle INSTANCE = new Triangle();
 
+	private static final double HALF_PERIOD = 0.5;
+
 	/**
 	 * Use singleton.
 	 */
@@ -22,8 +24,8 @@ public class Triangle extends BoundedWaveform {
 	@Override
 	public float getSample(double periodFraction) {
 
-		return (float) (periodFraction < 0.5 ?
+		return (float) (periodFraction < HALF_PERIOD ?
 				maximum - 2 * amplitude * periodFraction :
-				minimum + 2 * amplitude * (periodFraction - 0.5));
+				minimum + 2 * amplitude * (periodFraction - HALF_PERIOD));
 	}
 }

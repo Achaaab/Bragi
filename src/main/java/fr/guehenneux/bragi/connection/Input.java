@@ -9,14 +9,14 @@ package fr.guehenneux.bragi.connection;
 public interface Input {
 
 	/**
-	 * @return whether an output port is connected to this input port
-	 */
-	boolean isConnected();
-
-	/**
 	 * @param buffer buffer to read from
 	 */
 	void setBuffer(Buffer buffer);
+
+	/**
+	 * @return whether an output port is connected to this input port
+	 */
+	boolean isConnected();
 
 	/**
 	 * Read a chunk from this input.

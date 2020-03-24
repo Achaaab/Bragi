@@ -25,7 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.SecureRandom;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -42,11 +41,11 @@ public class Test {
 	/**
 	 * @param arguments
 	 * @throws LineUnavailableException
-	 * @throws CorruptWavFileException
+	 * @throws MalformedWavFileException
 	 * @throws IOException
 	 * @throws JavaLayerException
 	 */
-	public static void main(String... arguments) throws LineUnavailableException, IOException, CorruptWavFileException,
+	public static void main(String... arguments) throws LineUnavailableException, IOException, MalformedWavFileException,
 			JavaLayerException {
 
 		montage7();
@@ -91,7 +90,7 @@ public class Test {
 		var whiteNoiseGenerator = new WhiteNoiseGenerator("white_noise_generator");
 		var speaker = new Speaker("speaker");
 
-		whiteNoiseGenerator.getOutput().connect(speaker);
+		whiteNoiseGenerator.connect(speaker.getInputs());
 	}
 
 	/**
@@ -147,7 +146,7 @@ public class Test {
 
 		vco.connectTo(oscilloscope);
 		vco.connectTo(spectrumAnalyzer);
-		vco.getOutput().connect(speaker);
+		vco.connect(speaker.getInputs());
 	}
 
 	public static void montage4() throws LineUnavailableException {
@@ -178,10 +177,8 @@ public class Test {
 		var rightSampler = new Sampler("right_sampler");
 		var speaker = new Speaker("speaker");
 
-		player.getOutputs().get(0).connect(leftSampler);
-		player.getOutputs().get(1).connect(rightSampler);
-		leftSampler.getOutput().connect(speaker.getInputs().get(0));
-		rightSampler.getOutput().connect(speaker.getInputs().get(1));
+		player.connectTo(leftSampler, rightSampler);
+		speaker.connectFrom(leftSampler, rightSampler);
 	}
 
 	/**
@@ -194,7 +191,7 @@ public class Test {
 		var speaker = new Speaker("speaker");
 
 		vco.connectTo(oscilloscope);
-		vco.getOutput().connect(speaker);
+		vco.connect(speaker.getInputs());
 	}
 
 	/**
@@ -314,9 +311,12 @@ public class Test {
 		var leftSpectrumAnalyzer = new SpectrumAnalyzer("left_spectrum_analyzer");
 		var rightSpectrumAnalyzer = new SpectrumAnalyzer("right_spectrum_analyzer");
 
-		microphone.connectTo(speaker);
-		microphone.getOutputs().get(0).connect(leftSpectrumAnalyzer);
-		microphone.getOutputs().get(1).connect(rightSpectrumAnalyzer);
+		var outputs = microphone.getOutputs();
+		var inputs = speaker.getInputs();
+		outputs.get(0).connect(inputs.get(0));
+		outputs.get(1).connect(inputs.get(1));
+		outputs.get(0).connect(leftSpectrumAnalyzer.getInput());
+		outputs.get(1).connect(rightSpectrumAnalyzer.getInput());
 	}
 
 	/**
@@ -345,9 +345,9 @@ public class Test {
 	/**
 	 * @throws IOException
 	 * @throws LineUnavailableException
-	 * @throws CorruptWavFileException
+	 * @throws MalformedWavFileException
 	 */
-	public static void testWav() throws IOException, LineUnavailableException, CorruptWavFileException {
+	public static void testWav() throws IOException, LineUnavailableException, MalformedWavFileException {
 
 		var speaker = new Speaker("speaker");
 		var waveFilePlayer = new WavFilePlayer("wav_player", new File("sample.wav"));
@@ -356,19 +356,20 @@ public class Test {
 		var spectrumAnalyzerLeft = new SpectrumAnalyzer("left_spectrum_analyzer");
 		var spectrumAnalyzerRight = new SpectrumAnalyzer("right_spectrum_analyzer");
 
-		waveFilePlayer.connectTo(speaker);
-		waveFilePlayer.getOutputs().get(0).connect(oscilloscopeLeft);
-		waveFilePlayer.getOutputs().get(1).connect(oscilloscopeRight);
-		waveFilePlayer.getOutputs().get(0).connect(spectrumAnalyzerLeft);
-		waveFilePlayer.getOutputs().get(1).connect(spectrumAnalyzerRight);
+		waveFilePlayer.getOutputs().get(0).connect(speaker.getInputs().get(0));
+		waveFilePlayer.getOutputs().get(1).connect(speaker.getInputs().get(1));
+		waveFilePlayer.getOutputs().get(0).connect(oscilloscopeLeft.getInput());
+		waveFilePlayer.getOutputs().get(1).connect(oscilloscopeRight.getInput());
+		waveFilePlayer.getOutputs().get(0).connect(spectrumAnalyzerLeft.getInput());
+		waveFilePlayer.getOutputs().get(1).connect(spectrumAnalyzerRight.getInput());
 	}
 
 	/**
 	 * @throws LineUnavailableException
 	 * @throws IOException
-	 * @throws CorruptWavFileException
+	 * @throws MalformedWavFileException
 	 */
-	public static void montage2() throws LineUnavailableException, IOException, CorruptWavFileException {
+	public static void montage2() throws LineUnavailableException, IOException, MalformedWavFileException {
 
 		var speaker = new Speaker("Hauts-parleurs");
 		var wavFilePlayer = new WavFilePlayer("Lecteur de fichier WAV", new File("sample.wav"));
@@ -405,11 +406,11 @@ public class Test {
 		vco.connectTo(lowPassFilter);
 		vco.connectTo(oscilloscopeVco);
 		lowPassFilter.connectTo(highPassFilter);
-		highPassFilter.getOutput().connect(speaker);
-		highPassFilter.getOutput().connect(spectrumAnalyzer);
-		highPassFilter.getOutput().connect(oscilloscope);
-		lfoFilter.getOutput().connect(lowPassFilter.getModulation());
-		lfoFilter.getOutput().connect(highPassFilter.getModulation());
+		speaker.connectFrom(highPassFilter, highPassFilter);
+		highPassFilter.connectTo(spectrumAnalyzer);
+		highPassFilter.connectTo(oscilloscope);
+		lfoFilter.connect(lowPassFilter.getModulation());
+		lfoFilter.connect(highPassFilter.getModulation());
 	}
 
 	/**

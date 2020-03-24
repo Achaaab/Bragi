@@ -3,12 +3,12 @@ package fr.guehenneux.bragi;
 /**
  * @author Jonathan Guéhenneux
  */
-public class CorruptWavFileException extends Exception {
+public class MalformedWavFileException extends Exception {
 
 	/**
 	 * @param message exception message
 	 */
-	public CorruptWavFileException(String message) {
+	public MalformedWavFileException(String message) {
 		super(message);
 	}
 }

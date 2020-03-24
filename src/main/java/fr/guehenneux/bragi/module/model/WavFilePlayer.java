@@ -1,6 +1,6 @@
 package fr.guehenneux.bragi.module.model;
 
-import fr.guehenneux.bragi.CorruptWavFileException;
+import fr.guehenneux.bragi.MalformedWavFileException;
 import fr.guehenneux.bragi.Settings;
 import fr.guehenneux.bragi.WavFile;
 
@@ -17,18 +17,19 @@ public class WavFilePlayer extends Module implements Player {
 	private int channelCount;
 
 	/**
-	 *
-	 * @param name
-	 * @param file
-	 * @throws IOException
-	 * @throws CorruptWavFileException
+	 * @param name name of the wav file player
+	 * @param file wav file to read
+	 * @throws IOException IO exception while reading the wav file
+	 * @throws MalformedWavFileException if the wav file is malformed
 	 */
-	public WavFilePlayer(String name, File file) throws IOException, CorruptWavFileException {
+	public WavFilePlayer(String name, File file) throws IOException, MalformedWavFileException {
 
 		super(name);
 
+		addPrimaryOutput(name + "_output_" + outputs.size());
+
 		while (outputs.size() < Settings.INSTANCE.getChannelCount()) {
-			addOutput(name + "_output_" + outputs.size());
+			addSecondaryOutput(name + "_output_" + outputs.size());
 		}
 
 		wavFile = new WavFile(file);

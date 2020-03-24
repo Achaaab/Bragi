@@ -48,7 +48,7 @@ public class ADSR extends Module {
 		super(name);
 
 		gate = addPrimaryInput(name + "_gate");
-		output = addOutput(name + "_output");
+		output = addPrimaryOutput(name + "_output");
 
 		attack = 40;
 		decay = 40;

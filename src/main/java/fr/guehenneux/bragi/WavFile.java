@@ -32,10 +32,10 @@ public class WavFile {
 
 	/**
 	 * @param file
-	 * @throws CorruptWavFileException
+	 * @throws MalformedWavFileException
 	 * @throws IOException
 	 */
-	public WavFile(File file) throws IOException, CorruptWavFileException {
+	public WavFile(File file) throws IOException, MalformedWavFileException {
 
 		this.file = file;
 
@@ -200,16 +200,16 @@ public class WavFile {
 
 	/**
 	 * @throws IOException
-	 * @throws CorruptWavFileException
+	 * @throws MalformedWavFileException
 	 */
-	private void readHeader() throws IOException, CorruptWavFileException {
+	private void readHeader() throws IOException, MalformedWavFileException {
 
 		fileReader.seek(WAV_HEADER_INDEX);
 		byte[] header = new byte[WAV_HEADER_SIZE];
 		int count = fileReader.read(header);
 
 		if (count < WAV_HEADER_SIZE) {
-			throw new CorruptWavFileException("incomplete header : " + count + " bytes / " + WAV_HEADER_SIZE);
+			throw new MalformedWavFileException("incomplete header : " + count + " bytes / " + WAV_HEADER_SIZE);
 		}
 
 		int offset = 0;

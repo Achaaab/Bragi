@@ -28,7 +28,7 @@ public class VCO extends Module {
 		super(name);
 
 		modulation = addSecondaryInput(name + "_modulation");
-		output = addOutput(name + "_output");
+		output = addPrimaryOutput(name + "_output");
 
 		wave = new Wave(Sine.INSTANCE, frequency);
 

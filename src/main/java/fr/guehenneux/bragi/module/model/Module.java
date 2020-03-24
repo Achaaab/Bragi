@@ -1,9 +1,11 @@
 package fr.guehenneux.bragi.module.model;
 
 import fr.guehenneux.bragi.connection.Input;
-import fr.guehenneux.bragi.connection.PrimaryInput;
 import fr.guehenneux.bragi.connection.Output;
+import fr.guehenneux.bragi.connection.PrimaryInput;
+import fr.guehenneux.bragi.connection.PrimaryOutput;
 import fr.guehenneux.bragi.connection.SecondaryInput;
+import fr.guehenneux.bragi.connection.SecondaryOutput;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -152,27 +154,40 @@ public abstract class Module implements Runnable {
 	}
 
 	/**
-	 * Add an output to this module.
+	 * Create and add a primary output to this module.
 	 *
-	 * @param name output name
-	 * @return created output
+	 * @param name name of the primary output
+	 * @return created and added primary output
 	 */
-	protected Output addOutput(String name) {
+	protected Output addPrimaryOutput(String name) {
 
-		var output = new Output(name);
+		var output = new PrimaryOutput(name);
 		outputs.add(output);
 		return output;
 	}
 
 	/**
-	 * @return module name
+	 * Create and add a secondary output to this module.
+	 *
+	 * @param name name of the secondary output
+	 * @return created and added secondary output
+	 */
+	protected Output addSecondaryOutput(String name) {
+
+		var output = new SecondaryOutput(name);
+		outputs.add(output);
+		return output;
+	}
+
+	/**
+	 * @return name of this module
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @param name module name
+	 * @param name name of this module
 	 */
 	public void setName(String name) {
 		this.name = name;

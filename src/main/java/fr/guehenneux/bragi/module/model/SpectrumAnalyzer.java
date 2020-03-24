@@ -32,6 +32,7 @@ public class SpectrumAnalyzer extends Module {
 		super(name);
 
 		input = addPrimaryInput(name + "_input");
+
 		presentation = new SpectrumAnalyzerView(this);
 
 		fftSamples = new float[FFT_SAMPLE_COUNT];

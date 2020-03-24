@@ -19,7 +19,7 @@ public class WhiteNoiseGenerator extends Module {
 
     super(name);
 
-    output = addOutput(name + "_output");
+    output = addPrimaryOutput(name + "_output");
     start();
   }
 

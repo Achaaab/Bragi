@@ -11,7 +11,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Jonathan Guéhenneux
  * @since 0.0.1
  */
-public class SecondaryInput extends AbstractInput {
+public class SecondaryInput extends NamedInput {
 
 	private static final Logger LOGGER = getLogger(SecondaryInput.class);
 
@@ -50,15 +50,25 @@ public class SecondaryInput extends AbstractInput {
 
 			if (firstRead) {
 
+				LOGGER.debug("trying to read chunk from {} to {}", buffer.getOutput(), this);
 				chunk = buffer.tryRead();
-				firstRead = chunk == null;
+
+				if (chunk == null) {
+
+					LOGGER.debug("no chunk read from {} to {}", buffer.getOutput(), this);
+
+				} else {
+
+					LOGGER.debug("chunk read from {} to {}", buffer.getOutput(), this);
+					firstRead = false;
+				}
 
 			} else {
 
+				LOGGER.debug("reading chunk from {} to {}", buffer.getOutput(), this);
 				chunk = buffer.read();
+				LOGGER.debug("read chunk from " + this);
 			}
-
-			LOGGER.debug("read chunk from " + this);
 
 		} else {
 

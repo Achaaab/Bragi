@@ -30,8 +30,10 @@ public class Mp3FilePlayer extends Module implements Player {
 
 		super(name);
 
+		addPrimaryOutput(name + "_output_" + outputs.size());
+
 		while (outputs.size() < Settings.INSTANCE.getChannelCount()) {
-			addOutput(name + "_output_" + outputs.size());
+			addSecondaryOutput(name + "_output_" + outputs.size());
 		}
 
 		var inputStream = new BufferedInputStream(newInputStream(path));

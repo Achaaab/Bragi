@@ -4,7 +4,6 @@ import fr.guehenneux.bragi.Settings;
 import org.slf4j.Logger;
 
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 
@@ -28,8 +27,10 @@ public class Microphone extends Module {
 
 		super(name);
 
+		addPrimaryInput(name + "_output_" + outputs.size());
+
 		while (outputs.size() < Settings.INSTANCE.getChannelCount()) {
-			addOutput(name + "_output_" + outputs.size());
+			addSecondaryInput(name + "_output_" + outputs.size());
 		}
 
 		var format = new AudioFormat(

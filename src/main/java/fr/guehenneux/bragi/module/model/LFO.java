@@ -24,7 +24,7 @@ public class LFO extends Module {
 
 		super(name);
 
-		output = addOutput(name + "_output");
+		output = addPrimaryOutput(name + "_output");
 
 		wave = new Wave(Sine.INSTANCE, frequency);
 

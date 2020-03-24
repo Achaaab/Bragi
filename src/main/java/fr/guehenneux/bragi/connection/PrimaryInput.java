@@ -12,7 +12,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Jonathan Guéhenneux
  * @since 0.0.1
  */
-public class PrimaryInput extends AbstractInput {
+public class PrimaryInput extends NamedInput {
 
 	private static final Logger LOGGER = getLogger(PrimaryInput.class);
 
@@ -34,13 +34,17 @@ public class PrimaryInput extends AbstractInput {
 	public float[] read() throws InterruptedException {
 
 		synchronized (this) {
+
 			while (!isConnected()) {
+
+				LOGGER.debug("waiting for a connection to {}", this);
 				wait();
 			}
 		}
 
+		LOGGER.debug("reading chunk from {} to {}", buffer.getOutput(), this);
 		var chunk = buffer.read();
-		LOGGER.debug("read chunk from " + this);
+		LOGGER.debug("chunk read from {} to {}", buffer.getOutput(), this);
 
 		return chunk;
 	}

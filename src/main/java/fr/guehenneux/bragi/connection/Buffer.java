@@ -9,12 +9,21 @@ import java.util.concurrent.BlockingQueue;
  */
 public class Buffer {
 
+	private Output output;
+	private Input input;
+
 	private BlockingQueue<float[]> chunks;
 
 	/**
-	 * Create a new empty buffer with a capacity of 1 chunk.
+	 * Create a new empty buffer between specified output and input with a capacity of 1 chunk.
+	 *
+	 * @param output output that will write to this buffer
+	 * @param input input that will read from this buffer
 	 */
-	public Buffer() {
+	public Buffer(Output output, Input input) {
+
+		this.output = output;
+		this.input = input;
 
 		chunks = new ArrayBlockingQueue<>(1);
 	}
@@ -55,5 +64,19 @@ public class Buffer {
 	 */
 	public float[] tryRead() {
 		return chunks.poll();
+	}
+
+	/**
+	 * @return output that write to this buffer
+	 */
+	public Output getOutput() {
+		return output;
+	}
+
+	/**
+	 * @return input that reads from this buffer
+	 */
+	public Input getInput() {
+		return input;
 	}
 }

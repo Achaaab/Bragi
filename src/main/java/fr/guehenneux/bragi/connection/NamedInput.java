@@ -6,7 +6,7 @@ package fr.guehenneux.bragi.connection;
  * @author Jonathan Guéhenneux
  * @since 0.0.1
  */
-public abstract class AbstractInput implements Input {
+public abstract class NamedInput implements Input {
 
 	protected String name;
 	protected Buffer buffer;
@@ -16,7 +16,7 @@ public abstract class AbstractInput implements Input {
 	 *
 	 * @param name name of the input to create
 	 */
-	public AbstractInput(String name) {
+	public NamedInput(String name) {
 
 		this.name = name;
 

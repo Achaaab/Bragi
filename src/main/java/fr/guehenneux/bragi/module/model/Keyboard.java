@@ -39,8 +39,8 @@ public class Keyboard extends Module {
 		super(name);
 
 		modulation = addSecondaryInput(name + "_modulation");
-		output = addOutput(name + "_output");
-		gate = addOutput(name + "_gate");
+		output = addPrimaryOutput(name + "_output");
+		gate = addSecondaryOutput(name + "_gate");
 
 		wave = new Wave(Sawtooth.INSTANCE, 440);
 
@@ -103,10 +103,10 @@ public class Keyboard extends Module {
 		var modulationSamples = modulation.read();
 
 		var samples = wave.getSamples(modulationSamples, sampleCount, sampleLength);
-		var gateSamples = new float[] { gateSample };
+		var gateSamples = new float[]{gateSample};
 
 		output.write(samples);
-		gate.tryWrite(gateSamples);
+		gate.write(gateSamples);
 
 		return sampleCount;
 	}
