@@ -6,6 +6,7 @@ import fr.guehenneux.bragi.connection.Output;
 import fr.guehenneux.bragi.module.view.VCOView;
 import fr.guehenneux.bragi.wave.Sine;
 import fr.guehenneux.bragi.wave.Wave;
+import fr.guehenneux.bragi.wave.Waveform;
 
 /**
  * Voltage-Controlled Oscillator
@@ -14,6 +15,9 @@ import fr.guehenneux.bragi.wave.Wave;
  */
 public class VCO extends Module {
 
+	private static final double BASE_FREQUENCY = 440.0;
+	private int octave = 0;
+
 	private Input modulation;
 	private Output output;
 
@@ -21,16 +25,15 @@ public class VCO extends Module {
 
 	/**
 	 * @param name name of the VCO
-	 * @param frequency initial frequency of the VCO in hertz
 	 */
-	public VCO(String name, double frequency) {
+	public VCO(String name) {
 
 		super(name);
 
 		modulation = addSecondaryInput(name + "_modulation");
 		output = addPrimaryOutput(name + "_output");
 
-		wave = new Wave(Sine.INSTANCE, frequency);
+		wave = new Wave(Sine.INSTANCE, BASE_FREQUENCY);
 
 		new VCOView(this);
 
@@ -44,25 +47,12 @@ public class VCO extends Module {
 		var sampleLength = Settings.INSTANCE.getFrameLength();
 
 		var modulationSamples = modulation.read();
-		var samples = wave.getSamples(modulationSamples, sampleCount, sampleLength);
+
+		var samples = wave.getSamples(octave, modulationSamples, sampleCount, sampleLength);
 
 		output.write(samples);
 
 		return sampleCount;
-	}
-
-	/**
-	 * @return
-	 */
-	public double getFrequency() {
-		return wave.getFrequency();
-	}
-
-	/**
-	 * @param frequency
-	 */
-	public void setFrequency(double frequency) {
-		wave.setFrequency(frequency);
 	}
 
 	/**
@@ -73,9 +63,16 @@ public class VCO extends Module {
 	}
 
 	/**
-	 * @param wave
+	 * @param octave octave to set
 	 */
-	public void setWave(Wave wave) {
-		this.wave = wave;
+	public void setOctave(int octave) {
+		this.octave = octave;
+	}
+
+	/**
+	 * @param waveform waveform to set
+	 */
+	public void setWaveform(Waveform waveform) {
+		wave.setWaveform(waveform);
 	}
 }

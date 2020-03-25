@@ -2,6 +2,7 @@ package fr.guehenneux.bragi;
 
 import fr.guehenneux.bragi.module.model.ADSR;
 import fr.guehenneux.bragi.module.model.HighPassVCF;
+import fr.guehenneux.bragi.module.model.Key;
 import fr.guehenneux.bragi.module.model.Keyboard;
 import fr.guehenneux.bragi.module.model.LFO;
 import fr.guehenneux.bragi.module.model.LowPassVCF;
@@ -11,6 +12,7 @@ import fr.guehenneux.bragi.module.model.Oscilloscope;
 import fr.guehenneux.bragi.module.model.Sampler;
 import fr.guehenneux.bragi.module.model.Speaker;
 import fr.guehenneux.bragi.module.model.SpectrumAnalyzer;
+import fr.guehenneux.bragi.module.model.Theremin;
 import fr.guehenneux.bragi.module.model.VCA;
 import fr.guehenneux.bragi.module.model.VCO;
 import fr.guehenneux.bragi.module.model.WavFilePlayer;
@@ -48,7 +50,74 @@ public class Test {
 	public static void main(String... arguments) throws LineUnavailableException, IOException, MalformedWavFileException,
 			JavaLayerException {
 
-		montage7();
+		testLowPassFiler();
+	}
+
+	/**
+	 * @throws LineUnavailableException
+	 */
+	public static void testLowPassFiler() throws LineUnavailableException {
+
+		var filter = new LowPassVCF("filter");
+		var keyboard = new Keyboard("keyboard");
+		var speaker = new Speaker("speaker");
+		var spectrum = new SpectrumAnalyzer("oscilloscope");
+
+		keyboard.connectTo(filter);
+		speaker.connectFrom(filter, filter);
+		filter.connectTo(spectrum);
+	}
+
+	/**
+	 * @throws LineUnavailableException
+	 */
+	public static void testKeyboard() throws LineUnavailableException {
+
+		var keyboard = new Keyboard("keyboard");
+		var speaker = new Speaker("speaker");
+
+		speaker.connectFrom(keyboard, keyboard);
+	}
+
+	/**
+	 * Test of theremin with VCO.
+	 */
+	public static void testThereminVcoVca() throws LineUnavailableException {
+
+		var theremin = new Theremin("theremin");
+		var vco = new VCO("vco");
+		var volumeFilter = new LowPassVCF("volume_filter");
+		var vca = new VCA("vca");
+		var filter = new LowPassVCF("filter");
+		var speaker = new Speaker("speaker");
+		var oscilloscope = new Oscilloscope("oscilloscope");
+		var oscilloscopeVco = new Oscilloscope("oscilloscope_vco");
+		var lfo = new LFO("lfo", 5);
+
+		theremin.connect(vco.getModulation());
+		vco.connectTo(vca);
+		vca.connectTo(filter);
+		speaker.connectFrom(filter, filter);
+		lfo.connect(filter.getModulation());
+		filter.connectTo(oscilloscope);
+		theremin.getVolume().connect(vca.getGain());
+		//volumeFilter.connect(vca.getGain());
+		vca.connectTo(oscilloscopeVco);
+	}
+
+	/**
+	 * Basic test of theremin.
+	 */
+	public static void testThereminBasic() {
+
+		var theremin = new Theremin("theremin");
+		var pitch = new Oscilloscope("pitch");
+		var volume = new Oscilloscope("volume");
+
+		theremin.setComputingFrameRate(44100);
+
+		theremin.getPitch().connect(pitch.getInput());
+		theremin.getVolume().connect(volume.getInput());
 	}
 
 	/**
@@ -57,7 +126,7 @@ public class Test {
 	 */
 	public static void testOscilloscope() throws IOException, LineUnavailableException {
 
-		var vco = new VCO("vco", 440);
+		var vco = new VCO("vco");
 		var oscilloscope = new Oscilloscope("oscilloscope");
 
 		oscilloscope.setComputingFrameRate(44100);
@@ -139,7 +208,7 @@ public class Test {
 	 */
 	public static void montage3() throws LineUnavailableException {
 
-		var vco = new VCO("VCO", 1);
+		var vco = new VCO("VCO");
 		var speaker = new Speaker("speaker");
 		var spectrumAnalyzer = new SpectrumAnalyzer("spectrumAnalyzer");
 		var oscilloscope = new Oscilloscope("oscilloscope");
@@ -186,7 +255,7 @@ public class Test {
 	 */
 	public static void montage6() throws  LineUnavailableException {
 
-		var vco = new VCO("vco", 440);
+		var vco = new VCO("vco");
 		var oscilloscope = new Oscilloscope("oscilloscope");
 		var speaker = new Speaker("speaker");
 
@@ -307,16 +376,13 @@ public class Test {
 	public static void testMicro() throws LineUnavailableException {
 
 		var microphone = new Microphone("microphone");
+		var spectrum = new SpectrumAnalyzer("spectrum");
+		var oscilloscope = new Oscilloscope("oscilloscope");
 		var speaker = new Speaker("speaker");
-		var leftSpectrumAnalyzer = new SpectrumAnalyzer("left_spectrum_analyzer");
-		var rightSpectrumAnalyzer = new SpectrumAnalyzer("right_spectrum_analyzer");
 
-		var outputs = microphone.getOutputs();
-		var inputs = speaker.getInputs();
-		outputs.get(0).connect(inputs.get(0));
-		outputs.get(1).connect(inputs.get(1));
-		outputs.get(0).connect(leftSpectrumAnalyzer.getInput());
-		outputs.get(1).connect(rightSpectrumAnalyzer.getInput());
+		new Thread(() -> microphone.connectTo(spectrum)).start();
+		new Thread(() -> microphone.connectTo(oscilloscope)).start();
+		new Thread(() -> microphone.connectTo(speaker)).start();
 	}
 
 	/**
@@ -394,7 +460,7 @@ public class Test {
 
 		var speaker = new Speaker("speaker");
 		var lfo = new LFO("lfo", 1);
-		var vco = new VCO("vco", 440);
+		var vco = new VCO("vco");
 		var lfoFilter = new LFO("lfo_vcf", 1);
 		var highPassFilter = new HighPassVCF("highpass_vcf");
 		var lowPassFilter = new LowPassVCF("lowpass_vcf");
@@ -411,18 +477,5 @@ public class Test {
 		highPassFilter.connectTo(oscilloscope);
 		lfoFilter.connect(lowPassFilter.getModulation());
 		lfoFilter.connect(highPassFilter.getModulation());
-	}
-
-	/**
-	 * @throws LineUnavailableException
-	 */
-	public static void montageConsonance() throws LineUnavailableException {
-
-		var speaker = new Speaker("Hauts-parleurs");
-		var vco1 = new VCO("VCO1", 440);
-		var vco2 = new VCO("VCO2", 220);
-
-		vco1.getOutput().connect(speaker.getInputs().get(0));
-		vco2.getOutput().connect(speaker.getInputs().get(1));
 	}
 }

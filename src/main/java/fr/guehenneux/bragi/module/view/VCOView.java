@@ -4,29 +4,46 @@ import fr.guehenneux.bragi.module.model.VCO;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.border.TitledBorder;
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.NORTH;
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+
 /**
+ * VCO view
+ *
  * @author Jonathan Guéhenneux
+ * @since 0.0.4
  */
 public class VCOView extends JPanel {
 
 	/**
-	 * @param model
+	 * @param model VCO model
 	 */
 	public VCOView(VCO model) {
 
-		// from 25Hz to 12800Hz
-		FrequencySlider frequencySlider = new FrequencySlider(25, 9);
-		frequencySlider.addChangeListener(changeEvent -> model.setFrequency(frequencySlider.getFrequency()));
+		var waveformComboBox = new WaveformComboBox();
+		waveformComboBox.addActionListener(actionEvent -> model.setWaveform(waveformComboBox.getSelectedWaveform()));
 
-		setLayout(new GridLayout(1, 1));
-		add(frequencySlider);
+		var octaveSlider = new JSlider(-4, 4);
+		octaveSlider.setBorder(new TitledBorder("Octave"));
+		octaveSlider.setMajorTickSpacing(1);
+		octaveSlider.setPaintTicks(true);
+		octaveSlider.setPaintLabels(true);
+		octaveSlider.addChangeListener(changeEvent -> model.setOctave(octaveSlider.getValue()));
 
-		JFrame frame = new JFrame(model.getName());
+		setLayout(new BorderLayout());
+		add(waveformComboBox, NORTH);
+		add(octaveSlider, CENTER);
+
+		var frame = new JFrame(model.getName());
+		frame.setContentPane(this);
 		frame.setSize(400, 300);
-		frame.add(this);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}
 }

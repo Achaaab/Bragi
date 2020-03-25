@@ -1,6 +1,7 @@
 package fr.guehenneux.bragi.module.view;
 
 import fr.guehenneux.bragi.PainterThread;
+import fr.guehenneux.bragi.Settings;
 import fr.guehenneux.bragi.module.model.Oscilloscope;
 
 import javax.swing.JComponent;
@@ -10,19 +11,20 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.Stroke;
 
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.RenderingHints.KEY_ANTIALIASING;
+import static java.awt.RenderingHints.VALUE_ANTIALIAS_OFF;
 import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
-import static java.lang.Math.max;
-import static java.lang.Math.min;
 import static java.lang.Math.round;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
+ * oscilloscope view
+ *
  * @author Jonathan Guéhenneux
+ * @since 0.0.4
  */
 public class OscilloscopeView extends JComponent {
 
@@ -33,6 +35,8 @@ public class OscilloscopeView extends JComponent {
 	private static final Color DIVISION_COLOR = new Color(192, 192, 192);
 	private static final Stroke PLOT_STROKE = new BasicStroke(2.0f);
 	private static final Stroke DIVISION_STROKE = new BasicStroke(1.0f);
+	private static final float SECONDS_PER_DIVISION = 0.0017f;
+	private static final float VOLTS_PER_DIVISION = 1.0f;
 
 	private Oscilloscope model;
 
@@ -63,7 +67,7 @@ public class OscilloscopeView extends JComponent {
 		var plotHeight = height - 2 * MARGIN;
 
 		var graphics2D = (Graphics2D) graphics;
-		graphics2D.setRenderingHint(KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		graphics2D.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_OFF);
 
 		graphics2D.setColor(BACKGROUND_COLOR);
 		graphics2D.fillRect(0, 0, width, height);
@@ -71,10 +75,13 @@ public class OscilloscopeView extends JComponent {
 		graphics2D.setStroke(DIVISION_STROKE);
 		graphics2D.setPaint(DIVISION_COLOR);
 
+		var divisionSize = (float) plotWidth / HORIZONTAL_DIVISION_COUNT;
+
 		for (var horizontalDivisionIndex = 0; horizontalDivisionIndex <= HORIZONTAL_DIVISION_COUNT; horizontalDivisionIndex++) {
 
-			graphics2D.drawLine(MARGIN + horizontalDivisionIndex * plotWidth / HORIZONTAL_DIVISION_COUNT, MARGIN,
-					MARGIN + horizontalDivisionIndex * plotWidth / HORIZONTAL_DIVISION_COUNT, MARGIN + plotHeight);
+			graphics2D.drawLine(
+					round(MARGIN + horizontalDivisionIndex * divisionSize), MARGIN,
+					round(MARGIN + horizontalDivisionIndex * divisionSize), MARGIN + plotHeight);
 		}
 
 		var verticalDivision = 0;
@@ -87,7 +94,7 @@ public class OscilloscopeView extends JComponent {
 			graphics2D.drawLine(MARGIN, MARGIN + plotHeight / 2 - verticalDivision,
 					MARGIN + plotWidth, MARGIN + plotHeight / 2 - verticalDivision);
 
-			verticalDivision += plotWidth / HORIZONTAL_DIVISION_COUNT;
+			verticalDivision += divisionSize;
 		}
 
 		var buffer = model.getBuffer();
@@ -99,10 +106,11 @@ public class OscilloscopeView extends JComponent {
 
 			for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 
-				var sample = max(-1.0f, min(1.0f, buffer.read(sampleIndex)));
+				var sample = buffer.read(sampleIndex);
+				var time = (float) sampleIndex / Settings.INSTANCE.getFrameRate();
 
-				xValues[sampleIndex] = MARGIN + plotWidth * sampleIndex / sampleCount;
-				yValues[sampleIndex] = MARGIN + plotHeight / 2 - round(plotHeight * sample / 2);
+				xValues[sampleIndex] = round(MARGIN + divisionSize * time / SECONDS_PER_DIVISION);
+				yValues[sampleIndex] = round(MARGIN + plotHeight / 2 - divisionSize * sample / VOLTS_PER_DIVISION);
 			}
 		}
 

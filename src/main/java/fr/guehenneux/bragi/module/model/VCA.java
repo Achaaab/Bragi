@@ -2,6 +2,7 @@ package fr.guehenneux.bragi.module.model;
 
 import fr.guehenneux.bragi.connection.Input;
 import fr.guehenneux.bragi.connection.Output;
+import fr.guehenneux.bragi.module.view.VCAView;
 import org.slf4j.Logger;
 
 import static java.lang.Math.pow;
@@ -16,9 +17,13 @@ public class VCA extends Module {
 
 	private static final Logger LOGGER = getLogger(VCA.class);
 
+	public static final float DECIBELS_PER_VOLT = 10.0f;
+
 	private Input input;
 	private Input gain;
 	private Output output;
+
+	private int initialGain;
 
 	/**
 	 * @param name VCA name
@@ -30,6 +35,10 @@ public class VCA extends Module {
 		input = addPrimaryInput(name + "_input");
 		gain = addSecondaryInput(name + "_gain");
 		output = addPrimaryOutput(name + "_output");
+
+		initialGain = 0;
+
+		new VCAView(this);
 
 		start();
 	}
@@ -47,7 +56,9 @@ public class VCA extends Module {
 
 			var inputSample = inputSamples[sampleIndex];
 			var gainSample = gainSamples == null ? 0 : gainSamples[sampleIndex];
-			var outputSample = (float) (inputSample * pow(2, 4 * (gainSample - 1)));
+			var decibels = initialGain + DECIBELS_PER_VOLT * gainSample;
+
+			var outputSample = (float) (inputSample * pow(10.0f, decibels / 10.0f));
 
 			outputSamples[sampleIndex] = outputSample;
 		}
@@ -58,9 +69,23 @@ public class VCA extends Module {
 	}
 
 	/**
-	 * @return gain
+	 * @return gain gain input
 	 */
 	public Input getGain() {
 		return gain;
+	}
+
+	/**
+	 * @return initial gain in decibels
+	 */
+	public int getInitialGain() {
+		return initialGain;
+	}
+
+	/**
+	 * @param initialGain initial gain in decibels
+	 */
+	public void setInitialGain(int initialGain) {
+		this.initialGain = initialGain;
 	}
 }

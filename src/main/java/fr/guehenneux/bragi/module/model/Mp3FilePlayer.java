@@ -1,8 +1,6 @@
 package fr.guehenneux.bragi.module.model;
 
-import java.io.*;
-import java.nio.file.Path;
-
+import fr.guehenneux.bragi.Normalizer;
 import fr.guehenneux.bragi.Settings;
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
@@ -10,19 +8,32 @@ import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.DecoderException;
 import javazoom.jl.decoder.SampleBuffer;
 
+import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Path;
+
 import static java.nio.file.Files.newInputStream;
 
 /**
+ * MP3 file player
+ *
  * @author Jonathan Guéhenneux
+ * @since 0.0.4
  */
 public class Mp3FilePlayer extends Module implements Player {
+
+	private static final Normalizer NORMALIZER = new Normalizer(
+			Short.MIN_VALUE, Short.MAX_VALUE,
+			Settings.INSTANCE.getMinimalVoltage(), Settings.INSTANCE.getMaximalVoltage()
+	);
 
 	private Bitstream bitStream;
 	private Decoder decoder;
 	private int channelCount;
 
 	/**
-	 * @param name
+	 * @param name name of the MP3 file player
 	 * @param path path of MP3 file to play
 	 * @throws FileNotFoundException
 	 */
@@ -90,9 +101,7 @@ public class Mp3FilePlayer extends Module implements Player {
 		for (int frameIndex = 0; frameIndex < frameCount; frameIndex++) {
 
 			for (int channelIndex = 0; channelIndex < channelCount; channelIndex++) {
-
-				var sample = buffer[sampleIndex++];
-				samples[channelIndex][frameIndex] = (float) sample / Short.MAX_VALUE;
+				samples[channelIndex][frameIndex] = NORMALIZER.normalize(buffer[sampleIndex++]);
 			}
 		}
 

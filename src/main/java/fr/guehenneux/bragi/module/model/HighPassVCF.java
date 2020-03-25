@@ -2,6 +2,9 @@ package fr.guehenneux.bragi.module.model;
 
 import fr.guehenneux.bragi.Settings;
 
+import static java.lang.Math.exp;
+import static java.lang.Math.pow;
+
 /**
  * Voltage-Controlled Filter with highpass response
  *
@@ -33,16 +36,16 @@ public class HighPassVCF extends VCF {
 			} else {
 
 				modulationSample = modulationSamples[sampleIndex];
-				actualCutOffFrequency = (float) (cutOffFrequency * Math.pow(2.0, 4 * modulationSample - 3));
+				actualCutOffFrequency = cutOffFrequency * pow(2.0, 4 * modulationSample - 3);
 			}
 
 			var f = 2 * actualCutOffFrequency / sampleRate;
 
 			// empirical tuning
-			var k = 3.6f * f - 1.6f * f * f - 1;
-			var p = (k + 1) * 0.5f;
-			var scale = (float) Math.exp((1 - p) * 1.386249);
-			var r = rezLevel / 100 * scale;
+			var k = 3.6 * f - 1.6 * f * f - 1;
+			var p = (k + 1) * 0.5;
+			var scale = exp((1 - p) * 1.386249);
+			var r = emphasis * scale;
 
 			var inputSample = inputSamples[sampleIndex] - r * y4;
 
@@ -60,7 +63,7 @@ public class HighPassVCF extends VCF {
 			oldy2 = y2;
 			oldy3 = y3;
 
-			outputSamples[sampleIndex] = oldx - y4;
+			outputSamples[sampleIndex] = (float) (oldx - y4);
 		}
 	}
 }

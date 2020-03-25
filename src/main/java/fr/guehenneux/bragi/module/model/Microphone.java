@@ -27,10 +27,10 @@ public class Microphone extends Module {
 
 		super(name);
 
-		addPrimaryInput(name + "_output_" + outputs.size());
+		addPrimaryOutput(name + "_output_" + outputs.size());
 
 		while (outputs.size() < Settings.INSTANCE.getChannelCount()) {
-			addSecondaryInput(name + "_output_" + outputs.size());
+			addSecondaryOutput(name + "_output_" + outputs.size());
 		}
 
 		var format = new AudioFormat(

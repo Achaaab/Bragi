@@ -13,8 +13,8 @@ public class Settings {
 	private static final int DEFAULT_FRAME_RATE = 44100;
 	private static final int DEFAULT_CHUNK_SIZE = 100;
 
-	private static final float DEFAULT_MINIMAL_VOLTAGE = -1.0f;
-	private static final float DEFAULT_MAXIMAL_VOLTAGE = 1.0f;
+	private static final float DEFAULT_MINIMAL_VOLTAGE = -5.0f;
+	private static final float DEFAULT_MAXIMAL_VOLTAGE = 5.0f;
 
 	private int channelCount;
 	private int sampleSize;

@@ -3,6 +3,7 @@ package fr.guehenneux.bragi.module.model;
 import fr.guehenneux.bragi.Settings;
 
 import static java.lang.Math.exp;
+import static java.lang.Math.pow;
 
 /**
  * Voltage-Controlled Filter with low-pass response
@@ -10,6 +11,8 @@ import static java.lang.Math.exp;
  * @author Jonathan Guéhenneux
  */
 public class LowPassVCF extends VCF {
+
+	private static final double VOLT_PER_OCTAVE = 5.0;
 
 	/**
 	 * @param name name of the low-pass filter
@@ -35,22 +38,30 @@ public class LowPassVCF extends VCF {
 			} else {
 
 				modulationSample = modulationSamples[sampleIndex];
-				actualCutOffFrequency = (float) (cutOffFrequency * Math.pow(2.0, 4 * modulationSample - 3));
+				actualCutOffFrequency = cutOffFrequency * pow(2.0, modulationSample / VOLT_PER_OCTAVE);
 			}
 
+			// f ∈ [0, 1]
 			var f = 2 * actualCutOffFrequency / sampleRate;
 
 			// empirical tuning
-			var k = 3.6f * f - 1.6f * f * f - 1;
-			var p = (k + 1) * 0.5f;
-			var scale = (float) exp((1 - p) * 1.386249);
-			var r = rezLevel / 100 * scale;
 
-			var inputSample = inputSamples[sampleIndex] - r * y4;
+			// k ∈ [-1, 1]
+			var k = 3.6 * f - 1.6 * f * f - 1;
+
+			// p ∈ [0, 1]
+			var p = (k + 1) * 0.5;
+
+			// scale ∈ [1, 4]
+			var scale = exp((1 - p) * 1.386249);
+
+			// r ∈ [0, 4]
+			var r = emphasis * scale;
+
+			var inputSample = inputSamples[sampleIndex] / 5 - r * y4;
 
 			// four cascaded one-pole filters (bilinear transform)
 			y1 = inputSample * p + oldx * p - k * y1;
-
 			y2 = y1 * p + oldy1 * p - k * y2;
 			y3 = y2 * p + oldy2 * p - k * y3;
 			y4 = y3 * p + oldy3 * p - k * y4;
@@ -63,7 +74,7 @@ public class LowPassVCF extends VCF {
 			oldy2 = y2;
 			oldy3 = y3;
 
-			outputSamples[sampleIndex] = y4;
+			outputSamples[sampleIndex] = (float) (y4 * 5);
 		}
 	}
 }

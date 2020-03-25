@@ -6,6 +6,8 @@ import fr.guehenneux.bragi.connection.Output;
 import fr.guehenneux.bragi.module.view.ADSRView;
 import org.slf4j.Logger;
 
+import java.util.Set;
+
 import static fr.guehenneux.bragi.module.model.ADSRState.ATTACK;
 import static fr.guehenneux.bragi.module.model.ADSRState.DECAY;
 import static fr.guehenneux.bragi.module.model.ADSRState.IDLE;
@@ -22,8 +24,8 @@ public class ADSR extends Module {
 
 	private static final Logger LOGGER = getLogger(ADSR.class);
 
-	public static final float MINIMAL_GAIN = -1.0f;
-	public static final float MAXIMAL_GAIN = 1.0f;
+	public static final float MINIMAL_GAIN = Settings.INSTANCE.getMinimalVoltage();
+	public static final float MAXIMAL_GAIN = Settings.INSTANCE.getMaximalVoltage();
 
 	private Input gate;
 	private Output output;
@@ -80,7 +82,7 @@ public class ADSR extends Module {
 
 		previousGateSample = gateSample;
 
-		for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
+		for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 
 			switch (state) {
 
@@ -159,7 +161,7 @@ public class ADSR extends Module {
 	/**
 	 * Sustain gainSample must be in range [MINIMAL_GAIN, MAXIMAL_GAIN].
 	 *
-	 * @param sustain sustain gain
+	 * @param sustain sustain gain in Volts
 	 * @see #MINIMAL_GAIN
 	 * @see #MAXIMAL_GAIN
 	 */

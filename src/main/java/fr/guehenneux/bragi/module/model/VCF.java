@@ -15,18 +15,18 @@ public abstract class VCF extends Module {
 	protected Input input;
 	protected Output output;
 
-	protected float rezLevel;
+	protected float emphasis;
 	protected float cutOffFrequency;
-	protected float actualCutOffFrequency;
+	protected double actualCutOffFrequency;
 
 	protected float[] inputSamples;
 	protected float[] modulationSamples;
 	protected float modulationSample;
 	protected float[] outputSamples;
 
-	protected float f0, f1;
+	protected double f0, f1;
 
-	protected float y1, y2, y3, y4, oldx, oldy1, oldy2, oldy3;
+	protected double y1, y2, y3, y4, oldx, oldy1, oldy2, oldy3;
 
 	/**
 	 * @param name
@@ -39,10 +39,10 @@ public abstract class VCF extends Module {
 		modulation = addSecondaryInput(name + "_modulation");
 		output = addPrimaryOutput(name + "_output");
 
-		rezLevel = 0.5f;
+		emphasis = 0.5f;
 		cutOffFrequency = 440.0f;
 
-		f0 = f1 = y1 = y2 = y3 = y4 = oldx = oldy1 = oldy2 = oldy3 = 0.0f;
+		f0 = f1 = y1 = y2 = y3 = y4 = oldx = oldy1 = oldy2 = oldy3 = 0.0;
 
 		new VCFView(this);
 
@@ -77,15 +77,15 @@ public abstract class VCF extends Module {
 	/**
 	 * @return rezLevel
 	 */
-	public float getRezLevel() {
-		return rezLevel;
+	public float getEmphasis() {
+		return emphasis;
 	}
 
 	/**
-	 * @param rezLevel rezLevel to set
+	 * @param emphasis amount of emphasis between 0 and 1
 	 */
-	public void setRezLevel(float rezLevel) {
-		this.rezLevel = rezLevel;
+	public void setEmphasis(float emphasis) {
+		this.emphasis = emphasis;
 	}
 
 	/**

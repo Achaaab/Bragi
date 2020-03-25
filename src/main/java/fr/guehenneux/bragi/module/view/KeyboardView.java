@@ -1,16 +1,8 @@
 package fr.guehenneux.bragi.module.view;
 
 import fr.guehenneux.bragi.module.model.Keyboard;
-import fr.guehenneux.bragi.wave.Pulse;
-import fr.guehenneux.bragi.wave.ReverseSawtooth;
-import fr.guehenneux.bragi.wave.Sawtooth;
-import fr.guehenneux.bragi.wave.Sine;
-import fr.guehenneux.bragi.wave.Triangle;
-import fr.guehenneux.bragi.wave.Waveform;
 
 import javax.swing.AbstractAction;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -28,24 +20,13 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 public class KeyboardView extends JPanel {
 
 	/**
-	 * @param model
+	 * @param model keyboard model
 	 */
 	public KeyboardView(Keyboard model) {
 
-		var waveforms = new Waveform[]{
-				Sine.INSTANCE,
-				Triangle.INSTANCE,
-				Sawtooth.INSTANCE,
-				ReverseSawtooth.INSTANCE,
-				Pulse.SQUARE,
-				Pulse.PULSE_4,
-				Pulse.PULSE_8
-		};
-
-		var waveformsComboBox = new JComboBox<>(waveforms);
-
-		waveformsComboBox.addActionListener(actionEvent ->
-				model.setWaveform((Waveform) waveformsComboBox.getSelectedItem()));
+		var waveformComboBox = new WaveformComboBox();
+		waveformComboBox.setSelectedItem(model.getWaveform());
+		waveformComboBox.addActionListener(event -> model.setWaveform(waveformComboBox.getSelectedWaveform()));
 
 		var keys = model.getKeys();
 		var keyCount = keys.size();
@@ -65,8 +46,8 @@ public class KeyboardView extends JPanel {
 			var keyPressed = getKeyStroke(code, 0, false);
 			var keyReleased = getKeyStroke(code, 0, true);
 
-			getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyPressed, key.toString() + "_pressed");
-			getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyReleased, key.toString() + "_released");
+			getInputMap(WHEN_IN_FOCUSED_WINDOW).put(keyPressed, key.toString() + "_pressed");
+			getInputMap(WHEN_IN_FOCUSED_WINDOW).put(keyReleased, key.toString() + "_released");
 
 			getActionMap().put(key.toString() + "_pressed", new AbstractAction() {
 
@@ -86,11 +67,11 @@ public class KeyboardView extends JPanel {
 		}
 
 		setLayout(new BorderLayout());
-		add(waveformsComboBox, NORTH);
+		add(waveformComboBox, NORTH);
 		add(keysPanel, CENTER);
 
 		var frame = new JFrame(model.getName());
-		frame.add(this);
+		frame.setContentPane(this);
 		frame.pack();
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		frame.setVisible(true);

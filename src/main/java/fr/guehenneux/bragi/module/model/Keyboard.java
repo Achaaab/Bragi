@@ -5,6 +5,7 @@ import fr.guehenneux.bragi.connection.Input;
 import fr.guehenneux.bragi.connection.Output;
 import fr.guehenneux.bragi.module.view.KeyboardView;
 import fr.guehenneux.bragi.wave.Sawtooth;
+import fr.guehenneux.bragi.wave.Triangle;
 import fr.guehenneux.bragi.wave.Wave;
 import fr.guehenneux.bragi.wave.Waveform;
 import org.slf4j.Logger;
@@ -42,7 +43,7 @@ public class Keyboard extends Module {
 		output = addPrimaryOutput(name + "_output");
 		gate = addSecondaryOutput(name + "_gate");
 
-		wave = new Wave(Sawtooth.INSTANCE, 440);
+		wave = new Wave(Triangle.INSTANCE, 440);
 
 		keys = new ArrayList<>();
 
@@ -102,7 +103,7 @@ public class Keyboard extends Module {
 
 		var modulationSamples = modulation.read();
 
-		var samples = wave.getSamples(modulationSamples, sampleCount, sampleLength);
+		var samples = wave.getSamples(0, modulationSamples, sampleCount, sampleLength);
 		var gateSamples = new float[]{gateSample};
 
 		output.write(samples);
@@ -138,6 +139,13 @@ public class Keyboard extends Module {
 		if (pressedKeyCount == 0) {
 			gateSample = -1.0f;
 		}
+	}
+
+	/**
+	 * @return current waveform
+	 */
+	public Waveform getWaveform() {
+		return wave.getWaveform();
 	}
 
 	/**
