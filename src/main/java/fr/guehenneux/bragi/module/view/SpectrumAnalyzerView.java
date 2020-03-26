@@ -1,102 +1,91 @@
 package fr.guehenneux.bragi.module.view;
 
-import fr.guehenneux.bragi.ColorUtils;
 import fr.guehenneux.bragi.PainterThread;
 import fr.guehenneux.bragi.module.model.SpectrumAnalyzer;
 
+import javax.swing.JComponent;
+import javax.swing.JFrame;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.LinearGradientPaint;
 
-import javax.swing.*;
+import static java.awt.Color.BLACK;
+import static java.lang.Math.log10;
+import static java.lang.Math.min;
+import static java.lang.Math.round;
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
  * @author Jonathan Guéhenneux
+ * @since 0.0.5
  */
 public class SpectrumAnalyzerView extends JComponent {
 
 	private static final int PLOT_MARGIN = 5;
-	private static final int LEVEL_COUNT = 50;
-	private static final Color COLOR_MAXIMUM = new Color(87, 40, 255);
-	private static final Color COLOR_MINIMUM = new Color(255, 255, 255);
+	private static final int LEVEL_COUNT = 80;
 
-	private float[] averages;
+	private SpectrumAnalyzer model;
 
 	/**
 	 * @param model spectrum analyzer model
 	 */
 	public SpectrumAnalyzerView(SpectrumAnalyzer model) {
 
-		JFrame frame = new JFrame(model.getName());
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(400, 300);
-		frame.setLayout(new BorderLayout());
-		frame.add(this, BorderLayout.CENTER);
-		frame.setVisible(true);
-		PainterThread painter = new PainterThread(this, 60);
-		painter.start();
-	}
+		this.model = model;
 
-	/**
-	 * @param averages
-	 */
-	public synchronized void display(float[] averages) {
-		this.averages = averages;
+		var frame = new JFrame(model.getName());
+		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		frame.setSize(640, 360);
+		frame.setLayout(new BorderLayout());
+		frame.add(this);
+		frame.setVisible(true);
+
+		new PainterThread(this, 60).start();
 	}
 
 	@Override
-	public synchronized void paint(Graphics graphics) {
+	public void paint(Graphics graphics) {
 
-		int width = getWidth();
-		int height = getHeight();
+		var width = getWidth();
+		var height = getHeight();
 
-		float plotWidth = width - 2 * PLOT_MARGIN;
-		float plotHeight = height - 2 * PLOT_MARGIN;
+		var plotWidth = width - 2 * PLOT_MARGIN;
+		var plotHeight = height - 2 * PLOT_MARGIN;
 
-		Graphics2D graphics2D = (Graphics2D) graphics;
-		graphics2D.setColor(Color.BLACK);
+		var graphics2D = (Graphics2D) graphics;
+		graphics2D.setColor(BLACK);
 		graphics2D.fillRect(0, 0, width, height);
 
-		if (averages != null) {
+		var averages = model.getAverages();
 
-			int barCount = averages.length;
+		var barCount = averages.length;
+		var barWidth = 0.8f * plotWidth / barCount;
+		var barLeftMargin = 0.1f * plotWidth / barCount;
+		var barHeight = 0.8f * plotHeight / LEVEL_COUNT;
+		var barTopMargin = 0.1f * plotHeight / LEVEL_COUNT;
+		var plotBottom = PLOT_MARGIN + plotHeight;
 
-			float barWidth = 0.8f * plotWidth / barCount;
-			float barLeftMargin = 0.1f * plotWidth / barCount;
-			float barHeight = 0.8f * plotHeight / LEVEL_COUNT;
-			float barTopMargin = 0.1f * plotHeight / LEVEL_COUNT;
+		var barPaint = new LinearGradientPaint(
+				PLOT_MARGIN, plotBottom,
+				PLOT_MARGIN, PLOT_MARGIN,
+				new float[]{0.0f, 0.5f, 1.0f},
+				new Color[]{BLACK, new Color(255, 128, 0), new Color(255, 128, 0)});
 
-			float barX;
-			float barY;
+		graphics2D.setPaint(barPaint);
 
-			float plotBottom = PLOT_MARGIN + plotHeight;
-			int barLevel;
-			float magnitude;
+		for (var barIndex = 0; barIndex < barCount; barIndex++) {
 
-			Color barColor;
+			var barX = PLOT_MARGIN + barIndex * plotWidth / barCount + barLeftMargin;
+			var magnitude = averages[barIndex];
 
-			for (int barIndex = 0; barIndex < barCount; barIndex++) {
+			var barLevel = round(20 * log10(magnitude));
 
-				barX = PLOT_MARGIN + barIndex * plotWidth / barCount + barLeftMargin;
-				magnitude = averages[barIndex];
-				barLevel = Math.round(magnitude * LEVEL_COUNT / 200);
+			for (var levelIndex = 0; levelIndex <= min(barLevel, LEVEL_COUNT - 1); levelIndex++) {
 
-				for (int levelIndex = 0; levelIndex <= Math.min(barLevel, LEVEL_COUNT - 1); levelIndex++) {
-
-					barY = plotBottom - (levelIndex + 1) * plotHeight / LEVEL_COUNT + barTopMargin;
-					barColor = ColorUtils.getColorValue(0, COLOR_MINIMUM, LEVEL_COUNT, COLOR_MAXIMUM, levelIndex);
-					graphics2D.setColor(barColor);
-					graphics2D.fillRect(Math.round(barX), Math.round(barY), Math.round(barWidth), Math.round(barHeight));
-				}
-
-				for (int levelIndex = Math.max(0, barLevel); levelIndex < LEVEL_COUNT; levelIndex++) {
-
-					barY = plotBottom - (levelIndex + 1) * plotHeight / LEVEL_COUNT + barTopMargin;
-					barColor = ColorUtils.getColorValue(0, COLOR_MINIMUM, LEVEL_COUNT, COLOR_MAXIMUM, levelIndex);
-					graphics2D.setColor(barColor.darker().darker());
-					graphics2D.fillRect(Math.round(barX), Math.round(barY), Math.round(barWidth), Math.round(barHeight));
-				}
+				var barY = plotBottom - (levelIndex + 1) * plotHeight / LEVEL_COUNT + barTopMargin;
+				graphics2D.fillRect(round(barX), round(barY), round(barWidth), round(barHeight));
 			}
 		}
 	}

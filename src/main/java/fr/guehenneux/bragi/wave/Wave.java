@@ -1,5 +1,8 @@
 package fr.guehenneux.bragi.wave;
 
+import fr.guehenneux.bragi.Settings;
+
+import static java.lang.Math.fma;
 import static java.lang.Math.pow;
 
 /**
@@ -10,6 +13,7 @@ public class Wave {
 	private Waveform waveform;
 	private double frequency;
 
+	private double sampleRate;
 	private double periodPercent;
 
 	/**
@@ -21,6 +25,7 @@ public class Wave {
 		this.waveform = waveform;
 		this.frequency = frequency;
 
+		sampleRate = Settings.INSTANCE.getFrameRate();
 		periodPercent = 0;
 	}
 
@@ -56,10 +61,9 @@ public class Wave {
 	 * @param octave            octave
 	 * @param modulationSamples modulation samples
 	 * @param sampleCount       number of samples to generate
-	 * @param sampleLength      duration of a sample in seconds
 	 * @return generated samples
 	 */
-	public float[] getSamples(int octave, float[] modulationSamples, int sampleCount, double sampleLength) {
+	public float[] getSamples(int octave, float[] modulationSamples, int sampleCount) {
 
 		var samples = new float[sampleCount];
 
@@ -70,7 +74,7 @@ public class Wave {
 			var modulationFactor = modulationSamples == null ? 1.0 :
 					pow(2.0, octave + modulationSamples[sampleIndex]);
 
-			periodPercent = (periodPercent + sampleLength * frequency * modulationFactor) % 1.0;
+			periodPercent = fma(frequency, modulationFactor / sampleRate, periodPercent) % 1.0;
 		}
 
 		return samples;

@@ -39,7 +39,7 @@ public class LFO extends Module {
 		var sampleCount = Settings.INSTANCE.getChunkSize();
 		var sampleLength = Settings.INSTANCE.getFrameLength();
 
-		var samples = wave.getSamples(0, null, sampleCount, sampleLength);
+		var samples = wave.getSamples(0, null, sampleCount);
 
 		output.write(samples);
 

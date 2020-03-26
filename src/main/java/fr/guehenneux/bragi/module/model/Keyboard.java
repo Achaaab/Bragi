@@ -103,7 +103,7 @@ public class Keyboard extends Module {
 
 		var modulationSamples = modulation.read();
 
-		var samples = wave.getSamples(0, modulationSamples, sampleCount, sampleLength);
+		var samples = wave.getSamples(0, modulationSamples, sampleCount);
 		var gateSamples = new float[]{gateSample};
 
 		output.write(samples);

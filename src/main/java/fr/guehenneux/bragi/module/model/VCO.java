@@ -48,7 +48,7 @@ public class VCO extends Module {
 
 		var modulationSamples = modulation.read();
 
-		var samples = wave.getSamples(octave, modulationSamples, sampleCount, sampleLength);
+		var samples = wave.getSamples(octave, modulationSamples, sampleCount);
 
 		output.write(samples);
 

@@ -1,28 +1,30 @@
 package fr.guehenneux.bragi.module.model;
 
 import fr.guehenneux.bragi.Settings;
-import fr.guehenneux.bragi.algorithm.FFT;
-import fr.guehenneux.bragi.algorithm.FourierTransform;
+import fr.guehenneux.bragi.fft.FFT;
+import fr.guehenneux.bragi.fft.HammingWindow;
 import fr.guehenneux.bragi.connection.Input;
 import fr.guehenneux.bragi.module.view.SpectrumAnalyzerView;
 
-import static java.lang.Math.min;
+import static java.lang.Math.max;
 import static java.lang.System.arraycopy;
+import static java.util.Arrays.copyOf;
 
 /**
  * @author Jonathan Guéhenneux
+ * @since 0.0.5
  */
 public class SpectrumAnalyzer extends Module {
 
-	private static final int FFT_SAMPLE_COUNT = 1 << 10;
+	private static final int FFT_SAMPLE_COUNT = 1 << 13;
 
 	private Input input;
 
 	private FFT fft;
-	private float[] fftSamples;
-	private int fftSampleIndex;
+	private final float[] buffer;
+	private int bufferIndex;
 
-	private SpectrumAnalyzerView presentation;
+	private SpectrumAnalyzerView view;
 
 	/**
 	 * @param name name of the spectrum analyzer to create
@@ -33,14 +35,14 @@ public class SpectrumAnalyzer extends Module {
 
 		input = addPrimaryInput(name + "_input");
 
-		presentation = new SpectrumAnalyzerView(this);
-
-		fftSamples = new float[FFT_SAMPLE_COUNT];
-		fftSampleIndex = 0;
+		buffer = new float[FFT_SAMPLE_COUNT];
+		bufferIndex = 0;
 
 		fft = new FFT(FFT_SAMPLE_COUNT, Settings.INSTANCE.getFrameRate());
-		fft.window(FourierTransform.HAMMING);
-		fft.logAverages(50, 6);
+		fft.setWindow(new HammingWindow());
+		fft.logAverages(50, 12);
+
+		new SpectrumAnalyzerView(this);
 
 		start();
 	}
@@ -49,25 +51,63 @@ public class SpectrumAnalyzer extends Module {
 	public int compute() throws InterruptedException {
 
 		var samples = input.read();
-		var sampleCount = samples.length;
-		var sampleIndex = 0;
+		copy(samples);
+		return samples.length;
+	}
 
-		while (sampleIndex < sampleCount) {
+	/**
+	 * Copy samples to FFT samples.
+	 *
+	 * @param samples samples to copy
+	 */
+	private void copy(float[] samples) {
 
-			var readSampleCount = min(sampleCount - sampleIndex, FFT_SAMPLE_COUNT - fftSampleIndex);
-			arraycopy(samples, sampleIndex, fftSamples, fftSampleIndex, readSampleCount);
+		var start = max(samples.length - buffer.length, 0);
+		var end = samples.length;
 
-			sampleIndex += readSampleCount;
-			fftSampleIndex += readSampleCount;
+		copy(samples, start, end);
+	}
 
-			if (fftSampleIndex == FFT_SAMPLE_COUNT) {
+	/**
+	 * Copy samples to FFT samples.
+	 *
+	 * @param samples samples to copy
+	 * @param start   index of the first sample to copy (included)
+	 * @param end     index of the last sample to copy (excluded)
+	 */
+	private void copy(float[] samples, int start, int end) {
 
-				fft.forward(fftSamples);
-				presentation.display(fft.getAverages());
-				fftSampleIndex = 0;
+		var spaceLeft = buffer.length - bufferIndex;
+		var numberOfSamplesToWrite = end - start;
+
+		synchronized (buffer) {
+
+			if (spaceLeft < numberOfSamplesToWrite) {
+
+				arraycopy(samples, start, buffer, bufferIndex, spaceLeft);
+				bufferIndex = numberOfSamplesToWrite - spaceLeft;
+				arraycopy(samples, spaceLeft, buffer, 0, bufferIndex);
+
+			} else {
+
+				arraycopy(samples, start, buffer, bufferIndex, numberOfSamplesToWrite);
+				bufferIndex = (bufferIndex + numberOfSamplesToWrite) % buffer.length;
 			}
 		}
+	}
 
-		return sampleCount;
+	/**
+	 * @return spectrum averages
+	 */
+	public float[] getAverages() {
+
+		float[] fftSamples;
+
+		synchronized (buffer) {
+			fftSamples = copyOf(buffer, buffer.length);
+		}
+
+		fft.forward(fftSamples);
+		return fft.getAverages();
 	}
 }

@@ -1,5 +1,6 @@
 package fr.guehenneux.bragi;
 
+import static java.lang.Math.fma;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
@@ -10,12 +11,9 @@ import static java.lang.Math.min;
 public class Normalizer {
 
 	private float minimalInput;
-	private float maximalInput;
 	private float minimalOutput;
 	private float maximalOutput;
 
-	private float inputAmplitude;
-	private float outputAmplitude;
 	private float amplification;
 
 	/**
@@ -27,12 +25,12 @@ public class Normalizer {
 	public Normalizer(float minimalInput, float maximalInput, float minimalOutput, float maximalOutput) {
 
 		this.minimalInput = minimalInput;
-		this.maximalInput = maximalInput;
 		this.minimalOutput = minimalOutput;
 		this.maximalOutput = maximalOutput;
 
-		inputAmplitude = maximalInput - minimalInput;
-		outputAmplitude = maximalOutput - minimalOutput;
+		var inputAmplitude = maximalInput - minimalInput;
+		var outputAmplitude = maximalOutput - minimalOutput;
+
 		amplification = outputAmplitude / inputAmplitude;
 	}
 
@@ -42,7 +40,7 @@ public class Normalizer {
 	 */
 	public float normalize(float input) {
 
-		var output = minimalOutput + amplification * (input - minimalInput);
+		var output = fma(amplification, input - minimalInput, minimalOutput);
 		return min(maximalOutput, max(minimalOutput, output));
 	}
 }

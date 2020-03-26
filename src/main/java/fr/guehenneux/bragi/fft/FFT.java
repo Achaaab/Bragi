@@ -1,26 +1,14 @@
-/*
- * Copyright (c) 2007 - 2008 by Damien Di Fede <ddf@compartmental.net>
- *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public License along with this program; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
-
-package fr.guehenneux.bragi.algorithm;
+package fr.guehenneux.bragi.fft;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.cos;
+import static java.lang.Math.fma;
 import static java.lang.Math.sin;
 
 /**
  * FFT stands for Fast Fourier Transform. It is an efficient way to calculate the Complex Discrete Fourier Transform. There is not
- * much to say about this class other than the fact that when you want to analyze the spectrum of an bragi buffer you will almost
- * always use this class. One restriction of this class is that the bragi buffers you want to analyze must have a length that is a
+ * much to say about this class other than the fact that when you want to analyze the spectrum of an audio buffer you will almost
+ * always use this class. One restriction of this class is that the audio buffers you want to analyze must have a length that is a
  * power of two. If you try to construct an FFT with a <code>timeSize</code> that is not a power of two, an
  * IllegalArgumentException will be thrown.
  *
@@ -32,8 +20,8 @@ public class FFT extends FourierTransform {
 
 	private int[] reverse;
 
-	private float[] sinlookup;
-	private float[] coslookup;
+	private float[] sin;
+	private float[] cos;
 
 	/**
 	 * Constructs an FFT that will accept sample buffers that are <code>timeSize</code> long and have been recorded with a sample
@@ -41,7 +29,7 @@ public class FFT extends FourierTransform {
 	 * is not.
 	 *
 	 * @param timeSize   the length of the sample buffers you will be analyzing
-	 * @param sampleRate the sample rate of the bragi you will be analyzing
+	 * @param sampleRate the sample rate of the audio you will be analyzing
 	 */
 	public FFT(int timeSize, float sampleRate) {
 
@@ -120,32 +108,34 @@ public class FFT extends FourierTransform {
 	 */
 	private void fft() {
 
-		for (int halfSize = 1; halfSize < real.length; halfSize *= 2) {
+		for (var halfSize = 1; halfSize < real.length; halfSize *= 2) {
 
-			float phaseShiftStepR = cosine(halfSize);
-			float phaseShiftStepI = sine(halfSize);
+			var phaseShiftStepR = cos[halfSize];
+			var phaseShiftStepI = sin[halfSize];
 
 			// current phase shift
 
-			float currentPhaseShiftR = 1.0f;
-			float currentPhaseShiftI = 0.0f;
+			var currentPhaseShiftR = 1.0f;
+			var currentPhaseShiftI = 0.0f;
 
-			for (int fftStep = 0; fftStep < halfSize; fftStep++) {
+			for (var fftStep = 0; fftStep < halfSize; fftStep++) {
 
-				for (int i = fftStep; i < real.length; i += 2 * halfSize) {
+				for (var i = fftStep; i < real.length; i += 2 * halfSize) {
 
-					int off = i + halfSize;
-					float tr = (currentPhaseShiftR * real[off]) - (currentPhaseShiftI * imag[off]);
-					float ti = (currentPhaseShiftR * imag[off]) + (currentPhaseShiftI * real[off]);
+					var off = i + halfSize;
+					var tr = fma(currentPhaseShiftR, real[off], - currentPhaseShiftI * imag[off]);
+					var ti = fma(currentPhaseShiftR, imag[off], currentPhaseShiftI * real[off]);
+
 					real[off] = real[i] - tr;
 					imag[off] = imag[i] - ti;
 					real[i] += tr;
 					imag[i] += ti;
 				}
 
-				float tmpR = currentPhaseShiftR;
-				currentPhaseShiftR = (tmpR * phaseShiftStepR) - (currentPhaseShiftI * phaseShiftStepI);
-				currentPhaseShiftI = (tmpR * phaseShiftStepI) + (currentPhaseShiftI * phaseShiftStepR);
+				var tmpR = currentPhaseShiftR;
+
+				currentPhaseShiftR = fma(tmpR, phaseShiftStepR, -currentPhaseShiftI * phaseShiftStepI);
+				currentPhaseShiftI = fma(tmpR, phaseShiftStepI, currentPhaseShiftI * phaseShiftStepR);
 			}
 		}
 	}
@@ -158,7 +148,7 @@ public class FFT extends FourierTransform {
 					"FFT.forward: The length of the passed sample buffer must be equal to timeSize().");
 		}
 
-		doWindow(buffer);
+		window.apply(buffer);
 
 		// copy samples to real/imag in bit-reversed order
 		bitReverseSamples(buffer);
@@ -263,33 +253,17 @@ public class FFT extends FourierTransform {
 	}
 
 	/**
-	 * @param t
-	 * @return
-	 */
-	private float sine(int t) {
-		return sinlookup[t];
-	}
-
-	/**
-	 * @param t
-	 * @return
-	 */
-	private float cosine(int t) {
-		return coslookup[t];
-	}
-
-	/**
 	 *
 	 */
 	private void buildTrigTables() {
 
-		sinlookup = new float[size];
-		coslookup = new float[size];
+		sin = new float[size];
+		cos = new float[size];
 
 		for (int t = 0; t < size; t++) {
 
-			sinlookup[t] = (float) sin(-PI / t);
-			coslookup[t] = (float) cos(-PI / t);
+			sin[t] = (float) sin(-PI / t);
+			cos[t] = (float) cos(-PI / t);
 		}
 	}
 }

@@ -1,19 +1,5 @@
-/*
- * Copyright (c) 2007 - 2008 by Damien Di Fede <ddf@compartmental.net>
- *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public License along with this program; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
+package fr.guehenneux.bragi.fft;
 
-package fr.guehenneux.bragi.algorithm;
-
-import static java.lang.Math.cos;
 import static java.lang.Math.pow;
 import static java.lang.Math.round;
 import static java.lang.Math.sqrt;
@@ -42,11 +28,11 @@ import static java.lang.System.arraycopy;
  * <b>Usage</b>
  * <p>
  * A typical usage of a FourierTransform is to analyze a signal so that the frequency spectrum may be represented in some way,
- * typically with vertical lines. You could do this in Processing with the following code, where <code>bragi</code> is an
+ * typically with vertical lines. You could do this in Processing with the following code, where <code>audio</code> is an
  * AudioSource and <code>fft</code> is an FFT (one of the derived classes of FourierTransform).
  *
  * <pre>
- * fft.forward(bragi.left);
+ * fft.forward(audio.left);
  * for (int i = 0; i &lt; fft.specSize(); i++) {
  * 	// draw the line for frequency band i, scaling it by 4 so we can see it a bit better
  * 	line(i, height, i, height - fft.getBand(i) * 4);
@@ -55,10 +41,8 @@ import static java.lang.System.arraycopy;
  *
  * <b>Windowing</b>
  * <p>
- * Windowing is the process of shaping the bragi samples before transforming them to the frequency domain. If you call the
- * <code>window()</code> function with an appropriate constant, such as FourierTransform.HAMMING, the sample buffers passed to the
- * object for analysis will be shaped by the current window before being transformed. The result of using a window is to reduce
- * the noise in the spectrum somewhat.
+ * Windowing is the process of shaping the audio samples before transforming them to the frequency domain.
+ * The result of using a window is to reduce the noise in the spectrum somewhat.
  * <p>
  * <b>Averages</b>
  * <p>
@@ -76,7 +60,7 @@ import static java.lang.System.arraycopy;
  * above another when it's frequency is twice that of the lower frequency. So, 120 Hz is an octave above 60 Hz, 240 Hz is an
  * octave above 120 Hz, and so on. When octaves are split, they are split based on Hz, so if you split the octave 60-120 Hz in
  * half, you will get 60-90Hz and 90-120Hz. You can see how these bandwidths increase as your octave sizes grow. For instance, the
- * last octave will always span <code>sampleRate/4 - sampleRate/2</code>, which in the case of bragi sampled at 44100 Hz is
+ * last octave will always span <code>sampleRate/4 - sampleRate/2</code>, which in the case of audio sampled at 44100 Hz is
  * 11025-22010 Hz. These logarithmically spaced averages are usually much more useful than the full spectrum or the linearly
  * spaced averages because they map more directly to how humans perceive sound.
  * <p>
@@ -101,26 +85,13 @@ import static java.lang.System.arraycopy;
  */
 public abstract class FourierTransform {
 
-	/**
-	 * A constant indicating no window should be used on sample buffers.
-	 */
-	public static final int NONE = 0;
-
-	/**
-	 * A constant indicating a Hamming window should be used on sample buffers.
-	 */
-	public static final int HAMMING = 1;
-
 	protected static final int LINAVG = 2;
 	protected static final int LOGAVG = 3;
 	protected static final int NOAVG = 4;
 
-	protected static final float TWO_PI = (float) (2 * Math.PI);
-
 	protected int size;
 	protected float sampleRate;
 	protected float bandWidth;
-	protected int whichWindow;
 	protected float[] real;
 	protected float[] imag;
 	protected float[] spectrum;
@@ -128,6 +99,8 @@ public abstract class FourierTransform {
 	protected int whichAverage;
 	protected int octaves;
 	protected int avgPerOctave;
+
+	protected Window window;
 
 	/**
 	 * Construct a FourierTransform that will analyze sample buffers that are <code>ts</code> samples long
@@ -145,7 +118,8 @@ public abstract class FourierTransform {
 
 		noAverages();
 		allocateArrays();
-		whichWindow = NONE;
+
+		window = NoWindow.INSTANCE;
 	}
 
 	/**
@@ -185,16 +159,16 @@ public abstract class FourierTransform {
 
 		if (whichAverage == LINAVG) {
 
-			int avgWidth = spectrum.length / averages.length;
+			int averageWidth = spectrum.length / averages.length;
 
-			for (int i = 0; i < averages.length; i++) {
+			for (var i = 0; i < averages.length; i++) {
 
 				float avg = 0;
 				int j;
 
-				for (j = 0; j < avgWidth; j++) {
+				for (j = 0; j < averageWidth; j++) {
 
-					int offset = j + i * avgWidth;
+					int offset = j + i * averageWidth;
 					if (offset < spectrum.length) {
 						avg += spectrum[offset];
 					} else {
@@ -208,24 +182,26 @@ public abstract class FourierTransform {
 
 		} else if (whichAverage == LOGAVG) {
 
-			for (int i = 0; i < octaves; i++) {
+			for (var octave = 0; octave < octaves; octave++) {
 
-				float lowFreq, hiFreq, freqStep;
+				float lowFrequency, hiFreq, freqStep;
 
-				if (i == 0) {
-					lowFreq = 0;
+				if (octave == 0) {
+					lowFrequency = 0;
 				} else {
-					lowFreq = (sampleRate / 2.0f) / (float) pow(2, octaves - i);
+					lowFrequency = (sampleRate / 2.0f) / (float) pow(2, octaves - octave);
 				}
 
-				hiFreq = (sampleRate / 2.0f) / (float) pow(2, octaves - i - 1);
-				freqStep = (hiFreq - lowFreq) / avgPerOctave;
-				float f = lowFreq;
+				hiFreq = (sampleRate / 2.0f) / (float) pow(2, octaves - octave - 1);
 
-				for (int j = 0; j < avgPerOctave; j++) {
+				freqStep = (hiFreq - lowFrequency) / avgPerOctave;
 
-					int offset = j + i * avgPerOctave;
-					averages[offset] = calcAvg(f, f + freqStep);
+				var f = lowFrequency;
+
+				for (var j = 0; j < avgPerOctave; j++) {
+
+					var offset = j + octave * avgPerOctave;
+					averages[offset] = getAverageAmplitude(f, f + freqStep);
 					f += freqStep;
 				}
 			}
@@ -265,7 +241,7 @@ public abstract class FourierTransform {
 
 	/**
 	 * Sets the number of averages used when computing the spectrum based on the minimum bandwidth for an octave and the number of
-	 * bands per octave. For example, with bragi that has a sample rate of 44100 Hz, <code>logAverages(11, 1)</code> will result in
+	 * bands per octave. For example, with audio that has a sample rate of 44100 Hz, <code>logAverages(11, 1)</code> will result in
 	 * 12 averages, each corresponding to an octave, the first spanning 0 to 11 Hz. To ensure that each octave band is a full
 	 * octave, the number of octaves is computed by dividing the Nyquist frequency by two, and then the result of that by two, and
 	 * so on. This means that the actual bandwidth of the lowest octave may not be exactly the value specified.
@@ -288,40 +264,10 @@ public abstract class FourierTransform {
 	}
 
 	/**
-	 * Sets the window to use on the samples before taking the forward transform. If an invalid window is asked for, an error will
-	 * be reported and the current window will not be changed.
-	 *
-	 * @param which FourierTransform.HAMMING or FourierTransform.NONE
+	 * @param window window to use on the samples before taking the forward transform
 	 */
-	public void window(int which) {
-
-		if (which < 0 || which > 1) {
-			throw new IllegalArgumentException("Invalid window type.");
-		} else {
-			whichWindow = which;
-		}
-	}
-
-	/**
-	 * @param samples
-	 */
-	protected void doWindow(float[] samples) {
-		switch (whichWindow) {
-			case HAMMING:
-				hamming(samples);
-				break;
-		}
-	}
-
-	/**
-	 * windows the data in samples with a Hamming window
-	 *
-	 * @param samples
-	 */
-	protected void hamming(float[] samples) {
-		for (int i = 0; i < samples.length; i++) {
-			samples[i] *= 0.54f - 0.46f * cos(TWO_PI * i / (samples.length - 1));
-		}
+	public void setWindow(Window window) {
+		this.window = window;
 	}
 
 	/**
@@ -391,7 +337,7 @@ public abstract class FourierTransform {
 	 * @param freq the frequency you want the index for (in Hz)
 	 * @return the index of the frequency band that contains freq
 	 */
-	public int freqToIndex(float freq) {
+	public int getFrequencyIndex(float freq) {
 
 		// special case: freq is lower than the bandwidth of spectrum[0]
 		if (freq < getBandWidth() / 2) return 0;
@@ -485,7 +431,7 @@ public abstract class FourierTransform {
 	 * @return amplitude of the frequency in the spectrum
 	 */
 	public float getFreq(float freq) {
-		return getBand(freqToIndex(freq));
+		return getBand(getFrequencyIndex(freq));
 	}
 
 	/**
@@ -495,7 +441,7 @@ public abstract class FourierTransform {
 	 * @param a    the new amplitude
 	 */
 	public void setFreq(float freq, float a) {
-		setBand(freqToIndex(freq), a);
+		setBand(getFrequencyIndex(freq), a);
 	}
 
 	/**
@@ -505,7 +451,7 @@ public abstract class FourierTransform {
 	 * @param s    the scaling factor
 	 */
 	public void scaleFreq(float freq, float s) {
-		scaleBand(freqToIndex(freq), s);
+		scaleBand(getFrequencyIndex(freq), s);
 	}
 
 	/**
@@ -535,19 +481,19 @@ public abstract class FourierTransform {
 	/**
 	 * Calculate the average amplitude of the frequency band bounded by <code>lowFreq</code> and <code>hiFreq</code>, inclusive.
 	 *
-	 * @param lowFreq the lower bound of the band
-	 * @param hiFreq  the upper bound of the band
-	 * @return the average of all spectrum values within the bounds
+	 * @param lowFrequency the lower bound of the band
+	 * @param highFrequency the upper bound of the band
+	 * @return average amplitude of all spectrum amplitude within the bounds
 	 */
-	public float calcAvg(float lowFreq, float hiFreq) {
+	public float getAverageAmplitude(float lowFrequency, float highFrequency) {
 
-		var lowBound = freqToIndex(lowFreq);
-		var hiBound = freqToIndex(hiFreq);
+		var lowIndex = getFrequencyIndex(lowFrequency);
+		var highIndex = getFrequencyIndex(highFrequency);
 
 		var sum = 0.0f;
-		var bandCount = hiBound - lowBound + 1;
+		var bandCount = highIndex - lowIndex + 1;
 
-		for (var band = lowBound; band <= hiBound; band++) {
+		for (var band = lowIndex; band <= highIndex; band++) {
 			sum += spectrum[band];
 		}
 

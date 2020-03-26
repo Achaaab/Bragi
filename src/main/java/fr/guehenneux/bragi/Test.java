@@ -50,7 +50,24 @@ public class Test {
 	public static void main(String... arguments) throws LineUnavailableException, IOException, MalformedWavFileException,
 			JavaLayerException {
 
-		testLowPassFiler();
+		testMP3();
+	}
+
+	/**
+	 * Tests the spectrum analyzer.
+	 */
+	public static void testSpectrumAnalyzer() throws LineUnavailableException{
+
+		var theremin = new Theremin("theremin");
+		var vco = new VCO("vco");
+		var vca = new VCA("vca");
+		var spectrum = new SpectrumAnalyzer("spectrum");
+		spectrum.setComputingFrameRate(44100);
+
+		theremin.connectTo(vco);
+		vco.connectTo(vca);
+		vca.connectTo(spectrum);
+		theremin.getVolume().connect(vca.getGain());
 	}
 
 	/**
@@ -131,7 +148,7 @@ public class Test {
 
 		oscilloscope.setComputingFrameRate(44100);
 
-		new Thread(() -> vco.connectTo(oscilloscope)).start();
+		vco.connectTo(oscilloscope);
 	}
 
 	/**
