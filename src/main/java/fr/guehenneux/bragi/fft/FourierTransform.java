@@ -93,7 +93,7 @@ public abstract class FourierTransform {
 	protected float sampleRate;
 	protected float bandWidth;
 	protected float[] real;
-	protected float[] imag;
+	protected float[] imaginary;
 	protected float[] spectrum;
 	protected float[] averages;
 	protected int whichAverage;
@@ -135,14 +135,14 @@ public abstract class FourierTransform {
 	 */
 	protected void setComplex(float[] r, float[] i) {
 
-		if (real.length != r.length && imag.length != i.length) {
+		if (real.length != r.length && imaginary.length != i.length) {
 
 			throw new IllegalArgumentException("This won't work");
 
 		} else {
 
 			arraycopy(r, 0, real, 0, r.length);
-			arraycopy(i, 0, imag, 0, i.length);
+			arraycopy(i, 0, imaginary, 0, i.length);
 		}
 	}
 
@@ -154,7 +154,7 @@ public abstract class FourierTransform {
 	protected void fillSpectrum() {
 
 		for (int i = 0; i < spectrum.length; i++) {
-			spectrum[i] = (float) sqrt(real[i] * real[i] + imag[i] * imag[i]);
+			spectrum[i] = (float) sqrt(real[i] * real[i] + imaginary[i] * imaginary[i]);
 		}
 
 		if (whichAverage == LINAVG) {
@@ -569,6 +569,6 @@ public abstract class FourierTransform {
 	 * @return the imaginary part of the last FourierTransform.forward() call.
 	 */
 	public float[] getImaginaryPart() {
-		return imag;
+		return imaginary;
 	}
 }

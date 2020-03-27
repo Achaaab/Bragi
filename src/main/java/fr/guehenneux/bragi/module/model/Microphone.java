@@ -1,5 +1,6 @@
 package fr.guehenneux.bragi.module.model;
 
+import fr.guehenneux.bragi.Normalizer;
 import fr.guehenneux.bragi.Settings;
 import org.slf4j.Logger;
 
@@ -16,6 +17,22 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class Microphone extends Module {
 
 	private static final Logger LOGGER = getLogger(Microphone.class);
+
+	private static final int ONE_BYTE_MIN_VALUE = 0xFF_FF_FF_A0;
+	private static final int ONE_BYTE_MAX_VALUE = 0x00_00_00_7F;
+
+	private static final int TWO_BYTES_MIN_VALUE = 0xFF_FF_80_00;
+	private static final int TWO_BYTES_MAX_VALUE = 0x00_00_7F_FF;
+
+	private static final Normalizer ONE_BYTE_NORMALIZER = new Normalizer(
+			ONE_BYTE_MIN_VALUE, ONE_BYTE_MAX_VALUE,
+			Settings.INSTANCE.getMinimalVoltage(), Settings.INSTANCE.getMaximalVoltage()
+	);
+
+	private static final Normalizer TWO_BYTES_NORMALIZER = new Normalizer(
+			TWO_BYTES_MIN_VALUE, TWO_BYTES_MAX_VALUE,
+			Settings.INSTANCE.getMinimalVoltage(), Settings.INSTANCE.getMaximalVoltage()
+	);
 
 	private TargetDataLine targetDataLine;
 
@@ -40,7 +57,7 @@ public class Microphone extends Module {
 				true, true);
 
 		targetDataLine = getTargetDataLine(format);
-		targetDataLine.open(format, Settings.INSTANCE.getByteRate() / 20);
+		targetDataLine.open(format, Settings.INSTANCE.getByteRate() / 100);
 		targetDataLine.start();
 
 		start();
@@ -81,14 +98,15 @@ public class Microphone extends Module {
 
 				if (sampleSizeInBytes == 1) {
 
-					var b0 = input[sampleIndex + 0];
-					sample = (float) b0 / Byte.MAX_VALUE;
+
+					var b0 = input[sampleIndex];
+					sample = ONE_BYTE_NORMALIZER.normalize(b0);
 
 				} else if (sampleSizeInBytes == 2) {
 
-					var b0 = input[sampleIndex + 1];
-					var b1 = input[sampleIndex + 0];
-					sample = (float) (b0 & 0xFF | b1 << 8) / Short.MAX_VALUE;
+					var b0 = input[sampleIndex];
+					var b1 = input[sampleIndex + 1];
+					sample = TWO_BYTES_NORMALIZER.normalize(b1 & 0xFF | b0 << 8);
 				}
 
 				samples[channelIndex][frameIndex] = sample;

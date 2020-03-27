@@ -20,13 +20,13 @@ public class Speaker extends Module {
 
 	private static final Logger LOGGER = getLogger(Speaker.class);
 
-	private static final int ONE_BYTE_MIN_VALUE = 0xFF_FF_FF_A0;
+	private static final int ONE_BYTE_MIN_VALUE = 0xFF_FF_FF_80;
 	private static final int ONE_BYTE_MAX_VALUE = 0x00_00_00_7F;
 
-	private static final int TWO_BYTES_MIN_VALUE = 0xFF_FF_A0_00;
+	private static final int TWO_BYTES_MIN_VALUE = 0xFF_FF_80_00;
 	private static final int TWO_BYTES_MAX_VALUE = 0x00_00_7F_FF;
 
-	private static final int THREE_BYTES_MIN_VALUE = 0xFF_A0_00_00;
+	private static final int THREE_BYTES_MIN_VALUE = 0xFF_80_00_00;
 	private static final int THREE_BYTES_MAX_VALUE = 0x00_7F_FF_FF;
 
 	private static final Normalizer ONE_BYTE_NORMALIZER = new Normalizer(
@@ -69,7 +69,7 @@ public class Speaker extends Module {
 		var info = new Info(SourceDataLine.class, format);
 
 		line = (SourceDataLine) getLine(info);
-		line.open(format, Settings.INSTANCE.getByteRate() / 20);
+		line.open(format, Settings.INSTANCE.getByteRate() / 50);
 		line.start();
 
 		start();

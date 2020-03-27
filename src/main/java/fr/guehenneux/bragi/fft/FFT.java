@@ -19,7 +19,6 @@ import static java.lang.Math.sin;
 public class FFT extends FourierTransform {
 
 	private int[] reverse;
-
 	private float[] sin;
 	private float[] cos;
 
@@ -40,7 +39,7 @@ public class FFT extends FourierTransform {
 		}
 
 		buildReverseTable();
-		buildTrigTables();
+		memoizeSineAndCosine();
 	}
 
 	@Override
@@ -48,7 +47,7 @@ public class FFT extends FourierTransform {
 
 		spectrum = new float[size / 2 + 1];
 		real = new float[size];
-		imag = new float[size];
+		imaginary = new float[size];
 	}
 
 	@Override
@@ -61,16 +60,16 @@ public class FFT extends FourierTransform {
 		if (spectrum[i] != 0) {
 
 			real[i] /= spectrum[i];
-			imag[i] /= spectrum[i];
+			imaginary[i] /= spectrum[i];
 			spectrum[i] *= s;
 			real[i] *= spectrum[i];
-			imag[i] *= spectrum[i];
+			imaginary[i] *= spectrum[i];
 		}
 
 		if (i != 0 && i != size / 2) {
 
 			real[size - i] = real[i];
-			imag[size - i] = -imag[i];
+			imaginary[size - i] = -imaginary[i];
 		}
 	}
 
@@ -81,7 +80,7 @@ public class FFT extends FourierTransform {
 			throw new IllegalArgumentException("Can't set a frequency band to a negative value.");
 		}
 
-		if (real[i] == 0 && imag[i] == 0) {
+		if (real[i] == 0 && imaginary[i] == 0) {
 
 			real[i] = a;
 			spectrum[i] = a;
@@ -89,16 +88,16 @@ public class FFT extends FourierTransform {
 		} else {
 
 			real[i] /= spectrum[i];
-			imag[i] /= spectrum[i];
+			imaginary[i] /= spectrum[i];
 			spectrum[i] = a;
 			real[i] *= spectrum[i];
-			imag[i] *= spectrum[i];
+			imaginary[i] *= spectrum[i];
 		}
 
 		if (i != 0 && i != size / 2) {
 
 			real[size - i] = real[i];
-			imag[size - i] = -imag[i];
+			imaginary[size - i] = -imaginary[i];
 		}
 	}
 
@@ -123,13 +122,13 @@ public class FFT extends FourierTransform {
 				for (var i = fftStep; i < real.length; i += 2 * halfSize) {
 
 					var off = i + halfSize;
-					var tr = fma(currentPhaseShiftR, real[off], - currentPhaseShiftI * imag[off]);
-					var ti = fma(currentPhaseShiftR, imag[off], currentPhaseShiftI * real[off]);
+					var tr = fma(currentPhaseShiftR, real[off], - currentPhaseShiftI * imaginary[off]);
+					var ti = fma(currentPhaseShiftR, imaginary[off], currentPhaseShiftI * real[off]);
 
 					real[off] = real[i] - tr;
-					imag[off] = imag[i] - ti;
+					imaginary[off] = imaginary[i] - ti;
 					real[i] += tr;
-					imag[i] += ti;
+					imaginary[i] += ti;
 				}
 
 				var tmpR = currentPhaseShiftR;
@@ -144,16 +143,15 @@ public class FFT extends FourierTransform {
 	public void forward(float[] buffer) {
 
 		if (buffer.length != size) {
-			throw new IllegalArgumentException(
-					"FFT.forward: The length of the passed sample buffer must be equal to timeSize().");
+			throw new IllegalArgumentException("The length of the passed sample buffer must be equal to FFT size.");
 		}
 
 		window.apply(buffer);
 
-		// copy samples to real/imag in bit-reversed order
+		// copy samples to real and imaginary in bit-reversed order
 		bitReverseSamples(buffer);
 
-		// perform the fft
+		// perform the FFT
 		fft();
 
 		// fill the spectrum buffer with amplitudes
@@ -163,17 +161,16 @@ public class FFT extends FourierTransform {
 	/**
 	 * Performs a forward transform on the passed buffers.
 	 *
-	 * @param buffReal the real part of the time domain signal to transform
-	 * @param buffImag the imaginary part of the time domain signal to transform
+	 * @param real the real part of the time domain signal to transform
+	 * @param imaginary the imaginary part of the time domain signal to transform
 	 */
-	public void forward(float[] buffReal, float[] buffImag) {
+	public void forward(float[] real, float[] imaginary) {
 
-		if (buffReal.length != size || buffImag.length != size) {
-			throw new IllegalArgumentException(
-					"FFT.forward: The length of the passed buffers must be equal to timeSize().");
+		if (real.length != size || imaginary.length != size) {
+			throw new IllegalArgumentException("The length of the passed buffers must be equal to FFT size.");
 		}
 
-		setComplex(buffReal, buffImag);
+		setComplex(real, imaginary);
 		bitReverseComplex();
 		fft();
 		fillSpectrum();
@@ -183,54 +180,56 @@ public class FFT extends FourierTransform {
 	public void inverse(float[] buffer) {
 
 		if (buffer.length > real.length) {
-			throw new IllegalArgumentException("FFT.inverse: the passed array's length must equal FFT.timeSize().");
+			throw new IllegalArgumentException("The passed array's length must equal FFT size.");
 		}
 
 		// conjugate
-		for (int i = 0; i < size; i++) {
-			imag[i] *= -1;
+		for (var i = 0; i < size; i++) {
+			imaginary[i] *= -1;
 		}
 
 		bitReverseComplex();
 		fft();
 
 		// copy the result in real into buffer, scaling as we do
-		for (int i = 0; i < buffer.length; i++) {
+		for (var i = 0; i < buffer.length; i++) {
 			buffer[i] = real[i] / real.length;
 		}
 	}
 
 	/**
-	 *
+	 * Set up the bit reversing table.
 	 */
 	private void buildReverseTable() {
 
-		int N = size;
-		reverse = new int[N];
+		reverse = new int[size];
 
-		// set up the bit reversing table
-		reverse[0] = 0;
+		int limit = 1;
+		int bits = size >> 1;
 
-		for (int limit = 1, bit = N / 2; limit < N; limit <<= 1, bit >>= 1) {
+		while (limit < size) {
 
-			for (int i = 0; i < limit; i++) {
-				reverse[i + limit] = reverse[i] + bit;
+			for (var index = 0; index < limit; index++) {
+				reverse[limit + index] = reverse[index] + bits;
 			}
+
+			limit <<= 1;
+			bits >>= 1;
 		}
 	}
 
 	/**
-	 * copies the values in the samples array into the real array
-	 * in bit reversed order. the imag array is filled with zeros.
+	 * Copies the values in the samples array into the real array in bit reversed order.
+	 * The imaginary array is filled with zeros.
 	 *
-	 * @param samples
+	 * @param samples samples to copy
 	 */
 	private void bitReverseSamples(float[] samples) {
 
-		for (int i = 0; i < samples.length; i++) {
+		for (var index = 0; index < size; index++) {
 
-			real[i] = samples[reverse[i]];
-			imag[i] = 0.0f;
+			real[index] = samples[reverse[index]];
+			imaginary[index] = 0.0f;
 		}
 	}
 
@@ -239,28 +238,28 @@ public class FFT extends FourierTransform {
 	 */
 	private void bitReverseComplex() {
 
-		float[] revReal = new float[real.length];
-		float[] revImag = new float[imag.length];
+		var reversedReal = new float[size];
+		var reversedImaginary = new float[size];
 
-		for (int i = 0; i < real.length; i++) {
+		for (var index = 0; index < size; index++) {
 
-			revReal[i] = real[reverse[i]];
-			revImag[i] = imag[reverse[i]];
+			reversedReal[index] = real[reverse[index]];
+			reversedImaginary[index] = imaginary[reverse[index]];
 		}
 
-		real = revReal;
-		imag = revImag;
+		real = reversedReal;
+		imaginary = reversedImaginary;
 	}
 
 	/**
-	 *
+	 * Memoize {@code sin(-π/t)} and {@code cos(-π/t)}.
 	 */
-	private void buildTrigTables() {
+	private void memoizeSineAndCosine() {
 
 		sin = new float[size];
 		cos = new float[size];
 
-		for (int t = 0; t < size; t++) {
+		for (var t = 0; t < size; t++) {
 
 			sin[t] = (float) sin(-PI / t);
 			cos[t] = (float) cos(-PI / t);

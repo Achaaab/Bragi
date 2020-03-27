@@ -24,7 +24,7 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 public class SpectrumAnalyzerView extends JComponent {
 
 	private static final int PLOT_MARGIN = 5;
-	private static final int SEGMENT_COUNT = 80;
+	private static final int SEGMENT_COUNT = 100;
 	private static final float BASE_MAGNITUDE = 10_000.0f;
 	private static final float MINIMAL_DECIBELS = -60.0f;
 	private static final float MAXIMAL_DECIBELS = 0.0f;
@@ -37,7 +37,7 @@ public class SpectrumAnalyzerView extends JComponent {
 	private static final float[] GRADIENT_FRACTIONS = {0.0f, 0.5f, 1.0f};
 
 	private static final Color[] GRADIENT_COLORS = {
-			BLACK,
+			new Color(0, 0, 0),
 			new Color(255, 128, 0),
 			new Color(255, 128, 0)
 	};
@@ -79,8 +79,8 @@ public class SpectrumAnalyzerView extends JComponent {
 		var barCount = averages.length;
 		var barWidth = 0.8f * plotWidth / barCount;
 		var barLeftMargin = 0.1f * plotWidth / barCount;
-		var barHeight = 0.8f * plotHeight / SEGMENT_COUNT;
-		var barTopMargin = 0.1f * plotHeight / SEGMENT_COUNT;
+		var barHeight = 0.7f * plotHeight / SEGMENT_COUNT;
+		var barTopMargin = 0.15f * plotHeight / SEGMENT_COUNT;
 		var plotBottom = PLOT_MARGIN + plotHeight;
 
 		var barPaint = new LinearGradientPaint(
