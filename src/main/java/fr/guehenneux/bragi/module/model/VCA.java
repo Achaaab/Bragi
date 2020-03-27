@@ -58,7 +58,7 @@ public class VCA extends Module {
 			var gainSample = gainSamples == null ? 0 : gainSamples[sampleIndex];
 			var decibels = initialGain + DECIBELS_PER_VOLT * gainSample;
 
-			var outputSample = (float) (inputSample * pow(10.0f, decibels / 10.0f));
+			var outputSample = (float) (inputSample * pow(10.0f, decibels / 20.0f));
 
 			outputSamples[sampleIndex] = outputSample;
 		}

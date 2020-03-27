@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
@@ -47,11 +48,12 @@ public class OscilloscopeView extends JComponent {
 
 		this.model = model;
 
+		setPreferredSize(new Dimension(400, 400));
+
 		var frame = new JFrame(model.getName());
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		frame.setSize(400, 300);
-		frame.setLayout(new BorderLayout());
-		frame.add(this, CENTER);
+		frame.add(this);
+		frame.pack();
 		frame.setVisible(true);
 
 		var painter = new PainterThread(this, 60);

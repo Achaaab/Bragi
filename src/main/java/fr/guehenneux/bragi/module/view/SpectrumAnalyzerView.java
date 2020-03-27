@@ -1,5 +1,6 @@
 package fr.guehenneux.bragi.module.view;
 
+import fr.guehenneux.bragi.Normalizer;
 import fr.guehenneux.bragi.PainterThread;
 import fr.guehenneux.bragi.module.model.SpectrumAnalyzer;
 
@@ -13,7 +14,6 @@ import java.awt.LinearGradientPaint;
 
 import static java.awt.Color.BLACK;
 import static java.lang.Math.log10;
-import static java.lang.Math.min;
 import static java.lang.Math.round;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
@@ -24,7 +24,23 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 public class SpectrumAnalyzerView extends JComponent {
 
 	private static final int PLOT_MARGIN = 5;
-	private static final int LEVEL_COUNT = 80;
+	private static final int SEGMENT_COUNT = 80;
+	private static final float BASE_MAGNITUDE = 10_000.0f;
+	private static final float MINIMAL_DECIBELS = -60.0f;
+	private static final float MAXIMAL_DECIBELS = 0.0f;
+
+	private static final Normalizer NORMALIZER = new Normalizer(
+			MINIMAL_DECIBELS, MAXIMAL_DECIBELS,
+			0, SEGMENT_COUNT
+	);
+
+	private static final float[] GRADIENT_FRACTIONS = {0.0f, 0.5f, 1.0f};
+
+	private static final Color[] GRADIENT_COLORS = {
+			BLACK,
+			new Color(255, 128, 0),
+			new Color(255, 128, 0)
+	};
 
 	private SpectrumAnalyzer model;
 
@@ -63,15 +79,14 @@ public class SpectrumAnalyzerView extends JComponent {
 		var barCount = averages.length;
 		var barWidth = 0.8f * plotWidth / barCount;
 		var barLeftMargin = 0.1f * plotWidth / barCount;
-		var barHeight = 0.8f * plotHeight / LEVEL_COUNT;
-		var barTopMargin = 0.1f * plotHeight / LEVEL_COUNT;
+		var barHeight = 0.8f * plotHeight / SEGMENT_COUNT;
+		var barTopMargin = 0.1f * plotHeight / SEGMENT_COUNT;
 		var plotBottom = PLOT_MARGIN + plotHeight;
 
 		var barPaint = new LinearGradientPaint(
-				PLOT_MARGIN, plotBottom,
-				PLOT_MARGIN, PLOT_MARGIN,
-				new float[]{0.0f, 0.5f, 1.0f},
-				new Color[]{BLACK, new Color(255, 128, 0), new Color(255, 128, 0)});
+				0, plotBottom,
+				0, PLOT_MARGIN,
+				GRADIENT_FRACTIONS, GRADIENT_COLORS);
 
 		graphics2D.setPaint(barPaint);
 
@@ -79,12 +94,12 @@ public class SpectrumAnalyzerView extends JComponent {
 
 			var barX = PLOT_MARGIN + barIndex * plotWidth / barCount + barLeftMargin;
 			var magnitude = averages[barIndex];
+			var decibels = (float) (20 * log10(magnitude / BASE_MAGNITUDE));
+			var segmentsOn = NORMALIZER.normalize(decibels);
 
-			var barLevel = round(20 * log10(magnitude));
+			for (var segment = 0; segment < segmentsOn; segment++) {
 
-			for (var levelIndex = 0; levelIndex <= min(barLevel, LEVEL_COUNT - 1); levelIndex++) {
-
-				var barY = plotBottom - (levelIndex + 1) * plotHeight / LEVEL_COUNT + barTopMargin;
+				var barY = plotBottom - (segment + 1) * plotHeight / SEGMENT_COUNT + barTopMargin;
 				graphics2D.fillRect(round(barX), round(barY), round(barWidth), round(barHeight));
 			}
 		}

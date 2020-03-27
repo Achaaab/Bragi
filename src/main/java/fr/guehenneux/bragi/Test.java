@@ -50,7 +50,7 @@ public class Test {
 	public static void main(String... arguments) throws LineUnavailableException, IOException, MalformedWavFileException,
 			JavaLayerException {
 
-		testMP3();
+		testMicro();
 	}
 
 	/**
@@ -195,6 +195,19 @@ public class Test {
 		var oscilloscopeAdsrVca = new Oscilloscope("oscilloscope_adsr_vca");
 		var oscilloscopeAdsrFilter = new Oscilloscope("oscilloscope_adsr_filter");
 
+		lfo.connectTo(keyboard);
+		keyboard.getOutput().connect(filter.getInput());
+		keyboard.getGate().connect(adsrVca.getGate());
+		keyboard.getGate().connect(adsrFilter.getGate());
+		adsrVca.connect(vca.getGain());
+		adsrVca.connectTo(oscilloscopeAdsrVca);
+		adsrFilter.connect(filter.getModulation());
+		adsrFilter.connectTo(oscilloscopeAdsrFilter);
+		filter.connectTo(vca);
+		vca.connectTo(oscilloscope);
+		vca.connect(speaker.getInputs());
+
+		/*
 		new Thread(() -> lfo.connectTo(keyboard)).start();
 		new Thread(() -> keyboard.getOutput().connect(filter.getInput())).start();
 		new Thread(() -> keyboard.getGate().connect(adsrVca.getGate())).start();
@@ -206,6 +219,7 @@ public class Test {
 		new Thread(() -> filter.connect(vca.getInput())).start();
 		new Thread(() -> vca.connectTo(oscilloscope)).start();
 		new Thread(() -> vca.connect(speaker.getInputs())).start();
+		 */
 	}
 
 	/**
@@ -393,13 +407,16 @@ public class Test {
 	public static void testMicro() throws LineUnavailableException {
 
 		var microphone = new Microphone("microphone");
-		var spectrum = new SpectrumAnalyzer("spectrum");
-		var oscilloscope = new Oscilloscope("oscilloscope");
+		var spectrumLeft = new SpectrumAnalyzer("spectrum_left");
+		var spectrumRight = new SpectrumAnalyzer("spectrum_right");
+		var oscilloscopeLeft = new Oscilloscope("oscilloscope_left");
+		var oscilloscopeRight = new Oscilloscope("oscilloscope_right");
 		var speaker = new Speaker("speaker");
 
-		new Thread(() -> microphone.connectTo(spectrum)).start();
-		new Thread(() -> microphone.connectTo(oscilloscope)).start();
-		new Thread(() -> microphone.connectTo(speaker)).start();
+		microphone.connectTo(spectrumLeft, spectrumRight);
+		microphone.connectTo(oscilloscopeLeft, oscilloscopeRight);
+		microphone.getOutputs().get(0).connect(speaker.getInputs().get(0));
+		microphone.getOutputs().get(1).connect(speaker.getInputs().get(1));
 	}
 
 	/**
