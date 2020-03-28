@@ -1,6 +1,7 @@
 package fr.guehenneux.bragi;
 
 import fr.guehenneux.bragi.common.MalformedWavFileException;
+import fr.guehenneux.bragi.common.RandomUtils;
 import fr.guehenneux.bragi.module.ADSR;
 import fr.guehenneux.bragi.module.HighPassVCF;
 import fr.guehenneux.bragi.module.Keyboard;
@@ -9,6 +10,7 @@ import fr.guehenneux.bragi.module.LowPassVCF;
 import fr.guehenneux.bragi.module.Microphone;
 import fr.guehenneux.bragi.module.Mp3FilePlayer;
 import fr.guehenneux.bragi.module.Oscilloscope;
+import fr.guehenneux.bragi.module.PinkNoiseGenerator;
 import fr.guehenneux.bragi.module.Sampler;
 import fr.guehenneux.bragi.module.Speaker;
 import fr.guehenneux.bragi.module.SpectrumAnalyzer;
@@ -50,7 +52,37 @@ public class Test {
 	public static void main(String... arguments) throws LineUnavailableException, IOException, MalformedWavFileException,
 			JavaLayerException {
 
-		testMP3();
+		testKeyboard();
+	}
+
+	/**
+	 * @throws LineUnavailableException
+	 */
+	public static void testPinkNoiseGenerator() throws LineUnavailableException {
+
+		var pinkNoise = new PinkNoiseGenerator("pink_noise");
+		var spectrum = new SpectrumAnalyzer("spectrum");
+		var speaker = new Speaker("speaker");
+		var oscilloscope = new Oscilloscope("oscilloscope");
+
+		pinkNoise.connectTo(spectrum);
+		pinkNoise.connectTo(oscilloscope);
+		speaker.connectFrom(pinkNoise, pinkNoise);
+	}
+
+	/**
+	 * Tests the white noise generator.
+	 *
+	 * @throws LineUnavailableException
+	 */
+	public static void testWhiteNoiseGenerator() throws LineUnavailableException {
+
+		var whiteNoise = new WhiteNoiseGenerator("white_noise");
+		var spectrum = new SpectrumAnalyzer("spectrum");
+		var speaker = new Speaker("speaker");
+
+		whiteNoise.connectTo(spectrum);
+		speaker.connectFrom(whiteNoise, whiteNoise);
 	}
 
 	/**
@@ -414,7 +446,7 @@ public class Test {
 	 * @throws JavaLayerException
 	 */
 	public static void lireMP3() throws JavaLayerException {
-		jlp.createInstance(new String[]{TEST_MP3_PATH.toString()}).play();
+		jlp.createInstance(new String[] { TEST_MP3_PATH.toString() }).play();
 	}
 
 	/**

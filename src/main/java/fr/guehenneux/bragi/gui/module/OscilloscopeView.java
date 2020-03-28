@@ -1,7 +1,7 @@
 package fr.guehenneux.bragi.gui.module;
 
-import fr.guehenneux.bragi.gui.common.PainterThread;
 import fr.guehenneux.bragi.common.Settings;
+import fr.guehenneux.bragi.gui.common.PainterThread;
 import fr.guehenneux.bragi.module.Oscilloscope;
 
 import javax.swing.JComponent;
@@ -39,12 +39,24 @@ public class OscilloscopeView extends JComponent {
 
 	private Oscilloscope model;
 
+	private int length;
+	private float[] samples;
+	private int[] x;
+	private int[] y;
+
 	/**
 	 * @param model model
 	 */
 	public OscilloscopeView(Oscilloscope model) {
 
 		this.model = model;
+
+		// 1/60s
+		length = Settings.INSTANCE.getFrameRate() / 60;
+
+		samples = new float[length];
+		x = new int[length];
+		y = new int[length];
 
 		setPreferredSize(new Dimension(400, 400));
 
@@ -97,26 +109,20 @@ public class OscilloscopeView extends JComponent {
 			verticalDivision += divisionSize;
 		}
 
-		var buffer = model.getBuffer();
-		var sampleCount = buffer.getLength();
-		var xValues = new int[sampleCount];
-		var yValues = new int[sampleCount];
+		model.read(samples);
 
-		synchronized (buffer) {
+		for (var sampleIndex = 0; sampleIndex < length; sampleIndex++) {
 
-			for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
+			var sample = samples[sampleIndex];
+			var time = (float) sampleIndex / Settings.INSTANCE.getFrameRate();
 
-				var sample = buffer.read(sampleIndex);
-				var time = (float) sampleIndex / Settings.INSTANCE.getFrameRate();
-
-				xValues[sampleIndex] = round(MARGIN + divisionSize * time / SECONDS_PER_DIVISION);
-				yValues[sampleIndex] = round(MARGIN + plotHeight / 2 - divisionSize * sample / VOLTS_PER_DIVISION);
-			}
+			x[sampleIndex] = round(MARGIN + divisionSize * time / SECONDS_PER_DIVISION);
+			y[sampleIndex] = round(MARGIN + plotHeight / 2 - divisionSize * sample / VOLTS_PER_DIVISION);
 		}
 
 		graphics2D.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
 		graphics2D.setStroke(PLOT_STROKE);
 		graphics2D.setColor(PLOT_COLOR);
-		graphics2D.drawPolyline(xValues, yValues, xValues.length);
+		graphics2D.drawPolyline(x, y, length);
 	}
 }

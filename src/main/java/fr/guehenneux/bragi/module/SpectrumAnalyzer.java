@@ -1,14 +1,11 @@
 package fr.guehenneux.bragi.module;
 
+import fr.guehenneux.bragi.common.CircularFloatArray;
 import fr.guehenneux.bragi.common.Settings;
+import fr.guehenneux.bragi.common.connection.Input;
 import fr.guehenneux.bragi.common.fft.FFT;
 import fr.guehenneux.bragi.common.fft.HammingWindow;
-import fr.guehenneux.bragi.common.connection.Input;
 import fr.guehenneux.bragi.gui.module.SpectrumAnalyzerView;
-
-import static java.lang.Math.max;
-import static java.lang.System.arraycopy;
-import static java.util.Arrays.copyOf;
 
 /**
  * @author Jonathan Guéhenneux
@@ -21,10 +18,9 @@ public class SpectrumAnalyzer extends Module {
 	private Input input;
 
 	private FFT fft;
-	private final float[] buffer;
-	private int bufferIndex;
 
-	private SpectrumAnalyzerView view;
+	private float[] fftSamples;
+	private final CircularFloatArray buffer;
 
 	/**
 	 * @param name name of the spectrum analyzer to create
@@ -35,12 +31,12 @@ public class SpectrumAnalyzer extends Module {
 
 		input = addPrimaryInput(name + "_input");
 
-		buffer = new float[FFT_SAMPLE_COUNT];
-		bufferIndex = 0;
-
 		fft = new FFT(FFT_SAMPLE_COUNT, Settings.INSTANCE.getFrameRate());
 		fft.setWindow(new HammingWindow());
 		fft.logAverages(50, 12);
+
+		fftSamples = new float[FFT_SAMPLE_COUNT];
+		buffer = new CircularFloatArray(FFT_SAMPLE_COUNT * 10);
 
 		new SpectrumAnalyzerView(this);
 
@@ -51,49 +47,12 @@ public class SpectrumAnalyzer extends Module {
 	public int compute() throws InterruptedException {
 
 		var samples = input.read();
-		copy(samples);
-		return samples.length;
-	}
-
-	/**
-	 * Copy samples to FFT samples.
-	 *
-	 * @param samples samples to copy
-	 */
-	private void copy(float[] samples) {
-
-		var start = max(samples.length - buffer.length, 0);
-		var end = samples.length;
-
-		copy(samples, start, end);
-	}
-
-	/**
-	 * Copy samples to FFT samples.
-	 *
-	 * @param samples samples to copy
-	 * @param start   index of the first sample to copy (included)
-	 * @param end     index of the last sample to copy (excluded)
-	 */
-	private void copy(float[] samples, int start, int end) {
-
-		var spaceLeft = buffer.length - bufferIndex;
-		var numberOfSamplesToWrite = end - start;
 
 		synchronized (buffer) {
-
-			if (spaceLeft < numberOfSamplesToWrite) {
-
-				arraycopy(samples, start, buffer, bufferIndex, spaceLeft);
-				bufferIndex = numberOfSamplesToWrite - spaceLeft;
-				arraycopy(samples, spaceLeft, buffer, 0, bufferIndex);
-
-			} else {
-
-				arraycopy(samples, start, buffer, bufferIndex, numberOfSamplesToWrite);
-				bufferIndex = (bufferIndex + numberOfSamplesToWrite) % buffer.length;
-			}
+			buffer.write(samples);
 		}
+
+		return samples.length;
 	}
 
 	/**
@@ -101,13 +60,12 @@ public class SpectrumAnalyzer extends Module {
 	 */
 	public float[] getAverages() {
 
-		float[] fftSamples;
-
 		synchronized (buffer) {
-			fftSamples = copyOf(buffer, buffer.length);
+			buffer.readLast(fftSamples);
 		}
 
 		fft.forward(fftSamples);
+
 		return fft.getAverages();
 	}
 }

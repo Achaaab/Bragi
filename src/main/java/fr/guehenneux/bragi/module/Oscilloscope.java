@@ -1,7 +1,7 @@
 package fr.guehenneux.bragi.module;
 
 import fr.guehenneux.bragi.common.Settings;
-import fr.guehenneux.bragi.common.ShiftingFloatArray;
+import fr.guehenneux.bragi.common.CircularFloatArray;
 import fr.guehenneux.bragi.common.connection.Input;
 import fr.guehenneux.bragi.gui.module.OscilloscopeView;
 
@@ -11,7 +11,7 @@ import fr.guehenneux.bragi.gui.module.OscilloscopeView;
 public class Oscilloscope extends Module {
 
 	private Input input;
-	private final ShiftingFloatArray buffer;
+	private final CircularFloatArray buffer;
 
 	/**
 	 * @param name oscilloscope name
@@ -22,8 +22,8 @@ public class Oscilloscope extends Module {
 
 		input = addPrimaryInput(name + "_input");
 
-		var oscilloscopeSampleCount = Settings.INSTANCE.getFrameRate() / 60;
-		buffer = new ShiftingFloatArray(oscilloscopeSampleCount);
+		var oscilloscopeSampleCount = Settings.INSTANCE.getFrameRate();
+		buffer = new CircularFloatArray(oscilloscopeSampleCount);
 
 		new OscilloscopeView(this);
 
@@ -43,9 +43,12 @@ public class Oscilloscope extends Module {
 	}
 
 	/**
-	 * @return oscilloscope buffer
+	 * @param readArray
 	 */
-	public ShiftingFloatArray getBuffer() {
-		return buffer;
+	public void read(float[] readArray) {
+
+		synchronized (buffer) {
+			buffer.readLast(readArray);
+		}
 	}
 }

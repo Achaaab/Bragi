@@ -1,40 +1,54 @@
 package fr.guehenneux.bragi.module;
 
+import fr.guehenneux.bragi.common.Normalizer;
 import fr.guehenneux.bragi.common.Settings;
 import fr.guehenneux.bragi.common.connection.Output;
 
-import static java.lang.Math.random;
+import java.util.Random;
 
 /**
+ * White noise generator.
+ *
  * @author Jonathan Guéhenneux
+ * @since 0.0.7
  */
 public class WhiteNoiseGenerator extends Module {
 
-  private Output output;
+	private Output output;
 
-  /**
-   * @param name white noise generator name
-   */
-  public WhiteNoiseGenerator(String name) {
+	private Random random;
+	private Normalizer normalizer;
 
-    super(name);
+	/**
+	 * @param name white noise generator name
+	 */
+	public WhiteNoiseGenerator(String name) {
 
-    output = addPrimaryOutput(name + "_output");
-    start();
-  }
+		super(name);
 
-  @Override
-  protected int compute() throws InterruptedException {
+		output = addPrimaryOutput(name + "_output");
 
-    var sampleCount = Settings.INSTANCE.getChunkSize();
-    var outputSamples = new float[sampleCount];
+		random = new Random();
 
-    for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
-      outputSamples[sampleIndex] = (float) random();
-    }
+		normalizer = new Normalizer(0.0f, 1.0f,
+				Settings.INSTANCE.getMinimalVoltage(),
+				Settings.INSTANCE.getMaximalVoltage());
 
-    output.write(outputSamples);
+		start();
+	}
 
-    return sampleCount;
-  }
+	@Override
+	protected int compute() throws InterruptedException {
+
+		var sampleCount = Settings.INSTANCE.getChunkSize();
+		var outputSamples = new float[sampleCount];
+
+		for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
+			outputSamples[sampleIndex] = normalizer.normalize(random.nextFloat());
+		}
+
+		output.write(outputSamples);
+
+		return sampleCount;
+	}
 }
