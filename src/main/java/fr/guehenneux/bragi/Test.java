@@ -1,22 +1,22 @@
 package fr.guehenneux.bragi;
 
-import fr.guehenneux.bragi.module.model.ADSR;
-import fr.guehenneux.bragi.module.model.HighPassVCF;
-import fr.guehenneux.bragi.module.model.Key;
-import fr.guehenneux.bragi.module.model.Keyboard;
-import fr.guehenneux.bragi.module.model.LFO;
-import fr.guehenneux.bragi.module.model.LowPassVCF;
-import fr.guehenneux.bragi.module.model.Microphone;
-import fr.guehenneux.bragi.module.model.Mp3FilePlayer;
-import fr.guehenneux.bragi.module.model.Oscilloscope;
-import fr.guehenneux.bragi.module.model.Sampler;
-import fr.guehenneux.bragi.module.model.Speaker;
-import fr.guehenneux.bragi.module.model.SpectrumAnalyzer;
-import fr.guehenneux.bragi.module.model.Theremin;
-import fr.guehenneux.bragi.module.model.VCA;
-import fr.guehenneux.bragi.module.model.VCO;
-import fr.guehenneux.bragi.module.model.WavFilePlayer;
-import fr.guehenneux.bragi.module.model.WhiteNoiseGenerator;
+import fr.guehenneux.bragi.common.MalformedWavFileException;
+import fr.guehenneux.bragi.module.ADSR;
+import fr.guehenneux.bragi.module.HighPassVCF;
+import fr.guehenneux.bragi.module.Keyboard;
+import fr.guehenneux.bragi.module.LFO;
+import fr.guehenneux.bragi.module.LowPassVCF;
+import fr.guehenneux.bragi.module.Microphone;
+import fr.guehenneux.bragi.module.Mp3FilePlayer;
+import fr.guehenneux.bragi.module.Oscilloscope;
+import fr.guehenneux.bragi.module.Sampler;
+import fr.guehenneux.bragi.module.Speaker;
+import fr.guehenneux.bragi.module.SpectrumAnalyzer;
+import fr.guehenneux.bragi.module.Theremin;
+import fr.guehenneux.bragi.module.VCA;
+import fr.guehenneux.bragi.module.VCO;
+import fr.guehenneux.bragi.module.WavFilePlayer;
+import fr.guehenneux.bragi.module.WhiteNoiseGenerator;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.jlp;
 import org.slf4j.Logger;
@@ -50,13 +50,30 @@ public class Test {
 	public static void main(String... arguments) throws LineUnavailableException, IOException, MalformedWavFileException,
 			JavaLayerException {
 
-		testMicro();
+		testMP3();
+	}
+
+	/**
+	 * Test the LFO module.
+	 *
+	 * @throws LineUnavailableException
+	 */
+	public static void testLfo() throws LineUnavailableException {
+
+		var vco = new VCO("vco");
+		var speaker = new Speaker("speaker");
+		var spectrum = new SpectrumAnalyzer("spectrum");
+		var lfo = new LFO("lfo");
+
+		vco.connectTo(spectrum);
+		speaker.connectFrom(vco, vco);
+		lfo.connectTo(vco);
 	}
 
 	/**
 	 * Tests the spectrum analyzer.
 	 */
-	public static void testSpectrumAnalyzer() throws LineUnavailableException{
+	public static void testSpectrumAnalyzer() throws LineUnavailableException {
 
 		var theremin = new Theremin("theremin");
 		var vco = new VCO("vco");
@@ -91,9 +108,13 @@ public class Test {
 	public static void testKeyboard() throws LineUnavailableException {
 
 		var keyboard = new Keyboard("keyboard");
+		var vco = new VCO("vco");
 		var speaker = new Speaker("speaker");
+		var oscilloscope = new Oscilloscope("oscilloscope");
 
-		speaker.connectFrom(keyboard, keyboard);
+		keyboard.connectTo(vco);
+		vco.connectTo(oscilloscope);
+		speaker.connectFrom(vco, vco);
 	}
 
 	/**
@@ -109,7 +130,7 @@ public class Test {
 		var speaker = new Speaker("speaker");
 		var oscilloscope = new Oscilloscope("oscilloscope");
 		var oscilloscopeVco = new Oscilloscope("oscilloscope_vco");
-		var lfo = new LFO("lfo", 5);
+		var lfo = new LFO("lfo");
 
 		theremin.connect(vco.getModulation());
 		vco.connectTo(vca);
@@ -184,28 +205,23 @@ public class Test {
 	 */
 	public static void montage8() throws LineUnavailableException {
 
-		var lfo = new LFO("lfo", 1);
 		var keyboard = new Keyboard("keyboard");
+		var vco = new VCO("vco");
 		var adsrVca = new ADSR("adsr_vca");
 		var adsrFilter = new ADSR("adsr_filter");
 		var vca = new VCA("vca");
 		var speaker = new Speaker("speaker");
-		var oscilloscope = new Oscilloscope("oscilloscope");
 		var filter = new LowPassVCF("filter");
-		var oscilloscopeAdsrVca = new Oscilloscope("oscilloscope_adsr_vca");
-		var oscilloscopeAdsrFilter = new Oscilloscope("oscilloscope_adsr_filter");
 
-		lfo.connectTo(keyboard);
-		keyboard.getOutput().connect(filter.getInput());
+		keyboard.connectTo(vco);
+		vco.connectTo(vca);
+		vca.connectTo(filter);
+		speaker.connectFrom(filter, filter);
+
 		keyboard.getGate().connect(adsrVca.getGate());
 		keyboard.getGate().connect(adsrFilter.getGate());
 		adsrVca.connect(vca.getGain());
-		adsrVca.connectTo(oscilloscopeAdsrVca);
 		adsrFilter.connect(filter.getModulation());
-		adsrFilter.connectTo(oscilloscopeAdsrFilter);
-		filter.connectTo(vca);
-		vca.connectTo(oscilloscope);
-		vca.connect(speaker.getInputs());
 
 		/*
 		new Thread(() -> lfo.connectTo(keyboard)).start();
@@ -284,7 +300,7 @@ public class Test {
 	/**
 	 * @throws LineUnavailableException
 	 */
-	public static void montage6() throws  LineUnavailableException {
+	public static void montage6() throws LineUnavailableException {
 
 		var vco = new VCO("vco");
 		var oscilloscope = new Oscilloscope("oscilloscope");
@@ -297,7 +313,7 @@ public class Test {
 	/**
 	 * @throws LineUnavailableException
 	 */
-	public static void montage7() throws  LineUnavailableException {
+	public static void montage7() throws LineUnavailableException {
 
 		var keyboard = new Keyboard("keyboard");
 		var speaker = new Speaker("speaker");
@@ -493,9 +509,9 @@ public class Test {
 	public static void montage1() throws LineUnavailableException {
 
 		var speaker = new Speaker("speaker");
-		var lfo = new LFO("lfo", 1);
+		var lfo = new LFO("lfo");
 		var vco = new VCO("vco");
-		var lfoFilter = new LFO("lfo_vcf", 1);
+		var lfoFilter = new LFO("lfo_vcf");
 		var highPassFilter = new HighPassVCF("highpass_vcf");
 		var lowPassFilter = new LowPassVCF("lowpass_vcf");
 		var spectrumAnalyzer = new SpectrumAnalyzer("spectrum_analyzer");
