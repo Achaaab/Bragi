@@ -13,7 +13,7 @@ import fr.guehenneux.bragi.gui.module.SpectrumAnalyzerView;
  */
 public class SpectrumAnalyzer extends Module {
 
-	private static final int FFT_SAMPLE_COUNT = 1 << 13;
+	private static final int FFT_SAMPLE_COUNT = 1 << 12;
 
 	private Input input;
 
@@ -36,7 +36,7 @@ public class SpectrumAnalyzer extends Module {
 		fft.logAverages(50, 12);
 
 		fftSamples = new float[FFT_SAMPLE_COUNT];
-		buffer = new CircularFloatArray(FFT_SAMPLE_COUNT * 10);
+		buffer = new CircularFloatArray(FFT_SAMPLE_COUNT);
 
 		new SpectrumAnalyzerView(this);
 

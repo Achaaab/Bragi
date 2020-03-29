@@ -1,6 +1,7 @@
 package fr.guehenneux.bragi.module;
 
 import fr.guehenneux.bragi.common.CircularFloatArray;
+import fr.guehenneux.bragi.common.GeometricRandom;
 import fr.guehenneux.bragi.common.Normalizer;
 import fr.guehenneux.bragi.common.Settings;
 import fr.guehenneux.bragi.common.connection.Output;
@@ -10,7 +11,6 @@ import java.util.Random;
 
 import static fr.guehenneux.bragi.common.ArrayUtils.createFloatArray;
 import static fr.guehenneux.bragi.common.ArrayUtils.sum;
-import static fr.guehenneux.bragi.common.RandomUtils.searchRandomGeometricCoinFlip;
 import static java.lang.Float.NaN;
 import static java.lang.Float.isNaN;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -36,11 +36,13 @@ public class PinkNoiseGenerator extends Module {
 	private static final Random RANDOM = new Random();
 
 	/**
-	 * Creates a pink noises, summing white noises.
+	 * Creates a pink noise, summing white noises.
 	 *
 	 * @return created pink noise
 	 */
 	private static CircularFloatArray createPinkNoise() {
+
+		var geometricRandom = new GeometricRandom();
 
 		var pinkNoise = new CircularFloatArray(PINK_NOISE_LENGTH);
 		var whiteNoises = createFloatArray(PINK_NOISE_LENGTH, WHITE_NOISE_COUNT, NaN);
@@ -49,7 +51,7 @@ public class PinkNoiseGenerator extends Module {
 
 		while (randomSampleCount-- > 0) {
 
-			var trials = searchRandomGeometricCoinFlip();
+			var trials = geometricRandom.searchRandomGeometricCoinFlip();
 
 			var sampleIndex = RANDOM.nextInt(PINK_NOISE_LENGTH);
 			var whiteNoiseIndex = trials > WHITE_NOISE_COUNT ? 0 : (int) trials - 1;

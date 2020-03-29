@@ -15,7 +15,7 @@ import fr.guehenneux.bragi.common.wave.Waveform;
  */
 public class VCO extends Module {
 
-	private static final double BASE_FREQUENCY = 440.0;
+	private static final double BASE_FREQUENCY = 441;
 
 	private int octave;
 	private float modulationWeight;

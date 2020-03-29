@@ -100,8 +100,8 @@ public class FFT extends FourierTransform {
 	}
 
 	/**
-	 * performs an in-place fft on the data in the real and imag arrays
-	 * bit reversing is not necessary as the data will already be bit reversed
+	 * Performs an in-place FFT on the data in the real and imaginary arrays.
+	 * Bit reversing is not necessary as the data will already be bit reversed.
 	 */
 	private void fft() {
 

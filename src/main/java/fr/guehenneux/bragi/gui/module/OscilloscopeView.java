@@ -34,7 +34,7 @@ public class OscilloscopeView extends JComponent {
 	private static final Color DIVISION_COLOR = new Color(32, 32, 32);
 	private static final Stroke PLOT_STROKE = new BasicStroke(3.0f);
 	private static final Stroke DIVISION_STROKE = new BasicStroke(1.5f);
-	private static final float SECONDS_PER_DIVISION = 0.0017f;
+	private static final float SECONDS_PER_DIVISION = 1.0f / 60 / HORIZONTAL_DIVISION_COUNT;
 	private static final float VOLTS_PER_DIVISION = 1.0f;
 
 	private Oscilloscope model;

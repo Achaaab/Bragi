@@ -1,9 +1,11 @@
 package fr.guehenneux.bragi.module;
 
 import fr.guehenneux.bragi.common.Settings;
-import fr.guehenneux.bragi.common.connection.Input;
 import fr.guehenneux.bragi.common.connection.Output;
 import fr.guehenneux.bragi.gui.module.ThereminView;
+import org.slf4j.Logger;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author Jonathan Guéhenneux
@@ -11,10 +13,11 @@ import fr.guehenneux.bragi.gui.module.ThereminView;
  */
 public class Theremin extends Module {
 
+	private static final Logger LOGGER = getLogger(Theremin.class);
+
 	private float pitchSample;
 	private float volumeSample;
 
-	private Input modulation;
 	private Output pitch;
 	private Output volume;
 
@@ -28,7 +31,6 @@ public class Theremin extends Module {
 		pitchSample = 0.0f;
 		volumeSample = 0.0f;
 
-		modulation = addSecondaryInput(name + "_modulation");
 		pitch = addPrimaryOutput(name + "_pitch");
 		volume = addSecondaryOutput(name + "_volume");
 
