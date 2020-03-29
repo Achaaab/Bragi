@@ -8,6 +8,7 @@ import com.github.achaaab.bragi.common.wave.Waveform;
 import com.github.achaaab.bragi.gui.module.LFOView;
 import org.slf4j.Logger;
 
+import static javax.swing.SwingUtilities.invokeLater;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -49,7 +50,7 @@ public class LFO extends Module {
 
 		wave = new Wave(INITIAL_WAVEFORM, INITIAL_FREQUENCY);
 
-		new LFOView(this);
+		invokeLater(() -> new LFOView(this));
 
 		start();
 	}

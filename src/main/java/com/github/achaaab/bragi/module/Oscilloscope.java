@@ -6,6 +6,7 @@ import com.github.achaaab.bragi.common.connection.Input;
 import com.github.achaaab.bragi.gui.module.OscilloscopeView;
 import org.slf4j.Logger;
 
+import static javax.swing.SwingUtilities.invokeLater;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -45,7 +46,7 @@ public class Oscilloscope extends Module {
 		var oscilloscopeSampleCount = Settings.INSTANCE.frameRate();
 		buffer = new CircularFloatArray(oscilloscopeSampleCount);
 
-		new OscilloscopeView(this);
+		invokeLater(() -> new OscilloscopeView(this));
 
 		start();
 	}

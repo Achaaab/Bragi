@@ -7,11 +7,14 @@ import com.github.achaaab.bragi.common.connection.Input;
 import com.github.achaaab.bragi.common.connection.Output;
 import org.slf4j.Logger;
 
+import javax.swing.SwingUtilities;
+
 import static com.github.achaaab.bragi.common.ADSRState.DECAY;
 import static com.github.achaaab.bragi.common.ADSRState.IDLE;
 import static com.github.achaaab.bragi.common.ADSRState.SUSTAIN;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import static javax.swing.SwingUtilities.invokeLater;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -88,7 +91,8 @@ public class ADSR extends Module {
 		state = IDLE;
 		previousGateSample = 0.0f;
 
-		new ADSRView(this);
+		invokeLater(() -> new ADSRView(this));
+
 		start();
 	}
 

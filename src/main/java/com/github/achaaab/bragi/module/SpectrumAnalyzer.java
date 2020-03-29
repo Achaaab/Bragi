@@ -2,13 +2,14 @@ package com.github.achaaab.bragi.module;
 
 import com.github.achaaab.bragi.common.CircularFloatArray;
 import com.github.achaaab.bragi.common.Settings;
+import com.github.achaaab.bragi.common.connection.Input;
 import com.github.achaaab.bragi.common.fft.FastFourierTransform;
 import com.github.achaaab.bragi.common.fft.FourierTransform;
 import com.github.achaaab.bragi.common.fft.HammingWindow;
 import com.github.achaaab.bragi.gui.module.SpectrumAnalyzerView;
-import com.github.achaaab.bragi.common.connection.Input;
 import org.slf4j.Logger;
 
+import static javax.swing.SwingUtilities.invokeLater;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -58,7 +59,7 @@ public class SpectrumAnalyzer extends Module {
 		fourierTransformSamples = new float[FOURIER_TRANSFORM_SIZE];
 		buffer = new CircularFloatArray(FOURIER_TRANSFORM_SIZE);
 
-		new SpectrumAnalyzerView(this);
+		invokeLater(() -> new SpectrumAnalyzerView(this));
 
 		start();
 	}

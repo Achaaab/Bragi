@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.awt.event.KeyEvent.getExtendedKeyCodeForChar;
+import static javax.swing.SwingUtilities.invokeLater;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -99,7 +100,7 @@ public class Keyboard extends Module {
 		gateSample = 0.0f;
 		pressedKeyCount = 0;
 
-		new KeyboardView(this);
+		invokeLater(() -> new KeyboardView(this));
 
 		start();
 	}

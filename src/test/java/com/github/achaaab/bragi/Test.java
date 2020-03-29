@@ -1,5 +1,6 @@
 package com.github.achaaab.bragi;
 
+import com.github.achaaab.bragi.module.ADSR;
 import com.github.achaaab.bragi.module.Keyboard;
 import com.github.achaaab.bragi.module.LFO;
 import com.github.achaaab.bragi.module.LowPassVCF;
@@ -38,7 +39,27 @@ public class Test {
 	 * @since 0.0.9
 	 */
 	public static void main(String... arguments) {
-		testWavFilePlayer();
+		testAdsr();
+	}
+
+	/**
+	 * Tests the {@link ADSR} module.
+	 *
+	 * @since 0.1.1
+	 */
+	public static void testAdsr() {
+
+		var adsr = new ADSR();
+		var keyboard = new Keyboard();
+		var vco = new VCO();
+		var vca = new VCA();
+		var speaker = new Speaker();
+
+		keyboard.connectTo(vco);
+		vco.connectTo(vca);
+		speaker.connectFrom(vca, vca);
+		keyboard.getGate().connect(adsr.getGate());
+		adsr.connect(vca.getGain());
 	}
 
 	/**

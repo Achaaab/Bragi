@@ -5,6 +5,7 @@ import com.github.achaaab.bragi.common.connection.Output;
 import com.github.achaaab.bragi.gui.module.ThereminView;
 import org.slf4j.Logger;
 
+import static javax.swing.SwingUtilities.invokeLater;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -48,7 +49,7 @@ public class Theremin extends Module {
 		pitch = addPrimaryOutput(name + "_pitch");
 		volume = addSecondaryOutput(name + "_volume");
 
-		new ThereminView(this);
+		invokeLater(() -> new ThereminView(this));
 
 		start();
 	}

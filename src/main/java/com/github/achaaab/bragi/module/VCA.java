@@ -1,11 +1,12 @@
 package com.github.achaaab.bragi.module;
 
-import com.github.achaaab.bragi.gui.module.VCAView;
 import com.github.achaaab.bragi.common.connection.Input;
 import com.github.achaaab.bragi.common.connection.Output;
+import com.github.achaaab.bragi.gui.module.VCAView;
 import org.slf4j.Logger;
 
 import static java.lang.Math.pow;
+import static javax.swing.SwingUtilities.invokeLater;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -50,7 +51,7 @@ public class VCA extends Module {
 
 		initialGain = 0;
 
-		new VCAView(this);
+		invokeLater(() -> new VCAView(this));
 
 		start();
 	}

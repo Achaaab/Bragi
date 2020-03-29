@@ -4,6 +4,8 @@ import com.github.achaaab.bragi.common.connection.Input;
 import com.github.achaaab.bragi.common.connection.Output;
 import com.github.achaaab.bragi.gui.module.VCFView;
 
+import static javax.swing.SwingUtilities.invokeLater;
+
 /**
  * Voltage-Controlled Filter
  *
@@ -58,7 +60,7 @@ public abstract class VCF extends Module {
 		oldY2 = 0.0;
 		oldY3 = 0.0;
 
-		new VCFView(this);
+		invokeLater(() -> new VCFView(this));
 
 		start();
 	}

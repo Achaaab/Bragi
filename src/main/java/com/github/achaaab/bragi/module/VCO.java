@@ -6,9 +6,11 @@ import com.github.achaaab.bragi.common.connection.Output;
 import com.github.achaaab.bragi.common.wave.Sine;
 import com.github.achaaab.bragi.common.wave.Wave;
 import com.github.achaaab.bragi.common.wave.Waveform;
+import com.github.achaaab.bragi.gui.module.SpectrumAnalyzerView;
 import com.github.achaaab.bragi.gui.module.VCOView;
 import org.slf4j.Logger;
 
+import static javax.swing.SwingUtilities.invokeLater;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -55,7 +57,7 @@ public class VCO extends Module {
 		octave = 0;
 		wave = new Wave(Sine.INSTANCE, BASE_FREQUENCY);
 
-		new VCOView(this);
+		invokeLater(() -> new VCOView(this));
 
 		start();
 	}
