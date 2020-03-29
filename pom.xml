@@ -4,9 +4,9 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>fr.guehenneux</groupId>
+	<groupId>com.github.achaaab</groupId>
 	<artifactId>bragi</artifactId>
-	<version>0.0.7</version>
+	<version>0.0.8</version>
 	<packaging>jar</packaging>
 
 	<dependencies>
