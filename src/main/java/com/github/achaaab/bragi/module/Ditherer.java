@@ -4,7 +4,8 @@ import com.github.achaaab.bragi.common.connection.Output;
 import com.github.achaaab.bragi.common.connection.PrimaryInput;
 import org.slf4j.Logger;
 
-import static java.lang.Math.random;
+import java.util.concurrent.ThreadLocalRandom;
+
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -49,10 +50,12 @@ public class Ditherer extends Module {
 		var inputSamples = input.read();
 		var sampleCount = inputSamples.length;
 
+		var random = ThreadLocalRandom.current();
+
 		var outputSamples = new float[sampleCount];
 
 		for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
-			outputSamples[sampleIndex] = inputSamples[sampleIndex] + (float) random() / 100;
+			outputSamples[sampleIndex] = inputSamples[sampleIndex] + random.nextFloat() / 100;
 		}
 
 		output.write(outputSamples);
