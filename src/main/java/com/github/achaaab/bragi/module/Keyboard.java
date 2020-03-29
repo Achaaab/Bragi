@@ -14,8 +14,6 @@ import static java.awt.event.KeyEvent.getExtendedKeyCodeForChar;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * keyboard module
- *
  * @author Jonathan Guéhenneux
  * @since 0.0.6
  */
@@ -27,11 +25,12 @@ public class Keyboard extends Module {
 
 	private static final float VOLTS_PER_OCTAVE = 1.0f;
 
-	private Output output;
-	private Output gate;
+	private final Output output;
+	private final Output gate;
+
+	private final List<Key> keys;
 
 	private float voltage;
-	private List<Key> keys;
 	private float gateSample;
 	private int pressedKeyCount;
 
@@ -108,7 +107,7 @@ public class Keyboard extends Module {
 	@Override
 	public int compute() throws InterruptedException {
 
-		var sampleCount = Settings.INSTANCE.getChunkSize();
+		var sampleCount = Settings.INSTANCE.chunkSize();
 
 		var samples = new float[sampleCount];
 

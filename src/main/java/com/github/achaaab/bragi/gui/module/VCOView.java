@@ -14,7 +14,7 @@ import static java.awt.BorderLayout.NORTH;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
- * VCO view
+ * VCO Swing view
  *
  * @author Jonathan Guéhenneux
  * @since 0.0.4

@@ -15,6 +15,7 @@ import static java.lang.Math.round;
 
 /**
  * @author Jonathan Guéhenneux
+ * @since 0.1.0
  */
 public class FrequencySlider extends JSlider {
 
@@ -22,8 +23,8 @@ public class FrequencySlider extends JSlider {
 	private static final double LOG_2 = log(2);
 	private static final MathContext FREQUENCY_LABEL_MATH_CONTEXT = new MathContext(2);
 
-	private double minimalFrequency;
-	private int octaveCount;
+	private final double minimalFrequency;
+	private final int octaveCount;
 
 	/**
 	 * @param minimalFrequency minimal frequency in hertz

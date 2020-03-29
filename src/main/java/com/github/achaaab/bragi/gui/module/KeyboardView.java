@@ -14,7 +14,10 @@ import static javax.swing.KeyStroke.getKeyStroke;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
+ * keyboard Swing view
+ *
  * @author Jonathan Guéhenneux
+ * @since 0.1.0
  */
 public class KeyboardView extends JPanel {
 
@@ -37,7 +40,7 @@ public class KeyboardView extends JPanel {
 			var keyView = new KeyView(key, model);
 			keysPanel.add(keyView);
 
-			var code = key.getCode();
+			var code = key.code();
 			var keyPressed = getKeyStroke(code, 0, false);
 			var keyReleased = getKeyStroke(code, 0, true);
 

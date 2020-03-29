@@ -2,6 +2,7 @@ package com.github.achaaab.bragi.common.wave;
 
 /**
  * @author Jonathan Guéhenneux
+ * @since 0.1.0
  */
 public class Sawtooth extends BoundedWaveform {
 

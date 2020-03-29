@@ -17,7 +17,7 @@ public abstract class NamedOutput implements Output {
 
 	private static final Logger LOGGER = getLogger(NamedOutput.class);
 
-	protected String name;
+	protected final String name;
 	protected final List<Buffer> buffers;
 
 	/**

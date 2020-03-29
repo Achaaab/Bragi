@@ -8,7 +8,7 @@ package com.github.achaaab.bragi.common;
  */
 public class ModuleCreationException extends RuntimeException {
 
-	private static final String DEFAULT_MESSAGE = "An exception prevented module creation.";
+	private static final String DEFAULT_MESSAGE = "an exception prevented module creation";
 
 	/**
 	 * @param cause cause of module creation failure

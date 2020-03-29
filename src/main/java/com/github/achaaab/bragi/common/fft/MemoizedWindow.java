@@ -11,7 +11,6 @@ public abstract class MemoizedWindow implements Window {
 	private double[] coefficients;
 
 	/**
-	 *
 	 * @param size number of coefficients to memoize
 	 */
 	private void memoizeCoefficients(int size) {

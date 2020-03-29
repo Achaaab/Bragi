@@ -20,7 +20,7 @@ import static java.lang.Math.round;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
- * oscilloscope view
+ * oscilloscope Swing view
  *
  * @author Jonathan Guéhenneux
  * @since 0.0.4
@@ -37,22 +37,22 @@ public class OscilloscopeView extends JComponent {
 	private static final float SECONDS_PER_DIVISION = 1.0f / 60 / HORIZONTAL_DIVISION_COUNT;
 	private static final float VOLTS_PER_DIVISION = 1.0f;
 
-	private Oscilloscope model;
+	private final Oscilloscope model;
 
-	private int length;
-	private float[] samples;
-	private int[] x;
-	private int[] y;
+	private final int length;
+	private final float[] samples;
+	private final int[] x;
+	private final int[] y;
 
 	/**
-	 * @param model model
+	 * @param model oscilloscope model
 	 */
 	public OscilloscopeView(Oscilloscope model) {
 
 		this.model = model;
 
 		// 1/60s
-		length = Settings.INSTANCE.getFrameRate() / 60;
+		length = Settings.INSTANCE.frameRate() / 60;
 
 		samples = new float[length];
 		x = new int[length];
@@ -66,8 +66,7 @@ public class OscilloscopeView extends JComponent {
 		frame.pack();
 		frame.setVisible(true);
 
-		var painter = new PainterThread(this, 60);
-		painter.start();
+		new PainterThread(this, 60).start();
 	}
 
 	@Override
@@ -114,10 +113,10 @@ public class OscilloscopeView extends JComponent {
 		for (var sampleIndex = 0; sampleIndex < length; sampleIndex++) {
 
 			var sample = samples[sampleIndex];
-			var time = (float) sampleIndex / Settings.INSTANCE.getFrameRate();
+			var time = (float) sampleIndex / Settings.INSTANCE.frameRate();
 
 			x[sampleIndex] = round(MARGIN + divisionSize * time / SECONDS_PER_DIVISION);
-			y[sampleIndex] = round(MARGIN + plotHeight / 2 - divisionSize * sample / VOLTS_PER_DIVISION);
+			y[sampleIndex] = round(MARGIN + plotHeight / 2.0f - divisionSize * sample / VOLTS_PER_DIVISION);
 		}
 
 		graphics2D.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);

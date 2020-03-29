@@ -18,6 +18,8 @@ import static java.lang.Math.round;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
+ * spectrum analyzer Swing view
+ *
  * @author Jonathan Guéhenneux
  * @since 0.0.5
  */
@@ -42,7 +44,7 @@ public class SpectrumAnalyzerView extends JComponent {
 			new Color(255, 128, 0)
 	};
 
-	private SpectrumAnalyzer model;
+	private final SpectrumAnalyzer model;
 
 	/**
 	 * @param model spectrum analyzer model

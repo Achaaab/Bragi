@@ -7,16 +7,17 @@ import static java.lang.Math.pow;
 
 /**
  * @author Jonathan Guéhenneux
+ * @since 0.1.0
  */
 public class Wave {
 
 	private static final double DEFAULT_MODULATION_WEIGHT = 1.0f;
 
+	private final double sampleRate;
+
 	private Waveform waveform;
 	private double frequency;
 	private double modulationWeight;
-
-	private double sampleRate;
 	private double periodPercent;
 
 	/**
@@ -28,7 +29,7 @@ public class Wave {
 		this.waveform = waveform;
 		this.frequency = frequency;
 
-		sampleRate = Settings.INSTANCE.getFrameRate();
+		sampleRate = Settings.INSTANCE.frameRate();
 		modulationWeight = DEFAULT_MODULATION_WEIGHT;
 		periodPercent = 0;
 	}

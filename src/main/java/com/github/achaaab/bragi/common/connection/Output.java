@@ -2,6 +2,7 @@ package com.github.achaaab.bragi.common.connection;
 
 /**
  * @author Jonathan Guéhenneux
+ * @since 0.1.0
  */
 public interface Output {
 
@@ -18,7 +19,7 @@ public interface Output {
 	boolean isConnected();
 
 	/**
-	 * Write a chunk to this output. Depending on the implementation, it is not guaranted that the chunk will be
+	 * Write a chunk to this output. Depending on the implementation, it is not guaranteed that the chunk will be
 	 * written.
 	 *
 	 * @param chunk chunk to write

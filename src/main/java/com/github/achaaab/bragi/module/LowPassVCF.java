@@ -42,7 +42,7 @@ public class LowPassVCF extends VCF {
 	protected void filterSamples() {
 
 		var sampleCount = inputSamples.length;
-		var sampleRate = Settings.INSTANCE.getFrameRate();
+		var sampleRate = Settings.INSTANCE.frameRate();
 
 		outputSamples = new float[sampleCount];
 

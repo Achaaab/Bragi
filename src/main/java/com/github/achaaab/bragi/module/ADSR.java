@@ -7,6 +7,9 @@ import com.github.achaaab.bragi.common.connection.Input;
 import com.github.achaaab.bragi.common.connection.Output;
 import org.slf4j.Logger;
 
+import static com.github.achaaab.bragi.common.ADSRState.DECAY;
+import static com.github.achaaab.bragi.common.ADSRState.IDLE;
+import static com.github.achaaab.bragi.common.ADSRState.SUSTAIN;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -36,11 +39,11 @@ public class ADSR extends Module {
 	private static final Logger LOGGER = getLogger(ADSR.class);
 
 	public static final String DEFAULT_NAME = "adsr";
-	public static final float MINIMAL_GAIN = Settings.INSTANCE.getMinimalVoltage();
+	public static final float MINIMAL_GAIN = Settings.INSTANCE.minimalVoltage();
 	public static final float MAXIMAL_GAIN = 0;
 
-	private Input gate;
-	private Output output;
+	private final Input gate;
+	private final Output output;
 
 	private double attack;
 	private double decay;
@@ -82,7 +85,7 @@ public class ADSR extends Module {
 		release = 10;
 
 		gain = MINIMAL_GAIN;
-		state = ADSRState.IDLE;
+		state = IDLE;
 		previousGateSample = 0.0f;
 
 		new ADSRView(this);
@@ -95,7 +98,7 @@ public class ADSR extends Module {
 		sampleLength = Settings.INSTANCE.getFrameLength();
 
 		var gateSample = gate.read()[0];
-		var sampleCount = Settings.INSTANCE.getChunkSize();
+		var sampleCount = Settings.INSTANCE.chunkSize();
 		var gains = new float[sampleCount];
 
 		if (gateSample > 0 && previousGateSample <= 0) {
@@ -109,26 +112,11 @@ public class ADSR extends Module {
 		for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 
 			switch (state) {
-
-				case IDLE:
-					gain = MINIMAL_GAIN;
-					break;
-
-				case SUSTAIN:
-					gain = sustain;
-					break;
-
-				case ATTACK:
-					step(MAXIMAL_GAIN, attack, ADSRState.DECAY);
-					break;
-
-				case DECAY:
-					step(sustain, decay, ADSRState.SUSTAIN);
-					break;
-
-				case RELEASE:
-					step(MINIMAL_GAIN, release, ADSRState.IDLE);
-					break;
+				case IDLE -> gain = MINIMAL_GAIN;
+				case SUSTAIN -> gain = sustain;
+				case ATTACK -> step(MAXIMAL_GAIN, attack, DECAY);
+				case DECAY -> step(sustain, decay, SUSTAIN);
+				case RELEASE -> step(MINIMAL_GAIN, release, IDLE);
 			}
 
 			gains[sampleIndex] = (float) gain;

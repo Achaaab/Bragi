@@ -27,12 +27,13 @@ public class PinkNoiseGenerator extends Module {
 
 	public static final String DEFAULT_NAME = "pink_noise_generator";
 
-	private static final int PINK_NOISE_LENGTH = Settings.INSTANCE.getFrameRate() * 10;
+	private static final int PINK_NOISE_DURATION = 10;
+	private static final int PINK_NOISE_SIZE = PINK_NOISE_DURATION * Settings.INSTANCE.frameRate();
 	private static final int WHITE_NOISE_COUNT = 16;
 
 	private static final Normalizer NORMALIZER = new Normalizer(
 			0.0f, WHITE_NOISE_COUNT,
-			Settings.INSTANCE.getMinimalVoltage(), Settings.INSTANCE.getMaximalVoltage()
+			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
 	);
 
 	/**
@@ -45,16 +46,16 @@ public class PinkNoiseGenerator extends Module {
 		var uniformRandom = ThreadLocalRandom.current();
 		var geometricRandom = new GeometricRandom();
 
-		var pinkNoise = new CircularFloatArray(PINK_NOISE_LENGTH);
-		var whiteNoises = createFloatArray(PINK_NOISE_LENGTH, WHITE_NOISE_COUNT, NaN);
+		var pinkNoise = new CircularFloatArray(PINK_NOISE_SIZE);
+		var whiteNoises = createFloatArray(PINK_NOISE_SIZE, WHITE_NOISE_COUNT, NaN);
 
-		var randomSampleCount = 2 * PINK_NOISE_LENGTH;
+		var randomSampleCount = 2 * PINK_NOISE_SIZE;
 
 		while (randomSampleCount-- > 0) {
 
 			var trials = geometricRandom.searchRandomGeometricCoinFlip();
 
-			var sampleIndex = uniformRandom.nextInt(PINK_NOISE_LENGTH);
+			var sampleIndex = uniformRandom.nextInt(PINK_NOISE_SIZE);
 			var whiteNoiseIndex = trials > WHITE_NOISE_COUNT ? 0 : (int) trials - 1;
 
 			whiteNoises[sampleIndex][whiteNoiseIndex] = uniformRandom.nextFloat();
@@ -70,7 +71,7 @@ public class PinkNoiseGenerator extends Module {
 				whiteNoises[0][whiteNoiseIndex] = randomSample;
 			}
 
-			for (var sampleIndex = 1; sampleIndex < PINK_NOISE_LENGTH; sampleIndex++) {
+			for (var sampleIndex = 1; sampleIndex < PINK_NOISE_SIZE; sampleIndex++) {
 
 				if (isNaN(whiteNoises[sampleIndex][whiteNoiseIndex])) {
 					whiteNoises[sampleIndex][whiteNoiseIndex] = randomSample;
@@ -80,16 +81,16 @@ public class PinkNoiseGenerator extends Module {
 			}
 		}
 
-		for (var sampleIndex = 0; sampleIndex < PINK_NOISE_LENGTH; sampleIndex++) {
+		for (var sampleIndex = 0; sampleIndex < PINK_NOISE_SIZE; sampleIndex++) {
 			pinkNoise.write(NORMALIZER.normalize(sum(whiteNoises[sampleIndex])));
 		}
 
 		return pinkNoise;
 	}
 
-	private Output output;
+	private final Output output;
 
-	private CircularFloatArray pinkNoise;
+	private final CircularFloatArray pinkNoise;
 
 	/**
 	 * Creates an pink noise generator with default name.
@@ -118,7 +119,7 @@ public class PinkNoiseGenerator extends Module {
 	@Override
 	protected int compute() throws InterruptedException {
 
-		var sampleCount = Settings.INSTANCE.getChunkSize();
+		var sampleCount = Settings.INSTANCE.chunkSize();
 		var samples = new float[sampleCount];
 		pinkNoise.read(samples);
 		output.write(samples);

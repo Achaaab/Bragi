@@ -18,8 +18,8 @@ public class PainterThread extends Thread {
 
 	private static final Logger LOGGER = getLogger(PainterThread.class);
 
-	private JComponent component;
-	private long loopTime;
+	private final JComponent component;
+	private final long loopTime;
 
 	/**
 	 * @param component component to repaint

@@ -1,7 +1,8 @@
-package com.github.achaaab.bragi.common;
+package com.github.achaaab.bragi.file;
 
 /**
  * @author Jonathan Guéhenneux
+ * @since 0.1.0
  */
 public class MalformedWavFileException extends Exception {
 

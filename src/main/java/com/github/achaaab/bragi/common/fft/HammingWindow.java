@@ -14,8 +14,8 @@ public class HammingWindow extends MemoizedWindow {
 	public static final double DEFAULT_A0 = 0.53836;
 	private static final double TWO_PI = PI * 2;
 
-	private double a0;
-	private double a1;
+	private final double a0;
+	private final double a1;
 
 	/**
 	 * Create a default Hamming window with default {@code a0}.

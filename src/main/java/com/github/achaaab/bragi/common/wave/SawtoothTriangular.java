@@ -18,10 +18,10 @@ public class SawtoothTriangular extends BoundedWaveform {
 
 	public static final SawtoothTriangular INSTANCE = new SawtoothTriangular("Sawtooth-Triangular", 0.75f, 0.4f);
 
-	private float peakFraction;
+	private final float peakFraction;
 
-	private Normalizer increaseNormalizer;
-	private Normalizer decreaseNormalizer;
+	private final Normalizer increaseNormalizer;
+	private final Normalizer decreaseNormalizer;
 
 	/**
 	 * @param peakFraction percentage of the period where the signal reach the maximum voltage

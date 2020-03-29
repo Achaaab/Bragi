@@ -1,9 +1,10 @@
 package com.github.achaaab.bragi.module;
 
-import com.github.achaaab.bragi.common.MalformedWavFileException;
 import com.github.achaaab.bragi.common.ModuleCreationException;
+import com.github.achaaab.bragi.common.ModuleExecutionException;
 import com.github.achaaab.bragi.common.Settings;
-import com.github.achaaab.bragi.common.WavFile;
+import com.github.achaaab.bragi.file.MalformedWavFileException;
+import com.github.achaaab.bragi.file.WavFile;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -23,9 +24,10 @@ public class WavFilePlayer extends Module implements Player {
 
 	public static final String DEFAULT_NAME = "wav_file_player";
 
-	private WavFile wavFile;
+	private final WavFile wavFile;
+	private final int channelCount;
+
 	private int offset;
-	private int channelCount;
 
 	/**
 	 * Creates a WAV file player with default name.
@@ -50,7 +52,7 @@ public class WavFilePlayer extends Module implements Player {
 
 		addPrimaryOutput(name + "_output_" + outputs.size());
 
-		while (outputs.size() < Settings.INSTANCE.getChannelCount()) {
+		while (outputs.size() < Settings.INSTANCE.channelCount()) {
 			addSecondaryOutput(name + "_output_" + outputs.size());
 		}
 
@@ -60,7 +62,7 @@ public class WavFilePlayer extends Module implements Player {
 			throw new ModuleCreationException(cause);
 		}
 
-		channelCount = wavFile.getChannelCount();
+		channelCount = wavFile.getHeader().channelCount();
 		offset = 0;
 
 		start();
@@ -69,7 +71,7 @@ public class WavFilePlayer extends Module implements Player {
 	@Override
 	public int compute() throws InterruptedException {
 
-		var bufferSizeInFrames = Settings.INSTANCE.getChunkSize();
+		var bufferSizeInFrames = Settings.INSTANCE.chunkSize();
 		var samples = new float[channelCount][bufferSizeInFrames];
 
 		try {
@@ -84,7 +86,7 @@ public class WavFilePlayer extends Module implements Player {
 
 		} catch (IOException cause) {
 
-			throw new RuntimeException(cause);
+			throw new ModuleExecutionException(cause);
 		}
 
 		for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {

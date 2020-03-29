@@ -24,8 +24,9 @@ public class LFO extends Module {
 	public static final Waveform INITIAL_WAVEFORM = Sine.INSTANCE;
 	public static final double INITIAL_FREQUENCY = 3.2;
 
-	private Output output;
-	private Wave wave;
+	private final Output output;
+
+	private final Wave wave;
 
 	/**
 	 * Creates an LFO with default name.
@@ -56,7 +57,7 @@ public class LFO extends Module {
 	@Override
 	public int compute() throws InterruptedException {
 
-		var sampleCount = Settings.INSTANCE.getChunkSize();
+		var sampleCount = Settings.INSTANCE.chunkSize();
 
 		var samples = wave.getSamples(0, null, sampleCount);
 

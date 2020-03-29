@@ -5,17 +5,19 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 /**
+ * A normalizer does an affine transform from an input range and an output range.
+ *
  * @author Jonathan Guéhenneux
  * @since 0.0.4
  */
 public class Normalizer {
 
-	private float input0;
-	private float output0;
-	private float minimalOutput;
-	private float maximalOutput;
+	private final float input0;
+	private final float output0;
+	private final float minimalOutput;
+	private final float maximalOutput;
 
-	private float amplification;
+	private final float amplification;
 
 	/**
 	 * @param input0  input sample 0

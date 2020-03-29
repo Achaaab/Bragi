@@ -12,7 +12,7 @@ import java.awt.BorderLayout;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
- * VCA view
+ * VCA Swing view
  *
  * @author Jonathan Guéhenneux
  * @since 0.0.4

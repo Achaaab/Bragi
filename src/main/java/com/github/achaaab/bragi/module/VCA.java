@@ -21,9 +21,9 @@ public class VCA extends Module {
 	public static final String DEFAULT_NAME = "vca";
 	public static final float DECIBELS_PER_VOLT = 10.0f;
 
-	private Input input;
-	private Input gain;
-	private Output output;
+	private final Input input;
+	private final Input gain;
+	private final Output output;
 
 	private int initialGain;
 

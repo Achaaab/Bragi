@@ -27,10 +27,10 @@ public class VCO extends Module {
 
 	private int octave;
 
-	private Input modulation;
-	private Output output;
+	private final Input modulation;
+	private final Output output;
 
-	private Wave wave;
+	private final Wave wave;
 
 	/**
 	 * Creates a VCO with default name.
@@ -63,7 +63,7 @@ public class VCO extends Module {
 	@Override
 	public int compute() throws InterruptedException {
 
-		var sampleCount = Settings.INSTANCE.getChunkSize();
+		var sampleCount = Settings.INSTANCE.chunkSize();
 
 		var modulationSamples = modulation.read();
 

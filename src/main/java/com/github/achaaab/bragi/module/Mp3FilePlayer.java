@@ -31,11 +31,12 @@ public class Mp3FilePlayer extends Module implements Player {
 
 	private static final Normalizer NORMALIZER = new Normalizer(
 			Short.MIN_VALUE, Short.MAX_VALUE,
-			Settings.INSTANCE.getMinimalVoltage(), Settings.INSTANCE.getMaximalVoltage()
+			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
 	);
 
-	private Bitstream bitStream;
-	private Decoder decoder;
+	private final Bitstream bitStream;
+	private final Decoder decoder;
+
 	private int channelCount;
 
 	/**
@@ -61,7 +62,7 @@ public class Mp3FilePlayer extends Module implements Player {
 
 		addPrimaryOutput(name + "_output_" + outputs.size());
 
-		while (outputs.size() < Settings.INSTANCE.getChannelCount()) {
+		while (outputs.size() < Settings.INSTANCE.channelCount()) {
 			addSecondaryOutput(name + "_output_" + outputs.size());
 		}
 

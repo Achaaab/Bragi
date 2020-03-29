@@ -33,15 +33,15 @@ public class Microphone extends Module {
 
 	private static final Normalizer ONE_BYTE_NORMALIZER = new Normalizer(
 			ONE_BYTE_MIN_VALUE, ONE_BYTE_MAX_VALUE,
-			Settings.INSTANCE.getMinimalVoltage(), Settings.INSTANCE.getMaximalVoltage()
+			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
 	);
 
 	private static final Normalizer TWO_BYTES_NORMALIZER = new Normalizer(
 			TWO_BYTES_MIN_VALUE, TWO_BYTES_MAX_VALUE,
-			Settings.INSTANCE.getMinimalVoltage(), Settings.INSTANCE.getMaximalVoltage()
+			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
 	);
 
-	private TargetDataLine line;
+	private final TargetDataLine line;
 
 	/**
 	 * Creates a microphone with default name.
@@ -64,14 +64,14 @@ public class Microphone extends Module {
 
 		addPrimaryOutput(name + "_output_" + outputs.size());
 
-		while (outputs.size() < Settings.INSTANCE.getChannelCount()) {
+		while (outputs.size() < Settings.INSTANCE.channelCount()) {
 			addSecondaryOutput(name + "_output_" + outputs.size());
 		}
 
 		var format = new AudioFormat(
-				Settings.INSTANCE.getFrameRate(),
-				Settings.INSTANCE.getSampleSize() * 8,
-				Settings.INSTANCE.getChannelCount(),
+				Settings.INSTANCE.frameRate(),
+				Settings.INSTANCE.sampleSize() * 8,
+				Settings.INSTANCE.channelCount(),
 				true, true);
 
 		try {
@@ -103,11 +103,11 @@ public class Microphone extends Module {
 	@Override
 	public int compute() throws InterruptedException {
 
-		var frameCount = Settings.INSTANCE.getChunkSize();
-		var sampleSizeInBytes = Settings.INSTANCE.getSampleSize();
+		var frameCount = Settings.INSTANCE.chunkSize();
+		var sampleSizeInBytes = Settings.INSTANCE.sampleSize();
 		var frameSizeInBytes = Settings.INSTANCE.getFrameSize();
 		var byteCount = frameCount * frameSizeInBytes;
-		var channelCount = Settings.INSTANCE.getChannelCount();
+		var channelCount = Settings.INSTANCE.channelCount();
 
 		var input = new byte[byteCount];
 		checkLineBufferHealth();

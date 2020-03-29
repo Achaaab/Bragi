@@ -17,7 +17,7 @@ public class Sine extends BoundedWaveform {
 
 	private static final double SINE_PERIOD = 2 * PI;
 
-	private Normalizer normalizer;
+	private final Normalizer normalizer;
 
 	/**
 	 * Use singleton.

@@ -1,5 +1,6 @@
 package com.github.achaaab.bragi.module;
 
+import com.github.achaaab.bragi.common.ModuleExecutionException;
 import com.github.achaaab.bragi.common.connection.Input;
 import com.github.achaaab.bragi.common.connection.Output;
 import com.github.achaaab.bragi.common.connection.PrimaryInput;
@@ -27,9 +28,9 @@ public abstract class Module implements Runnable {
 
 	private static final Logger LOGGER = getLogger(Module.class);
 
-	protected String name;
-	protected List<Input> inputs;
-	protected List<Output> outputs;
+	protected final String name;
+	protected final List<Input> inputs;
+	protected final List<Output> outputs;
 
 	protected boolean started;
 	protected double computingFrameRate;
@@ -191,13 +192,6 @@ public abstract class Module implements Runnable {
 	}
 
 	/**
-	 * @param name name of this module
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
 	 * Start the module in a new thread.
 	 */
 	protected void start() {
@@ -227,20 +221,8 @@ public abstract class Module implements Runnable {
 
 					var startTime = nanoTime();
 					var computedFrameCount = compute();
-					var endTime = nanoTime();
 
-					var duration = endTime - startTime;
-					var expectedDuration = round(1_000_000_000L * computedFrameCount / computingFrameRate);
-
-					if (duration < expectedDuration) {
-
-						var waitTime = expectedDuration - duration;
-						sleep(waitTime / 1_000_000, (int) (waitTime % 1_000_000));
-
-					} else {
-
-						LOGGER.warn("computing rate lower than configured");
-					}
+					waitComputeTime(startTime, computedFrameCount);
 
 				} else {
 
@@ -248,8 +230,33 @@ public abstract class Module implements Runnable {
 				}
 
 			} catch (InterruptedException cause) {
-				throw new RuntimeException(cause);
+
+				throw new ModuleExecutionException(cause);
 			}
+		}
+	}
+
+	/**
+	 * Sleeps if necessary until the configured compute time is elapsed.
+	 *
+	 * @param startTime          compute start nano-time
+	 * @param computedFrameCount number of computed frames
+	 * @throws InterruptedException if the current thread is interrupted while waiting for compute time
+	 */
+	private void waitComputeTime(long startTime, int computedFrameCount) throws InterruptedException {
+
+		var endTime = nanoTime();
+		var duration = endTime - startTime;
+		var expectedDuration = round(1_000_000_000L * computedFrameCount / computingFrameRate);
+
+		if (duration < expectedDuration) {
+
+			var waitTime = expectedDuration - duration;
+			sleep(waitTime / 1_000_000, (int) (waitTime % 1_000_000));
+
+		} else {
+
+			LOGGER.warn("computing rate lower than configured");
 		}
 	}
 

@@ -21,9 +21,12 @@ public class WhiteNoiseGenerator extends Module {
 
 	public static final String DEFAULT_NAME = "white_noise_generator";
 
-	private Output output;
+	private final Output output;
 
-	private Normalizer normalizer;
+	private static final Normalizer NORMALIZER = new Normalizer(
+			0.0f, 1.0f,
+			Settings.INSTANCE.minimalVoltage(),
+			Settings.INSTANCE.maximalVoltage());
 
 	/**
 	 * Creates a white noise generator with default name.
@@ -44,23 +47,19 @@ public class WhiteNoiseGenerator extends Module {
 
 		output = addPrimaryOutput(name + "_output");
 
-		normalizer = new Normalizer(0.0f, 1.0f,
-				Settings.INSTANCE.getMinimalVoltage(),
-				Settings.INSTANCE.getMaximalVoltage());
-
 		start();
 	}
 
 	@Override
 	protected int compute() throws InterruptedException {
 
-		var sampleCount = Settings.INSTANCE.getChunkSize();
+		var sampleCount = Settings.INSTANCE.chunkSize();
 		var samples = new float[sampleCount];
 
 		var random = ThreadLocalRandom.current();
 
 		for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
-			samples[sampleIndex] = normalizer.normalize(random.nextFloat());
+			samples[sampleIndex] = NORMALIZER.normalize(random.nextFloat());
 		}
 
 		output.write(samples);

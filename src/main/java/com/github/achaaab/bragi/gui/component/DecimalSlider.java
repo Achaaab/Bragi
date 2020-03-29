@@ -8,8 +8,8 @@ import javax.swing.JSlider;
  */
 public abstract class DecimalSlider extends JSlider {
 
-	protected double amplitude;
-	protected double minimal;
+	protected final double amplitude;
+	protected final double minimal;
 
 	/**
 	 * @param minimal   minimal value of this slider

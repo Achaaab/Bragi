@@ -37,21 +37,21 @@ public class Speaker extends Module {
 	private static final int THREE_BYTES_MAX_VALUE = 0x00_7F_FF_FF;
 
 	private static final Normalizer ONE_BYTE_NORMALIZER = new Normalizer(
-			Settings.INSTANCE.getMinimalVoltage(), Settings.INSTANCE.getMaximalVoltage(),
+			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage(),
 			ONE_BYTE_MIN_VALUE, ONE_BYTE_MAX_VALUE
 	);
 
 	private static final Normalizer TWO_BYTES_NORMALIZER = new Normalizer(
-			Settings.INSTANCE.getMinimalVoltage(), Settings.INSTANCE.getMaximalVoltage(),
+			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage(),
 			TWO_BYTES_MIN_VALUE, TWO_BYTES_MAX_VALUE
 	);
 
 	private static final Normalizer THREE_BYTES_NORMALIZER = new Normalizer(
-			Settings.INSTANCE.getMinimalVoltage(), Settings.INSTANCE.getMaximalVoltage(),
+			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage(),
 			THREE_BYTES_MIN_VALUE, THREE_BYTES_MAX_VALUE
 	);
 
-	private SourceDataLine line;
+	private final SourceDataLine line;
 
 	/**
 	 * Creates a speaker with default name.
@@ -74,14 +74,14 @@ public class Speaker extends Module {
 
 		addPrimaryInput(name + "_input_" + inputs.size());
 
-		while (inputs.size() < Settings.INSTANCE.getChannelCount()) {
+		while (inputs.size() < Settings.INSTANCE.channelCount()) {
 			addSecondaryInput(name + "_input_" + inputs.size());
 		}
 
 		var audioFormat = new AudioFormat(
-				Settings.INSTANCE.getFrameRate(),
-				Settings.INSTANCE.getSampleSize() * 8,
-				Settings.INSTANCE.getChannelCount(),
+				Settings.INSTANCE.frameRate(),
+				Settings.INSTANCE.sampleSize() * 8,
+				Settings.INSTANCE.channelCount(),
 				true, true);
 
 		var lineInformation = new Info(SourceDataLine.class, audioFormat);
@@ -115,7 +115,7 @@ public class Speaker extends Module {
 	@Override
 	public int compute() throws InterruptedException {
 
-		var channelCount = Settings.INSTANCE.getChannelCount();
+		var channelCount = Settings.INSTANCE.channelCount();
 
 		var samples = new float[channelCount][];
 
@@ -138,7 +138,7 @@ public class Speaker extends Module {
 	 */
 	private static byte[] mix(float[][] samples) {
 
-		var sampleSize = Settings.INSTANCE.getSampleSize();
+		var sampleSize = Settings.INSTANCE.sampleSize();
 		var channelCount = samples.length;
 		var frameCount = samples[0].length;
 

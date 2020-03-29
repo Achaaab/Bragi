@@ -10,17 +10,21 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 /**
+ * key Swing view
+ *
  * @author Jonathan Guéhenneux
+ * @since 0.1.0
  */
 public class KeyView extends JButton implements MouseListener {
 
-	private Key model;
-	private Keyboard keyboard;
+	private final Key model;
+	private final Keyboard keyboard;
+
 	private boolean pressed;
 
 	/**
-	 * @param model
-	 * @param keyboard
+	 * @param model key model
+	 * @param keyboard keyboard model
 	 */
 	public KeyView(Key model, Keyboard keyboard) {
 
@@ -77,7 +81,7 @@ public class KeyView extends JButton implements MouseListener {
 		if (!pressed) {
 
 			pressed = true;
-			keyboard.press(model.getVoltage());
+			keyboard.press(model.voltage());
 		}
 	}
 

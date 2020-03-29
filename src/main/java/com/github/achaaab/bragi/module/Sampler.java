@@ -22,8 +22,8 @@ public class Sampler extends Module {
 	private static final int SAMPLE_SIZE = 64;
 	private static final int FRAME_RATE_DIVISOR = 4;
 
-	private Input input;
-	private Output output;
+	private final Input input;
+	private final Output output;
 
 	/**
 	 * Creates a sampler with default name.

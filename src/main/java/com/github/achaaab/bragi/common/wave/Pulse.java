@@ -10,7 +10,7 @@ public class Pulse extends BoundedWaveform {
 	public static final Pulse PULSE_4 = new Pulse("Rectangle 1/4", 0.25);
 	public static final Pulse PULSE_8 = new Pulse("Rectangle 1/8", 0.125);
 
-	private double pulseFraction;
+	private final double pulseFraction;
 
 	/**
 	 * @param name pulse wave name

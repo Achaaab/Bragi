@@ -12,9 +12,9 @@ import com.github.achaaab.bragi.gui.module.VCFView;
  */
 public abstract class VCF extends Module {
 
-	protected Input modulation;
-	protected Input input;
-	protected Output output;
+	protected final Input modulation;
+	protected final Input input;
+	protected final Output output;
 
 	protected float emphasis;
 	protected float cutOffFrequency;
@@ -24,8 +24,6 @@ public abstract class VCF extends Module {
 	protected float[] modulationSamples;
 	protected float modulationSample;
 	protected float[] outputSamples;
-
-	protected double f0, f1;
 
 	protected double y1;
 	protected double y2;
@@ -51,8 +49,6 @@ public abstract class VCF extends Module {
 		emphasis = 0.5f;
 		cutOffFrequency = 440.0f;
 
-		f0 = 0.0;
-		f1 = 0.0;
 		y1 = 0.0;
 		y2 = 0.0;
 		y3 = 0.0;

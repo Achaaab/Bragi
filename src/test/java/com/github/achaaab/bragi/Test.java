@@ -12,11 +12,11 @@ import com.github.achaaab.bragi.module.SpectrumAnalyzer;
 import com.github.achaaab.bragi.module.Theremin;
 import com.github.achaaab.bragi.module.VCA;
 import com.github.achaaab.bragi.module.VCO;
+import com.github.achaaab.bragi.module.WavFilePlayer;
 import com.github.achaaab.bragi.module.WhiteNoiseGenerator;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -30,15 +30,29 @@ public class Test {
 
 	private static final Logger LOGGER = getLogger(Test.class);
 
-	private static final Path TEST_MP3_PATH = Paths.get(
-			"/media/jonathan/media/Musique/Aaliyah/Aaliyah (2001)/15. Try Again.mp3");
+	private static final Path TEST_MP3_PATH = ResourceUtils.getPath("test.mp3");
+	private static final Path TEST_WAV_PATH = ResourceUtils.getPath("test.wav");
 
 	/**
 	 * @param arguments none
 	 * @since 0.0.9
 	 */
 	public static void main(String... arguments) {
-		testLowPassVcf();
+		testWavFilePlayer();
+	}
+
+	/**
+	 * Tests the {@link WavFilePlayer} module.
+	 *
+	 * @since 0.1.0
+	 */
+	public static void testWavFilePlayer() {
+
+		var player = new WavFilePlayer(TEST_WAV_PATH.toFile());
+		var speaker = new Speaker();
+
+		player.getOutputs().get(0).connect(speaker.getInputs().get(0));
+		player.getOutputs().get(1).connect(speaker.getInputs().get(1));
 	}
 
 	/**

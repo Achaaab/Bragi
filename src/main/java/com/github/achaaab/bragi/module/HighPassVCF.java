@@ -39,7 +39,7 @@ public class HighPassVCF extends VCF {
 	@Override
 	protected void filterSamples() {
 
-		var sampleRate = Settings.INSTANCE.getFrameRate();
+		var sampleRate = Settings.INSTANCE.frameRate();
 		var sampleCount = inputSamples.length;
 
 		outputSamples = new float[sampleCount];

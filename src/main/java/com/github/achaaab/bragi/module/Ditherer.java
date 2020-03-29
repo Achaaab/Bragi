@@ -1,7 +1,7 @@
 package com.github.achaaab.bragi.module;
 
+import com.github.achaaab.bragi.common.connection.Input;
 import com.github.achaaab.bragi.common.connection.Output;
-import com.github.achaaab.bragi.common.connection.PrimaryInput;
 import org.slf4j.Logger;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -18,8 +18,8 @@ public class Ditherer extends Module {
 
 	public static final String DEFAULT_NAME = "ditherer";
 
-	private PrimaryInput input;
-	private Output output;
+	private final Input input;
+	private final Output output;
 
 	/**
 	 * Creates a ditherer with default name.

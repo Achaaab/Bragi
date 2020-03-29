@@ -13,6 +13,8 @@ import java.awt.event.MouseMotionAdapter;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
+ * theremin Swing view
+ *
  * @author Jonathan Guéhenneux
  * @since 0.0.4
  */
@@ -26,7 +28,7 @@ public class ThereminView extends JPanel {
 	private static final float MAXIMAL_VOLUME = 0.0f;
 	private static final float VOLUME_AMPLITUDE = MAXIMAL_VOLUME - MINIMAL_VOLUME;
 
-	private Theremin model;
+	private final Theremin model;
 
 	/**
 	 * @param model model

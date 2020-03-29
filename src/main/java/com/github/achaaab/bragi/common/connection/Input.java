@@ -1,7 +1,7 @@
 package com.github.achaaab.bragi.common.connection;
 
 /**
- * Input of a module.
+ * input of a module
  *
  * @author Jonathan Guéhenneux
  * @since 0.0.1

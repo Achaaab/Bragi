@@ -6,17 +6,16 @@ import static java.lang.Math.fma;
 import static java.lang.Math.sin;
 
 /**
- * FFT stands for Fast Fourier Transform. It is an efficient way to calculate the Complex Discrete Fourier Transform. There is not
- * much to say about this class other than the fact that when you want to analyze the spectrum of an audio buffer you will almost
- * always use this class. One restriction of this class is that the audio buffers you want to analyze must have a length that is a
- * power of two. If you try to construct an FFT with a <code>timeSize</code> that is not a power of two, an
- * IllegalArgumentException will be thrown.
+ * The Fast Fourier Transform (FFT) is an efficient way to calculate the Complex Discrete Fourier Transform.
+ * One restriction of this implementation is that the audio buffers you want to analyze must have a length that is a
+ * power of two. FFT has a O(n.log(n)) time complexity while a naive implementation has a O(n²) time complexity.
  *
  * @author Damien Di Fede
- * @see FourierTransform
+ * @author Jonathan Guéhenneux
  * @see <a href="http://www.dspguide.com/ch12.htm">The Fast Fourier Transform</a>
+ * @since 0.1.0
  */
-public class FFT extends FourierTransform {
+public class FastFourierTransform extends FourierTransform {
 
 	private int[] reverse;
 	private float[] sin;
@@ -30,7 +29,7 @@ public class FFT extends FourierTransform {
 	 * @param timeSize   the length of the sample buffers you will be analyzing
 	 * @param sampleRate the sample rate of the audio you will be analyzing
 	 */
-	public FFT(int timeSize, float sampleRate) {
+	public FastFourierTransform(int timeSize, float sampleRate) {
 
 		super(timeSize, sampleRate);
 
@@ -232,7 +231,7 @@ public class FFT extends FourierTransform {
 	}
 
 	/**
-	 * bit reverse real[] and imag[]
+	 * Bit reverse real and imaginary.
 	 */
 	private void bitReverseComplex() {
 

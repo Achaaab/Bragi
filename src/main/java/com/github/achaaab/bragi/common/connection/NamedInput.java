@@ -8,7 +8,8 @@ package com.github.achaaab.bragi.common.connection;
  */
 public abstract class NamedInput implements Input {
 
-	protected String name;
+	protected final String name;
+
 	protected Buffer buffer;
 
 	/**

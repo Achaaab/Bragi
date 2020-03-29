@@ -20,7 +20,7 @@ public class Oscilloscope extends Module {
 
 	public static final String DEFAULT_NAME = "oscilloscope";
 
-	private Input input;
+	private final Input input;
 	private final CircularFloatArray buffer;
 
 	/**
@@ -42,7 +42,7 @@ public class Oscilloscope extends Module {
 
 		input = addPrimaryInput(name + "_input");
 
-		var oscilloscopeSampleCount = Settings.INSTANCE.getFrameRate();
+		var oscilloscopeSampleCount = Settings.INSTANCE.frameRate();
 		buffer = new CircularFloatArray(oscilloscopeSampleCount);
 
 		new OscilloscopeView(this);

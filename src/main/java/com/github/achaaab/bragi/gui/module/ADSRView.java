@@ -12,6 +12,8 @@ import java.awt.GridLayout;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
+ * ADSR Swing view
+ *
  * @author Jonathan Guéhenneux
  * @since 0.0.6
  */

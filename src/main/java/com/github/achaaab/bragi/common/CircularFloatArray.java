@@ -10,8 +10,9 @@ import static java.lang.System.arraycopy;
  */
 public class CircularFloatArray {
 
-	private float[] array;
-	private int length;
+	private final float[] array;
+	private final int length;
+
 	private int writeIndex;
 	private int readIndex;
 

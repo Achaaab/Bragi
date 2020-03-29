@@ -26,7 +26,7 @@ import static java.lang.Math.log;
  */
 public class GeometricRandom {
 
-	private Random uniformRandom;
+	private final Random uniformRandom;
 
 	/**
 	 * Creates a pseudorandom number generator with geometric distribution.

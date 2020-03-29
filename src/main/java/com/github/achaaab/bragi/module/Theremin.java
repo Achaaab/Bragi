@@ -22,8 +22,8 @@ public class Theremin extends Module {
 	private float pitchSample;
 	private float volumeSample;
 
-	private Output pitch;
-	private Output volume;
+	private final Output pitch;
+	private final Output volume;
 
 	/**
 	 * Creates a theremin with default name.
@@ -56,7 +56,7 @@ public class Theremin extends Module {
 	@Override
 	protected int compute() throws InterruptedException {
 
-		var sampleCount = Settings.INSTANCE.getChunkSize();
+		var sampleCount = Settings.INSTANCE.chunkSize();
 
 		var pitchSamples = new float[sampleCount];
 		var volumeSamples = new float[sampleCount];

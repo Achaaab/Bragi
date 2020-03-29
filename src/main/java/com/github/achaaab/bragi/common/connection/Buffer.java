@@ -9,10 +9,10 @@ import java.util.concurrent.BlockingQueue;
  */
 public class Buffer {
 
-	private Output output;
-	private Input input;
+	private final Output output;
+	private final Input input;
 
-	private BlockingQueue<float[]> chunks;
+	private final BlockingQueue<float[]> chunks;
 
 	/**
 	 * Create a new empty buffer between specified output and input with a capacity of 1 chunk.

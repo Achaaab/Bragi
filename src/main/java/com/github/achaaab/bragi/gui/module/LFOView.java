@@ -13,12 +13,15 @@ import static java.awt.BorderLayout.NORTH;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
+ * LFO Swing view
+ *
  * @author Jonathan Guéhenneux
+ * @since 0.1.0
  */
 public class LFOView extends JPanel {
 
 	/**
-	 * @param model
+	 * @param model LFO model
 	 */
 	public LFOView(LFO model) {
 

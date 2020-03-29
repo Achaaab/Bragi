@@ -14,6 +14,8 @@ import static javax.swing.SwingConstants.HORIZONTAL;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
+ * VCF Swing view
+ *
  * @author Jonathan Guéhenneux
  * @since 0.0.4
  */

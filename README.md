@@ -31,7 +31,7 @@ At every tick, each module processes n samples, in 4 steps :
 * Microphone: a module connected to your microphone
 ## UI
 Most modules have a basic UI, in Swing.
-Each module has its own window and connections are not visibles or editables.
+Each module has its own window and connections are not visible or editable.
 ## Examples
 ### MP3 file player connected to speaker
 ```java

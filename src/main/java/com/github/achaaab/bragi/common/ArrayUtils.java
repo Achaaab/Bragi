@@ -1,7 +1,5 @@
 package com.github.achaaab.bragi.common;
 
-import java.util.Arrays;
-
 import static java.util.Arrays.fill;
 
 /**

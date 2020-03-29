@@ -1,14 +1,13 @@
 package com.github.achaaab.bragi.module;
 
 import com.github.achaaab.bragi.common.CircularFloatArray;
-import com.github.achaaab.bragi.common.ModuleCreationException;
 import com.github.achaaab.bragi.common.Settings;
-import com.github.achaaab.bragi.common.fft.FFT;
+import com.github.achaaab.bragi.common.fft.FastFourierTransform;
+import com.github.achaaab.bragi.common.fft.FourierTransform;
 import com.github.achaaab.bragi.common.fft.HammingWindow;
 import com.github.achaaab.bragi.gui.module.SpectrumAnalyzerView;
 import com.github.achaaab.bragi.common.connection.Input;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -24,13 +23,13 @@ public class SpectrumAnalyzer extends Module {
 
 	public static final String DEFAULT_NAME = "spectrum_analyzer";
 
-	private static final int FFT_SAMPLE_COUNT = 1 << 12;
+	private static final int FOURIER_TRANSFORM_SIZE = 1 << 12;
 
-	private Input input;
+	private final Input input;
 
-	private FFT fft;
+	private final FourierTransform fourierTransform;
+	private final float[] fourierTransformSamples;
 
-	private float[] fftSamples;
 	private final CircularFloatArray buffer;
 
 	/**
@@ -52,12 +51,12 @@ public class SpectrumAnalyzer extends Module {
 
 		input = addPrimaryInput(name + "_input");
 
-		fft = new FFT(FFT_SAMPLE_COUNT, Settings.INSTANCE.getFrameRate());
-		fft.setWindow(new HammingWindow());
-		fft.logAverages(50, 12);
+		fourierTransform = new FastFourierTransform(FOURIER_TRANSFORM_SIZE, Settings.INSTANCE.frameRate());
+		fourierTransform.setWindow(new HammingWindow());
+		fourierTransform.logAverages(50, 12);
 
-		fftSamples = new float[FFT_SAMPLE_COUNT];
-		buffer = new CircularFloatArray(FFT_SAMPLE_COUNT);
+		fourierTransformSamples = new float[FOURIER_TRANSFORM_SIZE];
+		buffer = new CircularFloatArray(FOURIER_TRANSFORM_SIZE);
 
 		new SpectrumAnalyzerView(this);
 
@@ -82,11 +81,11 @@ public class SpectrumAnalyzer extends Module {
 	public float[] getAverages() {
 
 		synchronized (buffer) {
-			buffer.readLast(fftSamples);
+			buffer.readLast(fourierTransformSamples);
 		}
 
-		fft.forward(fftSamples);
+		fourierTransform.forward(fourierTransformSamples);
 
-		return fft.getAverages();
+		return fourierTransform.getAverages();
 	}
 }

@@ -2,8 +2,6 @@ package com.github.achaaab.bragi.gui.component;
 
 import static java.lang.Math.exp;
 import static java.lang.Math.log;
-import static java.lang.Math.max;
-import static java.lang.Math.min;
 import static java.lang.Math.pow;
 import static java.lang.Math.round;
 
@@ -15,8 +13,8 @@ import static java.lang.Math.round;
  */
 public class LogarithmicSlider extends DecimalSlider {
 
-	private double logarithmBase;
-	private double base;
+	private final double logarithmBase;
+	private final double base;
 
 	/**
 	 * @param minimal   minimal value of this slider
