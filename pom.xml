@@ -6,7 +6,7 @@
 
 	<groupId>com.github.achaaab</groupId>
 	<artifactId>bragi</artifactId>
-	<version>0.1.1</version>
+	<version>0.1.2</version>
 	<packaging>jar</packaging>
 
 	<dependencies>
@@ -23,6 +23,18 @@
 			<version>1.0.1</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-graphics</artifactId>
+			<version>14</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-media</artifactId>
+			<version>14</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -35,6 +47,7 @@
 				<configuration>
 					<release>14</release>
 					<encoding>UTF-8</encoding>
+					<compilerArgs>--enable-preview</compilerArgs>
 				</configuration>
 			</plugin>
 
@@ -44,6 +57,18 @@
 				<version>3.1.0</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.openjfx</groupId>
+				<artifactId>javafx-maven-plugin</artifactId>
+				<version>0.0.4</version>
+				<configuration>
+					<mainClass>com.github.achaaab.bragi.TestPlayer</mainClass>
+					<options>
+						<option>--enable-preview</option>
+					</options>
 				</configuration>
 			</plugin>
 
