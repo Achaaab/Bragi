@@ -35,6 +35,7 @@ public class ADSR extends Module {
 
 	private static final Logger LOGGER = getLogger(ADSR.class);
 
+	public static final String DEFAULT_NAME = "adsr";
 	public static final float MINIMAL_GAIN = Settings.INSTANCE.getMinimalVoltage();
 	public static final float MAXIMAL_GAIN = 0;
 
@@ -54,6 +55,18 @@ public class ADSR extends Module {
 	private ADSRState state;
 
 	/**
+	 * Creates an ADSR with default name.
+	 *
+	 * @see #DEFAULT_NAME
+	 * @since 0.0.9
+	 */
+	public ADSR() {
+		this(DEFAULT_NAME);
+	}
+
+	/**
+	 * Creates an ADSR module with specified name.
+	 *
 	 * @param name ADSR name
 	 */
 	public ADSR(String name) {

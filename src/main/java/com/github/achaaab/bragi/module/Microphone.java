@@ -1,5 +1,6 @@
 package com.github.achaaab.bragi.module;
 
+import com.github.achaaab.bragi.common.ModuleCreationException;
 import com.github.achaaab.bragi.common.Normalizer;
 import com.github.achaaab.bragi.common.Settings;
 import org.slf4j.Logger;
@@ -12,11 +13,17 @@ import static javax.sound.sampled.AudioSystem.getTargetDataLine;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
+ * A {@link Microphone} reads samples at {@link AudioFormat} from a {@link TargetDataLine},
+ * convert them to {@code float} samples and writes it to its output (1 output per channel).
+ *
  * @author Jonathan Guéhenneux
+ * @since 0.0.9
  */
 public class Microphone extends Module {
 
 	private static final Logger LOGGER = getLogger(Microphone.class);
+
+	public static final String DEFAULT_NAME = "microphone";
 
 	private static final int ONE_BYTE_MIN_VALUE = 0xFF_FF_FF_A0;
 	private static final int ONE_BYTE_MAX_VALUE = 0x00_00_00_7F;
@@ -34,13 +41,24 @@ public class Microphone extends Module {
 			Settings.INSTANCE.getMinimalVoltage(), Settings.INSTANCE.getMaximalVoltage()
 	);
 
-	private TargetDataLine targetDataLine;
+	private TargetDataLine line;
+
+	/**
+	 * Creates a microphone with default name.
+	 *
+	 * @throws ModuleCreationException if no target data line is available
+	 * @see #DEFAULT_NAME
+	 * @since 0.0.9
+	 */
+	public Microphone() {
+		this(DEFAULT_NAME);
+	}
 
 	/**
 	 * @param name name of the microphone
-	 * @throws LineUnavailableException if no target data line is available
+	 * @throws ModuleCreationException if no target data line is available
 	 */
-	public Microphone(String name) throws LineUnavailableException {
+	public Microphone(String name) {
 
 		super(name);
 
@@ -56,9 +74,17 @@ public class Microphone extends Module {
 				Settings.INSTANCE.getChannelCount(),
 				true, true);
 
-		targetDataLine = getTargetDataLine(format);
-		targetDataLine.open(format, Settings.INSTANCE.getByteRate() / 100);
-		targetDataLine.start();
+		try {
+
+			line = getTargetDataLine(format);
+			line.open(format, Settings.INSTANCE.getByteRate() / 100);
+
+		} catch (LineUnavailableException cause) {
+
+			throw new ModuleCreationException(cause);
+		}
+
+		line.start();
 
 		start();
 	}
@@ -69,8 +95,8 @@ public class Microphone extends Module {
 	 */
 	private void checkLineBufferHealth() {
 
-		if (targetDataLine.available() == targetDataLine.getBufferSize()) {
-			LOGGER.warn("microphone line is not read fast enough, some data may be lost");
+		if (line.available() == line.getBufferSize()) {
+			LOGGER.warn("microphone line is not read fast enough, thus some data may be lost");
 		}
 	}
 
@@ -85,7 +111,7 @@ public class Microphone extends Module {
 
 		var input = new byte[byteCount];
 		checkLineBufferHealth();
-		targetDataLine.read(input, 0, byteCount);
+		line.read(input, 0, byteCount);
 
 		var samples = new float[channelCount][frameCount];
 

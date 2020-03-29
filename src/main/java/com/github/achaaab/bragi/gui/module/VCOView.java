@@ -26,14 +26,19 @@ public class VCOView extends JPanel {
 	 */
 	public VCOView(VCO model) {
 
-		var waveformComboBox = new WaveformComboBox();
-		waveformComboBox.addActionListener(actionEvent -> model.setWaveform(waveformComboBox.getSelectedWaveform()));
+		var waveform = model.getWaveform();
+		var octave = model.getOctave();
 
-		var octaveSlider = new JSlider(-4, 4);
+		var waveformComboBox = new WaveformComboBox();
+		waveformComboBox.setSelectedItem(waveform);
+
+		var octaveSlider = new JSlider(-4, 4, octave);
 		octaveSlider.setBorder(new TitledBorder("Octave"));
 		octaveSlider.setMajorTickSpacing(1);
 		octaveSlider.setPaintTicks(true);
 		octaveSlider.setPaintLabels(true);
+
+		waveformComboBox.addActionListener(actionEvent -> model.setWaveform(waveformComboBox.getSelectedWaveform()));
 		octaveSlider.addChangeListener(changeEvent -> model.setOctave(octaveSlider.getValue()));
 
 		setLayout(new BorderLayout());

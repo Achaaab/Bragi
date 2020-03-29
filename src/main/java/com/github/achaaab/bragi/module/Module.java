@@ -1,11 +1,11 @@
 package com.github.achaaab.bragi.module;
 
-import com.github.achaaab.bragi.common.connection.PrimaryInput;
-import com.github.achaaab.bragi.common.connection.PrimaryOutput;
-import com.github.achaaab.bragi.common.connection.SecondaryOutput;
 import com.github.achaaab.bragi.common.connection.Input;
 import com.github.achaaab.bragi.common.connection.Output;
+import com.github.achaaab.bragi.common.connection.PrimaryInput;
+import com.github.achaaab.bragi.common.connection.PrimaryOutput;
 import com.github.achaaab.bragi.common.connection.SecondaryInput;
+import com.github.achaaab.bragi.common.connection.SecondaryOutput;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -17,7 +17,11 @@ import static java.lang.Thread.sleep;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
+ * A {@link Module} has inputs and outputs. It reads samples from inputs, compute output samples from input samples and
+ * tuning and write output samples to outputs.
+ *
  * @author Jonathan Guéhenneux
+ * @since 0.0.9
  */
 public abstract class Module implements Runnable {
 

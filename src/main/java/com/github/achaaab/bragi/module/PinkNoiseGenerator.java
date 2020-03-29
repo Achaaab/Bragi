@@ -1,13 +1,13 @@
 package com.github.achaaab.bragi.module;
 
 import com.github.achaaab.bragi.common.CircularFloatArray;
-import com.github.achaaab.bragi.common.Normalizer;
 import com.github.achaaab.bragi.common.GeometricRandom;
+import com.github.achaaab.bragi.common.Normalizer;
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.common.connection.Output;
 import org.slf4j.Logger;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static com.github.achaaab.bragi.common.ArrayUtils.createFloatArray;
 import static com.github.achaaab.bragi.common.ArrayUtils.sum;
@@ -16,7 +16,7 @@ import static java.lang.Float.isNaN;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * Pink noise generator.
+ * pink noise generator
  *
  * @author Jonathan Guéhenneux
  * @since 0.0.7
@@ -24,6 +24,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class PinkNoiseGenerator extends Module {
 
 	private static final Logger LOGGER = getLogger(PinkNoiseGenerator.class);
+
+	public static final String DEFAULT_NAME = "pink_noise_generator";
 
 	private static final int PINK_NOISE_LENGTH = Settings.INSTANCE.getFrameRate() * 10;
 	private static final int WHITE_NOISE_COUNT = 16;
@@ -33,8 +35,6 @@ public class PinkNoiseGenerator extends Module {
 			Settings.INSTANCE.getMinimalVoltage(), Settings.INSTANCE.getMaximalVoltage()
 	);
 
-	private static final Random RANDOM = new Random();
-
 	/**
 	 * Creates a pink noise, summing white noises.
 	 *
@@ -42,6 +42,7 @@ public class PinkNoiseGenerator extends Module {
 	 */
 	private static CircularFloatArray createPinkNoise() {
 
+		var uniformRandom = ThreadLocalRandom.current();
 		var geometricRandom = new GeometricRandom();
 
 		var pinkNoise = new CircularFloatArray(PINK_NOISE_LENGTH);
@@ -53,10 +54,10 @@ public class PinkNoiseGenerator extends Module {
 
 			var trials = geometricRandom.searchRandomGeometricCoinFlip();
 
-			var sampleIndex = RANDOM.nextInt(PINK_NOISE_LENGTH);
+			var sampleIndex = uniformRandom.nextInt(PINK_NOISE_LENGTH);
 			var whiteNoiseIndex = trials > WHITE_NOISE_COUNT ? 0 : (int) trials - 1;
 
-			whiteNoises[sampleIndex][whiteNoiseIndex] = RANDOM.nextFloat();
+			whiteNoises[sampleIndex][whiteNoiseIndex] = uniformRandom.nextFloat();
 		}
 
 		for (var whiteNoiseIndex = 0; whiteNoiseIndex < WHITE_NOISE_COUNT; whiteNoiseIndex++) {
@@ -65,7 +66,7 @@ public class PinkNoiseGenerator extends Module {
 
 			if (isNaN(randomSample)) {
 
-				randomSample = RANDOM.nextFloat();
+				randomSample = uniformRandom.nextFloat();
 				whiteNoises[0][whiteNoiseIndex] = randomSample;
 			}
 
@@ -89,6 +90,16 @@ public class PinkNoiseGenerator extends Module {
 	private Output output;
 
 	private CircularFloatArray pinkNoise;
+
+	/**
+	 * Creates an pink noise generator with default name.
+	 *
+	 * @see #DEFAULT_NAME
+	 * @since 0.0.9
+	 */
+	public PinkNoiseGenerator() {
+		this(DEFAULT_NAME);
+	}
 
 	/**
 	 * @param name pink noise generator name

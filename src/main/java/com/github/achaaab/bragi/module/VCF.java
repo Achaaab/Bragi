@@ -8,6 +8,7 @@ import com.github.achaaab.bragi.gui.module.VCFView;
  * Voltage-Controlled Filter
  *
  * @author Jonathan Guéhenneux
+ * @since 0.0.9
  */
 public abstract class VCF extends Module {
 
@@ -26,10 +27,18 @@ public abstract class VCF extends Module {
 
 	protected double f0, f1;
 
-	protected double y1, y2, y3, y4, oldx, oldy1, oldy2, oldy3;
+	protected double y1;
+	protected double y2;
+	protected double y3;
+	protected double y4;
+	protected double oldX;
+	protected double oldY1;
+	protected double oldY2;
+	protected double oldY3;
 
 	/**
-	 * @param name
+	 * @param name name of the VCF to create
+	 * @since 0.0.9
 	 */
 	public VCF(String name) {
 
@@ -42,7 +51,16 @@ public abstract class VCF extends Module {
 		emphasis = 0.5f;
 		cutOffFrequency = 440.0f;
 
-		f0 = f1 = y1 = y2 = y3 = y4 = oldx = oldy1 = oldy2 = oldy3 = 0.0;
+		f0 = 0.0;
+		f1 = 0.0;
+		y1 = 0.0;
+		y2 = 0.0;
+		y3 = 0.0;
+		y4 = 0.0;
+		oldX = 0.0;
+		oldY1 = 0.0;
+		oldY2 = 0.0;
+		oldY3 = 0.0;
 
 		new VCFView(this);
 

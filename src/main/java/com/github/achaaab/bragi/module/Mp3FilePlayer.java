@@ -1,5 +1,6 @@
 package com.github.achaaab.bragi.module;
 
+import com.github.achaaab.bragi.common.ModuleCreationException;
 import com.github.achaaab.bragi.common.Normalizer;
 import com.github.achaaab.bragi.common.Settings;
 import javazoom.jl.decoder.Bitstream;
@@ -7,13 +8,14 @@ import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.DecoderException;
 import javazoom.jl.decoder.SampleBuffer;
+import org.slf4j.Logger;
 
 import java.io.BufferedInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 
 import static java.nio.file.Files.newInputStream;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * MP3 file player
@@ -22,6 +24,10 @@ import static java.nio.file.Files.newInputStream;
  * @since 0.0.4
  */
 public class Mp3FilePlayer extends Module implements Player {
+
+	private static final Logger LOGGER = getLogger(Mp3FilePlayer.class);
+
+	public static final String DEFAULT_NAME = "mp3_player";
 
 	private static final Normalizer NORMALIZER = new Normalizer(
 			Short.MIN_VALUE, Short.MAX_VALUE,
@@ -33,11 +39,23 @@ public class Mp3FilePlayer extends Module implements Player {
 	private int channelCount;
 
 	/**
-	 * @param name name of the MP3 file player
-	 * @param path path of MP3 file to play
-	 * @throws FileNotFoundException
+	 * Creates a MP3 file player with default name.
+	 *
+	 * @param path path to the MP3 file to play
+	 * @throws ModuleCreationException if the MP3 file cannot be played
+	 * @see #DEFAULT_NAME
+	 * @since 0.0.9
 	 */
-	public Mp3FilePlayer(String name, Path path) throws IOException {
+	public Mp3FilePlayer(Path path) {
+		this(DEFAULT_NAME, path);
+	}
+
+	/**
+	 * @param name name of the MP3 file player
+	 * @param path path to the MP3 file to play
+	 * @throws ModuleCreationException if the MP3 file cannot be played
+	 */
+	public Mp3FilePlayer(String name, Path path) {
 
 		super(name);
 
@@ -47,8 +65,16 @@ public class Mp3FilePlayer extends Module implements Player {
 			addSecondaryOutput(name + "_output_" + outputs.size());
 		}
 
-		var inputStream = new BufferedInputStream(newInputStream(path));
-		bitStream = new Bitstream(inputStream);
+		try {
+
+			var inputStream = new BufferedInputStream(newInputStream(path));
+			bitStream = new Bitstream(inputStream);
+
+		} catch (IOException cause) {
+
+			throw new ModuleCreationException(cause);
+		}
+
 		decoder = new Decoder();
 
 		start();
@@ -68,7 +94,7 @@ public class Mp3FilePlayer extends Module implements Player {
 
 				bitStream.closeFrame();
 
-				var samples = split(sampleBuffer);
+				var samples = convert(sampleBuffer);
 
 				for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
 					outputs.get(channelIndex).write(samples[channelIndex]);
@@ -86,9 +112,11 @@ public class Mp3FilePlayer extends Module implements Player {
 	}
 
 	/**
-	 * @param sampleBuffer
+	 * Convert an MP3 sample buffer to normalized {@code float} samples, split by channel.
+	 *
+	 * @param sampleBuffer MP3 sample buffer to split in channels
 	 */
-	private float[][] split(SampleBuffer sampleBuffer) {
+	private float[][] convert(SampleBuffer sampleBuffer) {
 
 		channelCount = sampleBuffer.getChannelCount();
 

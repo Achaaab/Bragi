@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
+ * Theremin is quite pompous. It is just a module that produces a pitch and a volume.
+ *
  * @author Jonathan Guéhenneux
  * @since 0.0.4
  */
@@ -15,11 +17,23 @@ public class Theremin extends Module {
 
 	private static final Logger LOGGER = getLogger(Theremin.class);
 
+	public static final String DEFAULT_NAME = "theremin";
+
 	private float pitchSample;
 	private float volumeSample;
 
 	private Output pitch;
 	private Output volume;
+
+	/**
+	 * Creates a theremin with default name.
+	 *
+	 * @see #DEFAULT_NAME
+	 * @since 0.0.9
+	 */
+	public Theremin() {
+		this(DEFAULT_NAME);
+	}
 
 	/**
 	 * @param name name of the theremin

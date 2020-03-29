@@ -1,18 +1,35 @@
 package com.github.achaaab.bragi.module;
 
 import com.github.achaaab.bragi.common.Settings;
+import org.slf4j.Logger;
 
 import static java.lang.Math.exp;
 import static java.lang.Math.pow;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Voltage-Controlled Filter with low-pass response
  *
  * @author Jonathan Guéhenneux
+ * @since 0.0.9
  */
 public class LowPassVCF extends VCF {
 
-	private static final double VOLT_PER_OCTAVE = 5.0;
+	private static final Logger LOGGER = getLogger(LowPassVCF.class);
+
+	public static final String DEFAULT_NAME = "low_pass_vcf";
+
+	private static final double VOLTS_PER_OCTAVE = 5.0;
+
+	/**
+	 * Creates a low-pass VCF with default name.
+	 *
+	 * @see #DEFAULT_NAME
+	 * @since 0.0.9
+	 */
+	public LowPassVCF() {
+		this(DEFAULT_NAME);
+	}
 
 	/**
 	 * @param name name of the low-pass filter
@@ -38,41 +55,32 @@ public class LowPassVCF extends VCF {
 			} else {
 
 				modulationSample = modulationSamples[sampleIndex];
-				actualCutOffFrequency = cutOffFrequency * pow(2.0, modulationSample / VOLT_PER_OCTAVE);
+				actualCutOffFrequency = cutOffFrequency * pow(2.0, modulationSample / VOLTS_PER_OCTAVE);
 			}
 
-			// f ∈ [0, 1]
 			var f = 2 * actualCutOffFrequency / sampleRate;
 
 			// empirical tuning
-
-			// k ∈ [-1, 1]
 			var k = 3.6 * f - 1.6 * f * f - 1;
-
-			// p ∈ [0, 1]
 			var p = (k + 1) * 0.5;
-
-			// scale ∈ [1, 4]
 			var scale = exp((1 - p) * 1.386249);
-
-			// r ∈ [0, 4]
 			var r = emphasis * scale;
 
 			var inputSample = inputSamples[sampleIndex] / 5 - r * y4;
 
 			// four cascaded one-pole filters (bilinear transform)
-			y1 = inputSample * p + oldx * p - k * y1;
-			y2 = y1 * p + oldy1 * p - k * y2;
-			y3 = y2 * p + oldy2 * p - k * y3;
-			y4 = y3 * p + oldy3 * p - k * y4;
+			y1 = inputSample * p + oldX * p - k * y1;
+			y2 = y1 * p + oldY1 * p - k * y2;
+			y3 = y2 * p + oldY2 * p - k * y3;
+			y4 = y3 * p + oldY3 * p - k * y4;
 
 			// clipper band limited sigmoid
 			y4 = y4 - (y4 * y4 * y4) / 6;
 
-			oldx = inputSample;
-			oldy1 = y1;
-			oldy2 = y2;
-			oldy3 = y3;
+			oldX = inputSample;
+			oldY1 = y1;
+			oldY2 = y2;
+			oldY3 = y3;
 
 			outputSamples[sampleIndex] = (float) (y4 * 5);
 		}

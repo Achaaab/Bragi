@@ -12,11 +12,13 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Voltage-Controlled Amplifier
  *
  * @author Jonathan Guéhenneux
+ * @since 0.0.9
  */
 public class VCA extends Module {
 
 	private static final Logger LOGGER = getLogger(VCA.class);
 
+	public static final String DEFAULT_NAME = "vca";
 	public static final float DECIBELS_PER_VOLT = 10.0f;
 
 	private Input input;
@@ -24,6 +26,16 @@ public class VCA extends Module {
 	private Output output;
 
 	private int initialGain;
+
+	/**
+	 * Creates a VCA with default name.
+	 *
+	 * @see #DEFAULT_NAME
+	 * @since 0.0.9
+	 */
+	public VCA() {
+		this(DEFAULT_NAME);
+	}
 
 	/**
 	 * @param name VCA name

@@ -14,16 +14,18 @@ import static java.awt.event.KeyEvent.getExtendedKeyCodeForChar;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * Keyboard module
+ * keyboard module
  *
  * @author Jonathan Guéhenneux
  * @since 0.0.6
  */
 public class Keyboard extends Module {
 
-	private static final float VOLTS_PER_OCTAVE = 1.0f;
-
 	private static final Logger LOGGER = getLogger(Keyboard.class);
+
+	public static final String DEFAULT_NAME = "keyboard";
+
+	private static final float VOLTS_PER_OCTAVE = 1.0f;
 
 	private Output output;
 	private Output gate;
@@ -32,6 +34,16 @@ public class Keyboard extends Module {
 	private List<Key> keys;
 	private float gateSample;
 	private int pressedKeyCount;
+
+	/**
+	 * Creates a keyboard with default name.
+	 *
+	 * @see #DEFAULT_NAME
+	 * @since 0.0.9
+	 */
+	public Keyboard() {
+		this(DEFAULT_NAME);
+	}
 
 	/**
 	 * @param name keyboard name

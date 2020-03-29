@@ -1,5 +1,6 @@
 package com.github.achaaab.bragi.module;
 
+import com.github.achaaab.bragi.common.ModuleCreationException;
 import com.github.achaaab.bragi.common.Normalizer;
 import com.github.achaaab.bragi.common.Settings;
 import org.slf4j.Logger;
@@ -14,11 +15,17 @@ import static javax.sound.sampled.AudioSystem.getLine;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
+ * A {@link Speaker} reads samples from its inputs (1 input per channel), convert them to {@link AudioFormat}
+ * and writes them to a {@link SourceDataLine}.
+ *
  * @author Jonathan Guéhenneux
+ * @since 0.0.9
  */
 public class Speaker extends Module {
 
 	private static final Logger LOGGER = getLogger(Speaker.class);
+
+	public static final String DEFAULT_NAME = "speaker";
 
 	private static final int ONE_BYTE_MIN_VALUE = 0xFF_FF_FF_80;
 	private static final int ONE_BYTE_MAX_VALUE = 0x00_00_00_7F;
@@ -47,10 +54,21 @@ public class Speaker extends Module {
 	private SourceDataLine line;
 
 	/**
-	 * @param name name of the speaker to create
-	 * @throws LineUnavailableException if no source data line is available
+	 * Creates a speaker with default name.
+	 *
+	 * @throws ModuleCreationException if no source data line is available
+	 * @see #DEFAULT_NAME
+	 * @since 0.0.9
 	 */
-	public Speaker(String name) throws LineUnavailableException {
+	public Speaker() {
+		this(DEFAULT_NAME);
+	}
+
+	/**
+	 * @param name name of the speaker to create
+	 * @throws ModuleCreationException if no source data line is available
+	 */
+	public Speaker(String name) {
 
 		super(name);
 
@@ -60,16 +78,24 @@ public class Speaker extends Module {
 			addSecondaryInput(name + "_input_" + inputs.size());
 		}
 
-		var format = new AudioFormat(
+		var audioFormat = new AudioFormat(
 				Settings.INSTANCE.getFrameRate(),
 				Settings.INSTANCE.getSampleSize() * 8,
 				Settings.INSTANCE.getChannelCount(),
 				true, true);
 
-		var info = new Info(SourceDataLine.class, format);
+		var lineInformation = new Info(SourceDataLine.class, audioFormat);
 
-		line = (SourceDataLine) getLine(info);
-		line.open(format, Settings.INSTANCE.getByteRate() / 50);
+		try {
+
+			line = (SourceDataLine) getLine(lineInformation);
+			line.open(audioFormat, Settings.INSTANCE.getByteRate() / 50);
+
+		} catch (LineUnavailableException cause) {
+
+			throw new ModuleCreationException(cause);
+		}
+
 		line.start();
 
 		start();
@@ -82,7 +108,7 @@ public class Speaker extends Module {
 	private void checkLineBufferHealth() {
 
 		if (line.available() == line.getBufferSize()) {
-			LOGGER.warn("buffer underrun");
+			LOGGER.warn("speaker line is not written fast enough, thus some discontinuities in the sound may be heard");
 		}
 	}
 
