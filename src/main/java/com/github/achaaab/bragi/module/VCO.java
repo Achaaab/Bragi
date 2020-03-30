@@ -2,14 +2,11 @@ package com.github.achaaab.bragi.module;
 
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.common.connection.Input;
-import com.github.achaaab.bragi.common.connection.Output;
-import com.github.achaaab.bragi.common.wave.Sine;
-import com.github.achaaab.bragi.common.wave.Wave;
 import com.github.achaaab.bragi.common.wave.Waveform;
-import com.github.achaaab.bragi.gui.module.SpectrumAnalyzerView;
 import com.github.achaaab.bragi.gui.module.VCOView;
 import org.slf4j.Logger;
 
+import static com.github.achaaab.bragi.common.wave.Waveform.SINE;
 import static javax.swing.SwingUtilities.invokeLater;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -19,20 +16,17 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Jonathan Guéhenneux
  * @since 0.0.9
  */
-public class VCO extends Module {
+public class VCO extends Oscillator {
 
 	private static final Logger LOGGER = getLogger(VCO.class);
 
 	public static final String DEFAULT_NAME = "vco";
-
-	private static final double BASE_FREQUENCY = 440;
+	public static final Waveform INITIAL_WAVEFORM = SINE;
+	public static final double BASE_FREQUENCY = 440;
 
 	private int octave;
 
 	private final Input modulation;
-	private final Output output;
-
-	private final Wave wave;
 
 	/**
 	 * Creates a VCO with default name.
@@ -49,13 +43,11 @@ public class VCO extends Module {
 	 */
 	public VCO(String name) {
 
-		super(name);
+		super(name, INITIAL_WAVEFORM, BASE_FREQUENCY);
 
 		modulation = addSecondaryInput(name + "_modulation");
-		output = addPrimaryOutput(name + "_output");
 
 		octave = 0;
-		wave = new Wave(Sine.INSTANCE, BASE_FREQUENCY);
 
 		invokeLater(() -> new VCOView(this));
 
@@ -84,30 +76,16 @@ public class VCO extends Module {
 	}
 
 	/**
-	 * @return number of octaves to shift (in Octaves)
+	 * @return octave adjustment
 	 */
 	public int getOctave() {
 		return octave;
 	}
 
 	/**
-	 * @param octave number of octaves to shift (in Octaves)
+	 * @param octave octave adjustment
 	 */
 	public void setOctave(int octave) {
 		this.octave = octave;
-	}
-
-	/**
-	 * @return current waveform
-	 */
-	public Waveform getWaveform() {
-		return wave.getWaveform();
-	}
-
-	/**
-	 * @param waveform waveform to set
-	 */
-	public void setWaveform(Waveform waveform) {
-		wave.setWaveform(waveform);
 	}
 }

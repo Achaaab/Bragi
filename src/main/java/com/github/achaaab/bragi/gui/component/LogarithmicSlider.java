@@ -6,7 +6,7 @@ import static java.lang.Math.pow;
 import static java.lang.Math.round;
 
 /**
- * Slider with decimal values and logarithmic scale.
+ * slider with floating point values and logarithmic scale
  *
  * @author Jonathan Guéhenneux
  * @since 0.0.6
@@ -37,7 +37,7 @@ public class LogarithmicSlider extends DecimalSlider {
 	@Override
 	protected int getValue(double decimalValue) {
 
-		double value = log(decimalValue / minimal) / logarithmBase;
+		var value = log(decimalValue / minimal) / logarithmBase;
 		return (int) round(value);
 	}
 }

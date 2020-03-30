@@ -2,6 +2,8 @@ package com.github.achaaab.bragi.common.wave;
 
 import com.github.achaaab.bragi.common.Settings;
 
+import static com.github.achaaab.bragi.common.wave.Waveform.AMPLITUDE;
+import static com.github.achaaab.bragi.common.wave.Waveform.LOWER_PEAK;
 import static java.lang.Math.fma;
 import static java.lang.Math.pow;
 
@@ -11,14 +13,14 @@ import static java.lang.Math.pow;
  */
 public class Wave {
 
-	private static final double DEFAULT_MODULATION_WEIGHT = 1.0f;
-
 	private final double sampleRate;
 
 	private Waveform waveform;
 	private double frequency;
-	private double modulationWeight;
 	private double periodPercent;
+	private float lowerPeak;
+	private float upperPeak;
+	private float amplitude;
 
 	/**
 	 * @param waveform  waveform
@@ -30,7 +32,10 @@ public class Wave {
 		this.frequency = frequency;
 
 		sampleRate = Settings.INSTANCE.frameRate();
-		modulationWeight = DEFAULT_MODULATION_WEIGHT;
+		lowerPeak = Settings.INSTANCE.minimalVoltage();
+		upperPeak = Settings.INSTANCE.maximalVoltage();
+
+		amplitude = upperPeak - lowerPeak;
 		periodPercent = 0;
 	}
 
@@ -63,24 +68,48 @@ public class Wave {
 	}
 
 	/**
-	 * @return modulation weight in Octaves / Volt
+	 * @return lower peak in volts
+	 * @since 0.1.3
 	 */
-	public double getModulationWeight() {
-		return modulationWeight;
+	public float getLowerPeak() {
+		return lowerPeak;
 	}
 
 	/**
-	 * @param modulationWeight modulation weight in Octaves / Volt
+	 * @param lowerPeak lower peak in volts
+	 * @since 0.1.3
 	 */
-	public void setModulationWeight(double modulationWeight) {
-		this.modulationWeight = modulationWeight;
+	public void setLowerPeak(float lowerPeak) {
+
+		this.lowerPeak = lowerPeak;
+
+		amplitude = upperPeak - lowerPeak;
 	}
 
 	/**
-	 * @param octave            octave in Octaves
-	 * @param modulationSamples modulation samples in Volts
+	 * @return upper peak in volts
+	 * @since 0.1.3
+	 */
+	public float getUpperPeak() {
+		return upperPeak;
+	}
+
+	/**
+	 * @param upperPeak upper peak in volts
+	 * @since 0.1.3
+	 */
+	public void setUpperPeak(float upperPeak) {
+
+		this.upperPeak = upperPeak;
+
+		amplitude = upperPeak - lowerPeak;
+	}
+
+	/**
+	 * @param octave            octave adjustment
+	 * @param modulationSamples modulation samples in volts
 	 * @param sampleCount       number of samples to generate
-	 * @return generated samples in Volts
+	 * @return generated samples in volts
 	 */
 	public float[] getSamples(int octave, float[] modulationSamples, int sampleCount) {
 
@@ -88,10 +117,13 @@ public class Wave {
 
 		for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 
-			samples[sampleIndex] = waveform.getSample(periodPercent);
+			var waveformSample = waveform.getSample(periodPercent);
+			var waveSample = fma(amplitude, (waveformSample - LOWER_PEAK) / AMPLITUDE, lowerPeak);
 
-			var modulationFactor = modulationSamples == null ? 1.0 :
-					pow(2.0, octave + modulationSamples[sampleIndex] * modulationWeight);
+			samples[sampleIndex] = waveSample;
+
+			var modulationSample = modulationSamples == null ? 0.0 : modulationSamples[sampleIndex];
+			var modulationFactor = pow(2.0, octave + modulationSample);
 
 			periodPercent = fma(frequency, modulationFactor / sampleRate, periodPercent) % 1.0;
 		}

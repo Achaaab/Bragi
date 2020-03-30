@@ -4,19 +4,19 @@ import static java.lang.Math.fma;
 import static java.lang.Math.round;
 
 /**
- * slider with floating point values and linear scale
+ * range slider with floating point values and linear scale
  *
  * @author Jonathan Guéhenneux
- * @since 0.0.6
+ * @since 0.1.3
  */
-public class LinearSlider extends DecimalSlider {
+public class LinearRangeSlider extends DecimalRangeSlider {
 
 	/**
 	 * @param minimal   minimal value of this slider
 	 * @param maximal   maximal value of this slider
 	 * @param precision number of possible distinct values including {@code minimalValue} and {@code maximalValue}
 	 */
-	public LinearSlider(double minimal, double maximal, int precision) {
+	public LinearRangeSlider(double minimal, double maximal, int precision) {
 		super(minimal, maximal, precision);
 	}
 
@@ -28,7 +28,7 @@ public class LinearSlider extends DecimalSlider {
 	@Override
 	protected int getValue(double decimalValue) {
 
-		double value = getMaximum() * (decimalValue - minimal) / amplitude;
+		var value = getMaximum() * (decimalValue - minimal) / amplitude;
 		return (int) round(value);
 	}
 }

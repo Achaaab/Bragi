@@ -12,7 +12,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LinearGradientPaint;
 
-import static java.awt.Color.BLACK;
 import static java.lang.Math.log10;
 import static java.lang.Math.round;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
@@ -44,6 +43,8 @@ public class SpectrumAnalyzerView extends JComponent {
 			new Color(255, 128, 0)
 	};
 
+	private static final Color BACKGROUND_COLOR = new Color(24, 24, 24);
+
 	private final SpectrumAnalyzer model;
 
 	/**
@@ -73,7 +74,7 @@ public class SpectrumAnalyzerView extends JComponent {
 		var plotHeight = height - 2 * PLOT_MARGIN;
 
 		var graphics2D = (Graphics2D) graphics;
-		graphics2D.setColor(BLACK);
+		graphics2D.setColor(BACKGROUND_COLOR);
 		graphics2D.fillRect(0, 0, width, height);
 
 		var averages = model.getAverages();

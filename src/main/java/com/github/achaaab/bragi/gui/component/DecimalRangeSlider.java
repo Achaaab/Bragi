@@ -2,17 +2,16 @@ package com.github.achaaab.bragi.gui.component;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JSlider;
 import java.text.DecimalFormat;
 import java.util.Hashtable;
 
 /**
- * slider with floating point values
+ * range slider with floating point values
  *
  * @author Jonathan Guéhenneux
- * @since 0.0.6
+ * @since 0.1.3
  */
-public abstract class DecimalSlider extends JSlider {
+public abstract class DecimalRangeSlider extends RangeSlider {
 
 	private static final DecimalFormat LABEL_FORMAT = new DecimalFormat("0.##");
 
@@ -24,7 +23,7 @@ public abstract class DecimalSlider extends JSlider {
 	 * @param maximal   maximal value of this slider
 	 * @param precision number of possible distinct values including {@code minimalValue} and {@code maximalValue}
 	 */
-	public DecimalSlider(double minimal, double maximal, int precision) {
+	public DecimalRangeSlider(double minimal, double maximal, int precision) {
 
 		super(0, precision);
 
@@ -72,18 +71,30 @@ public abstract class DecimalSlider extends JSlider {
 	protected abstract int getValue(double decimalValue);
 
 	/**
-	 * @return slider's current decimal value
+	 * @return lower value of the selected range
 	 */
-	public double getDecimalValue() {
-		return getDecimalValue(getValue());
+	public double getDecimalLowerValue() {
+		return getDecimalValue(getLowerValue());
 	}
 
 	/**
-	 * Sets the slider current value to {@code decimalValue}.
-	 *
-	 * @param decimalValue new decimal value
+	 * @param decimalLowerValue new lower value
 	 */
-	public void setDecimalValue(double decimalValue) {
-		setValue(getValue(decimalValue));
+	public void setDecimalLowerValue(double decimalLowerValue) {
+		setLowerValue(getValue(decimalLowerValue));
+	}
+
+	/**
+	 * @return upper value of the selected range
+	 */
+	public double getDecimalUpperValue() {
+		return getDecimalValue(getUpperValue());
+	}
+
+	/**
+	 * @param decimalUpperValue new upper value
+	 */
+	public void setDecimalUpperValue(double decimalUpperValue) {
+		setUpperValue(getValue(decimalUpperValue));
 	}
 }

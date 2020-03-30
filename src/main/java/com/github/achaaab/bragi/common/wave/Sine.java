@@ -11,24 +11,22 @@ import static java.lang.Math.sin;
  * @author Jonathan Guéhenneux
  * @since 0.0.2
  */
-public class Sine extends BoundedWaveform {
-
-	public static final Sine INSTANCE = new Sine();
+public class Sine extends NamedWaveform {
 
 	private static final double SINE_PERIOD = 2 * PI;
 
 	private final Normalizer normalizer;
 
 	/**
-	 * Use singleton.
+	 * @see #SINE
 	 */
-	private Sine() {
+	Sine() {
 
 		super("Sine");
 
 		normalizer = new Normalizer(
 				(float) sin(-PI / 2), (float) sin(PI / 2),
-				minimum, maximum
+				LOWER_PEAK, UPPER_PEAK
 		);
 	}
 

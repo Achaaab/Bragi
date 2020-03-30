@@ -7,19 +7,17 @@ package com.github.achaaab.bragi.common.wave;
  * @author Jonathan Guéhenneux
  * @since 0.0.2
  */
-public class ReverseSawtooth extends BoundedWaveform {
-
-	public static final ReverseSawtooth INSTANCE = new ReverseSawtooth();
+public class ReverseSawtooth extends NamedWaveform {
 
 	/**
-	 * Use singleton.
+	 * @see #REVERSE_SAWTOOTH
 	 */
-	private ReverseSawtooth() {
+	ReverseSawtooth() {
 		super("Reverse Sawtooth");
 	}
 
 	@Override
 	public float getSample(double periodFraction) {
-		return (float) (maximum - amplitude * periodFraction);
+		return (float) (UPPER_PEAK - AMPLITUDE * periodFraction);
 	}
 }

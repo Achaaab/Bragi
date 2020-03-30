@@ -8,16 +8,12 @@ package com.github.achaaab.bragi.common.wave;
  * @author Jonathan Guéhenneux
  * @since 0.0.2
  */
-public class Triangle extends BoundedWaveform {
-
-	public static final Triangle INSTANCE = new Triangle();
-
-	private static final double HALF_PERIOD = 0.5;
+public class Triangle extends NamedWaveform {
 
 	/**
-	 * Use singleton.
+	 * @see #TRIANGLE
 	 */
-	private Triangle() {
+	Triangle() {
 		super("Triangle");
 	}
 
@@ -25,7 +21,7 @@ public class Triangle extends BoundedWaveform {
 	public float getSample(double periodFraction) {
 
 		return (float) (periodFraction < HALF_PERIOD ?
-				maximum - 2 * amplitude * periodFraction :
-				minimum + 2 * amplitude * (periodFraction - HALF_PERIOD));
+				UPPER_PEAK - 2 * AMPLITUDE * periodFraction :
+				LOWER_PEAK + 2 * AMPLITUDE * (periodFraction - HALF_PERIOD));
 	}
 }

@@ -14,9 +14,7 @@ import static java.lang.Math.fma;
  * @author Jonathan Guéhenneux
  * @since 0.0.6
  */
-public class SawtoothTriangular extends BoundedWaveform {
-
-	public static final SawtoothTriangular INSTANCE = new SawtoothTriangular("Sawtooth-Triangular", 0.75f, 0.4f);
+public class SawtoothTriangular extends NamedWaveform {
 
 	private final float peakFraction;
 
@@ -24,8 +22,10 @@ public class SawtoothTriangular extends BoundedWaveform {
 	private final Normalizer decreaseNormalizer;
 
 	/**
+	 * @param name         name of the custom sawtooth waveform
 	 * @param peakFraction percentage of the period where the signal reach the maximum voltage
 	 * @param dropFraction percentage of amplitude to which the signal drops after the peak
+	 * @see #SAWTOOTH_TRIANGULAR
 	 */
 	public SawtoothTriangular(String name, float peakFraction, float dropFraction) {
 
@@ -33,10 +33,10 @@ public class SawtoothTriangular extends BoundedWaveform {
 
 		this.peakFraction = peakFraction;
 
-		var dropVoltage = fma(dropFraction, amplitude, minimum);
+		var dropVoltage = fma(dropFraction, AMPLITUDE, LOWER_PEAK);
 
-		increaseNormalizer = new Normalizer(0.0f, peakFraction, minimum, maximum);
-		decreaseNormalizer = new Normalizer(peakFraction, 1.0f, dropVoltage, minimum);
+		increaseNormalizer = new Normalizer(0.0f, peakFraction, LOWER_PEAK, UPPER_PEAK);
+		decreaseNormalizer = new Normalizer(peakFraction, 1.0f, dropVoltage, LOWER_PEAK);
 	}
 
 	@Override

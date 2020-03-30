@@ -38,7 +38,7 @@ public class VCAView extends JPanel {
 
 		var frame = new JFrame(model.getName());
 		frame.setContentPane(this);
-		frame.setSize(400, 300);
+		frame.setSize(400, 200);
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}

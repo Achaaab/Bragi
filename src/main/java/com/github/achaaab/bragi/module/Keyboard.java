@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.awt.event.KeyEvent.getExtendedKeyCodeForChar;
 import static javax.swing.SwingUtilities.invokeLater;
@@ -30,10 +31,11 @@ public class Keyboard extends Module {
 	private final Output gate;
 
 	private final List<Key> keys;
+	private final AtomicInteger pressedKeyCount;
 
 	private float voltage;
-	private float gateSample;
-	private int pressedKeyCount;
+
+	private int previousPressedKeyCount;
 
 	/**
 	 * Creates a keyboard with default name.
@@ -97,8 +99,8 @@ public class Keyboard extends Module {
 		keys.add(new Key("D#6", 18 * VOLTS_PER_OCTAVE / 12, KeyEvent.VK_L));
 		keys.add(new Key("E6", 19 * VOLTS_PER_OCTAVE / 12, KeyEvent.VK_COLON));
 
-		gateSample = 0.0f;
-		pressedKeyCount = 0;
+		previousPressedKeyCount = 0;
+		pressedKeyCount = new AtomicInteger(0);
 
 		invokeLater(() -> new KeyboardView(this));
 
@@ -118,8 +120,19 @@ public class Keyboard extends Module {
 
 		output.write(samples);
 
+		var newPressedKeyCount = pressedKeyCount.get();
+
+		var gateSample = 0.0f;
+
+		if (newPressedKeyCount > previousPressedKeyCount) {
+			gateSample = 1.0f;
+		} else if (newPressedKeyCount == 0 && previousPressedKeyCount > 0) {
+			gateSample = -1.0f;
+		}
+
+		previousPressedKeyCount = newPressedKeyCount;
+
 		gate.write(new float[] { gateSample });
-		gateSample = 0.0f;
 
 		return sampleCount;
 	}
@@ -131,20 +144,14 @@ public class Keyboard extends Module {
 
 		this.voltage = voltage;
 
-		pressedKeyCount++;
-		gateSample = 1.0f;
+		pressedKeyCount.incrementAndGet();
 	}
 
 	/**
 	 * release a key
 	 */
 	public void release() {
-
-		pressedKeyCount--;
-
-		if (pressedKeyCount == 0) {
-			gateSample = -1.0f;
-		}
+		pressedKeyCount.decrementAndGet();
 	}
 
 	/**

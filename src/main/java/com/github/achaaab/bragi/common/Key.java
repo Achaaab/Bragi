@@ -12,4 +12,8 @@ public record Key(
 		float voltage,
 		int code) {
 
+	@Override
+	public String toString() {
+		return name;
+	}
 }

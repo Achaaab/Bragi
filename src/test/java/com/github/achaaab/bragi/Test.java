@@ -19,6 +19,8 @@ import org.slf4j.Logger;
 
 import java.nio.file.Path;
 
+import static com.github.achaaab.bragi.ResourceUtils.getPath;
+import static com.github.achaaab.bragi.common.wave.Waveform.SAWTOOTH_TRIANGULAR;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -31,15 +33,53 @@ public class Test {
 
 	private static final Logger LOGGER = getLogger(Test.class);
 
-	private static final Path TEST_MP3_PATH = ResourceUtils.getPath("test.mp3");
-	private static final Path TEST_WAV_PATH = ResourceUtils.getPath("test.wav");
+	private static final Path TEST_MP3_PATH = getPath("test.mp3");
+	private static final Path TEST_WAV_PATH = getPath("test.wav");
 
 	/**
 	 * @param arguments none
 	 * @since 0.0.9
 	 */
 	public static void main(String... arguments) {
-		testAdsr();
+		testWavFilePlayer();
+	}
+
+	/**
+	 * Tests tremolo effect.
+	 *
+	 * @since 0.1.3
+	 */
+	public static void testTremolo() {
+
+		var adsr = new ADSR();
+		var keyboard = new Keyboard();
+		var vco = new VCO();
+		var vcaEnvelope = new VCA("vca_envelope");
+		var speaker = new Speaker();
+		var lfo = new LFO();
+		var vcaTremolo = new VCA("vca_tremolo");
+
+		// main chain
+		keyboard.connectTo(vco);
+		vco.connectTo(vcaEnvelope);
+		vcaEnvelope.connectTo(vcaTremolo);
+		speaker.connectFrom(vcaTremolo, vcaTremolo);
+
+		// ADSR + tremolo
+		keyboard.getGate().connect(adsr.getGate());
+		adsr.connect(vcaEnvelope.getGain());
+		lfo.connect(vcaTremolo.getGain());
+
+		// some tuning
+		vco.setWaveform(SAWTOOTH_TRIANGULAR);
+		adsr.setAttack(5000.0);
+		adsr.setRelease(2.0);
+
+		// visualization
+		var oscilloscope = new Oscilloscope();
+		var spectrum = new SpectrumAnalyzer();
+		vcaTremolo.connectTo(oscilloscope);
+		vcaTremolo.connectTo(spectrum);
 	}
 
 	/**
@@ -263,7 +303,7 @@ public class Test {
 		var leftSpectrum = new SpectrumAnalyzer("left_spectrum");
 		var rightSpectrum = new SpectrumAnalyzer("right spectrum");
 
-		leftSpectrum.setComputingFrameRate(4410);
+		leftSpectrum.setComputingFrameRate(11025);
 
 		player.connectTo(leftSpectrum, rightSpectrum);
 	}

@@ -26,7 +26,7 @@ public class ADSRView extends JPanel {
 
 		var attackSlider = new LogarithmicSlider(1, 10000, 10);
 		var decaySlider = new LogarithmicSlider(1, 10000, 10);
-		var sustainSlider = new LinearSlider(-5.0, 0.0, 10);
+		var sustainSlider = new LinearSlider(-2.0, 0.0, 10);
 		var releaseSlider = new LogarithmicSlider(1, 10000, 10);
 
 		attackSlider.setBorder(new TitledBorder("Attack (V/s)"));

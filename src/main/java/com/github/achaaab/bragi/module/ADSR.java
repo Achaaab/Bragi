@@ -1,13 +1,11 @@
 package com.github.achaaab.bragi.module;
 
 import com.github.achaaab.bragi.common.ADSRState;
-import com.github.achaaab.bragi.gui.module.ADSRView;
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.common.connection.Input;
 import com.github.achaaab.bragi.common.connection.Output;
+import com.github.achaaab.bragi.gui.module.ADSRView;
 import org.slf4j.Logger;
-
-import javax.swing.SwingUtilities;
 
 import static com.github.achaaab.bragi.common.ADSRState.DECAY;
 import static com.github.achaaab.bragi.common.ADSRState.IDLE;
@@ -150,7 +148,7 @@ public class ADSR extends Module {
 	}
 
 	/**
-	 * @return ADSR gate
+	 * @return ADSR gate input
 	 */
 	public Input getGate() {
 		return gate;
