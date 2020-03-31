@@ -3,12 +3,11 @@ package com.github.achaaab.bragi.module;
 import com.github.achaaab.bragi.common.ModuleCreationException;
 import com.github.achaaab.bragi.common.ModuleExecutionException;
 import com.github.achaaab.bragi.common.Settings;
-import com.github.achaaab.bragi.file.MalformedWavFileException;
 import com.github.achaaab.bragi.file.WavFile;
+import com.github.achaaab.bragi.file.WavFileException;
 import org.slf4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -18,7 +17,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Jonathan Guéhenneux
  * @since 0.0.9
  */
-public class WavFilePlayer extends Module implements Player {
+public class WavFilePlayer extends Player {
 
 	private static final Logger LOGGER = getLogger(WavFilePlayer.class);
 
@@ -58,7 +57,7 @@ public class WavFilePlayer extends Module implements Player {
 
 		try {
 			wavFile = new WavFile(file);
-		} catch (IOException | MalformedWavFileException cause) {
+		} catch (WavFileException cause) {
 			throw new ModuleCreationException(cause);
 		}
 
@@ -69,7 +68,7 @@ public class WavFilePlayer extends Module implements Player {
 	}
 
 	@Override
-	public int compute() throws InterruptedException {
+	public int playChunk() throws InterruptedException {
 
 		var bufferSizeInFrames = Settings.INSTANCE.chunkSize();
 		var samples = new float[channelCount][bufferSizeInFrames];
@@ -84,7 +83,7 @@ public class WavFilePlayer extends Module implements Player {
 				offset += count;
 			}
 
-		} catch (IOException cause) {
+		} catch (WavFileException cause) {
 
 			throw new ModuleExecutionException(cause);
 		}
@@ -107,7 +106,7 @@ public class WavFilePlayer extends Module implements Player {
 	}
 
 	@Override
-	public void setTime(double time) {
+	public void seek(double time) {
 
 	}
 

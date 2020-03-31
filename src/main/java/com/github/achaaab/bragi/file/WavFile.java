@@ -18,7 +18,7 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
  * @author Jonathan Guéhenneux
  * @since 0.1.0
  */
-public class WavFile implements AutoCloseable {
+public class WavFile {
 
 	private static final int HEADER_INDEX = 0;
 	private static final int HEADER_SIZE = 44;
@@ -47,14 +47,19 @@ public class WavFile implements AutoCloseable {
 
 	/**
 	 * @param file file
-	 * @throws IOException               I/O error while reading header
-	 * @throws MalformedWavFileException if header is malformed
+	 * @throws WavFileException if header is malformed
 	 */
-	public WavFile(File file) throws IOException, MalformedWavFileException {
+	public WavFile(File file) throws WavFileException {
 
-		fileReader = new RandomAccessFile(file, READ_ONLY_MODE);
+		try {
 
-		readHeader();
+			fileReader = new RandomAccessFile(file, READ_ONLY_MODE);
+			readHeader();
+
+		} catch (IOException cause) {
+
+			throw new WavFileException(cause);
+		}
 	}
 
 	/**
@@ -63,41 +68,49 @@ public class WavFile implements AutoCloseable {
 	 * @param samples array where to write read samples
 	 * @param offset  offset from which to read
 	 * @return number of read bytes
-	 * @throws IOException I/O error while reading samples
+	 * @throws WavFileException exception while reading samples
 	 */
-	public int read(float[][] samples, int offset) throws IOException {
+	public int read(float[][] samples, int offset) throws WavFileException {
 
 		var frameCount = samples[0].length;
-
-		fileReader.seek(HEADER_SIZE + offset);
 		var bytes = new byte[frameCount * header.frameSize()];
-		var byteCount = fileReader.read(bytes);
-		var buffer = wrap(bytes);
-		buffer.order(LITTLE_ENDIAN);
 
-		frameCount = byteCount / header.frameSize();
-		var bytesPerSample = header.sampleSize() / 8;
+		try {
 
-		var index = 0;
+			fileReader.seek(HEADER_SIZE + offset);
+			var byteCount = fileReader.read(bytes);
 
-		for (var frameIndex = 0; frameIndex < frameCount; frameIndex++) {
+			var buffer = wrap(bytes);
+			buffer.order(LITTLE_ENDIAN);
 
-			for (var channelIndex = 0; channelIndex < header.channelCount(); channelIndex++) {
+			frameCount = byteCount / header.frameSize();
+			var bytesPerSample = header.sampleSize() / 8;
 
-				samples[channelIndex][frameIndex] = switch (bytesPerSample) {
+			var index = 0;
 
-					case 1 -> ONE_BYTE_NORMALIZER.normalize(buffer.get(index));
-					case 2 -> TWO_BYTES_NORMALIZER.normalize(buffer.getShort(index));
+			for (var frameIndex = 0; frameIndex < frameCount; frameIndex++) {
 
-					default -> throw new IllegalArgumentException(
-							"unsupported sample size: " + bytesPerSample + " bytes");
-				};
+				for (var channelIndex = 0; channelIndex < header.channelCount(); channelIndex++) {
 
-				index += bytesPerSample;
+					samples[channelIndex][frameIndex] = switch (bytesPerSample) {
+
+						case 1 -> ONE_BYTE_NORMALIZER.normalize(buffer.get(index));
+						case 2 -> TWO_BYTES_NORMALIZER.normalize(buffer.getShort(index));
+
+						default -> throw new WavFileException(
+								"unsupported sample size: " + bytesPerSample + " bytes");
+					};
+
+					index += bytesPerSample;
+				}
 			}
-		}
 
-		return byteCount;
+			return byteCount;
+
+		} catch (IOException cause) {
+
+			throw new WavFileException(cause);
+		}
 	}
 
 	/**
@@ -110,18 +123,20 @@ public class WavFile implements AutoCloseable {
 	/**
 	 * Reads the header of this WAV file.
 	 *
-	 * @throws IOException               I/O error while reading header
-	 * @throws MalformedWavFileException if header is malformed
+	 * @throws WavFileException exception while reading the header of this WAV file
 	 */
-	private void readHeader() throws IOException, MalformedWavFileException {
-
-		fileReader.seek(HEADER_INDEX);
+	private void readHeader() throws WavFileException {
 
 		var bytes = new byte[HEADER_SIZE];
-		var count = fileReader.read(bytes);
 
-		if (count < HEADER_SIZE) {
-			throw new MalformedWavFileException("incomplete header: " + count + " bytes / " + HEADER_SIZE);
+		try {
+
+			fileReader.seek(HEADER_INDEX);
+			fileReader.readFully(bytes);
+
+		} catch (IOException cause) {
+
+			throw new WavFileException(cause);
 		}
 
 		var buffer = wrap(bytes);
@@ -212,10 +227,5 @@ public class WavFile implements AutoCloseable {
 
 		header = new WavFileHeader(fileType, fileSize, fileFormat, formatChunkTitle, formatChunkSize, audioFormat,
 				channelCount, frameRate, byteRate, frameSize, sampleSize, dataChunkTitle, dataSize);
-	}
-
-	@Override
-	public void close() throws IOException {
-		fileReader.close();
 	}
 }

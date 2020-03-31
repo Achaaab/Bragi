@@ -5,7 +5,7 @@ import com.github.achaaab.bragi.module.Keyboard;
 import com.github.achaaab.bragi.module.LFO;
 import com.github.achaaab.bragi.module.LowPassVCF;
 import com.github.achaaab.bragi.module.Microphone;
-import com.github.achaaab.bragi.module.Mp3FilePlayer;
+import com.github.achaaab.bragi.module.Mp3Player;
 import com.github.achaaab.bragi.module.Oscilloscope;
 import com.github.achaaab.bragi.module.PinkNoiseGenerator;
 import com.github.achaaab.bragi.module.Speaker;
@@ -41,7 +41,7 @@ public class Test {
 	 * @since 0.0.9
 	 */
 	public static void main(String... arguments) {
-		testWavFilePlayer();
+		testAdsr();
 	}
 
 	/**
@@ -104,6 +104,8 @@ public class Test {
 
 	/**
 	 * Tests the {@link WavFilePlayer} module.
+	 *
+	 * TODO Add a module to change the sample rate.
 	 *
 	 * @since 0.1.0
 	 */
@@ -277,17 +279,20 @@ public class Test {
 	}
 
 	/**
-	 * Tests the {@link Mp3FilePlayer} module.
+	 * Tests the {@link Mp3Player} module.
 	 *
 	 * @since 0.0.9
 	 */
 	public static void testMp3FilePlayer() {
 
-		var player = new Mp3FilePlayer(TEST_MP3_PATH);
+		var player = new Mp3Player(TEST_MP3_PATH);
 		var speaker = new Speaker();
 
 		player.getOutputs().get(0).connect(speaker.getInputs().get(0));
 		player.getOutputs().get(1).connect(speaker.getInputs().get(1));
+
+		player.play();
+		player.seek(20.0);
 	}
 
 	/**
@@ -298,7 +303,7 @@ public class Test {
 	 */
 	public static void testComputingFrameRate() {
 
-		var player = new Mp3FilePlayer(TEST_MP3_PATH);
+		var player = new Mp3Player(TEST_MP3_PATH);
 
 		var leftSpectrum = new SpectrumAnalyzer("left_spectrum");
 		var rightSpectrum = new SpectrumAnalyzer("right spectrum");

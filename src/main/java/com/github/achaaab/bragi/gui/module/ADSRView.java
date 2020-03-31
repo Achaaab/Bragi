@@ -6,9 +6,9 @@ import com.github.achaaab.bragi.module.ADSR;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
 import java.awt.GridLayout;
 
+import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
@@ -24,15 +24,30 @@ public class ADSRView extends JPanel {
 	 */
 	public ADSRView(ADSR model) {
 
-		var attackSlider = new LogarithmicSlider(1, 10000, 10);
-		var decaySlider = new LogarithmicSlider(1, 10000, 10);
-		var sustainSlider = new LinearSlider(-2.0, 0.0, 10);
-		var releaseSlider = new LogarithmicSlider(1, 10000, 10);
+		var attackSlider = new LogarithmicSlider(1, 1000, 10);
+		var decaySlider = new LogarithmicSlider(1, 1000, 10);
+		var sustainSlider = new LinearSlider(-5.0, 0.0, 10);
+		var releaseSlider = new LogarithmicSlider(1, 1000, 10);
 
-		attackSlider.setBorder(new TitledBorder("Attack (V/s)"));
-		decaySlider.setBorder(new TitledBorder("Decay (V/s)"));
-		sustainSlider.setBorder(new TitledBorder("Sustain (V)"));
-		releaseSlider.setBorder(new TitledBorder("Release (V/s)"));
+		attackSlider.setBorder(createTitledBorder("Attack (V/s)"));
+		decaySlider.setBorder(createTitledBorder("Decay (V/s)"));
+		sustainSlider.setBorder(createTitledBorder("Sustain (V)"));
+		releaseSlider.setBorder(createTitledBorder("Release (V/s)"));
+
+		attackSlider.setMajorTickSpacing(10);
+		decaySlider.setMajorTickSpacing(10);
+		sustainSlider.setMajorTickSpacing(10);
+		releaseSlider.setMajorTickSpacing(10);
+
+		attackSlider.setPaintTicks(true);
+		decaySlider.setPaintTicks(true);
+		sustainSlider.setPaintTicks(true);
+		releaseSlider.setPaintTicks(true);
+
+		attackSlider.setPaintLabels(true);
+		decaySlider.setPaintLabels(true);
+		sustainSlider.setPaintLabels(true);
+		releaseSlider.setPaintLabels(true);
 
 		setLayout(new GridLayout(4, 1));
 		add(attackSlider);

@@ -1,24 +1,26 @@
 # Bragi
-Bragi is a modular, real-time, sound synthesizer written in Java. Following modules are provided:
-* ADSR: envelope generator with Attack, Decay, Sustain and Release parameters
-* LFO: Low Frequency Oscillator
-* VCO: Voltage Controlled Oscillator
-* VCA: Voltage Controlled Amplifier
-* VCF: Voltage Controlled Filter (with low-pass or high-pass response)
-* Keyboard: a basic keyboard based on computer keyboard (from F3 to E6)
-* Oscilloscope: basic oscilloscope
-* SpectrumAnalyzer: basic spectrum analyzer
-* Mp3FilePlayer: basic MP3 file player
-* WavFilePlayer: basic WAV file player
-* WhiteNoiseGenerator: white noise generator
-* PinkNoiseGenerator: pink noise generator
-* Theremin: some kind of theremin (with just pitch and volume, not the incredible timbre of the real instrument)
-* Sampler: an experimentation to change the sample rate or sample size
-* Ditherer: an experimentation with dithering
-* Speaker: a module connected to your speakers
-* Microphone: a module connected to your microphone
+Bragi is a modular, real-time, sound synthesizer written in Java. It is still in progress and only has a rudimentary
+user interface. Following modules are provided:
+* **ADSR**: envelope generator with Attack, Decay, Sustain and Release parameters
+* **LFO**: Low Frequency Oscillator
+* **VCO**: Voltage Controlled Oscillator
+* **VCA**: Voltage Controlled Amplifier
+* **VCF**: Voltage Controlled Filter (with low-pass or high-pass response)
+* **Keyboard**: a basic keyboard based on computer keyboard (from F3 to E6)
+* **Oscilloscope**: basic oscilloscope
+* **SpectrumAnalyzer**: basic spectrum analyzer
+* **Mp3FilePlayer**: basic MP3 file player
+* **WavFilePlayer**: basic WAV file player
+* **WhiteNoiseGenerator**: white noise generator
+* **PinkNoiseGenerator**: pink noise generator
+* **Theremin**: some kind of theremin (with just pitch and volume, not the incredible timbre of the real instrument)
+* **Sampler**: an experimentation to change the sample rate or sample size
+* **Ditherer**: an experimentation with dithering
+* **Speaker**: a module connected to your speakers
+* **Microphone**: a module connected to your microphone
 ## Getting Started
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+These instructions will get you a copy of the project up and running on your local machine
+for development and testing purposes.
 ### Prerequisites
 * Java 14 (depending on your IDE, you may have to add the JVM option `--enable-preview`)
 * Maven 3.6.1
@@ -67,4 +69,5 @@ I am still developing Bragi but feel free to submit pull requests.
 This project is licensed under the GNU General Public License (GPL) - see the [LICENSE.md](LICENSE.md) for the details.
 ## Acknowledgments
 * Thanks to [Damien Di Fede](https://github.com/ddf) for his FFT implementation
-* Thanks to [Ernest Yu](https://github.com/ernieyu) for his [range slider](https://github.com/ernieyu/Swing-range-slider) Swing implementation
+* Thanks to [Ernest Yu](https://github.com/ernieyu)
+for his [range slider](https://github.com/ernieyu/Swing-range-slider) Swing implementation
