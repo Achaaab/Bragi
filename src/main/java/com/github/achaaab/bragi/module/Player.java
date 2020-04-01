@@ -10,10 +10,10 @@ import static javax.swing.SwingUtilities.invokeLater;
  */
 public abstract class Player extends Module {
 
-	protected double time;
+	private double time;
 	protected boolean playing;
 
-	private PlayerView view;
+	protected PlayerView view;
 
 	/**
 	 * @param name name of the player to create
@@ -26,7 +26,7 @@ public abstract class Player extends Module {
 		time = 0.0f;
 		playing = false;
 
-		invokeLater(() -> new PlayerView(this));
+		invokeLater(() -> view = new PlayerView(this));
 	}
 
 	@Override
@@ -51,13 +51,10 @@ public abstract class Player extends Module {
 	/**
 	 * Starts or resumes playback.
 	 */
-	public void play() {
+	public synchronized void play() {
 
-		synchronized (this) {
-
-			playing = true;
-			notifyAll();
-		}
+		playing = true;
+		notifyAll();
 	}
 
 	/**
@@ -74,7 +71,7 @@ public abstract class Player extends Module {
 
 		playing = false;
 
-		time = 0.0;
+		setTime(0.0);
 	}
 
 	/**
@@ -82,6 +79,18 @@ public abstract class Player extends Module {
 	 */
 	public double getTime() {
 		return time;
+	}
+
+	/**
+	 * @param time current playback time in seconds
+	 */
+	protected void setTime(double time) {
+
+		this.time = time;
+
+		if (view != null) {
+			invokeLater(() -> view.setTime(time));
+		}
 	}
 
 	/**

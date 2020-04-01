@@ -13,7 +13,7 @@ import com.github.achaaab.bragi.module.SpectrumAnalyzer;
 import com.github.achaaab.bragi.module.Theremin;
 import com.github.achaaab.bragi.module.VCA;
 import com.github.achaaab.bragi.module.VCO;
-import com.github.achaaab.bragi.module.WavFilePlayer;
+import com.github.achaaab.bragi.module.WavPlayer;
 import com.github.achaaab.bragi.module.WhiteNoiseGenerator;
 import org.slf4j.Logger;
 
@@ -33,15 +33,15 @@ public class Test {
 
 	private static final Logger LOGGER = getLogger(Test.class);
 
-	private static final Path TEST_MP3_PATH = getPath("test.mp3");
-	private static final Path TEST_WAV_PATH = getPath("test.wav");
+	private static final Path TEST_MP3_PATH = getPath("test_44100.mp3");
+	private static final Path TEST_WAV_PATH = getPath("test_44100.wav");
 
 	/**
 	 * @param arguments none
 	 * @since 0.0.9
 	 */
 	public static void main(String... arguments) {
-		testAdsr();
+		testMp3Player();
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class Test {
 
 		// some tuning
 		vco.setWaveform(SAWTOOTH_TRIANGULAR);
-		adsr.setAttack(5000.0);
+		adsr.setAttack(1000.0);
 		adsr.setRelease(2.0);
 
 		// visualization
@@ -103,19 +103,21 @@ public class Test {
 	}
 
 	/**
-	 * Tests the {@link WavFilePlayer} module.
-	 *
+	 * Tests the {@link WavPlayer} module.
+	 * <p>
 	 * TODO Add a module to change the sample rate.
 	 *
 	 * @since 0.1.0
 	 */
-	public static void testWavFilePlayer() {
+	public static void testWavPlayer() {
 
-		var player = new WavFilePlayer(TEST_WAV_PATH.toFile());
+		var player = new WavPlayer(TEST_WAV_PATH);
 		var speaker = new Speaker();
 
 		player.getOutputs().get(0).connect(speaker.getInputs().get(0));
 		player.getOutputs().get(1).connect(speaker.getInputs().get(1));
+
+		player.play();
 	}
 
 	/**
@@ -283,7 +285,7 @@ public class Test {
 	 *
 	 * @since 0.0.9
 	 */
-	public static void testMp3FilePlayer() {
+	public static void testMp3Player() {
 
 		var player = new Mp3Player(TEST_MP3_PATH);
 		var speaker = new Speaker();
@@ -292,7 +294,6 @@ public class Test {
 		player.getOutputs().get(1).connect(speaker.getInputs().get(1));
 
 		player.play();
-		player.seek(20.0);
 	}
 
 	/**

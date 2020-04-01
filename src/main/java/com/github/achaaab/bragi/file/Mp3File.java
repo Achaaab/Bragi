@@ -33,6 +33,7 @@ public class Mp3File {
 	private Decoder decoder;
 	private float time;
 	private float duration;
+	private boolean ended;
 
 	/**
 	 * @param path path to MP3 file
@@ -73,7 +74,7 @@ public class Mp3File {
 			reopen();
 		}
 
-		while (time < targetTime) {
+		while (!ended && time < targetTime) {
 			skipFrame();
 		}
 	}
@@ -81,20 +82,31 @@ public class Mp3File {
 	/**
 	 * Reads the next MP3 frame from this file.
 	 *
-	 * @return read MP3 frame
+	 * @return read MP3 frame, or {@code null} if this MP3 file ended
 	 * @throws Mp3FileException exception while reading the next frame
 	 */
 	public SampleBuffer readFrame() throws Mp3FileException {
 
+
 		try {
 
+			SampleBuffer frame;
 			var header = bitStream.readFrame();
-			addFrameDuration(header);
 
-			var frame = decoder.decodeFrame(header, bitStream);
-			bitStream.closeFrame();
+			if (header == null) {
 
-			return (SampleBuffer) frame;
+				ended = true;
+				frame = null;
+
+			} else {
+
+				addFrameDuration(header);
+
+				frame = (SampleBuffer) decoder.decodeFrame(header, bitStream);
+				bitStream.closeFrame();
+			}
+
+			return frame;
 
 		} catch (BitstreamException | DecoderException | IOException cause) {
 
@@ -114,8 +126,11 @@ public class Mp3File {
 			var stream = newInputStream(path);
 			var bufferedStream = new BufferedInputStream(stream);
 			bitStream = new Bitstream(bufferedStream);
+			decoder = new Decoder();
+
 			time = 0.0f;
 			duration = 0.0f;
+			ended = false;
 
 		} catch (IOException cause) {
 
@@ -142,7 +157,7 @@ public class Mp3File {
 	 *
 	 * @throws Mp3FileException exception while reopening the MP3 file
 	 */
-	private void reopen() throws Mp3FileException {
+	public void reopen() throws Mp3FileException {
 
 		close();
 		open();

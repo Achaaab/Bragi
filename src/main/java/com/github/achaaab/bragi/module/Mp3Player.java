@@ -69,6 +69,21 @@ public class Mp3Player extends Player {
 	}
 
 	@Override
+	public void stop() {
+
+		synchronized (file) {
+
+			try {
+				file.reopen();
+			} catch (Mp3FileException cause) {
+				throw new ModuleExecutionException(cause);
+			}
+		}
+
+		super.stop();
+	}
+
+	@Override
 	public void seek(double time) {
 
 		synchronized (file) {
@@ -88,32 +103,42 @@ public class Mp3Player extends Player {
 
 		try {
 
+			var frameCount = 0;
 			SampleBuffer mp3Frame;
 
 			synchronized (file) {
 				mp3Frame = file.readFrame();
 			}
 
-			var channelCount = mp3Frame.getChannelCount();
-			var sampleCount = mp3Frame.getBufferLength();
-			var frameCount = sampleCount / channelCount;
+			if (mp3Frame == null) {
 
-			var buffer = mp3Frame.getBuffer();
-			var sampleIndex = 0;
+				stop();
 
-			var samples = new float[channelCount][frameCount];
+			} else {
 
-			for (var frameIndex = 0; frameIndex < frameCount; frameIndex++) {
+				setTime(file.getTime());
+
+				var channelCount = mp3Frame.getChannelCount();
+				var sampleCount = mp3Frame.getBufferLength();
+				frameCount = sampleCount / channelCount;
+
+				var buffer = mp3Frame.getBuffer();
+				var sampleIndex = 0;
+
+				var samples = new float[channelCount][frameCount];
+
+				for (var frameIndex = 0; frameIndex < frameCount; frameIndex++) {
+
+					for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
+
+						var sample = buffer[sampleIndex++];
+						samples[channelIndex][frameIndex] = NORMALIZER.normalize(sample);
+					}
+				}
 
 				for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
-
-					var sample = buffer[sampleIndex++];
-					samples[channelIndex][frameIndex] = NORMALIZER.normalize(sample);
+					outputs.get(channelIndex).write(samples[channelIndex]);
 				}
-			}
-
-			for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
-				outputs.get(channelIndex).write(samples[channelIndex]);
 			}
 
 			return frameCount;

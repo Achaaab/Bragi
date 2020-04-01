@@ -38,6 +38,7 @@ class RangeSliderUI extends BasicSliderUI {
 	private static final Color RANGE_COLOR = new Color(0, 173, 182);
 	private static final double RANGE_THICKNESS = 4.0;
 	private static final Shape THUMB_SHAPE = new RoundRectangle2D.Double(0.0, 0.0, 11, 11, 2.0, 2.0);
+	private static final Dimension THUMB_SIZE = new Dimension(12, 12);
 
 	private final RangeSlider rangeSlider;
 
@@ -146,7 +147,7 @@ class RangeSliderUI extends BasicSliderUI {
 
 	@Override
 	protected Dimension getThumbSize() {
-		return new Dimension(12, 12);
+		return THUMB_SIZE;
 	}
 
 	@Override
@@ -277,35 +278,13 @@ class RangeSliderUI extends BasicSliderUI {
 	 */
 	public void scrollByBlock(int direction) {
 
-		synchronized (slider) {
+		synchronized (rangeSlider) {
 
-			int blockIncrement = (slider.getMaximum() - slider.getMinimum()) / 10;
+			var maximum = rangeSlider.getMaximum();
+			var minimum = rangeSlider.getMinimum();
+			var amplitude = maximum - minimum;
 
-			if (blockIncrement <= 0 && slider.getMaximum() > slider.getMinimum()) {
-				blockIncrement = 1;
-			}
-
-			int delta = blockIncrement * ((direction > 0) ? POSITIVE_SCROLL : NEGATIVE_SCROLL);
-
-			if (upperThumbSelected) {
-
-				int oldValue = ((RangeSlider) slider).getUpperValue();
-				((RangeSlider) slider).setUpperValue(oldValue + delta);
-
-			} else {
-
-				int oldValue = slider.getValue();
-				slider.setValue(oldValue + delta);
-			}
-		}
-	}
-
-	@Override
-	public void scrollByUnit(int direction) {
-
-		synchronized (slider) {
-
-			var delta = direction > 0 ? POSITIVE_SCROLL : NEGATIVE_SCROLL;
+			var delta = direction * min(1, amplitude / 10);
 
 			if (upperThumbSelected) {
 
@@ -314,8 +293,26 @@ class RangeSliderUI extends BasicSliderUI {
 
 			} else {
 
+				var lowerValue = rangeSlider.getValue();
+				rangeSlider.setLowerValue(lowerValue + delta);
+			}
+		}
+	}
+
+	@Override
+	public void scrollByUnit(int direction) {
+
+		synchronized (rangeSlider) {
+
+			if (upperThumbSelected) {
+
+				var upperValue = rangeSlider.getUpperValue();
+				rangeSlider.setUpperValue(upperValue + direction);
+
+			} else {
+
 				var lowerValue = rangeSlider.getLowerValue();
-				slider.setValue(lowerValue + delta);
+				rangeSlider.setLowerValue(lowerValue + direction);
 			}
 		}
 	}
@@ -445,48 +442,51 @@ class RangeSliderUI extends BasicSliderUI {
 		 */
 		private void moveLowerThumb() {
 
+			var upperValue = rangeSlider.getUpperValue();
+			var drawInverted = drawInverted();
+
 			switch (slider.getOrientation()) {
 
 				case VERTICAL -> {
 
-					int halfThumbHeight = lowerThumbRect.height / 2;
-					int thumbTop = currentMouseY - offset;
-					int trackTop = trackRect.y;
-					int trackBottom = trackRect.y + trackRect.height - 1;
-					int vMax = yPositionForValue(rangeSlider.getUpperValue());
+					var upperPosition = yPositionForValue(upperValue);
+					var minimumPosition = trackRect.y;
+					var maximumPosition = trackRect.y + trackRect.height - 1;
 
-					if (drawInverted()) {
-						trackBottom = vMax;
-					} else {
-						trackTop = vMax;
-					}
+					var trackBottom = drawInverted ? upperPosition : maximumPosition;
+					var trackTop = drawInverted ? minimumPosition : upperPosition;
 
+					var halfThumbHeight = lowerThumbRect.height / 2;
+					var thumbTop = currentMouseY - offset;
 					thumbTop = max(thumbTop, trackTop - halfThumbHeight);
 					thumbTop = min(thumbTop, trackBottom - halfThumbHeight);
+
 					setLowerThumbLocation(lowerThumbRect.x, thumbTop);
+
 					var thumbMiddle = thumbTop + halfThumbHeight;
-					slider.setValue(valueForYPosition(thumbMiddle));
+					var lowerValue = valueForYPosition(thumbMiddle);
+					rangeSlider.setLowerValue(lowerValue);
 				}
 
 				case HORIZONTAL -> {
 
-					int halfThumbWidth = lowerThumbRect.width / 2;
-					int thumbLeft = currentMouseX - offset;
-					int trackLeft = trackRect.x;
-					int trackRight = trackRect.x + trackRect.width - 1;
-					int hMax = xPositionForValue(rangeSlider.getUpperValue());
+					var upperPosition = xPositionForValue(upperValue);
+					var minimumPosition = trackRect.x;
+					var maximumPosition = trackRect.x + trackRect.width - 1;
 
-					if (drawInverted()) {
-						trackLeft = hMax;
-					} else {
-						trackRight = hMax;
-					}
+					var trackLeft = drawInverted ? upperPosition : minimumPosition;
+					var trackRight = drawInverted ? maximumPosition : upperPosition;
 
+					var halfThumbWidth = lowerThumbRect.width / 2;
+					var thumbLeft = currentMouseX - offset;
 					thumbLeft = max(thumbLeft, trackLeft - halfThumbWidth);
 					thumbLeft = min(thumbLeft, trackRight - halfThumbWidth);
+
 					setLowerThumbLocation(thumbLeft, lowerThumbRect.y);
+
 					var thumbMiddle = thumbLeft + halfThumbWidth;
-					slider.setValue(valueForXPosition(thumbMiddle));
+					var lowerValue = valueForXPosition(thumbMiddle);
+					rangeSlider.setLowerValue(lowerValue);
 				}
 			}
 		}
@@ -496,48 +496,51 @@ class RangeSliderUI extends BasicSliderUI {
 		 */
 		private void moveUpperThumb() {
 
+			var lowerValue = rangeSlider.getLowerValue();
+			var drawInverted = drawInverted();
+
 			switch (slider.getOrientation()) {
 
 				case VERTICAL -> {
 
+					var lowerPosition = yPositionForValue(lowerValue);
+					var minimumPosition = trackRect.y;
+					var maximumPosition = trackRect.y + trackRect.height - 1;
+
+					var trackBottom = drawInverted ? maximumPosition : lowerPosition;
+					var trackTop = drawInverted ? lowerPosition : minimumPosition;
+
 					var halfThumbHeight = upperThumbRect.height / 2;
 					var thumbTop = currentMouseY - offset;
-					var trackTop = trackRect.y;
-					var trackBottom = trackRect.y + trackRect.height - 1;
-					var vMin = yPositionForValue(slider.getValue());
-
-					if (drawInverted()) {
-						trackTop = vMin;
-					} else {
-						trackBottom = vMin;
-					}
-
 					thumbTop = max(thumbTop, trackTop - halfThumbHeight);
 					thumbTop = min(thumbTop, trackBottom - halfThumbHeight);
+
 					setUpperThumbLocation(upperThumbRect.x, thumbTop);
+
 					var thumbMiddle = thumbTop + halfThumbHeight;
-					slider.setExtent(valueForYPosition(thumbMiddle) - slider.getValue());
+					var upperValue = valueForYPosition(thumbMiddle);
+					rangeSlider.setUpperValue(upperValue);
 				}
 
 				case HORIZONTAL -> {
 
+					var lowerPosition = xPositionForValue(lowerValue);
+					var minimumPosition = trackRect.x;
+					var maximumPosition = trackRect.x + trackRect.width - 1;
+
+					var trackLeft = drawInverted ? minimumPosition : lowerPosition;
+					var trackRight = drawInverted ? lowerPosition : maximumPosition;
+
 					var halfThumbWidth = upperThumbRect.width / 2;
 					var thumbLeft = currentMouseX - offset;
-					var trackLeft = trackRect.x;
-					var trackRight = trackRect.x + trackRect.width - 1;
-					var hMin = xPositionForValue(slider.getValue());
-
-					if (drawInverted()) {
-						trackRight = hMin;
-					} else {
-						trackLeft = hMin;
-					}
-
 					thumbLeft = max(thumbLeft, trackLeft - halfThumbWidth);
 					thumbLeft = min(thumbLeft, trackRight - halfThumbWidth);
+
 					setUpperThumbLocation(thumbLeft, upperThumbRect.y);
+
 					var thumbMiddle = thumbLeft + halfThumbWidth;
-					slider.setExtent(valueForXPosition(thumbMiddle) - slider.getValue());
+					var upperValue = valueForXPosition(thumbMiddle);
+					rangeSlider.setUpperValue(upperValue);
 				}
 			}
 		}

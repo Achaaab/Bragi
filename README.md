@@ -9,8 +9,8 @@ user interface. Following modules are provided:
 * **Keyboard**: a basic keyboard based on computer keyboard (from F3 to E6)
 * **Oscilloscope**: basic oscilloscope
 * **SpectrumAnalyzer**: basic spectrum analyzer
-* **Mp3FilePlayer**: basic MP3 file player
-* **WavFilePlayer**: basic WAV file player
+* **Mp3Player**: basic MP3 file player
+* **WavPlayer**: basic WAV file player
 * **WhiteNoiseGenerator**: white noise generator
 * **PinkNoiseGenerator**: pink noise generator
 * **Theremin**: some kind of theremin (with just pitch and volume, not the incredible timbre of the real instrument)
@@ -33,15 +33,15 @@ git clone git@github.com:Achaaab/Bragi.git
 * Import the project Bragi in your IDE.
 * Run the main class `com.github.achaaab.bragi.Test`.
 ## Examples
-### MP3 file player connected to speaker
+### MP3Player connected to Speaker
 ```java
-var player = new Mp3FilePlayer(TEST_MP3_PATH);
+var player = new Mp3Player(TEST_MP3_PATH);
 var speaker = new Speaker();
 
 player.getOutputs().get(0).connect(speaker.getInputs().get(0));
 player.getOutputs().get(1).connect(speaker.getInputs().get(1));
 ```
-### Keyboard connected to VCO and VCO connected to speaker
+### Keyboard connected to VCO and VCO connected to Speaker
 ```java
 var keyboard = new Keyboard();
 var vco = new VCO();
