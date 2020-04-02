@@ -23,8 +23,7 @@ public class FastFourierTransform extends FourierTransform {
 
 	/**
 	 * Constructs an FFT that will accept sample buffers that are <code>timeSize</code> long and have been recorded with a sample
-	 * rate of <code>sampleRate</code>. <code>timeSize</code> <em>must</em> be a power of two. This will throw an exception if it
-	 * is not.
+	 * rate of <code>sampleRate</code>. <code>timeSize</code> <em>must</em> be a power of two.
 	 *
 	 * @param timeSize   the length of the sample buffers you will be analyzing
 	 * @param sampleRate the sample rate of the audio you will be analyzing
@@ -32,10 +31,6 @@ public class FastFourierTransform extends FourierTransform {
 	public FastFourierTransform(int timeSize, float sampleRate) {
 
 		super(timeSize, sampleRate);
-
-		if ((timeSize & (timeSize - 1)) != 0) {
-			throw new IllegalArgumentException("FFT: timeSize must be a power of two.");
-		}
 
 		buildReverseTable();
 		memoizeSineAndCosine();
@@ -51,10 +46,6 @@ public class FastFourierTransform extends FourierTransform {
 
 	@Override
 	public void scaleBand(int band, float factor) {
-
-		if (factor < 0) {
-			throw new IllegalArgumentException("Can't scale a frequency band by a negative value.");
-		}
 
 		if (spectrum[band] != 0) {
 
@@ -72,10 +63,6 @@ public class FastFourierTransform extends FourierTransform {
 
 	@Override
 	public void setAmplitude(int band, float amplitude) {
-
-		if (amplitude < 0) {
-			throw new IllegalArgumentException("Can't set a frequency band to a negative value.");
-		}
 
 		if (real[band] == 0 && imaginary[band] == 0) {
 
@@ -139,10 +126,6 @@ public class FastFourierTransform extends FourierTransform {
 	@Override
 	public void forward(float[] buffer) {
 
-		if (buffer.length != size) {
-			throw new IllegalArgumentException("The length of the passed sample buffer must be equal to FFT size.");
-		}
-
 		window.apply(buffer);
 
 		// copy samples to real and imaginary in bit-reversed order
@@ -163,10 +146,6 @@ public class FastFourierTransform extends FourierTransform {
 	 */
 	public void forward(float[] real, float[] imaginary) {
 
-		if (real.length != size || imaginary.length != size) {
-			throw new IllegalArgumentException("The length of the passed buffers must be equal to FFT size.");
-		}
-
 		setComplex(real, imaginary);
 		bitReverseComplex();
 		fft();
@@ -175,10 +154,6 @@ public class FastFourierTransform extends FourierTransform {
 
 	@Override
 	public void inverse(float[] buffer) {
-
-		if (buffer.length > real.length) {
-			throw new IllegalArgumentException("The passed array's length must equal FFT size.");
-		}
 
 		// conjugate
 		for (var i = 0; i < size; i++) {

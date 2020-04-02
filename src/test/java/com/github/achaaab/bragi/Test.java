@@ -18,6 +18,7 @@ import com.github.achaaab.bragi.module.WhiteNoiseGenerator;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static com.github.achaaab.bragi.ResourceUtils.getPath;
 import static com.github.achaaab.bragi.common.wave.Waveform.SAWTOOTH_TRIANGULAR;
@@ -118,6 +119,9 @@ public class Test {
 		player.getOutputs().get(1).connect(speaker.getInputs().get(1));
 
 		player.play();
+
+		var spectrum = new SpectrumAnalyzer();
+		player.connectTo(spectrum);
 	}
 
 	/**
@@ -293,7 +297,8 @@ public class Test {
 		player.getOutputs().get(0).connect(speaker.getInputs().get(0));
 		player.getOutputs().get(1).connect(speaker.getInputs().get(1));
 
-		player.play();
+		var spectrum = new SpectrumAnalyzer();
+		player.connectTo(spectrum);
 	}
 
 	/**

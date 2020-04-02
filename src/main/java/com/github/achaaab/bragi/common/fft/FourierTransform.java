@@ -16,9 +16,9 @@ import static java.lang.System.arraycopy;
  */
 public abstract class FourierTransform {
 
-	protected static final int LINAVG = 2;
-	protected static final int LOGAVG = 3;
-	protected static final int NOAVG = 4;
+	protected static final int LINEAR_AVERAGE = 2;
+	protected static final int LOGARITHMIC_AVERAGE = 3;
+	protected static final int NO_AVERAGE = 4;
 
 	protected final int size;
 	protected final float sampleRate;
@@ -35,8 +35,8 @@ public abstract class FourierTransform {
 	protected Window window;
 
 	/**
-	 * Construct a FourierTransform that will analyze sample buffers that are <code>ts</code> samples long
-	 * and contain samples with a <code>sr</code> sample rate.
+	 * Construct a FourierTransform that will analyze sample buffers that are {@code size} samples long
+	 * and contain samples with a {@code sampleRate} sample rate.
 	 *
 	 * @param size       length of the buffers that will be analyzed
 	 * @param sampleRate sample rate of the samples that will be analyzed
@@ -55,66 +55,60 @@ public abstract class FourierTransform {
 	}
 
 	/**
-	 * allocating real, imag, and spectrum are the responsibility of derived classes
-	 * because the size of the arrays will depend on the implementation being used
-	 * this enforces that responsibility
+	 * Allocating real, imaginary, and spectrum are the responsibility of derived classes
+	 * because the size of the arrays will depend on the implementation being used.
+	 * This method enforces that responsibility.
 	 */
 	protected abstract void allocateArrays();
 
 	/**
 	 * Sets new complex values.
 	 *
-	 * @param real new real part
+	 * @param real      new real part
 	 * @param imaginary new imaginary part
 	 */
 	protected void setComplex(float[] real, float[] imaginary) {
 
-		if (this.real.length != real.length && this.imaginary.length != imaginary.length) {
-
-			throw new IllegalArgumentException("This won't work");
-
-		} else {
-
-			arraycopy(real, 0, this.real, 0, real.length);
-			arraycopy(imaginary, 0, this.imaginary, 0, imaginary.length);
-		}
+		arraycopy(real, 0, this.real, 0, real.length);
+		arraycopy(imaginary, 0, this.imaginary, 0, imaginary.length);
 	}
 
 	/**
-	 * fill the spectrum array with the amps of the data in real and imag
-	 * used so that this class can handle creating the average array
-	 * and also do spectrum shaping if necessary
+	 * Fill the spectrum array with the amplitudes of the data in real and imaginary.
+	 * Used so that this class can handle creating the average array and also do spectrum shaping if necessary.
 	 */
 	protected void fillSpectrum() {
 
-		for (var i = 0; i < spectrum.length; i++) {
-			spectrum[i] = (float) sqrt(real[i] * real[i] + imaginary[i] * imaginary[i]);
+		for (var spectrumIndex = 0; spectrumIndex < spectrum.length; spectrumIndex++) {
+
+			var realPart = real[spectrumIndex];
+			var imaginaryPart = imaginary[spectrumIndex];
+
+			spectrum[spectrumIndex] = (float) sqrt(realPart * realPart + imaginaryPart * imaginaryPart);
 		}
 
-		if (whichAverage == LINAVG) {
+		if (whichAverage == LINEAR_AVERAGE) {
 
 			var averageWidth = spectrum.length / averages.length;
+			var spectrumIndex = 0;
 
-			for (var i = 0; i < averages.length; i++) {
+			for (var averageIndex = 0; averageIndex < averages.length; averageIndex++) {
 
-				var average = 0.0f;
-				int j;
+				var sum = 0.0f;
+				var count = 0;
 
-				for (j = 0; j < averageWidth; j++) {
+				while (count < averageWidth && spectrumIndex < spectrum.length) {
 
-					int offset = j + i * averageWidth;
-					if (offset < spectrum.length) {
-						average += spectrum[offset];
-					} else {
-						break;
-					}
+					sum += spectrum[spectrumIndex];
+
+					spectrumIndex++;
+					count++;
 				}
 
-				average /= j + 1;
-				averages[i] = average;
+				averages[averageIndex] = sum / count;
 			}
 
-		} else if (whichAverage == LOGAVG) {
+		} else if (whichAverage == LOGARITHMIC_AVERAGE) {
 
 			for (var octave = 0; octave < octaves; octave++) {
 
@@ -146,55 +140,49 @@ public abstract class FourierTransform {
 	 * Sets the object to not compute averages.
 	 */
 	public void noAverages() {
-
-		averages = new float[0];
-		whichAverage = NOAVG;
+		whichAverage = NO_AVERAGE;
 	}
 
 	/**
-	 * Sets the number of averages used when computing the spectrum and spaces the averages in a linear manner. In other words,
-	 * each average band will be <code>specSize() / numAvg</code> bands wide.
+	 * Sets the number of averages used when computing the spectrum and spaces the averages in a linear manner.
+	 * In other words, each average band will be {@code specSize() / numAvg} bands wide.
 	 *
-	 * @param numAvg how many averages to compute
+	 * @param averageCount how many averages to compute
 	 */
-	public void linAverages(int numAvg) {
+	public void linearAverage(int averageCount) {
 
-		if (numAvg > spectrum.length / 2) {
-
-			throw new IllegalArgumentException(
-					"The number of averages for this transform can be at most " +
-							spectrum.length / 2 + ".");
-
-		} else {
-
-			averages = new float[numAvg];
-		}
-
-		whichAverage = LINAVG;
+		averages = new float[averageCount];
+		whichAverage = LINEAR_AVERAGE;
 	}
 
 	/**
-	 * Sets the number of averages used when computing the spectrum based on the minimum bandwidth for an octave and the number of
-	 * bands per octave. For example, with audio that has a sample rate of 44100 Hz, <code>logAverages(11, 1)</code> will result in
-	 * 12 averages, each corresponding to an octave, the first spanning 0 to 11 Hz. To ensure that each octave band is a full
-	 * octave, the number of octaves is computed by dividing the Nyquist frequency by two, and then the result of that by two, and
-	 * so on. This means that the actual bandwidth of the lowest octave may not be exactly the value specified.
+	 * Sets the number of averages used when computing the spectrum based on the minimum bandwidth
+	 * for an octave and the number of bands per octave.
+	 * <p>
+	 * For example, with audio that has a sample rate of 44100 Hz,
+	 * <code>logarithmicAverages(11, 1)</code> will result in 12 averages,
+	 * each corresponding to an octave, the first spanning 0 to 11 Hz.
+	 * <p>
+	 * To ensure that each octave band is a full octave, the number of octaves is computed
+	 * by dividing the Nyquist frequency by two, and then the result of that by two, and so on.
+	 * <p>
+	 * This means that the actual bandwidth of the lowest octave may not be exactly the value specified.
 	 *
-	 * @param minBandwidth   the minimum bandwidth used for an octave
-	 * @param bandsPerOctave how many bands to split each octave into
+	 * @param minimumBandwidth minimum bandwidth used for an octave
+	 * @param bandsPerOctave   how many bands to split each octave into
 	 */
-	public void logAverages(int minBandwidth, int bandsPerOctave) {
+	public void logarithmicAverages(double minimumBandwidth, int bandsPerOctave) {
 
 		var nyquistFrequency = sampleRate / 2;
 		octaves = 1;
 
-		while ((nyquistFrequency /= 2) > minBandwidth) {
+		while ((nyquistFrequency /= 2) > minimumBandwidth) {
 			octaves++;
 		}
 
 		avgPerOctave = bandsPerOctave;
 		averages = new float[octaves * bandsPerOctave];
-		whichAverage = LOGAVG;
+		whichAverage = LOGARITHMIC_AVERAGE;
 	}
 
 	/**
@@ -250,7 +238,7 @@ public abstract class FourierTransform {
 	 * Sets the amplitude of the <code>i<sup>th</sup></code> frequency band to <code>a</code>. You can use this to shape the
 	 * spectrum before using <code>inverse()</code>.
 	 *
-	 * @param band the frequency band to modify
+	 * @param band      the frequency band to modify
 	 * @param amplitude the new amplitude
 	 */
 	public abstract void setAmplitude(int band, float amplitude);
@@ -259,7 +247,7 @@ public abstract class FourierTransform {
 	 * Scales the amplitude of the <code>i<sup>th</sup></code> frequency band by <code>s</code>. You can use this to shape the
 	 * spectrum before using <code>inverse()</code>.
 	 *
-	 * @param band the frequency band to modify
+	 * @param band   the frequency band to modify
 	 * @param factor the scaling factor
 	 */
 	public abstract void scaleBand(int band, float factor);
@@ -322,7 +310,7 @@ public abstract class FourierTransform {
 	 */
 	public float getAverageCenterFrequency(int i) {
 
-		if (whichAverage == LINAVG) {
+		if (whichAverage == LINEAR_AVERAGE) {
 
 			// an average represents a certain number of bands in the spectrum
 			var avgWidth = spectrum.length / averages.length;
@@ -331,7 +319,7 @@ public abstract class FourierTransform {
 			var centerBinIndex = i * avgWidth + avgWidth / 2;
 			return getFrequency(centerBinIndex);
 
-		} else if (whichAverage == LOGAVG) {
+		} else if (whichAverage == LOGARITHMIC_AVERAGE) {
 
 			// which "octave" is this index in?
 			var octave = i / avgPerOctave;
@@ -377,7 +365,7 @@ public abstract class FourierTransform {
 	 * Sets the amplitude of the requested frequency in the spectrum to <code>a</code>.
 	 *
 	 * @param frequency the frequency in Hz
-	 * @param amplitude    the new amplitude
+	 * @param amplitude the new amplitude
 	 */
 	public void setAmplitude(float frequency, float amplitude) {
 		setAmplitude(getAmplitude(frequency), amplitude);
@@ -420,7 +408,7 @@ public abstract class FourierTransform {
 	/**
 	 * Calculate the average amplitude of the frequency band bounded by <code>lowFreq</code> and <code>hiFreq</code>, inclusive.
 	 *
-	 * @param lowFrequency the lower bound of the band
+	 * @param lowFrequency  the lower bound of the band
 	 * @param highFrequency the upper bound of the band
 	 * @return average amplitude of all spectrum amplitude within the bounds
 	 */
@@ -445,29 +433,6 @@ public abstract class FourierTransform {
 	 * @param buffer the buffer to analyze
 	 */
 	public abstract void forward(float[] buffer);
-
-	/**
-	 * Performs a forward transform on values in <code>buffer</code>.
-	 *
-	 * @param buffer  the buffer of samples
-	 * @param startAt the index to start at in the buffer. there must be at least timeSize() samples between the starting index and
-	 *                the end of the buffer. If there aren't, an error will be issued and the operation will not be performed.
-	 */
-	public void forward(float[] buffer, int startAt) {
-
-		if (buffer.length - startAt < size) {
-
-			throw new IllegalArgumentException(
-					"FourierTransform.forward: not enough samples in the buffer between " +
-							startAt + " and " + buffer.length +
-							" to perform a transform.");
-		}
-
-		// copy the section of samples we want to analyze
-		var section = new float[size];
-		arraycopy(buffer, startAt, section, 0, section.length);
-		forward(section);
-	}
 
 	/**
 	 * Performs an inverse transform of the frequency spectrum and places the result in <code>buffer</code>.

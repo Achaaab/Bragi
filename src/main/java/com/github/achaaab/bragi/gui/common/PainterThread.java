@@ -25,7 +25,7 @@ public class PainterThread extends Thread {
 	 * @param component component to repaint
 	 * @param fps       required number of frames per second
 	 */
-	public PainterThread(JComponent component, int fps) {
+	public PainterThread(JComponent component, double fps) {
 
 		this.component = component;
 

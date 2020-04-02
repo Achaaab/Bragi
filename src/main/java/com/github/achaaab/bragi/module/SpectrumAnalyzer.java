@@ -24,7 +24,7 @@ public class SpectrumAnalyzer extends Module {
 
 	public static final String DEFAULT_NAME = "spectrum_analyzer";
 
-	private static final int FOURIER_TRANSFORM_SIZE = 1 << 12;
+	private static final int FOURIER_TRANSFORM_SIZE = 1 << 15;
 
 	private final Input input;
 
@@ -54,7 +54,7 @@ public class SpectrumAnalyzer extends Module {
 
 		fourierTransform = new FastFourierTransform(FOURIER_TRANSFORM_SIZE, Settings.INSTANCE.frameRate());
 		fourierTransform.setWindow(new HammingWindow());
-		fourierTransform.logAverages(50, 12);
+		fourierTransform.logarithmicAverages(13.75, 12);
 
 		fourierTransformSamples = new float[FOURIER_TRANSFORM_SIZE];
 		buffer = new CircularFloatArray(FOURIER_TRANSFORM_SIZE);

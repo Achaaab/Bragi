@@ -6,46 +6,72 @@ import com.github.achaaab.bragi.module.SpectrumAnalyzer;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.LinearGradientPaint;
+import java.awt.image.BufferedImage;
 
 import static java.lang.Math.log10;
+import static java.lang.Math.max;
 import static java.lang.Math.round;
+import static java.util.Arrays.fill;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
- * spectrum analyzer Swing view
+ * A basic spectrum analyzer view made with Swing and AWT.
+ * This view is made of vertical bars representing the volume of each band, in decibels.
+ * Each bar is made of segments.
  *
  * @author Jonathan Guéhenneux
  * @since 0.0.5
  */
 public class SpectrumAnalyzerView extends JComponent {
 
-	private static final int PLOT_MARGIN = 5;
-	private static final int SEGMENT_COUNT = 100;
-	private static final float BASE_MAGNITUDE = 10_000.0f;
+	private static final double FRAMES_PER_SECOND = 60.0;
+	private static final double FRAME_TIME = 1 / FRAMES_PER_SECOND;
+
+	private static final float MARGIN = 5.0f;
+	private static final int SEGMENT_COUNT = 128;
+	private static final float BASE_MAGNITUDE = 25_000.0f;
 	private static final float MINIMAL_DECIBELS = -60.0f;
 	private static final float MAXIMAL_DECIBELS = 0.0f;
+
+	/**
+	 * force applied to peaks after hanging time, in decibel per second per second (dB/s²)
+	 */
+	private static final double PEAKS_GRAVITY = 100.0;
+	private static final double PEAKS_HANGING_TIME = 0.5;
 
 	private static final Normalizer NORMALIZER = new Normalizer(
 			MINIMAL_DECIBELS, MAXIMAL_DECIBELS,
 			0, SEGMENT_COUNT
 	);
 
-	private static final float[] GRADIENT_FRACTIONS = {0.0f, 0.5f, 1.0f};
-
-	private static final Color[] GRADIENT_COLORS = {
-			new Color(0, 0, 0),
-			new Color(255, 128, 0),
-			new Color(255, 128, 0)
-	};
-
 	private static final Color BACKGROUND_COLOR = new Color(24, 24, 24);
 
+	private static final Color[] SEGMENT_COLOR;
+
+	static {
+
+		SEGMENT_COLOR = new Color[SEGMENT_COUNT];
+
+		for (var segmentIndex = 0; segmentIndex < SEGMENT_COUNT; segmentIndex++) {
+
+			SEGMENT_COLOR[segmentIndex] = Color.getHSBColor(
+					0.6f - 0.6f * segmentIndex / SEGMENT_COUNT,
+					1.0f + 0.0f * segmentIndex / SEGMENT_COUNT,
+					1.0f + 0.0f * segmentIndex / SEGMENT_COUNT);
+		}
+	}
+
 	private final SpectrumAnalyzer model;
+
+	private float[] peaks;
+	private double[] peaksTime;
+	private double[] peaksSpeed;
+
+	private BufferedImage bufferedImage;
+	private Graphics2D bufferedGraphics;
 
 	/**
 	 * @param model spectrum analyzer model
@@ -57,54 +83,148 @@ public class SpectrumAnalyzerView extends JComponent {
 		var frame = new JFrame(model.getName());
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		frame.setSize(640, 360);
-		frame.setLayout(new BorderLayout());
 		frame.add(this);
 		frame.setVisible(true);
 
-		new PainterThread(this, 60).start();
+		new PainterThread(this, FRAMES_PER_SECOND).start();
 	}
 
-	@Override
-	public void paint(Graphics graphics) {
+	/**
+	 * According to my tests, ({@link Graphics#fillRect(int, int, int, int)}) is much
+	 * faster within a {@link Graphics2D} created from a {@link BufferedImage}. This is why I use it.
+	 *
+	 * @return graphics created from a buffered image of the same size than this component
+	 * @since 0.1.6
+	 */
+	private Graphics2D getBufferedGraphics() {
 
 		var width = getWidth();
 		var height = getHeight();
 
-		var plotWidth = width - 2 * PLOT_MARGIN;
-		var plotHeight = height - 2 * PLOT_MARGIN;
+		if (bufferedImage == null || bufferedImage.getWidth() != width || bufferedImage.getHeight() != height) {
 
-		var graphics2D = (Graphics2D) graphics;
+			bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+			bufferedGraphics = bufferedImage.createGraphics();
+		}
+
+		return bufferedGraphics;
+	}
+
+	@Override
+	public void paintComponent(Graphics graphics) {
+
+		// get averages
+
+		var averages = model.getAverages();
+		var barCount = averages.length;
+
+		// get spectrum metrics
+
+		var width = getWidth();
+		var height = getHeight();
+
+		var spectrumWidth = width - 2 * MARGIN;
+		var spectrumHeight = height - 2 * MARGIN;
+
+		var barWidth = spectrumWidth / barCount;
+		var rowHeight = spectrumHeight / SEGMENT_COUNT;
+
+		var segmentWidth = max(1, round(0.8f * barWidth));
+		var segmentHeight = max(1, round(0.7f * rowHeight));
+
+		var left = MARGIN + 0.2f * barWidth;
+		var bottom = height - MARGIN - rowHeight;
+
+		// draw background
+
+		var graphics2D = getBufferedGraphics();
 		graphics2D.setColor(BACKGROUND_COLOR);
 		graphics2D.fillRect(0, 0, width, height);
 
-		var averages = model.getAverages();
+		// initialize peaks if necessary
 
-		var barCount = averages.length;
-		var barWidth = 0.8f * plotWidth / barCount;
-		var barLeftMargin = 0.1f * plotWidth / barCount;
-		var barHeight = 0.7f * plotHeight / SEGMENT_COUNT;
-		var barTopMargin = 0.15f * plotHeight / SEGMENT_COUNT;
-		var plotBottom = PLOT_MARGIN + plotHeight;
+		if (peaks == null || peaks.length != barCount) {
 
-		var barPaint = new LinearGradientPaint(
-				0, plotBottom,
-				0, PLOT_MARGIN,
-				GRADIENT_FRACTIONS, GRADIENT_COLORS);
+			peaks = new float[barCount];
+			fill(peaks, MINIMAL_DECIBELS);
 
-		graphics2D.setPaint(barPaint);
+			peaksTime = new double[barCount];
+			peaksSpeed = new double[barCount];
+		}
+
+		// draw segments
 
 		for (var barIndex = 0; barIndex < barCount; barIndex++) {
 
-			var barX = PLOT_MARGIN + barIndex * plotWidth / barCount + barLeftMargin;
 			var magnitude = averages[barIndex];
 			var decibels = (float) (20 * log10(magnitude / BASE_MAGNITUDE));
-			var segmentsOn = NORMALIZER.normalize(decibels);
+			var segmentCount = NORMALIZER.normalize(decibels);
+			var segmentX = round(left + barIndex * barWidth);
 
-			for (var segment = 0; segment < segmentsOn; segment++) {
+			for (var segmentIndex = 0; segmentIndex < segmentCount; segmentIndex++) {
 
-				var barY = plotBottom - (segment + 1) * plotHeight / SEGMENT_COUNT + barTopMargin;
-				graphics2D.fillRect(round(barX), round(barY), round(barWidth), round(barHeight));
+				graphics2D.setColor(SEGMENT_COLOR[segmentIndex]);
+
+				graphics2D.fillRect(
+						segmentX,
+						round(bottom - segmentIndex * rowHeight),
+						segmentWidth, segmentHeight);
+			}
+
+			// draw and update peak
+
+			var peak = peaks[barIndex];
+
+			if (decibels > peak) {
+
+				// update peak
+
+				peaks[barIndex] = decibels;
+				peaksTime[barIndex] = 0.0;
+				peaksSpeed[barIndex] = 0.0;
+
+			} else {
+
+				// update peak time
+
+				var peakTime = peaksTime[barIndex];
+				peakTime += FRAME_TIME;
+				peaksTime[barIndex] = peakTime;
+
+				// after hanging time, let the peak fall
+
+				if (peakTime > PEAKS_HANGING_TIME) {
+
+					// increase peak falling speed with gravity
+
+					var peakSpeed = peaksSpeed[barIndex];
+					peakSpeed += PEAKS_GRAVITY * FRAME_TIME;
+					peaksSpeed[barIndex] = peakSpeed;
+
+					// update peak
+
+					peak -= peakSpeed * FRAME_TIME;
+					peaks[barIndex] = peak;
+				}
+
+				// draw peak
+
+				var peakSegmentCount = NORMALIZER.normalize(peak);
+
+				if (peakSegmentCount > 0) {
+
+					var peakSegmentIndex = (int) peakSegmentCount;
+
+					graphics2D.setColor(SEGMENT_COLOR[peakSegmentIndex]);
+
+					graphics2D.fillRect(
+							segmentX,
+							round(bottom - peakSegmentIndex * rowHeight),
+							segmentWidth, segmentHeight);
+				}
 			}
 		}
+
+		graphics.drawImage(bufferedImage, 0, 0, null);
 	}
 }

@@ -24,7 +24,7 @@ public abstract class Player extends Module {
 		super(name);
 
 		time = 0.0f;
-		playing = false;
+		playing = true;
 
 		invokeLater(() -> view = new PlayerView(this));
 	}

@@ -17,9 +17,15 @@ import static java.lang.Math.log;
  * {@link #computeRandomGeometric(double)} and {@link #searchRandomGeometric(double)}
  * are adaptations of NumPy library. However, there are 2 differences with NumPy implementation:
  * <ul>
- *     <li>numbers generated with random numbers are single precision</li>
- *     <li></li>
+ *     <li>Numbers generated with random numbers are single precision, it should not be a problem for
+ *     Bernoulli trials and single precision random number are twice faster to generate.</li>
+ *     <li>Threshold to switch between from {@link #computeRandomGeometric(double)} to
+ *     {@link #searchRandomGeometric(double)} is much lower. I set this threshold experimentally,
+ *     with the default, fast, {@link ThreadLocalRandom}.
+ *     Searching could be slower if a using a simple {@link Random}</li>
  * </ul>
+ * I added an even faster method for special case 0.5: {@link #searchRandomGeometricCoinFlip()} based on
+ * random integer bits.
  *
  * @author Jonathan Guéhenneux
  * @since 0.0.7
