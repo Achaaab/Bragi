@@ -71,65 +71,98 @@ public abstract class Module implements Runnable {
 	}
 
 	/**
-	 * @return the first output (by convention it is the main output), {@code null} if there is no output
+	 * @return first output (by convention it is the main output), {@code null} if there is no output
 	 */
 	public Output getOutput() {
 		return outputs.isEmpty() ? null : outputs.get(0);
 	}
 
 	/**
-	 * Connect outputs of this module to inputs of output modules.
+	 * Connects the outputs of this module to the inputs of given module.
 	 *
-	 * @param modules output modules
+	 * @param module module to connect to
+	 * @since 0.1.6
 	 */
-	public void connectTo(Module... modules) {
+	public void connectOutputs(Module module) {
 
-		var channelCount = modules.length;
+		var channelCount = outputs.size();
 
 		for (var channel = 0; channel < channelCount; channel++) {
-			getOutputs().get(channel).connect(modules[channel].getInput());
+
+			var output = getOutputs().get(channel);
+			var input = module.getInputs().get(channel);
+
+			output.connect(input);
 		}
 	}
 
 	/**
-	 * Connect outputs of input modules to inputs of this module.
+	 * Connects the outputs of this module to the main input of given modules.
 	 *
-	 * @param modules input modules
+	 * @param modules modules to connect to
+	 * @since 0.1.6
 	 */
-	public void connectFrom(Module... modules) {
+	public void connectOutputs(Module... modules) {
 
 		var channelCount = modules.length;
 
 		for (var channel = 0; channel < channelCount; channel++) {
-			modules[channel].getOutput().connect(getInputs().get(channel));
+
+			var output = getOutputs().get(channel);
+			modules[channel].connect(output);
 		}
 	}
 
 	/**
-	 * Connect the main output of this module to the main input of the given output module.
+	 * Connects the main input of given modules to the inputs of this module.
 	 *
-	 * @param module output module
+	 * @param modules modules to connect from
+	 * @since 0.1.6
 	 */
-	public void connectTo(Module module) {
-		getOutput().connect(module.getInput());
+	public void connectInputs(Module... modules) {
+
+		var channelCount = modules.length;
+
+		for (var channel = 0; channel < channelCount; channel++) {
+
+			var input = getInputs().get(channel);
+			modules[channel].connect(input);
+		}
 	}
 
 	/**
-	 * Connect the first output of this module to the given input.
+	 * Connects the main output of this module to the main input of given module.
+	 *
+	 * @param module module to connect to
+	 */
+	public void connect(Module module) {
+
+		var input = module.getInput();
+		connect(input);
+	}
+
+	/**
+	 * Connects the main output of this module to the given input.
 	 *
 	 * @param input input to connect
+	 * @since 0.1.6
 	 */
 	public void connect(Input input) {
-		getOutput().connect(input);
+
+		var output = getOutput();
+		output.connect(input);
 	}
 
 	/**
-	 * Connect the main output of this module to given inputs.
+	 * Connects the given output to the main input of this module.
 	 *
-	 * @param inputs inputs to connect
+	 * @param output output to connect from
+	 * @since 0.1.6
 	 */
-	public void connect(Iterable<Input> inputs) {
-		inputs.forEach(this::connect);
+	public void connect(Output output) {
+
+		var input = getInput();
+		output.connect(input);
 	}
 
 	/**

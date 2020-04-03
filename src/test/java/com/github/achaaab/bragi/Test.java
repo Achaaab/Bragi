@@ -1,5 +1,6 @@
 package com.github.achaaab.bragi;
 
+import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.module.ADSR;
 import com.github.achaaab.bragi.module.Keyboard;
 import com.github.achaaab.bragi.module.LFO;
@@ -18,7 +19,6 @@ import com.github.achaaab.bragi.module.WhiteNoiseGenerator;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static com.github.achaaab.bragi.ResourceUtils.getPath;
 import static com.github.achaaab.bragi.common.wave.Waveform.SAWTOOTH_TRIANGULAR;
@@ -42,7 +42,7 @@ public class Test {
 	 * @since 0.0.9
 	 */
 	public static void main(String... arguments) {
-		testMp3Player();
+		testTremolo();
 	}
 
 	/**
@@ -61,10 +61,10 @@ public class Test {
 		var vcaTremolo = new VCA("vca_tremolo");
 
 		// main chain
-		keyboard.connectTo(vco);
-		vco.connectTo(vcaEnvelope);
-		vcaEnvelope.connectTo(vcaTremolo);
-		speaker.connectFrom(vcaTremolo, vcaTremolo);
+		keyboard.connect(vco);
+		vco.connect(vcaEnvelope);
+		vcaEnvelope.connect(vcaTremolo);
+		speaker.connectInputs(vcaTremolo, vcaTremolo);
 
 		// ADSR + tremolo
 		keyboard.getGate().connect(adsr.getGate());
@@ -79,8 +79,8 @@ public class Test {
 		// visualization
 		var oscilloscope = new Oscilloscope();
 		var spectrum = new SpectrumAnalyzer();
-		vcaTremolo.connectTo(oscilloscope);
-		vcaTremolo.connectTo(spectrum);
+		vcaTremolo.connect(oscilloscope);
+		vcaTremolo.connect(spectrum);
 	}
 
 	/**
@@ -96,9 +96,9 @@ public class Test {
 		var vca = new VCA();
 		var speaker = new Speaker();
 
-		keyboard.connectTo(vco);
-		vco.connectTo(vca);
-		speaker.connectFrom(vca, vca);
+		keyboard.connect(vco);
+		vco.connect(vca);
+		speaker.connectInputs(vca, vca);
 		keyboard.getGate().connect(adsr.getGate());
 		adsr.connect(vca.getGain());
 	}
@@ -115,13 +115,10 @@ public class Test {
 		var player = new WavPlayer(TEST_WAV_PATH);
 		var speaker = new Speaker();
 
-		player.getOutputs().get(0).connect(speaker.getInputs().get(0));
-		player.getOutputs().get(1).connect(speaker.getInputs().get(1));
-
-		player.play();
+		player.connectOutputs(speaker);
 
 		var spectrum = new SpectrumAnalyzer();
-		player.connectTo(spectrum);
+		player.connect(spectrum);
 	}
 
 	/**
@@ -136,9 +133,9 @@ public class Test {
 		var spectrum = new SpectrumAnalyzer();
 		var speaker = new Speaker();
 
-		noise.connectTo(filter);
-		filter.connectTo(spectrum);
-		speaker.connectFrom(filter, filter);
+		noise.connect(filter);
+		filter.connect(spectrum);
+		speaker.connectInputs(filter, filter);
 	}
 
 	/**
@@ -153,9 +150,9 @@ public class Test {
 		var speaker = new Speaker();
 		var oscilloscope = new Oscilloscope();
 
-		noise.connectTo(spectrum);
-		noise.connectTo(oscilloscope);
-		speaker.connectFrom(noise, noise);
+		noise.connect(spectrum);
+		noise.connect(oscilloscope);
+		speaker.connectInputs(noise, noise);
 	}
 
 	/**
@@ -169,8 +166,8 @@ public class Test {
 		var spectrum = new SpectrumAnalyzer();
 		var speaker = new Speaker();
 
-		noise.connectTo(spectrum);
-		speaker.connectFrom(noise, noise);
+		noise.connect(spectrum);
+		speaker.connectInputs(noise, noise);
 	}
 
 	/**
@@ -185,9 +182,9 @@ public class Test {
 		var spectrum = new SpectrumAnalyzer();
 		var lfo = new LFO();
 
-		vco.connectTo(spectrum);
-		speaker.connectFrom(vco, vco);
-		lfo.connectTo(vco);
+		vco.connect(spectrum);
+		speaker.connectInputs(vco, vco);
+		lfo.connect(vco);
 	}
 
 	/**
@@ -202,11 +199,11 @@ public class Test {
 		var vca = new VCA();
 		var spectrum = new SpectrumAnalyzer();
 
-		spectrum.setComputingFrameRate(44100);
+		spectrum.setComputingFrameRate(Settings.INSTANCE.frameRate());
 
-		theremin.connectTo(vco);
-		vco.connectTo(vca);
-		vca.connectTo(spectrum);
+		theremin.connect(vco);
+		vco.connect(vca);
+		vca.connect(spectrum);
 		theremin.getVolume().connect(vca.getGain());
 	}
 
@@ -222,9 +219,9 @@ public class Test {
 		var speaker = new Speaker();
 		var oscilloscope = new Oscilloscope();
 
-		keyboard.connectTo(vco);
-		vco.connectTo(oscilloscope);
-		speaker.connectFrom(vco, vco);
+		keyboard.connect(vco);
+		vco.connect(oscilloscope);
+		speaker.connectInputs(vco, vco);
 	}
 
 	/**
@@ -239,11 +236,11 @@ public class Test {
 		var vca = new VCA();
 		var oscilloscope = new Oscilloscope();
 
-		theremin.setComputingFrameRate(44100);
+		theremin.setComputingFrameRate(Settings.INSTANCE.frameRate());
 
-		theremin.connectTo(vco);
-		vco.connectTo(vca);
-		vca.connectTo(oscilloscope);
+		theremin.connect(vco);
+		vco.connect(vca);
+		vca.connect(oscilloscope);
 
 		theremin.getVolume().connect(vca.getGain());
 	}
@@ -258,9 +255,9 @@ public class Test {
 		var vco = new VCO();
 		var oscilloscope = new Oscilloscope();
 
-		oscilloscope.setComputingFrameRate(44100);
+		oscilloscope.setComputingFrameRate(Settings.INSTANCE.frameRate());
 
-		vco.connectTo(oscilloscope);
+		vco.connect(oscilloscope);
 	}
 
 	/**
@@ -277,11 +274,9 @@ public class Test {
 		var oscilloscopeRight = new Oscilloscope("right");
 		var speaker = new Speaker();
 
-		microphone.connectTo(spectrumLeft, spectrumRight);
-		microphone.connectTo(oscilloscopeLeft, oscilloscopeRight);
-
-		microphone.getOutputs().get(0).connect(speaker.getInputs().get(0));
-		microphone.getOutputs().get(1).connect(speaker.getInputs().get(1));
+		microphone.connectOutputs(spectrumLeft, spectrumRight);
+		microphone.connectOutputs(oscilloscopeLeft, oscilloscopeRight);
+		microphone.connectOutputs(speaker);
 	}
 
 	/**
@@ -294,11 +289,10 @@ public class Test {
 		var player = new Mp3Player(TEST_MP3_PATH);
 		var speaker = new Speaker();
 
-		player.getOutputs().get(0).connect(speaker.getInputs().get(0));
-		player.getOutputs().get(1).connect(speaker.getInputs().get(1));
+		player.connectOutputs(speaker);
 
 		var spectrum = new SpectrumAnalyzer();
-		player.connectTo(spectrum);
+		player.connect(spectrum);
 	}
 
 	/**
@@ -310,12 +304,11 @@ public class Test {
 	public static void testComputingFrameRate() {
 
 		var player = new Mp3Player(TEST_MP3_PATH);
+		var leftSpectrum = new SpectrumAnalyzer("left");
+		var rightSpectrum = new SpectrumAnalyzer("right");
 
-		var leftSpectrum = new SpectrumAnalyzer("left_spectrum");
-		var rightSpectrum = new SpectrumAnalyzer("right spectrum");
+		leftSpectrum.setComputingFrameRate(Settings.INSTANCE.frameRate());
 
-		leftSpectrum.setComputingFrameRate(11025);
-
-		player.connectTo(leftSpectrum, rightSpectrum);
+		player.connectOutputs(leftSpectrum, rightSpectrum);
 	}
 }
