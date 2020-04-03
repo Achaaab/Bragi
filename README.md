@@ -1,4 +1,5 @@
 # Bragi
+![Screenshot](src/site/tremolo.png)
 Bragi is a modular, real-time, sound synthesizer written in Java. It is still in progress and only has a rudimentary
 user interface. Following modules are provided:
 * **ADSR**: envelope generator with Attack, Decay, Sustain and Release parameters
@@ -38,19 +39,42 @@ git clone git@github.com:Achaaab/Bragi.git
 var player = new Mp3Player(TEST_MP3_PATH);
 var speaker = new Speaker();
 
-player.getOutputs().get(0).connect(speaker.getInputs().get(0));
-player.getOutputs().get(1).connect(speaker.getInputs().get(1));
+player.connectOutputs(speaker);
+
+// optional part: spectrogram with fancy effects
+var spectrum = new SpectrumAnalyzer();
+player.connect(spectrum);
 ```
-### Keyboard connected to VCO and VCO connected to Speaker
+### Tremolo
 ```java
+var adsr = new ADSR();
 var keyboard = new Keyboard();
 var vco = new VCO();
+var vcaEnvelope = new VCA("vca_envelope");
 var speaker = new Speaker();
-var oscilloscope = new Oscilloscope();
+var lfo = new LFO();
+var vcaTremolo = new VCA("vca_tremolo");
 
-keyboard.connectTo(vco);
-vco.connectTo(oscilloscope);
-speaker.connectFrom(vco, vco);
+// main chain
+keyboard.connect(vco);
+vco.connect(vcaEnvelope);
+vcaEnvelope.connect(vcaTremolo);
+speaker.connectInputs(vcaTremolo, vcaTremolo);
+
+// ADSR + tremolo
+keyboard.getGate().connect(adsr.getGate());
+adsr.connect(vcaEnvelope.getGain());
+lfo.connect(vcaTremolo.getGain());
+
+// some tuning
+vco.setWaveform(SAWTOOTH_TRIANGULAR);
+adsr.setAttack(1000.0);
+adsr.setRelease(2.0);
+
+// visualization
+var oscilloscope = new Oscilloscope();
+var spectrum = new SpectrumAnalyzer();
+vcaTremolo.connect(oscilloscope, spectrum);
 ```
 ## Built With
 * [IntelliJ IDEA](https://www.jetbrains.com/idea/) - Integrated Development Environment

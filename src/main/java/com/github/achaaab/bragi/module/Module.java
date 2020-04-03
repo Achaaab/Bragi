@@ -15,6 +15,7 @@ import java.util.List;
 import static java.lang.Math.round;
 import static java.lang.System.nanoTime;
 import static java.lang.Thread.sleep;
+import static java.util.Arrays.stream;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -139,6 +140,15 @@ public abstract class Module implements Runnable {
 
 		var input = module.getInput();
 		connect(input);
+	}
+
+	/**
+	 * Connects the main output of this module to the main input of given modules.
+	 *
+	 * @param modules modules to connect to
+	 */
+	public void connect(Module... modules) {
+		stream(modules).forEach(this::connect);
 	}
 
 	/**

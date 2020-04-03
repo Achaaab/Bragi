@@ -79,8 +79,7 @@ public class Test {
 		// visualization
 		var oscilloscope = new Oscilloscope();
 		var spectrum = new SpectrumAnalyzer();
-		vcaTremolo.connect(oscilloscope);
-		vcaTremolo.connect(spectrum);
+		vcaTremolo.connect(oscilloscope, spectrum);
 	}
 
 	/**
@@ -150,8 +149,7 @@ public class Test {
 		var speaker = new Speaker();
 		var oscilloscope = new Oscilloscope();
 
-		noise.connect(spectrum);
-		noise.connect(oscilloscope);
+		noise.connect(spectrum, oscilloscope);
 		speaker.connectInputs(noise, noise);
 	}
 
