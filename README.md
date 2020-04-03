@@ -2,23 +2,24 @@
 ![Screenshot](src/site/tremolo.png)
 Bragi is a modular, real-time, sound synthesizer written in Java. It is still in progress and only has a rudimentary
 user interface. Following modules are provided:
-* **ADSR**: envelope generator with Attack, Decay, Sustain and Release parameters
 * **LFO**: Low Frequency Oscillator
 * **VCO**: Voltage Controlled Oscillator
-* **VCA**: Voltage Controlled Amplifier
-* **VCF**: Voltage Controlled Filter (with low-pass or high-pass response)
+* **DCG**: Direct Current Generator
 * **Keyboard**: a basic keyboard based on computer keyboard (from F3 to E6)
-* **Oscilloscope**: basic oscilloscope
-* **SpectrumAnalyzer**: basic spectrum analyzer
+* **Theremin**: some kind of theremin (with just pitch and volume, not the incredible timbre of the real instrument)
 * **Mp3Player**: basic MP3 file player
 * **WavPlayer**: basic WAV file player
 * **WhiteNoiseGenerator**: white noise generator
 * **PinkNoiseGenerator**: pink noise generator
-* **Theremin**: some kind of theremin (with just pitch and volume, not the incredible timbre of the real instrument)
+* **Microphone**: a module connected to your microphone
+* **ADSR**: envelope generator with Attack, Decay, Sustain and Release parameters
+* **VCA**: Voltage Controlled Amplifier
+* **VCF**: Voltage Controlled Filter (with low-pass or high-pass response)
 * **Sampler**: an experimentation to change the sample rate or sample size
 * **Ditherer**: an experimentation with dithering
+* **Oscilloscope**: basic oscilloscope
+* **SpectrumAnalyzer**: basic spectrum analyzer
 * **Speaker**: a module connected to your speakers
-* **Microphone**: a module connected to your microphone
 ## Getting Started
 These instructions will get you a copy of the project up and running on your local machine
 for development and testing purposes.
@@ -75,6 +76,28 @@ adsr.setRelease(2.0);
 var oscilloscope = new Oscilloscope();
 var spectrum = new SpectrumAnalyzer();
 vcaTremolo.connect(oscilloscope, spectrum);
+```
+### "Self" oscillating filter
+```java
+var noise = new WhiteNoiseGenerator();
+var vca = new VCA();
+var filter = new LowPassVCF();
+var speaker = new Speaker();
+
+// very low noise (-200 dB) is enough to trigger "self" oscillation of filter
+vca.setInitialGain(-200);
+
+// maximum emphasis
+filter.setEmphasis(1.0f);
+
+noise.connect(vca);
+vca.connect(filter);
+speaker.connectInputs(filter, filter);
+
+// visualization
+var oscilloscope = new Oscilloscope();
+var spectrum = new SpectrumAnalyzer();
+filter.connect(oscilloscope, spectrum);
 ```
 ## Built With
 * [IntelliJ IDEA](https://www.jetbrains.com/idea/) - Integrated Development Environment

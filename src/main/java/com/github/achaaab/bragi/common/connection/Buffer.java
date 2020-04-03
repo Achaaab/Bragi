@@ -67,6 +67,15 @@ public class Buffer {
 	}
 
 	/**
+	 * Disconnects the output from the input.
+	 */
+	public void disconnect() {
+
+		output.disconnect(this);
+		input.setBuffer(null);
+	}
+
+	/**
 	 * @return output that write to this buffer
 	 */
 	public Output getOutput() {

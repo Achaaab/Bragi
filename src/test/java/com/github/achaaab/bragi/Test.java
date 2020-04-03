@@ -2,6 +2,7 @@ package com.github.achaaab.bragi;
 
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.module.ADSR;
+import com.github.achaaab.bragi.module.DCG;
 import com.github.achaaab.bragi.module.Keyboard;
 import com.github.achaaab.bragi.module.LFO;
 import com.github.achaaab.bragi.module.LowPassVCF;
@@ -22,6 +23,7 @@ import java.nio.file.Path;
 
 import static com.github.achaaab.bragi.ResourceUtils.getPath;
 import static com.github.achaaab.bragi.common.wave.Waveform.SAWTOOTH_TRIANGULAR;
+import static java.lang.Thread.sleep;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -42,7 +44,39 @@ public class Test {
 	 * @since 0.0.9
 	 */
 	public static void main(String... arguments) {
-		testTremolo();
+		testDcg();
+	}
+
+	/**
+	 * Tests filter "self" oscillation.
+	 *
+	 * Due to the architecture of Bragi, the filter needs an input to produce an output.
+	 * We could use a DCG with 0 volt but it would not trigger the oscillation.
+	 * Like in an analog synthesizer, we need a tiny noise to trigger the oscillation.
+	 *
+	 * @since 0.1.6
+	 */
+	public static void testSelfOscillatingFilter() {
+
+		var noise = new WhiteNoiseGenerator();
+		var vca = new VCA();
+		var filter = new LowPassVCF();
+		var speaker = new Speaker();
+
+		// very low noise (-200 dB) is enough to trigger "self" oscillation of filter
+		vca.setInitialGain(-200);
+
+		// maximum emphasis
+		filter.setEmphasis(1.0f);
+
+		noise.connect(vca);
+		vca.connect(filter);
+		speaker.connectInputs(filter, filter);
+
+		// visualization
+		var oscilloscope = new Oscilloscope();
+		var spectrum = new SpectrumAnalyzer();
+		filter.connect(oscilloscope, spectrum);
 	}
 
 	/**
@@ -80,6 +114,21 @@ public class Test {
 		var oscilloscope = new Oscilloscope();
 		var spectrum = new SpectrumAnalyzer();
 		vcaTremolo.connect(oscilloscope, spectrum);
+	}
+
+	/**
+	 * Tests the {@link DCG} module.
+	 *
+	 * @since 0.1.6
+	 */
+	public static void testDcg() {
+
+		var dcg = new DCG();
+		var oscilloscope = new Oscilloscope();
+
+		dcg.setComputingFrameRate(Settings.INSTANCE.frameRate());
+
+		dcg.connect(oscilloscope);
 	}
 
 	/**

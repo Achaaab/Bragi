@@ -40,6 +40,11 @@ public abstract class NamedInput implements Input {
 	}
 
 	@Override
+	public void disconnect() {
+		buffer.disconnect();
+	}
+
+	@Override
 	public String toString() {
 		return name;
 	}

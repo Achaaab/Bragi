@@ -19,10 +19,15 @@ public interface Input {
 	boolean isConnected();
 
 	/**
-	 * Read a chunk from this input.
+	 * Reads a chunk from this input.
 	 *
 	 * @return read chunk, {@code null} if no chunk was read
 	 * @throws InterruptedException if interrupted while waiting for an available chunk
 	 */
 	float[] read() throws InterruptedException;
+
+	/**
+	 * Disconnects this input from the output.
+	 */
+	void disconnect();
 }

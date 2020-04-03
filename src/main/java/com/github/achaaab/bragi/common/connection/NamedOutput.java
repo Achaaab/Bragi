@@ -54,6 +54,14 @@ public abstract class NamedOutput implements Output {
 	}
 
 	@Override
+	public void disconnect(Buffer buffer) {
+
+		synchronized (buffers) {
+			buffers.remove(buffer);
+		}
+	}
+
+	@Override
 	public String toString() {
 		return name;
 	}

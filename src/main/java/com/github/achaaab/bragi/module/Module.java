@@ -146,6 +146,7 @@ public abstract class Module implements Runnable {
 	 * Connects the main output of this module to the main input of given modules.
 	 *
 	 * @param modules modules to connect to
+	 * @since 0.1.6
 	 */
 	public void connect(Module... modules) {
 		stream(modules).forEach(this::connect);

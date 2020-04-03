@@ -26,4 +26,11 @@ public interface Output {
 	 * @throws InterruptedException if interrupted while writing chunk
 	 */
 	void write(float[] chunk) throws InterruptedException;
+
+	/**
+	 * Disconnects this output from the input connected through the given buffer.
+	 *
+	 * @param buffer buffer connecting this output to an input
+	 */
+	void disconnect(Buffer buffer);
 }
