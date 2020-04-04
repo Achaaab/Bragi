@@ -77,7 +77,7 @@ public class Microphone extends Module {
 		try {
 
 			line = getTargetDataLine(format);
-			line.open(format, Settings.INSTANCE.getByteRate() / 100);
+			line.open(format, Settings.INSTANCE.byteRate() / 100);
 
 		} catch (LineUnavailableException cause) {
 
@@ -105,7 +105,7 @@ public class Microphone extends Module {
 
 		var frameCount = Settings.INSTANCE.chunkSize();
 		var sampleSizeInBytes = Settings.INSTANCE.sampleSize();
-		var frameSizeInBytes = Settings.INSTANCE.getFrameSize();
+		var frameSizeInBytes = Settings.INSTANCE.frameSize();
 		var byteCount = frameCount * frameSizeInBytes;
 		var channelCount = Settings.INSTANCE.channelCount();
 

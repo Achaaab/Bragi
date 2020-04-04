@@ -20,7 +20,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * A {@link Module} has inputs and outputs. It reads samples from inputs, compute output samples from input samples and
- * tuning and write output samples to outputs.
+ * tuning and write computed samples to outputs.
  *
  * @author Jonathan Guéhenneux
  * @since 0.0.9

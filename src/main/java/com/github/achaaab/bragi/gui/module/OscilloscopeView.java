@@ -1,10 +1,9 @@
 package com.github.achaaab.bragi.gui.module;
 
 import com.github.achaaab.bragi.common.Settings;
-import com.github.achaaab.bragi.gui.common.PainterThread;
+import com.github.achaaab.bragi.gui.common.PaintedView;
 import com.github.achaaab.bragi.module.Oscilloscope;
 
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -15,7 +14,6 @@ import java.awt.Stroke;
 
 import static java.awt.RenderingHints.KEY_ANTIALIASING;
 import static java.awt.RenderingHints.VALUE_ANTIALIAS_OFF;
-import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
 import static java.lang.Math.round;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
@@ -25,7 +23,7 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
  * @author Jonathan Guéhenneux
  * @since 0.0.4
  */
-public class OscilloscopeView extends JComponent {
+public class OscilloscopeView extends PaintedView {
 
 	private static final int MARGIN = 5;
 	private static final int HORIZONTAL_DIVISION_COUNT = 10;
@@ -34,11 +32,11 @@ public class OscilloscopeView extends JComponent {
 	private static final Color DIVISION_COLOR = new Color(32, 32, 32);
 	private static final Stroke PLOT_STROKE = new BasicStroke(3.0f);
 	private static final Stroke DIVISION_STROKE = new BasicStroke(1.5f);
-	private static final float SECONDS_PER_DIVISION = 1.0f / 60 / HORIZONTAL_DIVISION_COUNT;
 	private static final float VOLTS_PER_DIVISION = 1.0f;
 
 	private final Oscilloscope model;
 
+	private final float secondsPerDivision;
 	private final int length;
 	private final float[] samples;
 	private final int[] x;
@@ -51,8 +49,8 @@ public class OscilloscopeView extends JComponent {
 
 		this.model = model;
 
-		// 1/60s
 		length = Settings.INSTANCE.frameRate() / 60;
+		secondsPerDivision = (float) targetFrameTime / HORIZONTAL_DIVISION_COUNT;
 
 		samples = new float[length];
 		x = new int[length];
@@ -65,8 +63,6 @@ public class OscilloscopeView extends JComponent {
 		frame.add(this);
 		frame.pack();
 		frame.setVisible(true);
-
-		new PainterThread(this, 60).start();
 	}
 
 	@Override
@@ -115,13 +111,14 @@ public class OscilloscopeView extends JComponent {
 			var sample = samples[sampleIndex];
 			var time = (float) sampleIndex / Settings.INSTANCE.frameRate();
 
-			x[sampleIndex] = round(MARGIN + divisionSize * time / SECONDS_PER_DIVISION);
+			x[sampleIndex] = round(MARGIN + divisionSize * time / secondsPerDivision);
 			y[sampleIndex] = round(MARGIN + plotHeight / 2.0f - divisionSize * sample / VOLTS_PER_DIVISION);
 		}
 
-		graphics2D.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
 		graphics2D.setStroke(PLOT_STROKE);
 		graphics2D.setColor(PLOT_COLOR);
 		graphics2D.drawPolyline(x, y, length);
+
+		drawFrameRate(graphics2D);
 	}
 }

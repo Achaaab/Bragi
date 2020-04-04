@@ -39,21 +39,28 @@ public record Settings(
 	/**
 	 * @return number of bytes per frame
 	 */
-	public int getFrameSize() {
+	public int frameSize() {
 		return channelCount * sampleSize;
 	}
 
 	/**
-	 * @return frame length in seconds
+	 * @return frame duration in seconds (s)
 	 */
-	public double getFrameLength() {
+	public double frameDuration() {
 		return 1.0 / frameRate;
 	}
 
 	/**
-	 * @return number of bytes per second
+	 * @return number of bytes per second (B/s)
 	 */
-	public int getByteRate() {
-		return frameRate * getFrameSize();
+	public int byteRate() {
+		return frameRate * frameSize();
+	}
+
+	/**
+	 * @return Nyquist frequency, half of {@code frame rate}
+	 */
+	public double nyquistFrequency() {
+		return frameRate / 2.0;
 	}
 }

@@ -3,6 +3,7 @@ package com.github.achaaab.bragi;
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.module.ADSR;
 import com.github.achaaab.bragi.module.DCG;
+import com.github.achaaab.bragi.module.HighPassVCF;
 import com.github.achaaab.bragi.module.Keyboard;
 import com.github.achaaab.bragi.module.LFO;
 import com.github.achaaab.bragi.module.LowPassVCF;
@@ -45,7 +46,26 @@ public class Test {
 	 * @since 0.0.9
 	 */
 	public static void main(String... arguments) {
-		testPiano();
+		testMp3Player();
+	}
+
+	/**
+	 * Tests a band-pass filter with one low-pass VCF and one high-pass VCF.
+	 *
+	 * @since 0.1.6
+	 */
+	public static void testBandPassFilter() {
+
+		var noise = new WhiteNoiseGenerator();
+		var low = new LowPassVCF();
+		var high = new HighPassVCF();
+		var speaker = new Speaker();
+		var spectrum = new SpectrumAnalyzer();
+
+		noise.connect(low);
+		low.connect(high);
+		speaker.connectInputs(high, high);
+		high.connect(spectrum);
 	}
 
 	/**
@@ -86,7 +106,7 @@ public class Test {
 		adsr.setRelease(100);
 		adsr.setSustain(-0.2f);
 		adsr.setRelease(3.0f);
-		filter.setCutOffFrequency(7040.f);
+		filter.setCutoffFrequency(7040.f);
 
 		var spectrum = new SpectrumAnalyzer();
 		var oscilloscope = new Oscilloscope();
@@ -95,7 +115,7 @@ public class Test {
 
 	/**
 	 * Tests filter "self" oscillation.
-	 *
+	 * <p>
 	 * Due to the architecture of Bragi, the filter needs an input to produce an output.
 	 * We could use a DCG with 0 volt but it would not trigger the oscillation.
 	 * Like in an analog synthesizer, we need a tiny noise to trigger the oscillation.
@@ -210,9 +230,6 @@ public class Test {
 		var speaker = new Speaker();
 
 		player.connectOutputs(speaker);
-
-		var spectrum = new SpectrumAnalyzer();
-		player.connect(spectrum);
 	}
 
 	/**
@@ -230,6 +247,29 @@ public class Test {
 		noise.connect(filter);
 		filter.connect(spectrum);
 		speaker.connectInputs(filter, filter);
+
+		var oscilloscope = new Oscilloscope();
+		filter.connect(oscilloscope);
+	}
+
+	/**
+	 * Tests the {@link HighPassVCF} module.
+	 *
+	 * @since 0.1.6
+	 */
+	public static void testHighPassVcf() {
+
+		var noise = new WhiteNoiseGenerator();
+		var filter = new HighPassVCF();
+		var spectrum = new SpectrumAnalyzer();
+		var speaker = new Speaker();
+
+		noise.connect(filter);
+		filter.connect(spectrum);
+		speaker.connectInputs(filter, filter);
+
+		var oscilloscope = new Oscilloscope();
+		filter.connect(oscilloscope);
 	}
 
 	/**
@@ -383,9 +423,6 @@ public class Test {
 		var speaker = new Speaker();
 
 		player.connectOutputs(speaker);
-
-		var spectrum = new SpectrumAnalyzer();
-		player.connect(spectrum);
 	}
 
 	/**

@@ -97,7 +97,7 @@ public class ADSR extends Module {
 	@Override
 	protected int compute() throws InterruptedException {
 
-		sampleLength = Settings.INSTANCE.getFrameLength();
+		sampleLength = Settings.INSTANCE.frameDuration();
 
 		var gateSample = gate.read()[0];
 		var sampleCount = Settings.INSTANCE.chunkSize();

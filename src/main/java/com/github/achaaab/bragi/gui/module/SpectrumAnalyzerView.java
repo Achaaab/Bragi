@@ -1,17 +1,17 @@
 package com.github.achaaab.bragi.gui.module;
 
 import com.github.achaaab.bragi.common.Normalizer;
-import com.github.achaaab.bragi.gui.common.PainterThread;
+import com.github.achaaab.bragi.gui.common.PaintedView;
 import com.github.achaaab.bragi.module.SpectrumAnalyzer;
 
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 
 import static java.awt.Color.getHSBColor;
+import static java.lang.Math.fma;
 import static java.lang.Math.log10;
 import static java.lang.Math.max;
 import static java.lang.Math.round;
@@ -26,10 +26,7 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
  * @author Jonathan Guéhenneux
  * @since 0.0.5
  */
-public class SpectrumAnalyzerView extends JComponent {
-
-	private static final double FRAMES_PER_SECOND = 60.0;
-	private static final double FRAME_TIME = 1 / FRAMES_PER_SECOND;
+public class SpectrumAnalyzerView extends PaintedView {
 
 	private static final float MARGIN = 5.0f;
 	private static final int SEGMENT_COUNT = 128;
@@ -71,9 +68,6 @@ public class SpectrumAnalyzerView extends JComponent {
 	private double[] peaksTime;
 	private double[] peaksSpeed;
 
-	private BufferedImage bufferedImage;
-	private Graphics2D bufferedGraphics;
-
 	/**
 	 * @param model spectrum analyzer model
 	 */
@@ -81,43 +75,43 @@ public class SpectrumAnalyzerView extends JComponent {
 
 		this.model = model;
 
+		setPreferredSize(new Dimension(640, 360));
+
 		var frame = new JFrame(model.getName());
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		frame.setSize(640, 360);
 		frame.add(this);
+		frame.pack();
 		frame.setVisible(true);
-
-		new PainterThread(this, FRAMES_PER_SECOND).start();
 	}
 
 	/**
-	 * According to my tests, ({@link Graphics#fillRect(int, int, int, int)}) is much
-	 * faster within a {@link Graphics2D} created from a {@link BufferedImage}. This is why I use it.
+	 * Ensures peaks, peaks time and peaks speed are created with length = given bar count.
 	 *
-	 * @return graphics created from a buffered image of the same size than this component
+	 * @param barCount number of bars in the spectrum
 	 * @since 0.1.6
 	 */
-	private Graphics2D getBufferedGraphics() {
+	private void ensurePeaks(int barCount) {
 
-		var width = getWidth();
-		var height = getHeight();
+		if (peaks == null || peaks.length != barCount) {
 
-		if (bufferedImage == null || bufferedImage.getWidth() != width || bufferedImage.getHeight() != height) {
+			peaks = new float[barCount];
+			fill(peaks, MINIMAL_DECIBELS);
 
-			bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-			bufferedGraphics = bufferedImage.createGraphics();
+			peaksTime = new double[barCount];
+			peaksSpeed = new double[barCount];
 		}
-
-		return bufferedGraphics;
 	}
 
 	@Override
-	public void paintComponent(Graphics graphics) {
+	public void paint(Graphics graphics) {
+
+		var graphics2D = (Graphics2D) graphics;
 
 		// get averages
 
 		var averages = model.getAverages();
 		var barCount = averages.length;
+		ensurePeaks(barCount);
 
 		// get spectrum metrics
 
@@ -138,20 +132,8 @@ public class SpectrumAnalyzerView extends JComponent {
 
 		// draw background
 
-		var graphics2D = getBufferedGraphics();
 		graphics2D.setColor(BACKGROUND_COLOR);
 		graphics2D.fillRect(0, 0, width, height);
-
-		// initialize peaks if necessary
-
-		if (peaks == null || peaks.length != barCount) {
-
-			peaks = new float[barCount];
-			fill(peaks, MINIMAL_DECIBELS);
-
-			peaksTime = new double[barCount];
-			peaksSpeed = new double[barCount];
-		}
 
 		// draw segments
 
@@ -160,7 +142,7 @@ public class SpectrumAnalyzerView extends JComponent {
 			var magnitude = averages[barIndex];
 			var decibels = (float) (20 * log10(magnitude / BASE_MAGNITUDE));
 			var segmentCount = round(NORMALIZER.normalize(decibels));
-			var segmentX = round(left + barIndex * barWidth);
+			var segmentX = round(fma(barIndex, barWidth, left));
 
 			for (var segmentIndex = 0; segmentIndex < segmentCount; segmentIndex++) {
 
@@ -168,7 +150,7 @@ public class SpectrumAnalyzerView extends JComponent {
 
 				graphics2D.fillRect(
 						segmentX,
-						round(bottom - segmentIndex * rowHeight),
+						round(fma(-segmentIndex, rowHeight, bottom)),
 						segmentWidth, segmentHeight);
 			}
 
@@ -189,7 +171,7 @@ public class SpectrumAnalyzerView extends JComponent {
 				// update peak time
 
 				var peakTime = peaksTime[barIndex];
-				peakTime += FRAME_TIME;
+				peakTime += targetFrameTime;
 				peaksTime[barIndex] = peakTime;
 
 				// after hanging time, let the peak fall
@@ -199,12 +181,12 @@ public class SpectrumAnalyzerView extends JComponent {
 					// increase peak falling speed with gravity
 
 					var peakSpeed = peaksSpeed[barIndex];
-					peakSpeed += PEAKS_GRAVITY * FRAME_TIME;
+					peakSpeed += PEAKS_GRAVITY * targetFrameTime;
 					peaksSpeed[barIndex] = peakSpeed;
 
 					// update peak
 
-					peak -= peakSpeed * FRAME_TIME;
+					peak -= peakSpeed * targetFrameTime;
 					peaks[barIndex] = peak;
 				}
 
@@ -218,12 +200,12 @@ public class SpectrumAnalyzerView extends JComponent {
 
 					graphics2D.fillRect(
 							segmentX,
-							round(bottom - peakSegmentIndex * rowHeight),
+							round(fma(-peakSegmentIndex, rowHeight, bottom)),
 							segmentWidth, segmentHeight);
 				}
 			}
 		}
 
-		graphics.drawImage(bufferedImage, 0, 0, null);
+		drawFrameRate(graphics2D);
 	}
 }

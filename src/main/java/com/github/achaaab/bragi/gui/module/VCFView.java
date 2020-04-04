@@ -26,8 +26,8 @@ public class VCFView extends JPanel {
 	 */
 	public VCFView(VCF model) {
 
-		var cutOffFrequencySlider = new FrequencySlider(27.5, 9);
-		cutOffFrequencySlider.setDecimalValue(model.getCutOffFrequency());
+		var cutOffFrequencySlider = new FrequencySlider(10, 11);
+		cutOffFrequencySlider.setDecimalValue(model.getCutoffFrequency());
 
 		var emphasisSlider = new JSlider(HORIZONTAL, 0, 100, round(100 * model.getEmphasis()));
 		emphasisSlider.setMajorTickSpacing(25);
@@ -41,13 +41,13 @@ public class VCFView extends JPanel {
 		add(emphasisSlider);
 
 		cutOffFrequencySlider.addChangeListener(event ->
-				model.setCutOffFrequency((float) cutOffFrequencySlider.getDecimalValue()));
+				model.setCutoffFrequency((float) cutOffFrequencySlider.getDecimalValue()));
 
 		emphasisSlider.addChangeListener(event ->
 				model.setEmphasis((float) emphasisSlider.getValue() / 100));
 
 		var frame = new JFrame(model.getName());
-		frame.setSize(400, 300);
+		frame.setSize(700, 250);
 		frame.setContentPane(this);
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		frame.setVisible(true);

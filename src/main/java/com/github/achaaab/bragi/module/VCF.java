@@ -1,5 +1,7 @@
 package com.github.achaaab.bragi.module;
 
+import com.github.achaaab.bragi.common.Normalizer;
+import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.common.connection.Input;
 import com.github.achaaab.bragi.common.connection.Output;
 import com.github.achaaab.bragi.gui.module.VCFView;
@@ -14,13 +16,20 @@ import static javax.swing.SwingUtilities.invokeLater;
  */
 public abstract class VCF extends Module {
 
+	protected static final double VOLTS_PER_OCTAVE = 5.0;
+
+	protected static final Normalizer NORMALIZER = new Normalizer(
+			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage(),
+			-1.0f, 1.0f
+	);
+
 	protected final Input modulation;
 	protected final Input input;
 	protected final Output output;
 
 	protected float emphasis;
-	protected float cutOffFrequency;
-	protected double actualCutOffFrequency;
+	protected float cutoffFrequency;
+	protected double actualCutoffFrequency;
 
 	protected float[] inputSamples;
 	protected float[] modulationSamples;
@@ -49,7 +58,7 @@ public abstract class VCF extends Module {
 		output = addPrimaryOutput(name + "_output");
 
 		emphasis = 0.5f;
-		cutOffFrequency = 440.0f;
+		cutoffFrequency = 440.0f;
 
 		y1 = 0.0;
 		y2 = 0.0;
@@ -91,30 +100,30 @@ public abstract class VCF extends Module {
 	}
 
 	/**
-	 * @return rezLevel
+	 * @return how much emphasis around cutoff frequency in {@code [0.0f, 1.0f]}
 	 */
 	public float getEmphasis() {
 		return emphasis;
 	}
 
 	/**
-	 * @param emphasis amount of emphasis between 0 and 1
+	 * @param emphasis how much emphasis around cutoff frequency in {@code [0.0f, 1.0f]}
 	 */
 	public void setEmphasis(float emphasis) {
 		this.emphasis = emphasis;
 	}
 
 	/**
-	 * @return cutOffFrequency
+	 * @return base frequency (without modulation) from which this VCF starts to filter
 	 */
-	public float getCutOffFrequency() {
-		return cutOffFrequency;
+	public float getCutoffFrequency() {
+		return cutoffFrequency;
 	}
 
 	/**
-	 * @param cutOffFrequency cutOffFrequency to set
+	 * @param cutoffFrequency base frequency (without modulation) from which this VCF starts to filter
 	 */
-	public void setCutOffFrequency(float cutOffFrequency) {
-		this.cutOffFrequency = cutOffFrequency;
+	public void setCutoffFrequency(float cutoffFrequency) {
+		this.cutoffFrequency = cutoffFrequency;
 	}
 }

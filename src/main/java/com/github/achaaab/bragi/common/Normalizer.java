@@ -14,10 +14,15 @@ public class Normalizer {
 
 	private final float input0;
 	private final float output0;
+
 	private final float minimalOutput;
 	private final float maximalOutput;
 
+	private final float minimalInput;
+	private final float maximalInput;
+
 	private final float amplification;
+	private final float inverseAmplification;
 
 	/**
 	 * @param input0  input sample 0
@@ -34,16 +39,30 @@ public class Normalizer {
 		var outputAmplitude = output1 - output0;
 
 		amplification = outputAmplitude / inputAmplitude;
+		inverseAmplification = inputAmplitude / outputAmplitude;
+
+		minimalInput = min(input0, input1);
+		maximalInput = max(input0, input1);
+
 		minimalOutput = min(output0, output1);
 		maximalOutput = max(output0, output1);
 	}
 
 	/**
-	 * @param input input with double precision
+	 * @param input input sample with double precision
 	 * @return normalized sample
 	 */
 	public float normalize(double input) {
 		return normalize((float) input);
+	}
+
+	/**
+	 * @param output output sample with double precision
+	 * @return inverse normalized sample
+	 * @since 0.1.6
+	 */
+	public float inverseNormalize(double output) {
+		return inverseNormalize((float) output);
 	}
 
 	/**
@@ -54,5 +73,16 @@ public class Normalizer {
 
 		var output = fma(amplification, input - input0, output0);
 		return min(maximalOutput, max(minimalOutput, output));
+	}
+
+	/**
+	 * @param output sample to inverse normalize
+	 * @return inverse normalized sample
+	 * @since 0.1.6
+	 */
+	public float inverseNormalize(float output) {
+
+		var input = fma(inverseAmplification, output - output0, input0);
+		return min(maximalInput, max(minimalInput, input));
 	}
 }

@@ -109,9 +109,34 @@ public class PlayerView extends JPanel {
 	 */
 	private void timeChanged(ChangeEvent event) {
 
-		if (!modelChange && !timeSlider.getValueIsAdjusting()) {
-			model.seek(timeSlider.getDecimalValue());
+		if (!modelChange) {
+
+			if (timeSlider.getValueIsAdjusting()) {
+
+				var time = timeSlider.getDecimalValue();
+				var duration = model.getDuration();
+
+				updateTimeLabel(time, duration);
+
+			} else {
+
+				model.seek(timeSlider.getDecimalValue());
+			}
 		}
+	}
+
+	/**
+	 * Updates the time label with new time and duration.
+	 *
+	 * @param time     time in seconds (s)
+	 * @param duration duration in seconds (s)
+	 */
+	private void updateTimeLabel(double time, double duration) {
+
+		var formattedTime = formatTime(time);
+		var formattedDuration = formatTime(duration);
+
+		timeLabel.setText(formattedTime + " / " + formattedDuration);
 	}
 
 	/**
@@ -128,10 +153,7 @@ public class PlayerView extends JPanel {
 			var time = model.getTime();
 			var duration = model.getDuration();
 
-			var formattedTime = formatTime(time);
-			var formattedDuration = formatTime(duration);
-
-			timeLabel.setText(formattedTime + " / " + formattedDuration);
+			updateTimeLabel(time, duration);
 
 			modelChange = true;
 			timeSlider.setMaximal(duration);

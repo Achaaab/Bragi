@@ -89,7 +89,7 @@ public class Speaker extends Module {
 		try {
 
 			line = (SourceDataLine) getLine(lineInformation);
-			line.open(audioFormat, Settings.INSTANCE.getByteRate() / 50);
+			line.open(audioFormat, Settings.INSTANCE.byteRate() / 50);
 
 		} catch (LineUnavailableException cause) {
 
