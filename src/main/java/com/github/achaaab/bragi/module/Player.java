@@ -10,7 +10,8 @@ import static javax.swing.SwingUtilities.invokeLater;
  */
 public abstract class Player extends Module {
 
-	private double time;
+	protected double time;
+	protected double duration;
 	protected boolean playing;
 
 	protected PlayerView view;
@@ -71,7 +72,10 @@ public abstract class Player extends Module {
 
 		playing = false;
 
-		setTime(0.0);
+		time = 0.0;
+		duration = 0.0;
+
+		updateView();
 	}
 
 	/**
@@ -82,21 +86,29 @@ public abstract class Player extends Module {
 	}
 
 	/**
-	 * @param time current playback time in seconds
+	 * @return track duration in seconds
 	 */
-	protected void setTime(double time) {
-
-		this.time = time;
-
-		if (view != null) {
-			invokeLater(() -> view.setTime(time));
-		}
+	public double getDuration() {
+		return duration;
 	}
 
 	/**
+	 * This method is designed to be called by the view.
+	 * Seek the position corresponding to specified time.
+	 *
 	 * @param time time to seek in seconds
 	 */
 	public void seek(double time) {
 		this.time = time;
+	}
+
+	/**
+	 * Updates the view, if there is one.
+	 */
+	protected void updateView() {
+
+		if (view != null) {
+			invokeLater(() -> view.updateTime());
+		}
 	}
 }

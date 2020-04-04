@@ -3,10 +3,20 @@ package com.github.achaaab.bragi.gui.module;
 import com.github.achaaab.bragi.gui.component.TimeSlider;
 import com.github.achaaab.bragi.module.Player;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 
+import static java.awt.FlowLayout.LEFT;
+import static java.lang.ClassLoader.getSystemResource;
+import static java.lang.Math.round;
+import static java.time.Duration.ofSeconds;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
@@ -17,40 +27,116 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
  */
 public class PlayerView extends JPanel {
 
-	private TimeSlider timeSlider;
+	private static final Icon PLAY_ICON;
+	private static final Icon PAUSE_ICON;
+	private static final Icon STOP_ICON;
+
+	static {
+
+		PLAY_ICON = new ImageIcon(getSystemResource("icons/play.png"));
+		PAUSE_ICON = new ImageIcon(getSystemResource("icons/pause.png"));
+		STOP_ICON = new ImageIcon(getSystemResource("icons/stop.png"));
+	}
+
+	/**
+	 * @param time time in seconds (s)
+	 * @return formatted time
+	 */
+	private static String formatTime(double time) {
+
+		var duration = ofSeconds(round(time));
+
+		var hours = duration.toHours();
+		var minutes = duration.toMinutesPart();
+		var seconds = duration.toSecondsPart();
+
+		return hours +
+				(minutes < 10 ? ":0" : ":") + minutes +
+				(seconds < 10 ? ":0" : ":") + seconds;
+	}
+
+	private final Player model;
+	private final JLabel timeLabel;
+	private final TimeSlider timeSlider;
+
+	private boolean modelChange;
 
 	/**
 	 * @param model player model
 	 */
 	public PlayerView(Player model) {
 
-		var play = new JButton("Play");
-		var pause = new JButton("Pause");
-		var stop = new JButton("Stop");
+		super(new FlowLayout(LEFT));
+
+		this.model = model;
+
+		var playButton = new JButton(PLAY_ICON);
+		var pauseButton = new JButton(PAUSE_ICON);
+		var stopButton = new JButton(STOP_ICON);
+		timeLabel = new JLabel();
 		timeSlider = new TimeSlider();
 
-		play.addActionListener(event -> model.play());
-		pause.addActionListener(event -> model.pause());
-		stop.addActionListener(event -> model.stop());
-		timeSlider.setEnabled(false);
-		//timeSlider.addChangeListener(event -> model.seek(timeSlider.getDecimalValue()));
+		timeSlider.setPreferredSize(new Dimension(300, 50));
 
-		add(stop);
-		add(play);
-		add(pause);
+		playButton.addActionListener(event -> model.play());
+		pauseButton.addActionListener(event -> model.pause());
+		stopButton.addActionListener(event -> model.stop());
+
+		modelChange = false;
+		timeSlider.addChangeListener(this::timeChanged);
+
+		add(stopButton);
+		add(playButton);
+		add(pauseButton);
+		add(timeLabel);
 		add(timeSlider);
 
 		var frame = new JFrame(model.getName());
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		frame.setContentPane(this);
-		frame.pack();
+		frame.setSize(684, 117);
 		frame.setVisible(true);
 	}
 
 	/**
-	 * @param time current playback time in seconds
+	 * This method is designed to be registered as the listener callback for the time slider.
+	 * It the {@link #modelChange} flag is set, does nothing.
+	 * If the the value of {@link #timeSlider} is adjusting, does nothing.
+	 * Otherwise, calls the model to seek the new time position.
+	 *
+	 * @param event time changed event
+	 * @since 0.1.6
 	 */
-	public void setTime(double time) {
-		timeSlider.setDecimalValue(time);
+	private void timeChanged(ChangeEvent event) {
+
+		if (!modelChange && !timeSlider.getValueIsAdjusting()) {
+			model.seek(timeSlider.getDecimalValue());
+		}
+	}
+
+	/**
+	 * This method is designed to be called by the model. To avoid infinite event loop, we set
+	 * a flag to indicate that this update comes from the model, which is already up to date.
+	 * Does nothing if the value if the time slider is adjusting (to let the user seek a time position).
+	 *
+	 * @since 0.1.6
+	 */
+	public void updateTime() {
+
+		if (!timeSlider.getValueIsAdjusting()) {
+
+			var time = model.getTime();
+			var duration = model.getDuration();
+
+			var formattedTime = formatTime(time);
+			var formattedDuration = formatTime(duration);
+
+			timeLabel.setText(formattedTime + " / " + formattedDuration);
+
+			modelChange = true;
+			timeSlider.setMaximal(duration);
+			timeSlider.setDecimalValue(time);
+			modelChange = false;
+		}
 	}
 }

@@ -26,7 +26,7 @@ public class VCFView extends JPanel {
 	 */
 	public VCFView(VCF model) {
 
-		var cutOffFrequencySlider = new FrequencySlider(25, 8);
+		var cutOffFrequencySlider = new FrequencySlider(27.5, 9);
 		cutOffFrequencySlider.setDecimalValue(model.getCutOffFrequency());
 
 		var emphasisSlider = new JSlider(HORIZONTAL, 0, 100, round(100 * model.getEmphasis()));

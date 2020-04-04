@@ -11,6 +11,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import static java.awt.Color.getHSBColor;
 import static java.lang.Math.log10;
 import static java.lang.Math.max;
 import static java.lang.Math.round;
@@ -57,7 +58,7 @@ public class SpectrumAnalyzerView extends JComponent {
 
 		for (var segmentIndex = 0; segmentIndex < SEGMENT_COUNT; segmentIndex++) {
 
-			SEGMENT_COLOR[segmentIndex] = Color.getHSBColor(
+			SEGMENT_COLOR[segmentIndex] = getHSBColor(
 					0.6f - 0.6f * segmentIndex / SEGMENT_COUNT,
 					1.0f + 0.0f * segmentIndex / SEGMENT_COUNT,
 					1.0f + 0.0f * segmentIndex / SEGMENT_COUNT);
@@ -158,7 +159,7 @@ public class SpectrumAnalyzerView extends JComponent {
 
 			var magnitude = averages[barIndex];
 			var decibels = (float) (20 * log10(magnitude / BASE_MAGNITUDE));
-			var segmentCount = NORMALIZER.normalize(decibels);
+			var segmentCount = round(NORMALIZER.normalize(decibels));
 			var segmentX = round(left + barIndex * barWidth);
 
 			for (var segmentIndex = 0; segmentIndex < segmentCount; segmentIndex++) {
@@ -209,11 +210,9 @@ public class SpectrumAnalyzerView extends JComponent {
 
 				// draw peak
 
-				var peakSegmentCount = NORMALIZER.normalize(peak);
+				var peakSegmentIndex = round(NORMALIZER.normalize(peak)) - 1;
 
-				if (peakSegmentCount > 0) {
-
-					var peakSegmentIndex = (int) peakSegmentCount;
+				if (peakSegmentIndex > 0) {
 
 					graphics2D.setColor(SEGMENT_COLOR[peakSegmentIndex]);
 

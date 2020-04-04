@@ -24,10 +24,10 @@ public class ADSRView extends JPanel {
 	 */
 	public ADSRView(ADSR model) {
 
-		var attackSlider = new LogarithmicSlider(1, 1000, 10);
-		var decaySlider = new LogarithmicSlider(1, 1000, 10);
-		var sustainSlider = new LinearSlider(-5.0, 0.0, 10);
-		var releaseSlider = new LogarithmicSlider(1, 1000, 10);
+		var attackSlider = new LogarithmicSlider(0.1, 10000, 50);
+		var decaySlider = new LogarithmicSlider(0.1, 10000, 50);
+		var sustainSlider = new LinearSlider(-5.0, 0.0, 50);
+		var releaseSlider = new LogarithmicSlider(0.1, 10000, 50);
 
 		attackSlider.setBorder(createTitledBorder("Attack (V/s)"));
 		decaySlider.setBorder(createTitledBorder("Decay (V/s)"));

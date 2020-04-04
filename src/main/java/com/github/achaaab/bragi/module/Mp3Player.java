@@ -116,7 +116,9 @@ public class Mp3Player extends Player {
 
 			} else {
 
-				setTime(file.getTime());
+				duration = file.getDuration();
+				time = file.getTime();
+				updateView();
 
 				var channelCount = mp3Frame.getChannelCount();
 				var sampleCount = mp3Frame.getBufferLength();

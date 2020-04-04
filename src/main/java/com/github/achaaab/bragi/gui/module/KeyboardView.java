@@ -5,11 +5,9 @@ import com.github.achaaab.bragi.module.Keyboard;
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
-import static java.awt.BorderLayout.CENTER;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
@@ -21,6 +19,9 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
  */
 public class KeyboardView extends JPanel {
 
+	private static final String KEY_PRESSED_SUFFIX = "_pressed";
+	private static final String KEY_RELEASED_SUFFIX = "_released";
+
 	/**
 	 * @param model keyboard model
 	 */
@@ -29,43 +30,46 @@ public class KeyboardView extends JPanel {
 		var keys = model.getKeys();
 		var keyCount = keys.size();
 
-		var keysPanel = new JPanel();
-		keysPanel.setLayout(new GridLayout(1, keyCount));
+		setLayout(new GridLayout(1, keyCount));
 
-		keysPanel.setFocusTraversalKeysEnabled(false);
+		var inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
+		var actionMap = getActionMap();
+
 		setFocusTraversalKeysEnabled(false);
 
 		for (var key : keys) {
 
 			var keyView = new KeyView(key, model);
-			keysPanel.add(keyView);
+			add(keyView);
 
 			var code = key.code();
+			var name = key.name();
+
 			var keyPressed = getKeyStroke(code, 0, false);
 			var keyReleased = getKeyStroke(code, 0, true);
 
-			getInputMap(WHEN_IN_FOCUSED_WINDOW).put(keyPressed, key.toString() + "_pressed");
-			getInputMap(WHEN_IN_FOCUSED_WINDOW).put(keyReleased, key.toString() + "_released");
+			var keyPressedKey = name + KEY_PRESSED_SUFFIX;
+			var keyReleasedKey = name + KEY_RELEASED_SUFFIX;
 
-			getActionMap().put(key.toString() + "_pressed", new AbstractAction() {
+			inputMap.put(keyPressed, keyPressedKey);
+			inputMap.put(keyReleased, keyReleasedKey);
+
+			actionMap.put(keyPressedKey, new AbstractAction() {
 
 				@Override
-				public void actionPerformed(ActionEvent actionEvent) {
+				public void actionPerformed(ActionEvent event) {
 					keyView.press();
 				}
 			});
 
-			getActionMap().put(key.toString() + "_released", new AbstractAction() {
+			actionMap.put(keyReleasedKey, new AbstractAction() {
 
 				@Override
-				public void actionPerformed(ActionEvent actionEvent) {
+				public void actionPerformed(ActionEvent event) {
 					keyView.release();
 				}
 			});
 		}
-
-		setLayout(new BorderLayout());
-		add(keysPanel, CENTER);
 
 		var frame = new JFrame(model.getName());
 		frame.setContentPane(this);

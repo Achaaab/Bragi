@@ -23,7 +23,8 @@ import java.nio.file.Path;
 
 import static com.github.achaaab.bragi.ResourceUtils.getPath;
 import static com.github.achaaab.bragi.common.wave.Waveform.SAWTOOTH_TRIANGULAR;
-import static java.lang.Thread.sleep;
+import static com.github.achaaab.bragi.common.wave.Waveform.SINE;
+import static com.github.achaaab.bragi.common.wave.Waveform.TRIANGLE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -44,7 +45,52 @@ public class Test {
 	 * @since 0.0.9
 	 */
 	public static void main(String... arguments) {
-		testDcg();
+		testPiano();
+	}
+
+	/**
+	 * Tests a piano-like sound (currently far from it).
+	 *
+	 * @since 0.1.6
+	 */
+	public static void testPiano() {
+
+		// main chain
+		var keyboard = new Keyboard();
+		var vco = new VCO();
+		var filter = new LowPassVCF();
+		var envelope = new VCA("envelope");
+		var tremolo = new VCA("tremolo");
+		var speaker = new Speaker();
+		keyboard.connect(vco);
+		vco.connect(filter);
+		filter.connect(envelope);
+		envelope.connect(tremolo);
+		speaker.connectInputs(tremolo, tremolo);
+
+		// envelope
+		var adsr = new ADSR();
+		keyboard.getGate().connect(adsr.getGate());
+		adsr.connect(envelope.getGain());
+
+		// a little bit of tremolo
+		var lfo = new LFO();
+		lfo.connect(tremolo.getGain());
+
+		lfo.setWaveform(SINE);
+		vco.setWaveform(TRIANGLE);
+		lfo.setFrequency(6.875);
+		lfo.setLowerPeak(-0.1f);
+		lfo.setUpperPeak(0.0f);
+		adsr.setAttack(1000);
+		adsr.setRelease(100);
+		adsr.setSustain(-0.2f);
+		adsr.setRelease(3.0f);
+		filter.setCutOffFrequency(7040.f);
+
+		var spectrum = new SpectrumAnalyzer();
+		var oscilloscope = new Oscilloscope();
+		tremolo.connect(spectrum, oscilloscope);
 	}
 
 	/**

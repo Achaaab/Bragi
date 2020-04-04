@@ -2,9 +2,6 @@ package com.github.achaaab.bragi.gui.component;
 
 import java.time.Duration;
 
-import static java.lang.Math.round;
-import static java.time.Duration.ofHours;
-import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
 
 /**
@@ -27,16 +24,5 @@ public class TimeSlider extends LinearSlider {
 		super(0.0, DEFAULT_DURATION.toSeconds(), 1000);
 
 		setDecimalValue(0.0);
-	}
-
-	/**
-	 * TODO need to think about it
-	 *
-	 * @param seconds time slider duration in seconds
-	 */
-	private void setDuration(double seconds) {
-
-		var milliseconds = round(seconds * 1_000);
-		var duration = ofMillis(milliseconds);
 	}
 }

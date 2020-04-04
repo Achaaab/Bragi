@@ -16,8 +16,9 @@ public abstract class DecimalSlider extends JSlider {
 
 	private static final DecimalFormat LABEL_FORMAT = new DecimalFormat("0.##");
 
-	protected final double amplitude;
-	protected final double minimal;
+	protected double amplitude;
+	protected double minimal;
+	protected double maximal;
 
 	/**
 	 * @param minimal   minimal value of this slider
@@ -29,6 +30,7 @@ public abstract class DecimalSlider extends JSlider {
 		super(0, precision);
 
 		this.minimal = minimal;
+		this.maximal = maximal;
 
 		amplitude = maximal - minimal;
 	}
@@ -52,7 +54,7 @@ public abstract class DecimalSlider extends JSlider {
 	 * @param value value from which to create a label
 	 * @return created label
 	 */
-	private JComponent createStandardLabel(int value) {
+	protected JComponent createStandardLabel(int value) {
 
 		var decimalValue = getDecimalValue(value);
 		var text = LABEL_FORMAT.format(decimalValue);
@@ -85,5 +87,16 @@ public abstract class DecimalSlider extends JSlider {
 	 */
 	public void setDecimalValue(double decimalValue) {
 		setValue(getValue(decimalValue));
+	}
+
+	/**
+	 * @param maximal maximal value of this slider
+	 * @since 0.1.6
+	 */
+	public void setMaximal(double maximal) {
+
+		this.maximal = maximal;
+
+		amplitude = maximal - minimal;
 	}
 }

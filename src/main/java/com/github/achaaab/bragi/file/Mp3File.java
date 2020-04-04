@@ -173,8 +173,16 @@ public class Mp3File {
 		try {
 
 			var header = bitStream.readFrame();
-			addFrameDuration(header);
-			bitStream.closeFrame();
+
+			if (header == null) {
+
+				ended = true;
+
+			} else {
+
+				addFrameDuration(header);
+				bitStream.closeFrame();
+			}
 
 		} catch (BitstreamException | IOException cause) {
 
