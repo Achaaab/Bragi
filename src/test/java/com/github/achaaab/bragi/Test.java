@@ -8,6 +8,7 @@ import com.github.achaaab.bragi.module.Keyboard;
 import com.github.achaaab.bragi.module.LFO;
 import com.github.achaaab.bragi.module.LowPassVCF;
 import com.github.achaaab.bragi.module.Microphone;
+import com.github.achaaab.bragi.module.Module;
 import com.github.achaaab.bragi.module.Mp3Player;
 import com.github.achaaab.bragi.module.Oscilloscope;
 import com.github.achaaab.bragi.module.PinkNoiseGenerator;
@@ -46,7 +47,7 @@ public class Test {
 	 * @since 0.0.9
 	 */
 	public static void main(String... arguments) {
-		testBandPassFilter();
+		testWavPlayer();
 	}
 
 	/**
@@ -108,9 +109,7 @@ public class Test {
 		adsr.setRelease(3.0f);
 		filter.setCutoffFrequency(7040.f);
 
-		var spectrum = new SpectrumAnalyzer();
-		var oscilloscope = new Oscilloscope();
-		tremolo.connect(spectrum, oscilloscope);
+		visualizeOutputs(tremolo);
 	}
 
 	/**
@@ -139,10 +138,7 @@ public class Test {
 		vca.connect(filter);
 		speaker.connectInputs(filter, filter);
 
-		// visualization
-		var oscilloscope = new Oscilloscope();
-		var spectrum = new SpectrumAnalyzer();
-		filter.connect(oscilloscope, spectrum);
+		visualizeOutputs(filter);
 	}
 
 	/**
@@ -176,10 +172,7 @@ public class Test {
 		adsr.setAttack(1000.0);
 		adsr.setRelease(2.0);
 
-		// visualization
-		var oscilloscope = new Oscilloscope();
-		var spectrum = new SpectrumAnalyzer();
-		vcaTremolo.connect(oscilloscope, spectrum);
+		visualizeOutputs(vcaTremolo);
 	}
 
 	/**
@@ -230,6 +223,8 @@ public class Test {
 		var speaker = new Speaker();
 
 		player.connectOutputs(speaker);
+
+		visualizeOutputs(player);
 	}
 
 	/**
@@ -247,9 +242,6 @@ public class Test {
 		noise.connect(filter);
 		filter.connect(spectrum);
 		speaker.connectInputs(filter, filter);
-
-		var oscilloscope = new Oscilloscope();
-		filter.connect(oscilloscope);
 	}
 
 	/**
@@ -267,9 +259,6 @@ public class Test {
 		noise.connect(filter);
 		filter.connect(spectrum);
 		speaker.connectInputs(filter, filter);
-
-		var oscilloscope = new Oscilloscope();
-		filter.connect(oscilloscope);
 	}
 
 	/**
@@ -280,12 +269,11 @@ public class Test {
 	public static void testPinkNoiseGenerator() {
 
 		var noise = new PinkNoiseGenerator();
-		var spectrum = new SpectrumAnalyzer();
 		var speaker = new Speaker();
-		var oscilloscope = new Oscilloscope();
 
-		noise.connect(spectrum, oscilloscope);
 		speaker.connectInputs(noise, noise);
+
+		visualizeOutputs(noise);
 	}
 
 	/**
@@ -296,11 +284,11 @@ public class Test {
 	public static void testWhiteNoiseGenerator() {
 
 		var noise = new WhiteNoiseGenerator();
-		var spectrum = new SpectrumAnalyzer();
 		var speaker = new Speaker();
 
-		noise.connect(spectrum);
 		speaker.connectInputs(noise, noise);
+
+		visualizeOutputs(noise);
 	}
 
 	/**
@@ -401,15 +389,10 @@ public class Test {
 	public static void testMicrophone() {
 
 		var microphone = new Microphone();
-		var spectrumLeft = new SpectrumAnalyzer("left");
-		var spectrumRight = new SpectrumAnalyzer("right");
-		var oscilloscopeLeft = new Oscilloscope("left");
-		var oscilloscopeRight = new Oscilloscope("right");
 		var speaker = new Speaker();
-
-		microphone.connectOutputs(spectrumLeft, spectrumRight);
-		microphone.connectOutputs(oscilloscopeLeft, oscilloscopeRight);
 		microphone.connectOutputs(speaker);
+
+		visualizeOutputs(microphone);
 	}
 
 	/**
@@ -423,6 +406,8 @@ public class Test {
 		var speaker = new Speaker();
 
 		player.connectOutputs(speaker);
+
+		visualizeOutputs(player);
 	}
 
 	/**
@@ -440,5 +425,23 @@ public class Test {
 		leftSpectrum.setComputingFrameRate(Settings.INSTANCE.frameRate());
 
 		player.connectOutputs(leftSpectrum, rightSpectrum);
+	}
+
+	/**
+	 * Adds 1 spectrum and 1 oscilloscope for each output of the given module.
+	 *
+	 * @param module module to visualize
+	 * @since 0.1.6
+	 */
+	private static void visualizeOutputs(Module module) {
+
+		for (var output : module.getOutputs()) {
+
+			var oscilloscope = new Oscilloscope(output.toString());
+			var spectrum = new SpectrumAnalyzer(output.toString());
+
+			output.connect(oscilloscope.getInput());
+			output.connect(spectrum.getInput());
+		}
 	}
 }

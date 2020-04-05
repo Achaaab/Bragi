@@ -1,5 +1,7 @@
 package com.github.achaaab.bragi.common;
 
+import static java.lang.Math.round;
+
 /**
  * @author Jonathan Guéhenneux
  * @since 0.0.1
@@ -9,7 +11,7 @@ public record Settings(
 		int channelCount,
 		int sampleSize,
 		int frameRate,
-		int chunkSize,
+		float chunkDuration,
 		float minimalVoltage,
 		float maximalVoltage) {
 
@@ -18,7 +20,7 @@ public record Settings(
 	private static final int DEFAULT_CHANNELS_COUNT = 2;
 	private static final int DEFAULT_SAMPLE_SIZE = 2;
 	private static final int DEFAULT_FRAME_RATE = 44100;
-	private static final int DEFAULT_CHUNK_SIZE = 100;
+	private static final float DEFAULT_CHUNK_DURATION = 0.01f;
 	private static final float DEFAULT_MINIMAL_VOLTAGE = -5.0f;
 	private static final float DEFAULT_MAXIMAL_VOLTAGE = 5.0f;
 
@@ -31,9 +33,16 @@ public record Settings(
 				DEFAULT_CHANNELS_COUNT,
 				DEFAULT_SAMPLE_SIZE,
 				DEFAULT_FRAME_RATE,
-				DEFAULT_CHUNK_SIZE,
+				DEFAULT_CHUNK_DURATION,
 				DEFAULT_MINIMAL_VOLTAGE,
 				DEFAULT_MAXIMAL_VOLTAGE);
+	}
+
+	/**
+	 * @return number of frames per chunk
+	 */
+	public int chunkSize() {
+		return round(frameRate * chunkDuration);
 	}
 
 	/**

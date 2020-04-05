@@ -1,8 +1,15 @@
 package com.github.achaaab.bragi.module;
 
+import com.github.achaaab.bragi.common.ModuleCreationException;
+import com.github.achaaab.bragi.common.ModuleExecutionException;
+import com.github.achaaab.bragi.common.Settings;
+import com.github.achaaab.bragi.file.AudioFile;
+import com.github.achaaab.bragi.file.AudioFileException;
 import com.github.achaaab.bragi.gui.module.PlayerView;
+import org.slf4j.Logger;
 
 import static javax.swing.SwingUtilities.invokeLater;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author Jonathan Guéhenneux
@@ -10,22 +17,36 @@ import static javax.swing.SwingUtilities.invokeLater;
  */
 public abstract class Player extends Module {
 
-	protected double time;
-	protected double duration;
-	protected boolean playing;
+	private static final Logger LOGGER = getLogger(Player.class);
 
+	protected AudioFile file;
+	protected boolean playing;
 	protected PlayerView view;
 
 	/**
 	 * @param name name of the player to create
-	 * @since 0.1.4
+	 * @param file audio file to play
+	 * @since 0.1.6
 	 */
-	public Player(String name) {
+	public Player(String name, AudioFile file) {
 
 		super(name);
 
-		time = 0.0f;
-		playing = true;
+		this.file = file;
+
+		addPrimaryOutput(name + "_output_" + outputs.size());
+
+		while (outputs.size() < Settings.INSTANCE.channelCount()) {
+			addSecondaryOutput(name + "_output_" + outputs.size());
+		}
+
+		try {
+			file.open();
+		} catch (AudioFileException cause) {
+			throw new ModuleCreationException(cause);
+		}
+
+		start();
 
 		invokeLater(() -> view = new PlayerView(this));
 	}
@@ -47,7 +68,39 @@ public abstract class Player extends Module {
 	 * @return number of played frames
 	 * @throws InterruptedException if interrupted while writing on outputs
 	 */
-	protected abstract int playChunk() throws InterruptedException;
+	private int playChunk() throws InterruptedException {
+
+		try {
+
+			var frameCount = 0;
+			float[][] chunk;
+
+			synchronized (this) {
+				chunk = file.readChunk();
+			}
+
+			if (chunk == null) {
+
+				stop();
+
+			} else {
+
+				updateView();
+
+				var channelCount = chunk.length;
+
+				for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
+					outputs.get(channelIndex).write(chunk[channelIndex]);
+				}
+			}
+
+			return frameCount;
+
+		} catch (AudioFileException cause) {
+
+			throw new ModuleExecutionException(cause);
+		}
+	}
 
 	/**
 	 * Starts or resumes playback.
@@ -70,10 +123,20 @@ public abstract class Player extends Module {
 	 */
 	public void stop() {
 
-		playing = false;
+		synchronized (this) {
 
-		time = 0.0;
-		duration = 0.0;
+			try {
+
+				file.close();
+				file.open();
+
+			} catch (AudioFileException cause) {
+
+				throw new ModuleExecutionException(cause);
+			}
+		}
+
+		playing = false;
 
 		updateView();
 	}
@@ -82,14 +145,14 @@ public abstract class Player extends Module {
 	 * @return current playback time in seconds
 	 */
 	public double getTime() {
-		return time;
+		return file.getTime();
 	}
 
 	/**
 	 * @return track duration in seconds
 	 */
 	public double getDuration() {
-		return duration;
+		return file.getDuration();
 	}
 
 	/**
@@ -98,8 +161,13 @@ public abstract class Player extends Module {
 	 *
 	 * @param time time to seek in seconds
 	 */
-	public void seek(double time) {
-		this.time = time;
+	public synchronized void seek(double time) {
+
+		try {
+			file.seekTime(time);
+		} catch (AudioFileException cause) {
+			throw new ModuleCreationException(cause);
+		}
 	}
 
 	/**

@@ -1,11 +1,15 @@
 package com.github.achaaab.bragi.file;
 
+import com.github.achaaab.bragi.common.Normalizer;
+import com.github.achaaab.bragi.common.Settings;
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.DecoderException;
 import javazoom.jl.decoder.Header;
 import javazoom.jl.decoder.SampleBuffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -13,6 +17,7 @@ import java.nio.file.Path;
 
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Files.size;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * An MP3 file is basically made of frames.
@@ -25,7 +30,14 @@ import static java.nio.file.Files.size;
  * @author Jonathan Guéhenneux
  * @since 0.1.4
  */
-public class Mp3File {
+public class Mp3File implements AudioFile {
+
+	private static final Logger LOGGER = getLogger(Mp3File.class);
+
+	private static final Normalizer NORMALIZER = new Normalizer(
+			Short.MIN_VALUE, Short.MAX_VALUE,
+			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
+	);
 
 	private final Path path;
 
@@ -37,15 +49,9 @@ public class Mp3File {
 
 	/**
 	 * @param path path to MP3 file
-	 * @throws Mp3FileException exception while opening the MP3 file
 	 */
-	public Mp3File(Path path) throws Mp3FileException {
-
+	public Mp3File(Path path) {
 		this.path = path;
-
-		decoder = new Decoder();
-
-		open();
 	}
 
 	/**
@@ -71,12 +77,90 @@ public class Mp3File {
 	public void seekTime(double targetTime) throws Mp3FileException {
 
 		if (targetTime < time) {
-			reopen();
+
+			close();
+			open();
 		}
 
 		while (!ended && time < targetTime) {
 			skipFrame();
 		}
+	}
+
+
+	/**
+	 * Opens the MP3 file.
+	 *
+	 * @throws Mp3FileException exception while opening the MP3 file
+	 */
+	public void open() throws Mp3FileException {
+
+		try {
+
+			LOGGER.info("opening MP3 file {}", path);
+
+			var stream = newInputStream(path);
+			var bufferedStream = new BufferedInputStream(stream);
+			bitStream = new Bitstream(bufferedStream);
+			decoder = new Decoder();
+
+			time = 0.0f;
+			duration = 0.0f;
+			ended = false;
+
+		} catch (IOException cause) {
+
+			throw new Mp3FileException(cause);
+		}
+	}
+
+	/**
+	 * Closes the MP3 file.
+	 *
+	 * @throws Mp3FileException exception while closing the MP3 file
+	 */
+	public void close() throws Mp3FileException {
+
+		try {
+
+			LOGGER.info("closing MP3 file {}", path);
+			bitStream.close();
+
+		} catch (BitstreamException cause) {
+
+			throw new Mp3FileException(cause);
+		}
+	}
+
+	@Override
+	public float[][] readChunk() throws Mp3FileException {
+
+		float[][] chunk = null;
+
+		var mp3Frame = readFrame();
+
+		if (mp3Frame != null) {
+
+			var channelCount = mp3Frame.getChannelCount();
+			var sampleCount = mp3Frame.getBufferLength();
+			var frameCount = sampleCount / channelCount;
+
+			chunk = new float[channelCount][frameCount];
+
+			var buffer = mp3Frame.getBuffer();
+			var sampleIndex = 0;
+
+			for (var frameIndex = 0; frameIndex < frameCount; frameIndex++) {
+
+				for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
+
+					var sample = buffer[sampleIndex++];
+					chunk[channelIndex][frameIndex] = NORMALIZER.normalize(sample);
+				}
+			}
+		}
+
+		return chunk;
 	}
 
 	/**
@@ -85,8 +169,7 @@ public class Mp3File {
 	 * @return read MP3 frame, or {@code null} if this MP3 file ended
 	 * @throws Mp3FileException exception while reading the next frame
 	 */
-	public SampleBuffer readFrame() throws Mp3FileException {
-
+	private SampleBuffer readFrame() throws Mp3FileException {
 
 		try {
 
@@ -112,55 +195,6 @@ public class Mp3File {
 
 			throw new Mp3FileException(cause);
 		}
-	}
-
-	/**
-	 * Opens the MP3 file.
-	 *
-	 * @throws Mp3FileException exception while opening the MP3 file
-	 */
-	private void open() throws Mp3FileException {
-
-		try {
-
-			var stream = newInputStream(path);
-			var bufferedStream = new BufferedInputStream(stream);
-			bitStream = new Bitstream(bufferedStream);
-			decoder = new Decoder();
-
-			time = 0.0f;
-			duration = 0.0f;
-			ended = false;
-
-		} catch (IOException cause) {
-
-			throw new Mp3FileException(cause);
-		}
-	}
-
-	/**
-	 * Closes the MP3 file.
-	 *
-	 * @throws Mp3FileException exception while closing the MP3 file
-	 */
-	private void close() throws Mp3FileException {
-
-		try {
-			bitStream.close();
-		} catch (BitstreamException cause) {
-			throw new Mp3FileException(cause);
-		}
-	}
-
-	/**
-	 * Closes then opens again the MP3 file.
-	 *
-	 * @throws Mp3FileException exception while reopening the MP3 file
-	 */
-	public void reopen() throws Mp3FileException {
-
-		close();
-		open();
 	}
 
 	/**

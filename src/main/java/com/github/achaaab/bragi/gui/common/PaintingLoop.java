@@ -124,7 +124,7 @@ public class PaintingLoop implements Runnable {
 		component.paintImmediately(component.getBounds());
 
 		/*
-		When painting is very fast (observed with an nearly empty spectrum analyser
+		When painting is very fast (observed with an nearly empty spectrum analyzer
 		which takes less than 1 millisecond to paint). X11 server seems to drop nearly all the frames, it only
 		shows 1 frame every 30 rendered frames (estimation). Using this sync() method seems to solve the problem
 		at the cost of a significantly increased frame render time.

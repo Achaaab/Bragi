@@ -2,15 +2,19 @@ package com.github.achaaab.bragi.file;
 
 import com.github.achaaab.bragi.common.Normalizer;
 import com.github.achaaab.bragi.common.Settings;
+import org.slf4j.Logger;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteOrder;
+import java.nio.file.Path;
 
+import static java.lang.Math.min;
+import static java.lang.Math.round;
 import static java.nio.ByteBuffer.wrap;
 import static java.nio.ByteOrder.LITTLE_ENDIAN;
 import static java.nio.charset.StandardCharsets.US_ASCII;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * WAV file
@@ -18,9 +22,10 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
  * @author Jonathan Guéhenneux
  * @since 0.1.0
  */
-public class WavFile {
+public class WavFile implements AudioFile {
 
-	private static final int HEADER_INDEX = 0;
+	private static final Logger LOGGER = getLogger(WavFile.class);
+
 	private static final int HEADER_SIZE = 44;
 	private static final ByteOrder HEADER_BYTE_ORDER = LITTLE_ENDIAN;
 	private static final String READ_ONLY_MODE = "r";
@@ -41,71 +46,51 @@ public class WavFile {
 			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
 	);
 
-	private final RandomAccessFile fileReader;
+	private final Path path;
 
+	private RandomAccessFile reader;
+	private int offset;
 	private WavFileHeader header;
+	private float duration;
 
 	/**
-	 * @param file file
-	 * @throws WavFileException if header is malformed
+	 * @param path path to a WAV file
 	 */
-	public WavFile(File file) throws WavFileException {
+	public WavFile(Path path) {
+		this.path = path;
+
+	}
+
+	@Override
+	public void open() throws WavFileException {
 
 		try {
 
-			fileReader = new RandomAccessFile(file, READ_ONLY_MODE);
+			LOGGER.info("opening WAV file {}", path);
+
+			reader = new RandomAccessFile(path.toFile(), READ_ONLY_MODE);
+			offset = 0;
+
 			readHeader();
 
+			float dataSize = header.dataSize();
+			var byteRate = header.byteRate();
+
+			duration = dataSize / byteRate;
+
 		} catch (IOException cause) {
 
 			throw new WavFileException(cause);
 		}
 	}
 
-	/**
-	 * Reads samples from this WAV file at specified offset and writes them in given samples array.
-	 *
-	 * @param samples array where to write read samples
-	 * @param offset  offset from which to read
-	 * @return number of read bytes
-	 * @throws WavFileException exception while reading samples
-	 */
-	public int read(float[][] samples, int offset) throws WavFileException {
-
-		var frameCount = samples[0].length;
-		var bytes = new byte[frameCount * header.frameSize()];
+	@Override
+	public void close() throws WavFileException {
 
 		try {
 
-			fileReader.seek(HEADER_SIZE + offset);
-			var byteCount = fileReader.read(bytes);
-
-			var buffer = wrap(bytes);
-			buffer.order(LITTLE_ENDIAN);
-
-			frameCount = byteCount / header.frameSize();
-			var bytesPerSample = header.sampleSize() / 8;
-
-			var index = 0;
-
-			for (var frameIndex = 0; frameIndex < frameCount; frameIndex++) {
-
-				for (var channelIndex = 0; channelIndex < header.channelCount(); channelIndex++) {
-
-					samples[channelIndex][frameIndex] = switch (bytesPerSample) {
-
-						case 1 -> ONE_BYTE_NORMALIZER.normalize(buffer.get(index));
-						case 2 -> TWO_BYTES_NORMALIZER.normalize(buffer.getShort(index));
-
-						default -> throw new WavFileException(
-								"unsupported sample size: " + bytesPerSample + " bytes");
-					};
-
-					index += bytesPerSample;
-				}
-			}
-
-			return byteCount;
+			LOGGER.info("closing WAV file {}", path);
+			reader.close();
 
 		} catch (IOException cause) {
 
@@ -113,11 +98,77 @@ public class WavFile {
 		}
 	}
 
-	/**
-	 * @return header of this WAV file
-	 */
-	public WavFileHeader getHeader() {
-		return header;
+	@Override
+	public float getTime() {
+		return (float) offset / header.byteRate();
+	}
+
+	@Override
+	public float getDuration() {
+		return duration;
+	}
+
+	@Override
+	public void seekTime(double targetTime) {
+
+		var bytes = (float) targetTime * header.byteRate();
+		var frameIndex = round(bytes / header.frameSize());
+
+		offset = frameIndex * header.frameSize();
+	}
+
+	@Override
+	public float[][] readChunk() throws AudioFileException {
+
+		float[][] chunk = null;
+
+		if (offset < header.dataSize()) {
+
+			try {
+
+				var frameCount = Settings.INSTANCE.chunkSize();
+				var channelCount = header.channelCount();
+				var byteCount = min(frameCount * header.frameSize(), header.dataSize() - offset);
+
+				var bytes = new byte[byteCount];
+
+				reader.seek(HEADER_SIZE + offset);
+				byteCount = reader.read(bytes);
+				offset += byteCount;
+
+				var buffer = wrap(bytes);
+				buffer.order(LITTLE_ENDIAN);
+				var bufferIndex = 0;
+
+				frameCount = byteCount / header.frameSize();
+				var bytesPerSample = header.sampleSize() / 8;
+
+				chunk = new float[channelCount][frameCount];
+
+				for (var frameIndex = 0; frameIndex < frameCount; frameIndex++) {
+
+					for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
+
+						chunk[channelIndex][frameIndex] = switch (bytesPerSample) {
+
+							case 1 -> ONE_BYTE_NORMALIZER.normalize(buffer.get(bufferIndex));
+							case 2 -> TWO_BYTES_NORMALIZER.normalize(buffer.getShort(bufferIndex));
+
+							default -> throw new WavFileException(
+									"unsupported sample size: " + bytesPerSample + " bytes");
+						};
+
+						bufferIndex += bytesPerSample;
+					}
+				}
+
+			} catch (IOException cause) {
+
+				throw new WavFileException(cause);
+			}
+		}
+
+		return chunk;
 	}
 
 	/**
@@ -131,8 +182,8 @@ public class WavFile {
 
 		try {
 
-			fileReader.seek(HEADER_INDEX);
-			fileReader.readFully(bytes);
+			reader.seek(0);
+			reader.readFully(bytes);
 
 		} catch (IOException cause) {
 
@@ -144,47 +195,47 @@ public class WavFile {
 		// strings are read with big endian order, but numbers (shorts and ints) are read with little endian order
 		buffer.order(HEADER_BYTE_ORDER);
 
-		var offset = 0;
+		var headerOffset = 0;
 
 		// all strings in header are 4 bytes long
 		var stringBytes = new byte[4];
 
 		// file type: constant "RIFF" (Resource Interchange File Format)
 		// TODO check constant value
-		buffer.get(offset, stringBytes, 0, 4);
+		buffer.get(headerOffset, stringBytes, 0, 4);
 		var fileType = new String(stringBytes, US_ASCII);
-		offset += 4;
+		headerOffset += 4;
 
 		// file size in bytes minus 8 bytes (fileType and fileSize)
 		// TODO check file size
 		// TODO file size is actually an unsigned int and should be stored in a long
-		var fileSize = buffer.getInt(offset);
-		offset += 4;
+		var fileSize = buffer.getInt(headerOffset);
+		headerOffset += 4;
 
 		// file format: constant "WAVE"
 		// TODO check constant value
-		buffer.get(offset, stringBytes, 0, 4);
+		buffer.get(headerOffset, stringBytes, 0, 4);
 		var fileFormat = new String(stringBytes, US_ASCII);
-		offset += 4;
+		headerOffset += 4;
 
 		// format chunk title: constant "fmt "
 		// TODO check constant value
-		buffer.get(offset, stringBytes, 0, 4);
+		buffer.get(headerOffset, stringBytes, 0, 4);
 		var formatChunkTitle = new String(stringBytes, US_ASCII);
-		offset += 4;
+		headerOffset += 4;
 
 		// format chunk size in bytes: constant 16
 		// TODO check constant value
-		var formatChunkSize = buffer.getInt(offset);
-		offset += 4;
+		var formatChunkSize = buffer.getInt(headerOffset);
+		headerOffset += 4;
 
 		/*
 		audio format: only 1 is supported
 		1: PCM (Pulse Code Modulation) = linear quantization
 		TODO check that audio format is PCM
 		 */
-		var audioFormat = buffer.getShort(offset);
-		offset += 2;
+		var audioFormat = buffer.getShort(headerOffset);
+		headerOffset += 2;
 
 		/*
 		channel count: number of channels
@@ -192,38 +243,38 @@ public class WavFile {
 		2: stereo
 		etc.
 		 */
-		var channelCount = buffer.getShort(offset);
-		offset += 2;
+		var channelCount = buffer.getShort(headerOffset);
+		headerOffset += 2;
 
 		// frame rate: number of frames per second
 		// TODO check frame rate (must be strictly positive)
-		var frameRate = buffer.getInt(offset);
-		offset += 4;
+		var frameRate = buffer.getInt(headerOffset);
+		headerOffset += 4;
 
 		// byte rate: number of bytes per second
 		// TODO check byte rate (must be equal to frame rate * frame size)
-		var byteRate = buffer.getInt(offset);
-		offset += 4;
+		var byteRate = buffer.getInt(headerOffset);
+		headerOffset += 4;
 
 		// frame size: number of bytes per frame
 		// TODO check frame size (must be equal to channel count * sample size / 8)
-		var frameSize = buffer.getShort(offset);
-		offset += 2;
+		var frameSize = buffer.getShort(headerOffset);
+		headerOffset += 2;
 
 		// sample size: number of bits per sample, multiple of 8
 		// TODO only 8 and 16 are supported, add support for 24 and 32 bits
-		var sampleSize = buffer.getShort(offset);
-		offset += 2;
+		var sampleSize = buffer.getShort(headerOffset);
+		headerOffset += 2;
 
 		// data chunk title: constant "data"
 		// TODO check constant value
-		buffer.get(offset, stringBytes, 0, 4);
+		buffer.get(headerOffset, stringBytes, 0, 4);
 		var dataChunkTitle = new String(stringBytes, US_ASCII);
-		offset += 4;
+		headerOffset += 4;
 
 		// data size: size of data in bytes
 		// TODO check value
-		var dataSize = buffer.getInt(offset);
+		var dataSize = buffer.getInt(headerOffset);
 
 		header = new WavFileHeader(fileType, fileSize, fileFormat, formatChunkTitle, formatChunkSize, audioFormat,
 				channelCount, frameRate, byteRate, frameSize, sampleSize, dataChunkTitle, dataSize);
