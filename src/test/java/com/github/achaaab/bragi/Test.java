@@ -46,7 +46,7 @@ public class Test {
 	 * @since 0.0.9
 	 */
 	public static void main(String... arguments) {
-		testMp3Player();
+		testBandPassFilter();
 	}
 
 	/**

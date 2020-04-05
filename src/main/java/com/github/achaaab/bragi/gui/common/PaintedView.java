@@ -1,10 +1,10 @@
 package com.github.achaaab.bragi.gui.common;
 
 import javax.swing.JComponent;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 
+import static java.awt.Color.RED;
 import static java.lang.Math.round;
 
 /**
@@ -57,7 +57,7 @@ public abstract class PaintedView extends JComponent {
 		var messageBounds = glyphVector.getPixelBounds(null, 0, 0);
 
 		graphics.setFont(font);
-		graphics.setColor(Color.RED);
+		graphics.setColor(RED);
 
 		graphics.drawString(
 				frameRateMessage,

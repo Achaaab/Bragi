@@ -3,10 +3,12 @@ package com.github.achaaab.bragi.gui.common;
 import org.slf4j.Logger;
 
 import javax.swing.JComponent;
+import java.awt.Toolkit;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Deque;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
+import static java.awt.Toolkit.getDefaultToolkit;
 import static java.lang.Math.round;
 import static java.lang.System.nanoTime;
 import static java.lang.Thread.sleep;
@@ -21,6 +23,8 @@ public class PaintingLoop implements Runnable {
 
 	private static final Logger LOGGER = getLogger(PaintingLoop.class);
 
+	private static final Toolkit TOOLKIT = getDefaultToolkit();
+
 	private static final int NANOSECONDS_PER_MILLISECOND = 1_000_000;
 	private static final double NANOSECONDS_PER_SECOND = 1_000_000_000.0;
 
@@ -33,7 +37,7 @@ public class PaintingLoop implements Runnable {
 
 	private final double targetFrameRate;
 	private final long targetFrameTime;
-	private final Deque<Long> frameTimes;
+	private final Queue<Long> frameTimes;
 
 	private boolean running;
 	private long totalFrameTimes;
@@ -52,7 +56,7 @@ public class PaintingLoop implements Runnable {
 
 		targetFrameTime = round(NANOSECONDS_PER_SECOND / targetFrameRate);
 
-		frameTimes = new LinkedList<>();
+		frameTimes = new ArrayDeque<>();
 		totalFrameTimes = 0;
 
 		new Thread(this).start();
@@ -106,17 +110,27 @@ public class PaintingLoop implements Runnable {
 		if (timeLeft > 0) {
 
 			sleep(timeLeft / NANOSECONDS_PER_MILLISECOND);
-			end += timeLeft;
+			end = nanoTime();
 		}
 
 		return end;
 	}
 
 	/**
-	 * Paints the component.
+	 * Paints the component synchronously.
 	 */
 	private void paint() {
+
 		component.paintImmediately(component.getBounds());
+
+		/*
+		When painting is very fast (observed with an nearly empty spectrum analyser
+		which takes less than 1 millisecond to paint). X11 server seems to drop nearly all the frames, it only
+		shows 1 frame every 30 rendered frames (estimation). Using this sync() method seems to solve the problem
+		at the cost of a significantly increased frame render time.
+		*/
+
+		TOOLKIT.sync();
 	}
 
 	/**
@@ -128,10 +142,10 @@ public class PaintingLoop implements Runnable {
 	private void updateFrameRate(long frameTime) {
 
 		if (frameTimes.size() == SAMPLE_COUNT) {
-			totalFrameTimes -= frameTimes.removeFirst();
+			totalFrameTimes -= frameTimes.remove();
 		}
 
-		frameTimes.addLast(frameTime);
+		frameTimes.add(frameTime);
 		totalFrameTimes += frameTime;
 
 		var frameCount = frameTimes.size();
