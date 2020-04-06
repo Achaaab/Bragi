@@ -115,6 +115,8 @@ I am still developing Bragi but feel free to submit pull requests.
 ## License
 This project is licensed under the GNU General Public License (GPL) - see the [LICENSE.md](LICENSE.md) for the details.
 ## Acknowledgments
-* Thanks to [Damien Di Fede](https://github.com/ddf) for his FFT implementation
-* Thanks to [Ernest Yu](https://github.com/ernieyu)
-for his [range slider](https://github.com/ernieyu/Swing-range-slider) Swing implementation
+I thank:
+* [Damien Di Fede](https://github.com/ddf) for his FFT implementation,
+* [Ernest Yu](https://github.com/ernieyu) for his [range slider](https://github.com/ernieyu/Swing-range-slider),
+* [Bram de Jong](https://github.com/bdejong) for his useful compilation of DSP resources
+[musicdsp](https://github.com/bdejong/musicdsp) and the corresponding [web site](https://www.musicdsp.org).

@@ -171,6 +171,11 @@ public class WavFile implements AudioFile {
 		return chunk;
 	}
 
+	@Override
+	public float getSampleRate() {
+		return header.frameRate();
+	}
+
 	/**
 	 * Reads the header of this WAV file.
 	 *

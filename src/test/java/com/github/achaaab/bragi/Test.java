@@ -41,13 +41,45 @@ public class Test {
 
 	private static final Path TEST_MP3_PATH = getPath("test_44100.mp3");
 	private static final Path TEST_WAV_PATH = getPath("test_44100.wav");
+	private static final Path TEST_MP3_32000_PATH = getPath("test_32000.mp3");
+	private static final Path TEST_WAV_8000_PATH = getPath("test_8000.wav");
 
 	/**
 	 * @param arguments none
 	 * @since 0.0.9
 	 */
 	public static void main(String... arguments) {
-		testWavPlayer();
+		testMicrophone();
+	}
+
+	/**
+	 * Tests interpolation in {@link WavPlayer}.
+	 *
+	 * @since 0.1.7
+	 */
+	public static void testWavPlayerInterpolation() {
+
+		var player = new WavPlayer(TEST_WAV_8000_PATH);
+		var speaker = new Speaker();
+
+		player.connect(speaker);
+
+		visualizeOutputs(player);
+	}
+
+	/**
+	 * Tests interpolation in {@link Mp3Player}.
+	 *
+	 * @since 0.1.7
+	 */
+	public static void testMp3PlayerInterpolation() {
+
+		var player = new Mp3Player(TEST_MP3_32000_PATH);
+		var speaker = new Speaker();
+
+		player.connect(speaker);
+
+		visualizeOutputs(player);
 	}
 
 	/**
@@ -390,6 +422,7 @@ public class Test {
 
 		var microphone = new Microphone();
 		var speaker = new Speaker();
+
 		microphone.connectOutputs(speaker);
 
 		visualizeOutputs(microphone);

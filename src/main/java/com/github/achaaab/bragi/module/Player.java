@@ -1,5 +1,6 @@
 package com.github.achaaab.bragi.module;
 
+import com.github.achaaab.bragi.common.Interpolator;
 import com.github.achaaab.bragi.common.ModuleCreationException;
 import com.github.achaaab.bragi.common.ModuleExecutionException;
 import com.github.achaaab.bragi.common.Settings;
@@ -8,6 +9,7 @@ import com.github.achaaab.bragi.file.AudioFileException;
 import com.github.achaaab.bragi.gui.module.PlayerView;
 import org.slf4j.Logger;
 
+import static com.github.achaaab.bragi.common.Interpolator.CUBIC_HERMITE_SPLINE;
 import static javax.swing.SwingUtilities.invokeLater;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -18,6 +20,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 public abstract class Player extends Module {
 
 	private static final Logger LOGGER = getLogger(Player.class);
+
+	private static final Interpolator INTERPOLATOR = CUBIC_HERMITE_SPLINE;
 
 	protected AudioFile file;
 	protected boolean playing;
@@ -88,9 +92,14 @@ public abstract class Player extends Module {
 				updateView();
 
 				var channelCount = chunk.length;
+				var sourceSampleRate = file.getSampleRate();
+				var targetSampleRate = Settings.INSTANCE.frameRate();
 
 				for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
-					outputs.get(channelIndex).write(chunk[channelIndex]);
+
+					outputs.get(channelIndex).write(sourceSampleRate == targetSampleRate ?
+							chunk[channelIndex] :
+							INTERPOLATOR.interpolate(chunk[channelIndex], sourceSampleRate, targetSampleRate));
 				}
 			}
 

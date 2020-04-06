@@ -45,4 +45,9 @@ public interface AudioFile {
 	 * @throws AudioFileException exception while reading a chunk from this file
 	 */
 	float[][] readChunk() throws AudioFileException;
+
+	/**
+	 * @return sample rate of this file
+	 */
+	float getSampleRate();
 }

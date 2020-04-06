@@ -258,7 +258,7 @@ public abstract class FourierTransform {
 	 * @param frequency the frequency you want the index for (in Hz)
 	 * @return the index of the frequency band that contains freq
 	 */
-	public int getAmplitude(float frequency) {
+	public int getBandIndex(float frequency) {
 
 		// special case: freq is lower than the bandwidth of spectrum[0]
 		if (frequency < getBandWidth() / 2) {
@@ -352,39 +352,37 @@ public abstract class FourierTransform {
 	}
 
 	/**
-	 * Gets the amplitude of the requested frequency in the spectrum.
-	 *
-	 * @param freq frequency in Hz
-	 * @return amplitude of the frequency in the spectrum
+	 * @param frequency frequency in Hz
+	 * @return amplitude the spectrum band containing the given frequency
 	 */
-	public float getFreq(float freq) {
-		return getAmplitude(getAmplitude(freq));
+	public float getAmplitude(float frequency) {
+		return getAmplitude(getBandIndex(frequency));
 	}
 
 	/**
-	 * Sets the amplitude of the requested frequency in the spectrum to <code>a</code>.
+	 * Sets the amplitude of the requested frequency in the spectrum to {@code amplitude}.
 	 *
-	 * @param frequency the frequency in Hz
-	 * @param amplitude the new amplitude
+	 * @param frequency frequency in Hz
+	 * @param amplitude new amplitude
 	 */
 	public void setAmplitude(float frequency, float amplitude) {
-		setAmplitude(getAmplitude(frequency), amplitude);
+		setAmplitude(getBandIndex(frequency), amplitude);
 	}
 
 	/**
-	 * Scales the amplitude of the requested frequency by <code>a</code>.
+	 * Scales the amplitude of the requested frequency by {@code factor}.
 	 *
-	 * @param frequency the frequency in Hz
-	 * @param factor    the scaling factor
+	 * @param frequency frequency in Hz
+	 * @param factor    scaling factor
 	 */
 	public void scale(float frequency, float factor) {
-		scaleBand(getAmplitude(frequency), factor);
+		scaleBand(getBandIndex(frequency), factor);
 	}
 
 	/**
 	 * @return number of averages currently being calculated
 	 */
-	public int avgSize() {
+	public int averageSize() {
 		return averages.length;
 	}
 
@@ -396,26 +394,25 @@ public abstract class FourierTransform {
 	}
 
 	/**
-	 * Gets the value of the <code>i<sup>th</sup></code> average.
-	 *
-	 * @param i the average you want the value of
-	 * @return the value of the requested average band
+	 * @param index index of the average band
+	 * @return value of the requested average band
 	 */
-	public float getAvg(int i) {
-		return averages.length > 0 ? averages[i] : 0;
+	public float getAverage(int index) {
+		return averages.length > 0 ? averages[index] : 0.0f;
 	}
 
 	/**
-	 * Calculate the average amplitude of the frequency band bounded by <code>lowFreq</code> and <code>hiFreq</code>, inclusive.
+	 * Calculate the average amplitude of the frequency band
+	 * bounded by {@code lowFrequency} and {@code highFrequency}, inclusive.
 	 *
-	 * @param lowFrequency  the lower bound of the band
-	 * @param highFrequency the upper bound of the band
+	 * @param lowFrequency  lower bound of the band
+	 * @param highFrequency upper bound of the band
 	 * @return average amplitude of all spectrum amplitude within the bounds
 	 */
 	public float getAverageAmplitude(float lowFrequency, float highFrequency) {
 
-		var lowIndex = getAmplitude(lowFrequency);
-		var highIndex = getAmplitude(highFrequency);
+		var lowIndex = getBandIndex(lowFrequency);
+		var highIndex = getBandIndex(highFrequency);
 
 		var sum = 0.0f;
 		var bandCount = highIndex - lowIndex + 1;
@@ -428,49 +425,50 @@ public abstract class FourierTransform {
 	}
 
 	/**
-	 * Performs a forward transform on <code>buffer</code>.
+	 * Performs a forward transform on {@code buffer}.
 	 *
-	 * @param buffer the buffer to analyze
+	 * @param buffer buffer to analyze
 	 */
 	public abstract void forward(float[] buffer);
 
 	/**
-	 * Performs an inverse transform of the frequency spectrum and places the result in <code>buffer</code>.
+	 * Performs an inverse transform of the frequency spectrum and places the result in {@code buffer}.
 	 *
-	 * @param buffer the buffer to place the result of the inverse transform in
+	 * @param buffer buffer to place the result of the inverse transform in
 	 */
 	public abstract void inverse(float[] buffer);
 
 	/**
-	 * Performs an inverse transform of the frequency spectrum represented by freqReal and freqImag and places the result in
-	 * buffer.
+	 * Performs an inverse transform of the frequency spectrum
+	 * represented by {@code spectrumReal} and {@code spectrumImaginary}
+	 * and places the result in {@code buffer}.
 	 *
-	 * @param freqReal the real part of the frequency spectrum
-	 * @param freqImag the imaginary part the frequency spectrum
-	 * @param buffer   the buffer to place the inverse transform in
+	 * @param spectrumReal      real part of the frequency spectrum
+	 * @param spectrumImaginary imaginary part the frequency spectrum
+	 * @param buffer            buffer to place the inverse transform in
 	 */
-	public void inverse(float[] freqReal, float[] freqImag, float[] buffer) {
+	public void inverse(float[] spectrumReal, float[] spectrumImaginary, float[] buffer) {
 
-		setComplex(freqReal, freqImag);
+		setComplex(spectrumReal, spectrumImaginary);
 		inverse(buffer);
 	}
 
 	/**
-	 * @return spectrum of the last FourierTransform.forward() call.
+	 * @return spectrum of the last {@link #forward(float[])} call
 	 */
 	public float[] getSpectrum() {
 		return spectrum;
 	}
 
 	/**
-	 * @return the real part of the last FourierTransform.forward() call.
+	 * @return real part of the last {@link #forward(float[])} call
 	 */
 	public float[] getRealPart() {
 		return real;
 	}
 
 	/**
-	 * @return the imaginary part of the last FourierTransform.forward() call.
+	 * @return imaginary part of the last {@link #forward(float[])} call
 	 */
 	public float[] getImaginaryPart() {
 		return imaginary;

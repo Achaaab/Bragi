@@ -1,5 +1,6 @@
 package com.github.achaaab.bragi.module;
 
+import com.github.achaaab.bragi.common.Interpolator;
 import com.github.achaaab.bragi.common.ModuleCreationException;
 import com.github.achaaab.bragi.common.Normalizer;
 import com.github.achaaab.bragi.common.Settings;
@@ -9,6 +10,8 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 
+import static com.github.achaaab.bragi.common.Interpolator.CUBIC_HERMITE_SPLINE;
+import static java.lang.Math.round;
 import static javax.sound.sampled.AudioSystem.getTargetDataLine;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -25,7 +28,11 @@ public class Microphone extends Module {
 
 	public static final String DEFAULT_NAME = "microphone";
 
-	private static final int ONE_BYTE_MIN_VALUE = 0xFF_FF_FF_A0;
+	public static final float LINE_BUFFER_DURATION = 0.01F;
+
+	private static final Interpolator INTERPOLATOR = CUBIC_HERMITE_SPLINE;
+
+	private static final int ONE_BYTE_MIN_VALUE = 0xFF_FF_FF_80;
 	private static final int ONE_BYTE_MAX_VALUE = 0x00_00_00_7F;
 
 	private static final int TWO_BYTES_MIN_VALUE = 0xFF_FF_80_00;
@@ -41,6 +48,8 @@ public class Microphone extends Module {
 			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
 	);
 
+	private final int sourceSampleRate;
+	private final int targetSampleRate;
 	private final TargetDataLine line;
 
 	/**
@@ -68,16 +77,21 @@ public class Microphone extends Module {
 			addSecondaryOutput(name + "_output_" + outputs.size());
 		}
 
+		sourceSampleRate = Settings.INSTANCE.frameRate();
+		targetSampleRate = Settings.INSTANCE.frameRate();
+
 		var format = new AudioFormat(
 				Settings.INSTANCE.frameRate(),
 				Settings.INSTANCE.sampleSize() * 8,
 				Settings.INSTANCE.channelCount(),
 				true, true);
 
+		var lineBufferLength = round(Settings.INSTANCE.byteRate() * LINE_BUFFER_DURATION);
+
 		try {
 
 			line = getTargetDataLine(format);
-			line.open(format, Settings.INSTANCE.byteRate() / 100);
+			line.open(format, lineBufferLength);
 
 		} catch (LineUnavailableException cause) {
 
@@ -113,7 +127,7 @@ public class Microphone extends Module {
 		checkLineBufferHealth();
 		line.read(input, 0, byteCount);
 
-		var samples = new float[channelCount][frameCount];
+		var chunk = new float[channelCount][frameCount];
 
 		for (var frameIndex = 0; frameIndex < frameCount; frameIndex++) {
 
@@ -135,12 +149,15 @@ public class Microphone extends Module {
 					sample = TWO_BYTES_NORMALIZER.normalize(b1 & 0xFF | b0 << 8);
 				}
 
-				samples[channelIndex][frameIndex] = sample;
+				chunk[channelIndex][frameIndex] = sample;
 			}
 		}
 
 		for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
-			outputs.get(channelIndex).write(samples[channelIndex]);
+
+			outputs.get(channelIndex).write(sourceSampleRate == targetSampleRate ?
+					chunk[channelIndex] :
+					INTERPOLATOR.interpolate(chunk[channelIndex], sourceSampleRate, targetSampleRate));
 		}
 
 		return frameCount;

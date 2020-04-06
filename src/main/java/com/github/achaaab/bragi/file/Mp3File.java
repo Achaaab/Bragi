@@ -9,7 +9,6 @@ import javazoom.jl.decoder.DecoderException;
 import javazoom.jl.decoder.Header;
 import javazoom.jl.decoder.SampleBuffer;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -43,6 +42,7 @@ public class Mp3File implements AudioFile {
 
 	private Bitstream bitStream;
 	private Decoder decoder;
+	private int sampleRate;
 	private float time;
 	private float duration;
 	private boolean ended;
@@ -163,6 +163,11 @@ public class Mp3File implements AudioFile {
 		return chunk;
 	}
 
+	@Override
+	public float getSampleRate() {
+		return sampleRate;
+	}
+
 	/**
 	 * Reads the next MP3 frame from this file.
 	 *
@@ -186,6 +191,7 @@ public class Mp3File implements AudioFile {
 				addFrameDuration(header);
 
 				frame = (SampleBuffer) decoder.decodeFrame(header, bitStream);
+				sampleRate = frame.getSampleFrequency();
 				bitStream.closeFrame();
 			}
 
