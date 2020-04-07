@@ -1,6 +1,5 @@
 package com.github.achaaab.bragi.file;
 
-import com.github.achaaab.bragi.common.Normalizer;
 import com.github.achaaab.bragi.common.Settings;
 import org.slf4j.Logger;
 
@@ -30,22 +29,6 @@ public class WavFile implements AudioFile {
 	private static final ByteOrder HEADER_BYTE_ORDER = LITTLE_ENDIAN;
 	private static final String READ_ONLY_MODE = "r";
 
-	private static final int ONE_BYTE_MIN_VALUE = 0xFF_FF_FF_A0;
-	private static final int ONE_BYTE_MAX_VALUE = 0x00_00_00_7F;
-
-	private static final int TWO_BYTES_MIN_VALUE = 0xFF_FF_80_00;
-	private static final int TWO_BYTES_MAX_VALUE = 0x00_00_7F_FF;
-
-	private static final Normalizer ONE_BYTE_NORMALIZER = new Normalizer(
-			ONE_BYTE_MIN_VALUE, ONE_BYTE_MAX_VALUE,
-			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
-	);
-
-	private static final Normalizer TWO_BYTES_NORMALIZER = new Normalizer(
-			TWO_BYTES_MIN_VALUE, TWO_BYTES_MAX_VALUE,
-			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
-	);
-
 	private final Path path;
 
 	private RandomAccessFile reader;
@@ -58,11 +41,10 @@ public class WavFile implements AudioFile {
 	 */
 	public WavFile(Path path) {
 		this.path = path;
-
 	}
 
 	@Override
-	public void open() throws WavFileException {
+	public void open() throws AudioFileException {
 
 		try {
 
@@ -80,12 +62,12 @@ public class WavFile implements AudioFile {
 
 		} catch (IOException cause) {
 
-			throw new WavFileException(cause);
+			throw new AudioFileException(cause);
 		}
 	}
 
 	@Override
-	public void close() throws WavFileException {
+	public void close() throws AudioFileException {
 
 		try {
 
@@ -94,7 +76,7 @@ public class WavFile implements AudioFile {
 
 		} catch (IOException cause) {
 
-			throw new WavFileException(cause);
+			throw new AudioFileException(cause);
 		}
 	}
 
@@ -141,7 +123,7 @@ public class WavFile implements AudioFile {
 				var bufferIndex = 0;
 
 				frameCount = byteCount / header.frameSize();
-				var bytesPerSample = header.sampleSize() / 8;
+				var sampleSizeInBytes = header.sampleSize() / 8;
 
 				chunk = new float[channelCount][frameCount];
 
@@ -149,22 +131,21 @@ public class WavFile implements AudioFile {
 
 					for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
 
-						chunk[channelIndex][frameIndex] = switch (bytesPerSample) {
+						chunk[channelIndex][frameIndex] = switch (sampleSizeInBytes) {
 
 							case 1 -> ONE_BYTE_NORMALIZER.normalize(buffer.get(bufferIndex));
 							case 2 -> TWO_BYTES_NORMALIZER.normalize(buffer.getShort(bufferIndex));
-
-							default -> throw new WavFileException(
-									"unsupported sample size: " + bytesPerSample + " bytes");
+							default -> throw new AudioFileException(
+									"unsupported sample size: " + sampleSizeInBytes + " bytes");
 						};
 
-						bufferIndex += bytesPerSample;
+						bufferIndex += sampleSizeInBytes;
 					}
 				}
 
 			} catch (IOException cause) {
 
-				throw new WavFileException(cause);
+				throw new AudioFileException(cause);
 			}
 		}
 
@@ -176,12 +157,17 @@ public class WavFile implements AudioFile {
 		return header.frameRate();
 	}
 
+	@Override
+	public int sampleSize() {
+		return header.sampleSize();
+	}
+
 	/**
 	 * Reads the header of this WAV file.
 	 *
-	 * @throws WavFileException exception while reading the header of this WAV file
+	 * @throws AudioFileException exception while reading the header of this WAV file
 	 */
-	private void readHeader() throws WavFileException {
+	private void readHeader() throws AudioFileException {
 
 		var bytes = new byte[HEADER_SIZE];
 
@@ -192,7 +178,7 @@ public class WavFile implements AudioFile {
 
 		} catch (IOException cause) {
 
-			throw new WavFileException(cause);
+			throw new AudioFileException(cause);
 		}
 
 		var buffer = wrap(bytes);
@@ -267,7 +253,7 @@ public class WavFile implements AudioFile {
 		headerOffset += 2;
 
 		// sample size: number of bits per sample, multiple of 8
-		// TODO only 8 and 16 are supported, add support for 24 and 32 bits
+		// TODO only 8, 16 and 24 are supported, add support for 32 bits
 		var sampleSize = buffer.getShort(headerOffset);
 		headerOffset += 2;
 

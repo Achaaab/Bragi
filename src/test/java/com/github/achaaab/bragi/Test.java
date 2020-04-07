@@ -3,6 +3,7 @@ package com.github.achaaab.bragi;
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.module.ADSR;
 import com.github.achaaab.bragi.module.DCG;
+import com.github.achaaab.bragi.module.FlacPlayer;
 import com.github.achaaab.bragi.module.HighPassVCF;
 import com.github.achaaab.bragi.module.Keyboard;
 import com.github.achaaab.bragi.module.LFO;
@@ -41,6 +42,7 @@ public class Test {
 
 	private static final Path TEST_MP3_PATH = getPath("test_44100.mp3");
 	private static final Path TEST_WAV_PATH = getPath("test_44100.wav");
+	private static final Path TEST_FLAC_PATH = getPath("test_96000.flac");
 	private static final Path TEST_MP3_32000_PATH = getPath("test_32000.mp3");
 	private static final Path TEST_WAV_8000_PATH = getPath("test_8000.wav");
 
@@ -49,7 +51,7 @@ public class Test {
 	 * @since 0.0.9
 	 */
 	public static void main(String... arguments) {
-		testMicrophone();
+		testFlacPlayer();
 	}
 
 	/**
@@ -205,6 +207,21 @@ public class Test {
 		adsr.setRelease(2.0);
 
 		visualizeOutputs(vcaTremolo);
+	}
+
+	/**
+	 * Tests the {@link FlacPlayer} module.
+	 *
+	 * @since 0.1.7
+	 */
+	public static void testFlacPlayer() {
+
+		var player = new FlacPlayer(TEST_FLAC_PATH);
+		var speaker = new Speaker();
+
+		player.connectOutputs(speaker);
+
+		visualizeOutputs(player);
 	}
 
 	/**

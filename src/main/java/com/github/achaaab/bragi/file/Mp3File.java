@@ -1,7 +1,5 @@
 package com.github.achaaab.bragi.file;
 
-import com.github.achaaab.bragi.common.Normalizer;
-import com.github.achaaab.bragi.common.Settings;
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.Decoder;
@@ -33,10 +31,7 @@ public class Mp3File implements AudioFile {
 
 	private static final Logger LOGGER = getLogger(Mp3File.class);
 
-	private static final Normalizer NORMALIZER = new Normalizer(
-			Short.MIN_VALUE, Short.MAX_VALUE,
-			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
-	);
+	private static final int SAMPLE_SIZE = 16;
 
 	private final Path path;
 
@@ -72,9 +67,9 @@ public class Mp3File implements AudioFile {
 	 * Seeks the first MP3 frame whose time is greater than target time.
 	 *
 	 * @param targetTime target time in seconds
-	 * @throws Mp3FileException exception while seeking the target frame
+	 * @throws AudioFileException exception while seeking the target frame
 	 */
-	public void seekTime(double targetTime) throws Mp3FileException {
+	public void seekTime(double targetTime) throws AudioFileException {
 
 		if (targetTime < time) {
 
@@ -91,9 +86,9 @@ public class Mp3File implements AudioFile {
 	/**
 	 * Opens the MP3 file.
 	 *
-	 * @throws Mp3FileException exception while opening the MP3 file
+	 * @throws AudioFileException exception while opening the MP3 file
 	 */
-	public void open() throws Mp3FileException {
+	public void open() throws AudioFileException {
 
 		try {
 
@@ -110,16 +105,16 @@ public class Mp3File implements AudioFile {
 
 		} catch (IOException cause) {
 
-			throw new Mp3FileException(cause);
+			throw new AudioFileException(cause);
 		}
 	}
 
 	/**
 	 * Closes the MP3 file.
 	 *
-	 * @throws Mp3FileException exception while closing the MP3 file
+	 * @throws AudioFileException exception while closing the MP3 file
 	 */
-	public void close() throws Mp3FileException {
+	public void close() throws AudioFileException {
 
 		try {
 
@@ -128,12 +123,12 @@ public class Mp3File implements AudioFile {
 
 		} catch (BitstreamException cause) {
 
-			throw new Mp3FileException(cause);
+			throw new AudioFileException(cause);
 		}
 	}
 
 	@Override
-	public float[][] readChunk() throws Mp3FileException {
+	public float[][] readChunk() throws AudioFileException {
 
 		float[][] chunk = null;
 
@@ -155,7 +150,7 @@ public class Mp3File implements AudioFile {
 				for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
 
 					var sample = buffer[sampleIndex++];
-					chunk[channelIndex][frameIndex] = NORMALIZER.normalize(sample);
+					chunk[channelIndex][frameIndex] = TWO_BYTES_NORMALIZER.normalize(sample);
 				}
 			}
 		}
@@ -168,13 +163,18 @@ public class Mp3File implements AudioFile {
 		return sampleRate;
 	}
 
+	@Override
+	public int sampleSize() {
+		return SAMPLE_SIZE;
+	}
+
 	/**
 	 * Reads the next MP3 frame from this file.
 	 *
 	 * @return read MP3 frame, or {@code null} if this MP3 file ended
-	 * @throws Mp3FileException exception while reading the next frame
+	 * @throws AudioFileException exception while reading the next frame
 	 */
-	private SampleBuffer readFrame() throws Mp3FileException {
+	private SampleBuffer readFrame() throws AudioFileException {
 
 		try {
 
@@ -199,16 +199,16 @@ public class Mp3File implements AudioFile {
 
 		} catch (BitstreamException | DecoderException | IOException cause) {
 
-			throw new Mp3FileException(cause);
+			throw new AudioFileException(cause);
 		}
 	}
 
 	/**
 	 * Skips the current frame.
 	 *
-	 * @throws Mp3FileException exception while skipping the frame
+	 * @throws AudioFileException exception while skipping the frame
 	 */
-	private void skipFrame() throws Mp3FileException {
+	private void skipFrame() throws AudioFileException {
 
 		try {
 
@@ -226,7 +226,7 @@ public class Mp3File implements AudioFile {
 
 		} catch (BitstreamException | IOException cause) {
 
-			throw new Mp3FileException(cause);
+			throw new AudioFileException(cause);
 		}
 	}
 

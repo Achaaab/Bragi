@@ -28,6 +28,8 @@ public class PaintingLoop implements Runnable {
 	private static final int NANOSECONDS_PER_MILLISECOND = 1_000_000;
 	private static final double NANOSECONDS_PER_SECOND = 1_000_000_000.0;
 
+	private static final double FRAME_RATE_WARNING_THRESHOLD = 0.1;
+
 	/**
 	 * number of frame times to average in order to get the mean frame rate
 	 */
@@ -134,14 +136,16 @@ public class PaintingLoop implements Runnable {
 	}
 
 	/**
-	 * The frame rate is limited but using the paint time, we can infer a theoretical frame rate.
+	 * The frame rate is limited, but using the paint time, we can infer a theoretical frame rate.
 	 *
 	 * @param frameTime frame time in nanoseconds
 	 * @since 0.1.6
 	 */
 	private void updateFrameRate(long frameTime) {
 
-		if (frameTimes.size() == SAMPLE_COUNT) {
+		var enoughSamples = frameTimes.size() == SAMPLE_COUNT;
+
+		if (enoughSamples) {
 			totalFrameTimes -= frameTimes.remove();
 		}
 
@@ -151,8 +155,10 @@ public class PaintingLoop implements Runnable {
 		var frameCount = frameTimes.size();
 		frameRate = NANOSECONDS_PER_SECOND / totalFrameTimes * frameCount;
 
-		if (frameTimes.size() == SAMPLE_COUNT && frameRate < 0.1 * targetFrameRate) {
-			LOGGER.warn("frame rate ({}) < 10% of target frame rate ({})", frameRate, targetFrameRate);
+		if (enoughSamples && frameRate / targetFrameRate < FRAME_RATE_WARNING_THRESHOLD) {
+
+			LOGGER.warn("frame rate ({}) is significantly lower than target frame rate ({})",
+					frameRate, targetFrameRate);
 		}
 	}
 

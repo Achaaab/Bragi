@@ -1,5 +1,8 @@
 package com.github.achaaab.bragi.file;
 
+import com.github.achaaab.bragi.common.Normalizer;
+import com.github.achaaab.bragi.common.Settings;
+
 /**
  * Contract for audio files.
  *
@@ -7,6 +10,30 @@ package com.github.achaaab.bragi.file;
  * @since 0.1.6
  */
 public interface AudioFile {
+
+	int ONE_BYTE_MIN_VALUE = 0xFF_FF_FF_80;
+	int ONE_BYTE_MAX_VALUE = 0x00_00_00_7F;
+
+	int TWO_BYTES_MIN_VALUE = 0xFF_FF_80_00;
+	int TWO_BYTES_MAX_VALUE = 0x00_00_7F_FF;
+
+	int THREE_BYTES_MIN_VALUE = 0xFF_80_00_00;
+	int THREE_BYTES_MAX_VALUE = 0x00_7F_FF_FF;
+
+	Normalizer ONE_BYTE_NORMALIZER = new Normalizer(
+			ONE_BYTE_MIN_VALUE, ONE_BYTE_MAX_VALUE,
+			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
+	);
+
+	Normalizer TWO_BYTES_NORMALIZER = new Normalizer(
+			TWO_BYTES_MIN_VALUE, TWO_BYTES_MAX_VALUE,
+			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
+	);
+
+	Normalizer THREE_BYTES_NORMALIZER = new Normalizer(
+			THREE_BYTES_MIN_VALUE, THREE_BYTES_MAX_VALUE,
+			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
+	);
 
 	/**
 	 * Opens the audio file.
@@ -50,4 +77,29 @@ public interface AudioFile {
 	 * @return sample rate of this file
 	 */
 	float getSampleRate();
+
+	/**
+	 * @return size of each sample in bits (b)
+	 * @since 0.1.7
+	 */
+	int sampleSize();
+
+	/**
+	 * Normalize an integer sample.
+	 *
+	 * @param sample an integer sample
+	 * @return normalized float sample between minimal voltage and maximal voltage
+	 * @throws AudioFileException if sample size is not supported
+	 */
+	default float normalize(int sample) throws AudioFileException {
+
+		var sampleSize = sampleSize();
+
+		return switch (sampleSize) {
+			case 8 -> ONE_BYTE_NORMALIZER.normalize(sample);
+			case 16 -> TWO_BYTES_NORMALIZER.normalize(sample);
+			case 24 -> THREE_BYTES_NORMALIZER.normalize(sample);
+			default -> throw new AudioFileException("unsupported sample size: " + sampleSize + " bits");
+		};
+	}
 }
