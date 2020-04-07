@@ -1,6 +1,6 @@
 package com.github.achaaab.bragi.gui.module;
 
-import com.github.achaaab.bragi.module.producer.Theremin;
+import com.github.achaaab.bragi.core.module.producer.Theremin;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;

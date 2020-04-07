@@ -3,7 +3,7 @@ package com.github.achaaab.bragi.gui.module;
 import com.github.achaaab.bragi.gui.component.FrequencySlider;
 import com.github.achaaab.bragi.gui.component.LinearRangeSlider;
 import com.github.achaaab.bragi.gui.component.WaveformComboBox;
-import com.github.achaaab.bragi.module.producer.LFO;
+import com.github.achaaab.bragi.core.module.producer.LFO;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;

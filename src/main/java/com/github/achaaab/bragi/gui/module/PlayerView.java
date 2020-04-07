@@ -1,7 +1,7 @@
 package com.github.achaaab.bragi.gui.module;
 
 import com.github.achaaab.bragi.gui.component.TimeSlider;
-import com.github.achaaab.bragi.module.player.Player;
+import com.github.achaaab.bragi.core.module.player.Player;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;

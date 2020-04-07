@@ -1,33 +1,33 @@
 package com.github.achaaab.bragi;
 
 import com.github.achaaab.bragi.common.Settings;
-import com.github.achaaab.bragi.module.Module;
-import com.github.achaaab.bragi.module.consumer.Oscilloscope;
-import com.github.achaaab.bragi.module.consumer.Speaker;
-import com.github.achaaab.bragi.module.consumer.SpectrumAnalyzer;
-import com.github.achaaab.bragi.module.player.FlacPlayer;
-import com.github.achaaab.bragi.module.player.Mp3Player;
-import com.github.achaaab.bragi.module.player.WavPlayer;
-import com.github.achaaab.bragi.module.producer.ADSR;
-import com.github.achaaab.bragi.module.producer.DCG;
-import com.github.achaaab.bragi.module.producer.Keyboard;
-import com.github.achaaab.bragi.module.producer.LFO;
-import com.github.achaaab.bragi.module.producer.Microphone;
-import com.github.achaaab.bragi.module.producer.PinkNoiseGenerator;
-import com.github.achaaab.bragi.module.producer.Theremin;
-import com.github.achaaab.bragi.module.producer.VCO;
-import com.github.achaaab.bragi.module.producer.WhiteNoiseGenerator;
-import com.github.achaaab.bragi.module.transformer.HighPassVCF;
-import com.github.achaaab.bragi.module.transformer.LowPassVCF;
-import com.github.achaaab.bragi.module.transformer.VCA;
+import com.github.achaaab.bragi.core.module.Module;
+import com.github.achaaab.bragi.core.module.consumer.Oscilloscope;
+import com.github.achaaab.bragi.core.module.consumer.Speaker;
+import com.github.achaaab.bragi.core.module.consumer.SpectrumAnalyzer;
+import com.github.achaaab.bragi.core.module.player.FlacPlayer;
+import com.github.achaaab.bragi.core.module.player.Mp3Player;
+import com.github.achaaab.bragi.core.module.player.WavPlayer;
+import com.github.achaaab.bragi.core.module.producer.ADSR;
+import com.github.achaaab.bragi.core.module.producer.DCG;
+import com.github.achaaab.bragi.core.module.producer.Keyboard;
+import com.github.achaaab.bragi.core.module.producer.LFO;
+import com.github.achaaab.bragi.core.module.producer.Microphone;
+import com.github.achaaab.bragi.core.module.producer.PinkNoiseGenerator;
+import com.github.achaaab.bragi.core.module.producer.Theremin;
+import com.github.achaaab.bragi.core.module.producer.VCO;
+import com.github.achaaab.bragi.core.module.producer.WhiteNoiseGenerator;
+import com.github.achaaab.bragi.core.module.transformer.HighPassVCF;
+import com.github.achaaab.bragi.core.module.transformer.LowPassVCF;
+import com.github.achaaab.bragi.core.module.transformer.VCA;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
 
 import static com.github.achaaab.bragi.ResourceUtils.getPath;
-import static com.github.achaaab.bragi.common.wave.Waveform.SAWTOOTH_TRIANGULAR;
-import static com.github.achaaab.bragi.common.wave.Waveform.SINE;
-import static com.github.achaaab.bragi.common.wave.Waveform.TRIANGLE;
+import static com.github.achaaab.bragi.core.module.producer.wave.Waveform.SAWTOOTH_TRIANGULAR;
+import static com.github.achaaab.bragi.core.module.producer.wave.Waveform.SINE;
+import static com.github.achaaab.bragi.core.module.producer.wave.Waveform.TRIANGLE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**

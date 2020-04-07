@@ -1,6 +1,6 @@
 package com.github.achaaab.bragi.gui.module;
 
-import com.github.achaaab.bragi.module.transformer.VCA;
+import com.github.achaaab.bragi.core.module.transformer.VCA;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;

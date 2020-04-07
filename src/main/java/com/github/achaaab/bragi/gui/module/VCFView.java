@@ -1,6 +1,6 @@
 package com.github.achaaab.bragi.gui.module;
 
-import com.github.achaaab.bragi.module.transformer.VCF;
+import com.github.achaaab.bragi.core.module.transformer.VCF;
 import com.github.achaaab.bragi.gui.component.FrequencySlider;
 
 import javax.swing.JFrame;

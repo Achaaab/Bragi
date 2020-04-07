@@ -1,6 +1,6 @@
 package com.github.achaaab.bragi.gui.component;
 
-import com.github.achaaab.bragi.common.wave.Waveform;
+import com.github.achaaab.bragi.core.module.producer.wave.Waveform;
 
 import javax.swing.JComboBox;
 import javax.swing.border.TitledBorder;

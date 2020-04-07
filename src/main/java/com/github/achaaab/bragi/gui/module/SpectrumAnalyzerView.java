@@ -2,7 +2,7 @@ package com.github.achaaab.bragi.gui.module;
 
 import com.github.achaaab.bragi.common.Normalizer;
 import com.github.achaaab.bragi.gui.common.PaintedView;
-import com.github.achaaab.bragi.module.consumer.SpectrumAnalyzer;
+import com.github.achaaab.bragi.core.module.consumer.SpectrumAnalyzer;
 
 import javax.swing.JFrame;
 import java.awt.Color;

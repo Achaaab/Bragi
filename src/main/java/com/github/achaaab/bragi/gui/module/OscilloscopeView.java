@@ -2,7 +2,7 @@ package com.github.achaaab.bragi.gui.module;
 
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.gui.common.PaintedView;
-import com.github.achaaab.bragi.module.consumer.Oscilloscope;
+import com.github.achaaab.bragi.core.module.consumer.Oscilloscope;
 
 import javax.swing.JFrame;
 import java.awt.BasicStroke;

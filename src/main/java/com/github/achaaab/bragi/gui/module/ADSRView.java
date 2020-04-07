@@ -2,7 +2,7 @@ package com.github.achaaab.bragi.gui.module;
 
 import com.github.achaaab.bragi.gui.component.LinearSlider;
 import com.github.achaaab.bragi.gui.component.LogarithmicSlider;
-import com.github.achaaab.bragi.module.producer.ADSR;
+import com.github.achaaab.bragi.core.module.producer.ADSR;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;

@@ -1,7 +1,7 @@
 package com.github.achaaab.bragi.gui.module;
 
-import com.github.achaaab.bragi.module.producer.Keyboard;
-import com.github.achaaab.bragi.common.Key;
+import com.github.achaaab.bragi.core.module.producer.Keyboard;
+import com.github.achaaab.bragi.core.module.producer.Key;
 
 import javax.swing.JButton;
 import java.awt.Color;

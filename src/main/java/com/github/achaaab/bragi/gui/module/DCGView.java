@@ -1,7 +1,7 @@
 package com.github.achaaab.bragi.gui.module;
 
 import com.github.achaaab.bragi.gui.component.LinearSlider;
-import com.github.achaaab.bragi.module.producer.DCG;
+import com.github.achaaab.bragi.core.module.producer.DCG;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
