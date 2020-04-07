@@ -1,5 +1,7 @@
 package com.github.achaaab.bragi.codec.flac;
 
+import com.github.achaaab.bragi.codec.flac.BitInputStream;
+
 import java.io.IOException;
 
 /**
@@ -26,9 +28,6 @@ public class MetadataBlockData {
 	 * @throws IOException I/O exception while decoding metadata block data
 	 */
 	MetadataBlockData(BitInputStream input, int length) throws IOException {
-
-		for (int index = 0; index < length; index++) {
-			input.readUnsignedInteger(8);
-		}
+		input.readBytes(length);
 	}
 }

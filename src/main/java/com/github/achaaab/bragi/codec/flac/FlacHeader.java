@@ -4,7 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.achaaab.bragi.codec.flac.MetadataBlock.decode;
+
 /**
+ * header of a FLAC stream
+ *
  * @author Jonathan Guéhenneux
  * @since 0.1.7
  */
@@ -34,16 +38,20 @@ public class FlacHeader {
 		var last = metadataBlockHeader.last();
 
 		if (metadataBlockType != MetadataBlockType.STREAMINFO) {
-			throw new FlacDecoderException("first metadata block type (" + metadataBlockType + ") is not " + MetadataBlockType.STREAMINFO);
+
+			throw new FlacDecoderException("first metadata block type (" + metadataBlockType + ")" +
+					"is not " + MetadataBlockType.STREAMINFO);
 		}
 
 		streamInfo = new StreamInfo(input);
 
 		metadataBlocks = new ArrayList<>();
 
+		metadataBlocks.add(new MetadataBlock(metadataBlockHeader, streamInfo));
+
 		while (!last) {
 
-			var metadataBlock = new MetadataBlock(input);
+			var metadataBlock = decode(input);
 			metadataBlocks.add(metadataBlock);
 			last = metadataBlock.header().last();
 		}
@@ -58,14 +66,14 @@ public class FlacHeader {
 	}
 
 	/**
-	 * @return first metadata block which contain stream information
+	 * @return first metadata block data which contain stream information
 	 */
 	public StreamInfo streamInfo() {
 		return streamInfo;
 	}
 
 	/**
-	 * @return metadata blocks following the {@link MetadataBlockType#STREAMINFO} metadata block
+	 * @return metadata blocks
 	 */
 	public List<MetadataBlock> metadataBlocks() {
 		return metadataBlocks;

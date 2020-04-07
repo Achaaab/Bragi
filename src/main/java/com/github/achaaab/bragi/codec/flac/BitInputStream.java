@@ -3,6 +3,7 @@ package com.github.achaaab.bragi.codec.flac;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Project Nayuki
@@ -117,6 +118,39 @@ public class BitInputStream implements AutoCloseable {
 		val = (val << param) | readUnsignedInteger(param);
 
 		return (val >>> 1) ^ -(val & 1);
+	}
+
+	/**
+	 * Reads a string encoded with UTF-8 charset.
+	 *
+	 * @param length number of bytes to read
+	 * @return read string
+	 * @throws IOException I/O exception while reading a string
+	 */
+	public String readUTF(int length) throws IOException {
+
+		var bytes = readBytes(length);
+		return new String(bytes, StandardCharsets.UTF_8);
+	}
+
+	/**
+	 * Reads a 32-bits unsigned integer in little endian order.
+	 *
+	 * @return read integer
+	 * @throws IOException I/O exception while reading an integer
+	 */
+	public long readLittleEndianUnsignedInteger32() throws IOException {
+
+		long byte0 = readByte();
+		long byte1 = readByte();
+		long byte2 = readByte();
+		long byte3 = readByte();
+
+		if ((byte0 | byte1 | byte2 | byte3) < 0) {
+			throw new EOFException();
+		}
+
+		return byte0 + (byte1 << 8) + (byte2 << 16) + (byte3 << 24);
 	}
 
 	/**

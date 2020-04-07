@@ -11,20 +11,43 @@ import java.io.IOException;
  */
 public class MetadataBlock {
 
-	private final MetadataBlockHeader header;
-	private final MetadataBlockData data;
-
 	/**
 	 * Decodes a metadata block from the given bit input stream.
 	 *
 	 * @param input bit input stream to decode
+	 * @return decoded metadata block
 	 * @throws IOException          I/O exception white decoding metadata block
 	 * @throws FlacDecoderException if stream info metadata block is invalid
 	 */
-	MetadataBlock(BitInputStream input) throws IOException, FlacDecoderException {
+	static MetadataBlock decode(BitInputStream input) throws IOException, FlacDecoderException {
 
-		header = new MetadataBlockHeader(input);
-		data = new MetadataBlockData(input, header.length());
+		var header = new MetadataBlockHeader(input);
+		var type = header.type();
+		var length = header.length();
+
+		var data = switch (type) {
+			case STREAMINFO -> new StreamInfo(input);
+			case PADDING -> new Padding(input, length);
+			case APPLICATION -> new Application(input, length);
+			case SEEKTABLE -> new SeekTable(input, length);
+			case VORBIS_COMMENT -> new VorbisComment(input);
+			default -> new MetadataBlockData(input, length);
+		};
+
+		return new MetadataBlock(header, data);
+	}
+
+	private final MetadataBlockHeader header;
+	private final MetadataBlockData data;
+
+	/**
+	 * @param header header of this metadata block
+	 * @param data   data of this metadata block
+	 */
+	MetadataBlock(MetadataBlockHeader header, MetadataBlockData data) {
+
+		this.header = header;
+		this.data = data;
 	}
 
 	/**

@@ -67,7 +67,10 @@ public record Settings(
 	}
 
 	/**
-	 * @return Nyquist frequency, half of {@code frame rate}
+	 * Nyquist frequency is half of the frame rate. It is the maximum component frequency
+	 * of the signal.
+	 *
+	 * @return Nyquist frequency in hertz (Hz)
 	 */
 	public double nyquistFrequency() {
 		return frameRate / 2.0;
