@@ -9,6 +9,7 @@ user interface. Following modules are provided:
 * **Theremin**: some kind of theremin (with just pitch and volume, not the incredible timbre of the real instrument)
 * **Mp3Player**: basic MP3 file player
 * **WavPlayer**: basic WAV file player
+* **FlacPlayer**: basic FLAC file player
 * **WhiteNoiseGenerator**: white noise generator
 * **PinkNoiseGenerator**: pink noise generator
 * **Microphone**: a module connected to your microphone
@@ -116,7 +117,9 @@ I am still developing Bragi but feel free to submit pull requests.
 This project is licensed under the GNU General Public License (GPL) - see the [LICENSE.md](LICENSE.md) for the details.
 ## Acknowledgments
 I thank:
-* [Damien Di Fede](https://github.com/ddf) for his FFT implementation,
-* [Ernest Yu](https://github.com/ernieyu) for his [range slider](https://github.com/ernieyu/Swing-range-slider),
-* [Bram de Jong](https://github.com/bdejong) for his useful compilation of DSP resources
-[musicdsp](https://github.com/bdejong/musicdsp) and the corresponding [web site](https://www.musicdsp.org).
+* [**Damien Di Fede**](https://github.com/ddf) for his FFT implementation,
+* [**Ernest Yu**](https://github.com/ernieyu) for his [range slider](https://github.com/ernieyu/Swing-range-slider),
+* [**Bram de Jong**](https://github.com/bdejong) for his useful compilation of DSP resources
+[musicdsp](https://github.com/bdejong/musicdsp) and the corresponding [web site](https://www.musicdsp.org),
+* [**Project Nayuki**](https://github.com/nayuki) for his demystifying one-file FLAC decoder.
+His website is full of interesting articles and so is his [github](https://www.nayuki.io).
