@@ -1,7 +1,7 @@
 package com.github.achaaab.bragi.gui.module;
 
 import com.github.achaaab.bragi.gui.component.LinearSlider;
-import com.github.achaaab.bragi.module.DCG;
+import com.github.achaaab.bragi.module.producer.DCG;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -40,7 +40,7 @@ public class DCGView extends JPanel {
 		setLayout(new BorderLayout());
 		add(voltageSlider, BorderLayout.CENTER);
 
-		var frame = new JFrame(model.getName());
+		var frame = new JFrame(model.name());
 		frame.setContentPane(this);
 		frame.setSize(400, 200);
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);

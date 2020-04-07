@@ -1,25 +1,25 @@
 package com.github.achaaab.bragi;
 
 import com.github.achaaab.bragi.common.Settings;
-import com.github.achaaab.bragi.module.ADSR;
-import com.github.achaaab.bragi.module.DCG;
-import com.github.achaaab.bragi.module.FlacPlayer;
-import com.github.achaaab.bragi.module.HighPassVCF;
-import com.github.achaaab.bragi.module.Keyboard;
-import com.github.achaaab.bragi.module.LFO;
-import com.github.achaaab.bragi.module.LowPassVCF;
-import com.github.achaaab.bragi.module.Microphone;
 import com.github.achaaab.bragi.module.Module;
-import com.github.achaaab.bragi.module.Mp3Player;
-import com.github.achaaab.bragi.module.Oscilloscope;
-import com.github.achaaab.bragi.module.PinkNoiseGenerator;
-import com.github.achaaab.bragi.module.Speaker;
-import com.github.achaaab.bragi.module.SpectrumAnalyzer;
-import com.github.achaaab.bragi.module.Theremin;
-import com.github.achaaab.bragi.module.VCA;
-import com.github.achaaab.bragi.module.VCO;
-import com.github.achaaab.bragi.module.WavPlayer;
-import com.github.achaaab.bragi.module.WhiteNoiseGenerator;
+import com.github.achaaab.bragi.module.consumer.Oscilloscope;
+import com.github.achaaab.bragi.module.consumer.Speaker;
+import com.github.achaaab.bragi.module.consumer.SpectrumAnalyzer;
+import com.github.achaaab.bragi.module.player.FlacPlayer;
+import com.github.achaaab.bragi.module.player.Mp3Player;
+import com.github.achaaab.bragi.module.player.WavPlayer;
+import com.github.achaaab.bragi.module.producer.ADSR;
+import com.github.achaaab.bragi.module.producer.DCG;
+import com.github.achaaab.bragi.module.producer.Keyboard;
+import com.github.achaaab.bragi.module.producer.LFO;
+import com.github.achaaab.bragi.module.producer.Microphone;
+import com.github.achaaab.bragi.module.producer.PinkNoiseGenerator;
+import com.github.achaaab.bragi.module.producer.Theremin;
+import com.github.achaaab.bragi.module.producer.VCO;
+import com.github.achaaab.bragi.module.producer.WhiteNoiseGenerator;
+import com.github.achaaab.bragi.module.transformer.HighPassVCF;
+import com.github.achaaab.bragi.module.transformer.LowPassVCF;
+import com.github.achaaab.bragi.module.transformer.VCA;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
@@ -487,8 +487,8 @@ public class Test {
 
 		for (var output : module.getOutputs()) {
 
-			var oscilloscope = new Oscilloscope(output.toString());
-			var spectrum = new SpectrumAnalyzer(output.toString());
+			var oscilloscope = new Oscilloscope(Oscilloscope.DEFAULT_NAME + "_" + output.name());
+			var spectrum = new SpectrumAnalyzer(SpectrumAnalyzer.DEFAULT_NAME + "_" + output.name());
 
 			output.connect(oscilloscope.getInput());
 			output.connect(spectrum.getInput());

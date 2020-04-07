@@ -1,10 +1,11 @@
-package com.github.achaaab.bragi.module;
+package com.github.achaaab.bragi.module.producer;
 
 import com.github.achaaab.bragi.common.ADSRState;
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.common.connection.Input;
 import com.github.achaaab.bragi.common.connection.Output;
 import com.github.achaaab.bragi.gui.module.ADSRView;
+import com.github.achaaab.bragi.module.Module;
 import org.slf4j.Logger;
 
 import static com.github.achaaab.bragi.common.ADSRState.DECAY;

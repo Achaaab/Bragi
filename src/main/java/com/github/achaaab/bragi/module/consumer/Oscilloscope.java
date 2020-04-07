@@ -1,9 +1,10 @@
-package com.github.achaaab.bragi.module;
+package com.github.achaaab.bragi.module.consumer;
 
 import com.github.achaaab.bragi.common.CircularFloatArray;
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.common.connection.Input;
 import com.github.achaaab.bragi.gui.module.OscilloscopeView;
+import com.github.achaaab.bragi.module.Module;
 import org.slf4j.Logger;
 
 import static javax.swing.SwingUtilities.invokeLater;

@@ -3,7 +3,7 @@ package com.github.achaaab.bragi.gui.module;
 import com.github.achaaab.bragi.gui.component.FrequencySlider;
 import com.github.achaaab.bragi.gui.component.LinearRangeSlider;
 import com.github.achaaab.bragi.gui.component.WaveformComboBox;
-import com.github.achaaab.bragi.module.LFO;
+import com.github.achaaab.bragi.module.producer.LFO;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -54,7 +54,7 @@ public class LFOView extends JPanel {
 		add(frequencySlider);
 		add(amplitudeSlider);
 
-		var frame = new JFrame(model.getName());
+		var frame = new JFrame(model.name());
 		frame.setSize(600, 300);
 		frame.setContentPane(this);
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);

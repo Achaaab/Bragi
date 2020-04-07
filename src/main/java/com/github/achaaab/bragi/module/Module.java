@@ -1,5 +1,6 @@
 package com.github.achaaab.bragi.module;
 
+import com.github.achaaab.bragi.common.AbstractNamedEntity;
 import com.github.achaaab.bragi.common.ModuleExecutionException;
 import com.github.achaaab.bragi.common.connection.Input;
 import com.github.achaaab.bragi.common.connection.Output;
@@ -25,11 +26,10 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Jonathan Guéhenneux
  * @since 0.0.9
  */
-public abstract class Module implements Runnable {
+public abstract class Module extends AbstractNamedEntity implements Runnable {
 
 	private static final Logger LOGGER = getLogger(Module.class);
 
-	protected final String name;
 	protected final List<Input> inputs;
 	protected final List<Output> outputs;
 
@@ -41,7 +41,7 @@ public abstract class Module implements Runnable {
 	 */
 	public Module(String name) {
 
-		this.name = name;
+		super(name);
 
 		inputs = new ArrayList<>();
 		outputs = new ArrayList<>();
@@ -226,13 +226,6 @@ public abstract class Module implements Runnable {
 		var output = new SecondaryOutput(name);
 		outputs.add(output);
 		return output;
-	}
-
-	/**
-	 * @return name of this module
-	 */
-	public String getName() {
-		return name;
 	}
 
 	/**

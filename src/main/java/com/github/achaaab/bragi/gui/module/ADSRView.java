@@ -2,7 +2,7 @@ package com.github.achaaab.bragi.gui.module;
 
 import com.github.achaaab.bragi.gui.component.LinearSlider;
 import com.github.achaaab.bragi.gui.component.LogarithmicSlider;
-import com.github.achaaab.bragi.module.ADSR;
+import com.github.achaaab.bragi.module.producer.ADSR;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -65,7 +65,7 @@ public class ADSRView extends JPanel {
 		sustainSlider.addChangeListener(event -> model.setSustain(sustainSlider.getDecimalValue()));
 		releaseSlider.addChangeListener(event -> model.setRelease(releaseSlider.getDecimalValue()));
 
-		var frame = new JFrame(model.getName());
+		var frame = new JFrame(model.name());
 		frame.setSize(400, 300);
 		frame.setContentPane(this);
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);

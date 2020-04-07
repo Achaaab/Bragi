@@ -1,12 +1,14 @@
 package com.github.achaaab.bragi.common.connection;
 
+import com.github.achaaab.bragi.common.NamedEntity;
+
 /**
  * input of a module
  *
  * @author Jonathan Guéhenneux
  * @since 0.0.1
  */
-public interface Input {
+public interface Input extends NamedEntity {
 
 	/**
 	 * @param buffer buffer to read from

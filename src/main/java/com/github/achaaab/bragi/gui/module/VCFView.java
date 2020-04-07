@@ -1,6 +1,6 @@
 package com.github.achaaab.bragi.gui.module;
 
-import com.github.achaaab.bragi.module.VCF;
+import com.github.achaaab.bragi.module.transformer.VCF;
 import com.github.achaaab.bragi.gui.component.FrequencySlider;
 
 import javax.swing.JFrame;
@@ -46,7 +46,7 @@ public class VCFView extends JPanel {
 		emphasisSlider.addChangeListener(event ->
 				model.setEmphasis((float) emphasisSlider.getValue() / 100));
 
-		var frame = new JFrame(model.getName());
+		var frame = new JFrame(model.name());
 		frame.setSize(700, 250);
 		frame.setContentPane(this);
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);

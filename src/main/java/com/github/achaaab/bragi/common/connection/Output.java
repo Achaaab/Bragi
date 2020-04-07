@@ -1,10 +1,12 @@
 package com.github.achaaab.bragi.common.connection;
 
+import com.github.achaaab.bragi.common.NamedEntity;
+
 /**
  * @author Jonathan Guéhenneux
  * @since 0.1.0
  */
-public interface Output {
+public interface Output extends NamedEntity {
 
 	/**
 	 * Connect this output to the specified input.

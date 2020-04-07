@@ -1,9 +1,10 @@
-package com.github.achaaab.bragi.module;
+package com.github.achaaab.bragi.module.producer;
 
 import com.github.achaaab.bragi.common.Key;
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.common.connection.Output;
 import com.github.achaaab.bragi.gui.module.KeyboardView;
+import com.github.achaaab.bragi.module.Module;
 import org.slf4j.Logger;
 
 import java.awt.event.KeyEvent;

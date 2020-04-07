@@ -1,10 +1,11 @@
-package com.github.achaaab.bragi.module;
+package com.github.achaaab.bragi.module.transformer;
 
 import com.github.achaaab.bragi.common.Normalizer;
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.common.connection.Input;
 import com.github.achaaab.bragi.common.connection.Output;
 import com.github.achaaab.bragi.gui.module.VCFView;
+import com.github.achaaab.bragi.module.Module;
 
 import static javax.swing.SwingUtilities.invokeLater;
 

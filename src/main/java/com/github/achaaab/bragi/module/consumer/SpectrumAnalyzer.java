@@ -1,4 +1,4 @@
-package com.github.achaaab.bragi.module;
+package com.github.achaaab.bragi.module.consumer;
 
 import com.github.achaaab.bragi.common.CircularFloatArray;
 import com.github.achaaab.bragi.common.Settings;
@@ -7,6 +7,7 @@ import com.github.achaaab.bragi.common.fft.FastFourierTransform;
 import com.github.achaaab.bragi.common.fft.FourierTransform;
 import com.github.achaaab.bragi.common.fft.HammingWindow;
 import com.github.achaaab.bragi.gui.module.SpectrumAnalyzerView;
+import com.github.achaaab.bragi.module.Module;
 import org.slf4j.Logger;
 
 import static javax.swing.SwingUtilities.invokeLater;

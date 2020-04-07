@@ -1,4 +1,4 @@
-package com.github.achaaab.bragi.module;
+package com.github.achaaab.bragi.module.transformer;
 
 import com.github.achaaab.bragi.common.Settings;
 import org.slf4j.Logger;

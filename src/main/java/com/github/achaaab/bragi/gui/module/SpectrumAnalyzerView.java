@@ -2,7 +2,7 @@ package com.github.achaaab.bragi.gui.module;
 
 import com.github.achaaab.bragi.common.Normalizer;
 import com.github.achaaab.bragi.gui.common.PaintedView;
-import com.github.achaaab.bragi.module.SpectrumAnalyzer;
+import com.github.achaaab.bragi.module.consumer.SpectrumAnalyzer;
 
 import javax.swing.JFrame;
 import java.awt.Color;
@@ -77,7 +77,7 @@ public class SpectrumAnalyzerView extends PaintedView {
 
 		setPreferredSize(new Dimension(640, 360));
 
-		var frame = new JFrame(model.getName());
+		var frame = new JFrame(model.name());
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		frame.add(this);
 		frame.pack();

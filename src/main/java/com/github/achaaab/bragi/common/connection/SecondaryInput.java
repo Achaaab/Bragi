@@ -11,7 +11,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Jonathan Guéhenneux
  * @since 0.0.1
  */
-public class SecondaryInput extends NamedInput {
+public class SecondaryInput extends AbstractInput {
 
 	private static final Logger LOGGER = getLogger(SecondaryInput.class);
 

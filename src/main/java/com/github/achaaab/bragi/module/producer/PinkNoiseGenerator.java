@@ -1,10 +1,11 @@
-package com.github.achaaab.bragi.module;
+package com.github.achaaab.bragi.module.producer;
 
 import com.github.achaaab.bragi.common.CircularFloatArray;
 import com.github.achaaab.bragi.common.GeometricRandom;
 import com.github.achaaab.bragi.common.Normalizer;
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.common.connection.Output;
+import com.github.achaaab.bragi.module.Module;
 import org.slf4j.Logger;
 
 import java.util.concurrent.ThreadLocalRandom;

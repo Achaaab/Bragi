@@ -1,6 +1,6 @@
 package com.github.achaaab.bragi.gui.module;
 
-import com.github.achaaab.bragi.module.Theremin;
+import com.github.achaaab.bragi.module.producer.Theremin;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -40,7 +40,7 @@ public class ThereminView extends JPanel {
 		setPreferredSize(new Dimension(400, 400));
 		setBackground(Color.DARK_GRAY);
 
-		var frame = new JFrame(model.getName());
+		var frame = new JFrame(model.name());
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		frame.setContentPane(this);
 		frame.pack();

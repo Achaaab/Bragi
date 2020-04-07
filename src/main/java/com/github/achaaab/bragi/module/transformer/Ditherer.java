@@ -1,7 +1,8 @@
-package com.github.achaaab.bragi.module;
+package com.github.achaaab.bragi.module.transformer;
 
 import com.github.achaaab.bragi.common.connection.Input;
 import com.github.achaaab.bragi.common.connection.Output;
+import com.github.achaaab.bragi.module.Module;
 import org.slf4j.Logger;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -54,7 +55,7 @@ public class Ditherer extends Module {
 
 		var outputSamples = new float[sampleCount];
 
-		for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
+		for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 			outputSamples[sampleIndex] = inputSamples[sampleIndex] + random.nextFloat() / 100;
 		}
 

@@ -1,8 +1,9 @@
-package com.github.achaaab.bragi.module;
+package com.github.achaaab.bragi.module.producer;
 
 import com.github.achaaab.bragi.common.connection.Output;
 import com.github.achaaab.bragi.common.wave.Wave;
 import com.github.achaaab.bragi.common.wave.Waveform;
+import com.github.achaaab.bragi.module.Module;
 
 /**
  * oscillator

@@ -12,7 +12,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Jonathan Guéhenneux
  * @since 0.0.1
  */
-public class PrimaryInput extends NamedInput {
+public class PrimaryInput extends AbstractInput {
 
 	private static final Logger LOGGER = getLogger(PrimaryInput.class);
 

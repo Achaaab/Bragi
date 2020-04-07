@@ -1,6 +1,6 @@
 package com.github.achaaab.bragi.gui.module;
 
-import com.github.achaaab.bragi.module.VCA;
+import com.github.achaaab.bragi.module.transformer.VCA;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -36,7 +36,7 @@ public class VCAView extends JPanel {
 		setLayout(new BorderLayout());
 		add(initialGainSlider);
 
-		var frame = new JFrame(model.getName());
+		var frame = new JFrame(model.name());
 		frame.setContentPane(this);
 		frame.setSize(400, 200);
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);

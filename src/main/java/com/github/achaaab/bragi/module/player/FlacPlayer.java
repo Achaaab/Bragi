@@ -1,4 +1,4 @@
-package com.github.achaaab.bragi.module;
+package com.github.achaaab.bragi.module.player;
 
 import com.github.achaaab.bragi.common.ModuleCreationException;
 import com.github.achaaab.bragi.file.FlacFile;

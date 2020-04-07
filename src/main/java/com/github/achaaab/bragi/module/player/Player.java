@@ -1,4 +1,4 @@
-package com.github.achaaab.bragi.module;
+package com.github.achaaab.bragi.module.player;
 
 import com.github.achaaab.bragi.common.Interpolator;
 import com.github.achaaab.bragi.common.ModuleCreationException;
@@ -7,6 +7,7 @@ import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.file.AudioFile;
 import com.github.achaaab.bragi.file.AudioFileException;
 import com.github.achaaab.bragi.gui.module.PlayerView;
+import com.github.achaaab.bragi.module.Module;
 import org.slf4j.Logger;
 
 import static com.github.achaaab.bragi.common.Interpolator.CUBIC_HERMITE_SPLINE;

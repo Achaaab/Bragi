@@ -1,14 +1,14 @@
 package com.github.achaaab.bragi.common.connection;
 
+import com.github.achaaab.bragi.common.AbstractNamedEntity;
+
 /**
  * A default implementation for inputs.
  *
  * @author Jonathan Guéhenneux
  * @since 0.0.1
  */
-public abstract class NamedInput implements Input {
-
-	protected final String name;
+public abstract class AbstractInput extends AbstractNamedEntity implements Input {
 
 	protected Buffer buffer;
 
@@ -17,9 +17,9 @@ public abstract class NamedInput implements Input {
 	 *
 	 * @param name name of the input to create
 	 */
-	public NamedInput(String name) {
+	public AbstractInput(String name) {
 
-		this.name = name;
+		super(name);
 
 		buffer = null;
 	}

@@ -1,6 +1,6 @@
 package com.github.achaaab.bragi.gui.module;
 
-import com.github.achaaab.bragi.module.Keyboard;
+import com.github.achaaab.bragi.module.producer.Keyboard;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
@@ -71,7 +71,7 @@ public class KeyboardView extends JPanel {
 			});
 		}
 
-		var frame = new JFrame(model.getName());
+		var frame = new JFrame(model.name());
 		frame.setContentPane(this);
 		frame.pack();
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);

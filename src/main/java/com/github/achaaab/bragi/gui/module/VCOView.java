@@ -1,7 +1,7 @@
 package com.github.achaaab.bragi.gui.module;
 
 import com.github.achaaab.bragi.gui.component.WaveformComboBox;
-import com.github.achaaab.bragi.module.VCO;
+import com.github.achaaab.bragi.module.producer.VCO;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -45,7 +45,7 @@ public class VCOView extends JPanel {
 		add(waveformComboBox, NORTH);
 		add(octaveSlider, CENTER);
 
-		var frame = new JFrame(model.getName());
+		var frame = new JFrame(model.name());
 		frame.setContentPane(this);
 		frame.setSize(400, 250);
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);

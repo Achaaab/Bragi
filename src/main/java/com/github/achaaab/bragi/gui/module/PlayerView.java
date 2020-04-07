@@ -1,7 +1,7 @@
 package com.github.achaaab.bragi.gui.module;
 
 import com.github.achaaab.bragi.gui.component.TimeSlider;
-import com.github.achaaab.bragi.module.Player;
+import com.github.achaaab.bragi.module.player.Player;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -91,7 +91,7 @@ public class PlayerView extends JPanel {
 		add(timeLabel);
 		add(timeSlider);
 
-		var frame = new JFrame(model.getName());
+		var frame = new JFrame(model.name());
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		frame.setContentPane(this);
 		frame.setSize(684, 117);

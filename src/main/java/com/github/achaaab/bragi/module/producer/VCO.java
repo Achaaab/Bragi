@@ -1,4 +1,4 @@
-package com.github.achaaab.bragi.module;
+package com.github.achaaab.bragi.module.producer;
 
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.common.connection.Input;

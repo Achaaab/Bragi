@@ -1,8 +1,9 @@
-package com.github.achaaab.bragi.module;
+package com.github.achaaab.bragi.module.transformer;
 
 import com.github.achaaab.bragi.common.connection.Input;
 import com.github.achaaab.bragi.common.connection.Output;
 import com.github.achaaab.bragi.gui.module.VCAView;
+import com.github.achaaab.bragi.module.Module;
 import org.slf4j.Logger;
 
 import static java.lang.Math.pow;

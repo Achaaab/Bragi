@@ -1,5 +1,6 @@
 package com.github.achaaab.bragi.common.connection;
 
+import com.github.achaaab.bragi.common.AbstractNamedEntity;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -13,11 +14,10 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Jonathan Guéhenneux
  * @since 0.0.3
  */
-public abstract class NamedOutput implements Output {
+public abstract class AbstractOutput extends AbstractNamedEntity implements Output {
 
-	private static final Logger LOGGER = getLogger(NamedOutput.class);
+	private static final Logger LOGGER = getLogger(AbstractOutput.class);
 
-	protected final String name;
 	protected final List<Buffer> buffers;
 
 	/**
@@ -25,9 +25,9 @@ public abstract class NamedOutput implements Output {
 	 *
 	 * @param name name of the output to create
 	 */
-	public NamedOutput(String name) {
+	public AbstractOutput(String name) {
 
-		this.name = name;
+		super(name);
 
 		buffers = new ArrayList<>();
 	}

@@ -2,7 +2,7 @@ package com.github.achaaab.bragi.gui.module;
 
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.gui.common.PaintedView;
-import com.github.achaaab.bragi.module.Oscilloscope;
+import com.github.achaaab.bragi.module.consumer.Oscilloscope;
 
 import javax.swing.JFrame;
 import java.awt.BasicStroke;
@@ -58,7 +58,7 @@ public class OscilloscopeView extends PaintedView {
 
 		setPreferredSize(new Dimension(400, 400));
 
-		var frame = new JFrame(model.getName());
+		var frame = new JFrame(model.name());
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		frame.add(this);
 		frame.pack();

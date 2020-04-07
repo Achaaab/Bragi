@@ -1,9 +1,10 @@
-package com.github.achaaab.bragi.module;
+package com.github.achaaab.bragi.module.producer;
 
 import com.github.achaaab.bragi.common.Interpolator;
 import com.github.achaaab.bragi.common.ModuleCreationException;
 import com.github.achaaab.bragi.common.Normalizer;
 import com.github.achaaab.bragi.common.Settings;
+import com.github.achaaab.bragi.module.Module;
 import org.slf4j.Logger;
 
 import javax.sound.sampled.AudioFormat;

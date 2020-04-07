@@ -12,7 +12,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Jonathan Guéhenneux
  * @since 0.0.3
  */
-public class PrimaryOutput extends NamedOutput {
+public class PrimaryOutput extends AbstractOutput {
 
 	private static final Logger LOGGER = getLogger(PrimaryOutput.class);
 
