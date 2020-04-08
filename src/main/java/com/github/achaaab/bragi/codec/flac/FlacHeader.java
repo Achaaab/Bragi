@@ -14,6 +14,9 @@ import static com.github.achaaab.bragi.codec.flac.MetadataBlock.decode;
  */
 public class FlacHeader {
 
+	/**
+	 * "fLaC" in US-ASCII
+	 */
 	private static final int FLAC_MARKER = 0x664C6143;
 
 	private final int marker;
@@ -21,11 +24,11 @@ public class FlacHeader {
 	private final List<MetadataBlock> metadataBlocks;
 
 	/**
-	 * Decodes a FLAC header from the given bit input stream.
+	 * Decodes a FLAC header from the given FLAC input stream.
 	 *
-	 * @param input bit input stream to decode
+	 * @param input FLAC input stream to decode
 	 */
-	FlacHeader(BitInputStream input) throws IOException, FlacDecoderException {
+	FlacHeader(FlacInputStream input) throws IOException, FlacDecoderException {
 
 		marker = input.readUnsignedInteger(32);
 

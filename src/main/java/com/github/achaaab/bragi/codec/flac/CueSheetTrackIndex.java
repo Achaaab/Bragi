@@ -16,11 +16,11 @@ public class CueSheetTrackIndex {
 	private final int number;
 
 	/**
-	 * Decodes a CUE sheet track index from the given bit input stream.
+	 * Decodes a CUE sheet track index from the given FLAC input stream.
 	 *
-	 * @param input bit input stream to decode
+	 * @param input FLAC input stream to decode
 	 */
-	public CueSheetTrackIndex(BitInputStream input) throws IOException {
+	public CueSheetTrackIndex(FlacInputStream input) throws IOException {
 
 		offset = (long) input.readUnsignedInteger(32) << 32 | input.readUnsignedInteger(32);
 		number = input.readUnsignedInteger(8);

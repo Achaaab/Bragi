@@ -8,11 +8,13 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
+ * FLAC input stream
+ *
  * @author Project Nayuki
  * @author Jonathan Guéhenneux
  * @since 0.1.7
  */
-public class BitInputStream implements AutoCloseable {
+public class FlacInputStream implements AutoCloseable {
 
 	private final InputStream inputStream;
 
@@ -22,12 +24,12 @@ public class BitInputStream implements AutoCloseable {
 	/**
 	 * @param inputStream underlying input stream to read from
 	 */
-	public BitInputStream(InputStream inputStream) {
+	public FlacInputStream(InputStream inputStream) {
 		this.inputStream = inputStream;
 	}
 
 	/**
-	 *
+	 * Skips the last bits of the current byte.
 	 */
 	public void alignToByte() {
 		bufferLength -= bufferLength % 8;
@@ -60,21 +62,17 @@ public class BitInputStream implements AutoCloseable {
 	}
 
 	/**
-	 * @param length number of bits to skip
-	 * @throws IOException I/O exception while skipping bits
+	 * Skips {@code length} bytes.
+	 *
+	 * @param length number of bytes to skip
+	 * @throws IOException I/O exception while skipping bytes
 	 */
 	public void skip(int length) throws IOException {
 
-		var align = length % 8;
-
-		if (align > 0) {
-			readUnsignedInteger(align);
-		}
-
 		while (length > 0) {
 
-			readUnsignedInteger(8);
-			length -= 8;
+			readByte();
+			length--;
 		}
 	}
 
@@ -89,25 +87,25 @@ public class BitInputStream implements AutoCloseable {
 
 		while (bufferLength < length) {
 
-			int eightBits = inputStream.read();
+			var octet = inputStream.read();
 
-			if (eightBits == -1) {
+			if (octet == -1) {
 				throw new EOFException();
 			}
 
-			buffer = (buffer << 8) | eightBits;
+			buffer = (buffer << 8) | octet;
 			bufferLength += 8;
 		}
 
 		bufferLength -= length;
 
-		int result = (int) (buffer >>> bufferLength);
+		var unsignedInteger = (int) (buffer >>> bufferLength);
 
 		if (length < 32) {
-			result &= (1 << length) - 1;
+			unsignedInteger &= (1 << length) - 1;
 		}
 
-		return result;
+		return unsignedInteger;
 	}
 
 	/**
@@ -122,13 +120,13 @@ public class BitInputStream implements AutoCloseable {
 	}
 
 	/**
-	 * more documentation on https://fr.wikipedia.org/wiki/Codage_de_Rice
+	 * more documentation on <a href="https://fr.wikipedia.org/wiki/Codage_de_Rice">Codage de Rice</a>
 	 *
-	 * @param param
+	 * @param k
 	 * @return
 	 * @throws IOException
 	 */
-	public long readRiceSignedInteger(int param) throws IOException {
+	public long readRiceSignedInteger(int k) throws IOException {
 
 		var val = 0L;
 
@@ -136,7 +134,7 @@ public class BitInputStream implements AutoCloseable {
 			val++;
 		}
 
-		val = (val << param) | readUnsignedInteger(param);
+		val = (val << k) | readUnsignedInteger(k);
 
 		return (val >>> 1) ^ -(val & 1);
 	}
@@ -147,7 +145,7 @@ public class BitInputStream implements AutoCloseable {
 	 * @return read integer
 	 * @throws IOException I/O exception while reading an integer
 	 */
-	public long readLittleEndianUnsignedInteger32() throws IOException {
+	public long readLittleEndianUnsignedInteger() throws IOException {
 
 		long byte0 = readByte();
 		long byte1 = readByte();
@@ -167,7 +165,7 @@ public class BitInputStream implements AutoCloseable {
 	 * @return read integer
 	 * @throws IOException I/O exception while reading an integer
 	 */
-	public long readBigEndianUnsignedInteger32() throws IOException {
+	public long readBigEndianUnsignedInteger() throws IOException {
 
 		long byte0 = readByte();
 		long byte1 = readByte();
@@ -185,7 +183,7 @@ public class BitInputStream implements AutoCloseable {
 	 * Reads a string encoded with US-ASCII charset.
 	 * Reads but does not returns last NUL characters.
 	 *
-	 * @param length number of bytes to read
+	 * @param length           number of bytes to read
 	 * @param stripTrailingNul whether to strip trailing NUL characters
 	 * @return read string
 	 * @throws IOException I/O exception while reading a string
@@ -227,7 +225,7 @@ public class BitInputStream implements AutoCloseable {
 	 */
 	public String decodeAsciiString() throws FlacDecoderException, IOException {
 
-		var length = readBigEndianUnsignedInteger32();
+		var length = readBigEndianUnsignedInteger();
 
 		if (length > Integer.MAX_VALUE) {
 
@@ -248,7 +246,7 @@ public class BitInputStream implements AutoCloseable {
 	 */
 	public String decodeUtf8String() throws FlacDecoderException, IOException {
 
-		var length = readBigEndianUnsignedInteger32();
+		var length = readBigEndianUnsignedInteger();
 
 		if (length > Integer.MAX_VALUE) {
 
@@ -269,7 +267,7 @@ public class BitInputStream implements AutoCloseable {
 	 */
 	public String decodeVorbisString() throws FlacDecoderException, IOException {
 
-		var length = readLittleEndianUnsignedInteger32();
+		var length = readLittleEndianUnsignedInteger();
 
 		if (length > Integer.MAX_VALUE) {
 

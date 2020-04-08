@@ -1,8 +1,8 @@
 package com.github.achaaab.bragi.codec.flac;
 
+import java.io.EOFException;
 import java.io.IOException;
 
-import static java.lang.Integer.numberOfLeadingZeros;
 import static java.util.Arrays.fill;
 
 /**
@@ -21,174 +21,58 @@ public class FlacDecoder {
 	};
 
 	/**
-	 * Decodes a FLAC header from the given bit input stream.
+	 * Decodes a FLAC header from the given FLAC input stream.
 	 *
-	 * @param input bit input stream to decode
+	 * @param input FLAC input stream to decode
 	 * @return decoded FLAC header
 	 * @throws IOException          I/O exception while decoding a FLAC header
 	 * @throws FlacDecoderException if invalid or unsupported FLAC header is decoded
 	 */
-	public static FlacHeader decodeHeader(BitInputStream input) throws IOException, FlacDecoderException {
+	public static FlacHeader decodeHeader(FlacInputStream input) throws IOException, FlacDecoderException {
 		return new FlacHeader(input);
 	}
 
 	/**
 	 * Decodes a FLAC frame.
 	 *
-	 * @param input        bit input stream to read from
-	 * @param channelCount number of channels
-	 * @param sampleSize   size of each sample in bits
+	 * @param input      FLAC input stream to read from
+	 * @param streamInfo global stream information
 	 * @return decoded frame or {@code null} if the end of the stream is reached and there are no more frame to decode
 	 * @throws IOException          I/O exception while decoding a frame
 	 * @throws FlacDecoderException invalid flac frame
 	 */
-	public static int[][] decodeFrame(BitInputStream input, int channelCount, int sampleSize)
+	public static int[][] decodeFrame(FlacInputStream input, StreamInfo streamInfo)
 			throws IOException, FlacDecoderException {
 
 		int[][] frame;
 
-		var firstByte = input.readByte();
+		try {
 
-		if (firstByte == -1) {
-
-			frame = null;
-
-		} else {
-
-			// Read a ton of header fields, and ignore most of them.
-
-			var sync = firstByte << 6 | input.readUnsignedInteger(6);
-
-			if (sync != 0x3FFE) {
-				throw new FlacDecoderException("sync code expected");
-			}
-
-			input.readUnsignedInteger(1);
-			input.readUnsignedInteger(1);
-
-			var blockSizeCode = input.readUnsignedInteger(4);
-			var sampleRateCode = input.readUnsignedInteger(4);
-			var channelAssignment = input.readUnsignedInteger(4);
-
-			input.readUnsignedInteger(3);
-			input.readUnsignedInteger(1);
-
-			firstByte = numberOfLeadingZeros(~(input.readUnsignedInteger(8) << 24)) - 1;
-
-			for (var i = 0; i < firstByte; i++) {
-				input.readUnsignedInteger(8);
-			}
-
-			int sampleCount;
-
-			if (blockSizeCode == 1) {
-				sampleCount = 192;
-			} else if (2 <= blockSizeCode && blockSizeCode <= 5) {
-				sampleCount = 576 << (blockSizeCode - 2);
-			} else if (blockSizeCode == 6) {
-				sampleCount = input.readUnsignedInteger(8) + 1;
-			} else if (blockSizeCode == 7) {
-				sampleCount = input.readUnsignedInteger(16) + 1;
-			} else if (8 <= blockSizeCode && blockSizeCode <= 15) {
-				sampleCount = 256 << (blockSizeCode - 8);
-			} else {
-				throw new FlacDecoderException("unsupported block size code: " + blockSizeCode);
-			}
-
-			if (sampleRateCode == 12) {
-				input.readUnsignedInteger(8);
-			} else if (sampleRateCode == 13 || sampleRateCode == 14) {
-				input.readUnsignedInteger(16);
-			}
-
-			input.readUnsignedInteger(8);
-
-			// Decode each channel's sub-frame, then skip footer.
-			frame = new int[channelCount][sampleCount];
-			decodeSubFrames(input, sampleSize, channelAssignment, frame);
-
+			var frameHeader = new FrameHeader(input, streamInfo);
+			frame = frameHeader.decodeSubframes();
 			input.alignToByte();
 			input.readUnsignedInteger(16);
 
 			// must add 128 to samples if sample size = 8 ?
+
+		} catch (EOFException eofException) {
+
+			frame = null;
 		}
 
 		return frame;
 	}
 
 	/**
-	 * @param input             bit input stream to read from
-	 * @param sampleSize        size of each sample in bits
-	 * @param channelAssignment
-	 * @param frame
-	 * @throws IOException
-	 * @throws FlacDecoderException
-	 */
-	private static void decodeSubFrames(BitInputStream input, int sampleSize, int channelAssignment, int[][] frame)
-			throws IOException, FlacDecoderException {
-
-		var channelCount = frame.length;
-		var sampleCount = frame[0].length;
-		var samples = new long[frame.length][sampleCount];
-
-		if (0 <= channelAssignment && channelAssignment <= 7) {
-
-			for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
-				decodeSubframe(input, sampleSize, samples[channelIndex]);
-			}
-
-		} else if (8 <= channelAssignment && channelAssignment <= 10) {
-
-			decodeSubframe(input, sampleSize + (channelAssignment == 9 ? 1 : 0), samples[0]);
-			decodeSubframe(input, sampleSize + (channelAssignment == 9 ? 0 : 1), samples[1]);
-
-			if (channelAssignment == 8) {
-
-				for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
-					samples[1][sampleIndex] = samples[0][sampleIndex] - samples[1][sampleIndex];
-				}
-
-			} else if (channelAssignment == 9) {
-
-				for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
-					samples[0][sampleIndex] += samples[1][sampleIndex];
-				}
-
-			} else {
-
-				for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
-
-					var side = samples[1][sampleIndex];
-					var right = samples[0][sampleIndex] - (side >> 1);
-
-					samples[1][sampleIndex] = right;
-					samples[0][sampleIndex] = right + side;
-				}
-			}
-
-		} else {
-
-			throw new FlacDecoderException("reserved channel assignment");
-		}
-
-		for (var channelIndex = 0; channelIndex < frame.length; channelIndex++) {
-
-			for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
-				frame[channelIndex][sampleIndex] = (int) samples[channelIndex][sampleIndex];
-			}
-		}
-	}
-
-	/**
-	 * Decodes a subframe from the given bit input stream.
+	 * Decodes a subframe from the given FLAC input stream.
 	 *
-	 * @param input      bit input stream to decode
+	 * @param input      FLAC input stream to decode
 	 * @param sampleSize size of each sample in bits
 	 * @param subframe   subframe samples
 	 * @throws IOException          I/O exception while decoding a subframe
 	 * @throws FlacDecoderException if invalid or unsupported subframe is decoded
 	 */
-	private static void decodeSubframe(BitInputStream input, int sampleSize, long[] subframe)
+	public static void decodeSubframe(FlacInputStream input, int sampleSize, long[] subframe)
 			throws IOException, FlacDecoderException {
 
 		input.readUnsignedInteger(1);
@@ -244,7 +128,7 @@ public class FlacDecoder {
 	/**
 	 * Decodes a subframe that was encoded with Fixed Linear Predictor.
 	 *
-	 * @param input          bit input stream to read from
+	 * @param input          FLAC input stream to read from
 	 * @param predictorOrder order of linear predictor in [0, 4]
 	 * @param sampleSize     size of each sample in bits
 	 * @param samples        samples to decode
@@ -252,7 +136,7 @@ public class FlacDecoder {
 	 * @throws FlacDecoderException if an invalid or unsupported subframe is decoded
 	 */
 	private static void decodeFixedPredictionSubframe(
-			BitInputStream input, int predictorOrder, int sampleSize, long[] samples)
+			FlacInputStream input, int predictorOrder, int sampleSize, long[] samples)
 			throws IOException, FlacDecoderException {
 
 		for (var i = 0; i < predictorOrder; i++) {
@@ -266,7 +150,7 @@ public class FlacDecoder {
 	/**
 	 * Decodes an LPC subframe (Linear Prediction Coding).
 	 *
-	 * @param input      bit input stream to read from
+	 * @param input      FLAC input stream to read from
 	 * @param order      linear prediction coding order in [1, 32]
 	 * @param sampleSize size of each sample in bits
 	 * @param samples    decoded subframe samples
@@ -274,7 +158,7 @@ public class FlacDecoder {
 	 * @throws FlacDecoderException if invalid or unsupported LPC subframe is decoded
 	 */
 	private static void decodeLinearPredictiveCodingSubframe(
-			BitInputStream input, int order, int sampleSize, long[] samples)
+			FlacInputStream input, int order, int sampleSize, long[] samples)
 			throws IOException, FlacDecoderException {
 
 		for (var sampleIndex = 0; sampleIndex < order; sampleIndex++) {
@@ -294,13 +178,13 @@ public class FlacDecoder {
 	}
 
 	/**
-	 * @param input   bit input stream to read from
+	 * @param input   FLAC input stream to read from
 	 * @param warmUp
 	 * @param samples samples to decode
 	 * @throws IOException
 	 * @throws FlacDecoderException
 	 */
-	private static void decodeResiduals(BitInputStream input, int warmUp, long[] samples)
+	private static void decodeResiduals(FlacInputStream input, int warmUp, long[] samples)
 			throws IOException, FlacDecoderException {
 
 		var method = input.readUnsignedInteger(2);

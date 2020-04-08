@@ -22,23 +22,23 @@ public class Picture extends MetadataBlockData {
 	private final byte[] data;
 
 	/**
-	 * Decodes a picture from the given bit input stream.
+	 * Decodes a picture from the given FLAC input stream.
 	 *
-	 * @param input bit input stream to decode
+	 * @param input FLAC input stream to decode
 	 * @throws IOException          I/O exception while decoding a picture
 	 * @throws FlacDecoderException if invalid or unsupported picture is decoded
 	 */
-	public Picture(BitInputStream input) throws IOException, FlacDecoderException {
+	public Picture(FlacInputStream input) throws IOException, FlacDecoderException {
 
-		var typeCode = input.readBigEndianUnsignedInteger32();
+		var typeCode = input.readBigEndianUnsignedInteger();
 		type = PictureType.decode(typeCode);
 		mimeType = input.decodeAsciiString();
 		description = input.decodeUtf8String();
-		width = input.readBigEndianUnsignedInteger32();
-		height = input.readBigEndianUnsignedInteger32();
-		colorDepth = input.readBigEndianUnsignedInteger32();
-		colorCount = input.readBigEndianUnsignedInteger32();
-		var dataLength = input.readBigEndianUnsignedInteger32();
+		width = input.readBigEndianUnsignedInteger();
+		height = input.readBigEndianUnsignedInteger();
+		colorDepth = input.readBigEndianUnsignedInteger();
+		colorCount = input.readBigEndianUnsignedInteger();
+		var dataLength = input.readBigEndianUnsignedInteger();
 
 		if (dataLength > Integer.MAX_VALUE) {
 

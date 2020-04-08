@@ -26,13 +26,13 @@ public class StreamInfo extends MetadataBlockData {
 	private final float duration;
 
 	/**
-	 * Decodes a STREAMINFO metadata block from the given bit input stream.
+	 * Decodes a STREAMINFO metadata block from the given FLAC input stream.
 	 *
-	 * @param input bit input stream to decode
+	 * @param input FLAC input stream to decode
 	 * @throws IOException          I/O exception while decoding a STREAMINFO metadata block
 	 * @throws FlacDecoderException if STREAMINFO metadata block is invalid or not supported
 	 */
-	StreamInfo(BitInputStream input) throws IOException, FlacDecoderException {
+	StreamInfo(FlacInputStream input) throws IOException, FlacDecoderException {
 
 		minimumBlockSize = input.readUnsignedInteger(16);
 		maximumBlockSize = input.readUnsignedInteger(16);

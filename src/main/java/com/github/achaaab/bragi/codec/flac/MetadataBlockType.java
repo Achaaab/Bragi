@@ -1,7 +1,5 @@
 package com.github.achaaab.bragi.codec.flac;
 
-import java.util.Map;
-
 /**
  * FLAC BLOCK_TYPE
  *
@@ -14,28 +12,27 @@ public enum MetadataBlockType {
 
 	STREAMINFO, PADDING, APPLICATION, SEEKTABLE, VORBIS_COMMENT, CUESHEET, PICTURE;
 
-	private static final Map<Integer, MetadataBlockType> DECODING_TABLE = Map.of(
-			0, STREAMINFO,
-			1, PADDING,
-			2, APPLICATION,
-			3, SEEKTABLE,
-			4, VORBIS_COMMENT,
-			5, CUESHEET,
-			6, PICTURE
-	);
+	private static final MetadataBlockType[] DECODING_TABLE = {
+			STREAMINFO,
+			PADDING,
+			APPLICATION,
+			SEEKTABLE,
+			VORBIS_COMMENT,
+			CUESHEET,
+			PICTURE
+	};
 
 	/**
 	 * @param code metadata block type code
 	 * @return metadata block type corresponding to the given code,
-	 * {@code null} if the block type code is valid, but unknown
-	 * @throws FlacDecoderException if the block type code is invalid
+	 * @throws FlacDecoderException if the block type code is unsupported
 	 */
 	static MetadataBlockType decode(int code) throws FlacDecoderException {
 
-		if (code < 0 || code >= 127) {
-			throw new FlacDecoderException("invalid code for metadata block type: " + code);
+		if (code < 0 || code >= DECODING_TABLE.length) {
+			throw new FlacDecoderException("unsupported code for metadata block type: " + code);
 		}
 
-		return DECODING_TABLE.get(code);
+		return DECODING_TABLE[code];
 	}
 }

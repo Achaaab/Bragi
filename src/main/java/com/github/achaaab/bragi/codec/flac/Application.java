@@ -53,13 +53,13 @@ public class Application extends MetadataBlockData {
 	private final String name;
 
 	/**
-	 * Decodes an APPLICATION metadata block from the given bit input stream.
+	 * Decodes an APPLICATION metadata block from the given FLAC input stream.
 	 *
-	 * @param input  bit input stream to decode
+	 * @param input  FLAC input stream to decode
 	 * @param length length of this metadata block data
 	 * @throws IOException I/O exception while decoding a APPLICATION metadata block
 	 */
-	Application(BitInputStream input, int length) throws IOException {
+	Application(FlacInputStream input, int length) throws IOException {
 
 		registeredId = input.readUnsignedInteger(32);
 		data = input.readBytes(length - 4);

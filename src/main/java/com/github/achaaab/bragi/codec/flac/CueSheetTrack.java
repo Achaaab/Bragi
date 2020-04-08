@@ -22,12 +22,12 @@ public class CueSheetTrack {
 	private final List<CueSheetTrackIndex> index;
 
 	/**
-	 * Decodes a CUE sheet track from the given bit input stream.
+	 * Decodes a CUE sheet track from the given FLAC input stream.
 	 *
-	 * @param input bit input stream to decode
+	 * @param input FLAC input stream to decode
 	 * @throws IOException I/O exception while decoding a CUE sheet track
 	 */
-	public CueSheetTrack(BitInputStream input) throws IOException {
+	public CueSheetTrack(FlacInputStream input) throws IOException {
 
 		offset = (long) input.readUnsignedInteger(32) << 32 | input.readUnsignedInteger(32);
 		number = input.readUnsignedInteger(8);
@@ -36,7 +36,8 @@ public class CueSheetTrack {
 		preEmphasis = input.readUnsignedInteger(1) == 1;
 
 		// reserved
-		input.skip(6 + 13 * 8);
+		input.alignToByte();
+		input.skip(13);
 
 		var indexCount = input.readUnsignedInteger(8);
 		index = new ArrayList<>(indexCount);

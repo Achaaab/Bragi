@@ -40,15 +40,15 @@ public class VorbisComment extends MetadataBlockData {
 	/**
 	 * Decodes a vorbis comment from the given input stream.
 	 *
-	 * @param input bit input stream to decode
+	 * @param input FLAC input stream to decode
 	 * @throws IOException          I/O exception while decoding a vorbis comment
 	 * @throws FlacDecoderException if invalid or unsupported vorbis comment is decoded
 	 */
-	public VorbisComment(BitInputStream input) throws IOException, FlacDecoderException {
+	public VorbisComment(FlacInputStream input) throws IOException, FlacDecoderException {
 
 		vendor = input.decodeVorbisString();
 
-		var userCommentCount = input.readLittleEndianUnsignedInteger32();
+		var userCommentCount = input.readLittleEndianUnsignedInteger();
 
 		if (userCommentCount > Integer.MAX_VALUE) {
 
@@ -78,13 +78,13 @@ public class VorbisComment extends MetadataBlockData {
 	}
 
 	/**
-	 * Decodes a vorbis user comment from the given bit input stream.
+	 * Decodes a vorbis user comment from the given FLAC input stream.
 	 *
-	 * @param input bit input stream to decode
+	 * @param input FLAC input stream to decode
 	 * @throws IOException          I/O exception while decoding a user comment
 	 * @throws FlacDecoderException if user comment is invalid or unsupported
 	 */
-	private void decodeUserComment(BitInputStream input) throws IOException, FlacDecoderException {
+	private void decodeUserComment(FlacInputStream input) throws IOException, FlacDecoderException {
 
 		var userComment = input.decodeVorbisString();
 		var equalsIndex = userComment.indexOf('=');

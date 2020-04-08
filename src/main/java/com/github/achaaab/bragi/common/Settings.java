@@ -18,8 +18,8 @@ public record Settings(
 	public static final Settings INSTANCE = new Settings();
 
 	private static final int DEFAULT_CHANNELS_COUNT = 2;
-	private static final int DEFAULT_SAMPLE_SIZE = 2;
-	private static final int DEFAULT_FRAME_RATE = 44100;
+	private static final int DEFAULT_SAMPLE_SIZE = 3;
+	private static final int DEFAULT_FRAME_RATE = 96000;
 	private static final float DEFAULT_CHUNK_DURATION = 0.01f;
 	private static final float DEFAULT_MINIMAL_VOLTAGE = -5.0f;
 	private static final float DEFAULT_MAXIMAL_VOLTAGE = 5.0f;

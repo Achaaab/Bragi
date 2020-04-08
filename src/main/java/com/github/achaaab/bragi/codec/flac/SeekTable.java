@@ -17,13 +17,13 @@ public class SeekTable extends MetadataBlockData {
 	private final List<SeekPoint> seekPoints;
 
 	/**
-	 * Decodes an SEEKTABLE metadata block from the given bit input stream.
+	 * Decodes an SEEKTABLE metadata block from the given FLAC input stream.
 	 *
-	 * @param input  bit input stream to decode
+	 * @param input  FLAC input stream to decode
 	 * @param length length of this metadata block data
 	 * @throws IOException I/O exception while decoding a SEEKTABLE metadata block
 	 */
-	SeekTable(BitInputStream input, int length) throws IOException, FlacDecoderException {
+	SeekTable(FlacInputStream input, int length) throws IOException, FlacDecoderException {
 
 		if (length % SeekPoint.LENGTH != 0) {
 

@@ -13,14 +13,14 @@ import java.io.IOException;
 public class MetadataBlock {
 
 	/**
-	 * Decodes a metadata block from the given bit input stream.
+	 * Decodes a metadata block from the given FLAC input stream.
 	 *
-	 * @param input bit input stream to decode
+	 * @param input FLAC input stream to decode
 	 * @return decoded metadata block
 	 * @throws IOException          I/O exception white decoding metadata block
 	 * @throws FlacDecoderException if stream info metadata block is invalid
 	 */
-	static MetadataBlock decode(BitInputStream input) throws IOException, FlacDecoderException {
+	static MetadataBlock decode(FlacInputStream input) throws IOException, FlacDecoderException {
 
 		var header = new MetadataBlockHeader(input);
 		var type = header.type();

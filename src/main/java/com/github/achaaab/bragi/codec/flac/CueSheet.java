@@ -20,17 +20,20 @@ public class CueSheet extends MetadataBlockData {
 	private final List<CueSheetTrack> tracks;
 
 	/**
-	 * Decodes a CUE sheet from the given bit input stream.
+	 * Decodes a CUE sheet from the given FLAC input stream.
 	 *
-	 * @param input bit input stream to decode
+	 * @param input FLAC input stream to decode
 	 * @throws IOException I/O exception while decoding a CUE sheet
 	 */
-	public CueSheet(BitInputStream input) throws IOException {
+	public CueSheet(FlacInputStream input) throws IOException {
 
 		catalogNumber = input.readAsciiString(128, true);
 		leadInSampleCount = (long) input.readUnsignedInteger(32) << 32 | input.readUnsignedInteger(32);
 		compactDisc = input.readUnsignedInteger(1) == 1;
-		input.skip(7 + 258 * 8);
+
+		// reserved
+		input.alignToByte();
+		input.skip(258);
 
 		var trackCount = input.readUnsignedInteger(8);
 		tracks = new ArrayList<>(trackCount);

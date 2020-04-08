@@ -22,12 +22,12 @@ public class SeekPoint extends MetadataBlockData {
 	private final int sampleCount;
 
 	/**
-	 * Decodes a seek point from the given bit input stream.
+	 * Decodes a seek point from the given FLAC input stream.
 	 *
-	 * @param input bit input stream to decode
+	 * @param input FLAC input stream to decode
 	 * @throws IOException I/O exception while decoding a seek point
 	 */
-	public SeekPoint(BitInputStream input) throws IOException {
+	public SeekPoint(FlacInputStream input) throws IOException {
 
 		sampleNumber = (long) input.readUnsignedInteger(32) << 32 | input.readUnsignedInteger(32);
 		offset = (long) input.readUnsignedInteger(32) << 32 | input.readUnsignedInteger(32);

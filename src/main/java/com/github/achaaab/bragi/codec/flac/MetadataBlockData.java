@@ -20,13 +20,13 @@ public class MetadataBlockData {
 	}
 
 	/**
-	 * Decodes a metadata block data of given length from the given bit input stream.
+	 * Decodes a metadata block data of given length from the given FLAC input stream.
 	 *
-	 * @param input  bit input stream to decode
+	 * @param input  FLAC input stream to decode
 	 * @param length length of the metadata block data to decode
 	 * @throws IOException I/O exception while decoding metadata block data
 	 */
-	MetadataBlockData(BitInputStream input, int length) throws IOException {
+	MetadataBlockData(FlacInputStream input, int length) throws IOException {
 		input.readBytes(length);
 	}
 }

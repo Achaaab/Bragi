@@ -13,13 +13,13 @@ import java.io.IOException;
 public class Padding extends MetadataBlockData {
 
 	/**
-	 * Decodes a PADDING metadata block from the given bit input stream.
+	 * Decodes a PADDING metadata block from the given FLAC input stream.
 	 *
-	 * @param input  bit input stream to decode
+	 * @param input  FLAC input stream to decode
 	 * @param length length of this metadata block data in bytes
 	 * @throws IOException I/O exception while decoding a PADDING metadata block
 	 */
-	Padding(BitInputStream input, int length) throws IOException {
+	Padding(FlacInputStream input, int length) throws IOException {
 		super(input, length);
 	}
 }

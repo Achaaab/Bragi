@@ -1,8 +1,8 @@
 package com.github.achaaab.bragi.file;
 
-import com.github.achaaab.bragi.codec.flac.BitInputStream;
 import com.github.achaaab.bragi.codec.flac.FlacDecoderException;
 import com.github.achaaab.bragi.codec.flac.FlacHeader;
+import com.github.achaaab.bragi.codec.flac.FlacInputStream;
 import org.slf4j.Logger;
 
 import java.io.BufferedInputStream;
@@ -24,7 +24,7 @@ public class FlacFile implements AudioFile {
 
 	private final Path path;
 
-	private BitInputStream bitInputStream;
+	private FlacInputStream flacInputStream;
 	private FlacHeader header;
 	private float time;
 
@@ -44,8 +44,8 @@ public class FlacFile implements AudioFile {
 
 			var inputStream = newInputStream(path);
 			var bufferedInputStream = new BufferedInputStream(inputStream);
-			bitInputStream = new BitInputStream(bufferedInputStream);
-			header = decodeHeader(bitInputStream);
+			flacInputStream = new FlacInputStream(bufferedInputStream);
+			header = decodeHeader(flacInputStream);
 			time = 0.0f;
 
 		} catch (IOException | FlacDecoderException cause) {
@@ -60,7 +60,7 @@ public class FlacFile implements AudioFile {
 		LOGGER.info("closing FLAC file {}", path);
 
 		try {
-			bitInputStream.close();
+			flacInputStream.close();
 		} catch (IOException cause) {
 			throw new AudioFileException(cause);
 		}
@@ -88,9 +88,7 @@ public class FlacFile implements AudioFile {
 
 		try {
 
-			var frame = decodeFrame(bitInputStream,
-					header.streamInfo().channelCount(),
-					header.streamInfo().sampleSize());
+			var frame = decodeFrame(flacInputStream, header.streamInfo());
 
 			if (frame != null) {
 

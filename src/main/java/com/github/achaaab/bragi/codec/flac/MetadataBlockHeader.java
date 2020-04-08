@@ -19,13 +19,13 @@ public class MetadataBlockHeader {
 	private final int length;
 
 	/**
-	 * Decodes a metadata block header from the given bit input stream.
+	 * Decodes a metadata block header from the given FLAC input stream.
 	 *
-	 * @param input bit input stream to decode
+	 * @param input FLAC input stream to decode
 	 * @throws IOException          I/O exception white decoding metadata block header
 	 * @throws FlacDecoderException if stream info metadata block header is invalid
 	 */
-	MetadataBlockHeader(BitInputStream input) throws IOException, FlacDecoderException {
+	MetadataBlockHeader(FlacInputStream input) throws IOException, FlacDecoderException {
 
 		last = input.readUnsignedInteger(1) == 1;
 		var typeCode = input.readUnsignedInteger(7);
