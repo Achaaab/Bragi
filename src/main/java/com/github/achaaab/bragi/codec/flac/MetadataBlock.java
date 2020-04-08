@@ -3,8 +3,9 @@ package com.github.achaaab.bragi.codec.flac;
 import java.io.IOException;
 
 /**
- * FLAC metadata block
- * https://xiph.org/flac/format.html#metadata_block
+ * FLAC METADATA_BLOCK
+ *
+ * <a href="https://xiph.org/flac/format.html#metadata_block">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
  * @since 0.1.7
@@ -31,7 +32,8 @@ public class MetadataBlock {
 			case APPLICATION -> new Application(input, length);
 			case SEEKTABLE -> new SeekTable(input, length);
 			case VORBIS_COMMENT -> new VorbisComment(input);
-			default -> new MetadataBlockData(input, length);
+			case CUESHEET -> new CueSheet(input);
+			case PICTURE -> new Picture(input);
 		};
 
 		return new MetadataBlock(header, data);

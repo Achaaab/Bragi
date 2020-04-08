@@ -3,7 +3,9 @@ package com.github.achaaab.bragi.codec.flac;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+
+import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * @author Project Nayuki
@@ -55,6 +57,25 @@ public class BitInputStream implements AutoCloseable {
 	 */
 	public byte[] readBytes(int length) throws IOException {
 		return inputStream.readNBytes(length);
+	}
+
+	/**
+	 * @param length number of bits to skip
+	 * @throws IOException I/O exception while skipping bits
+	 */
+	public void skip(int length) throws IOException {
+
+		var align = length % 8;
+
+		if (align > 0) {
+			readUnsignedInteger(align);
+		}
+
+		while (length > 0) {
+
+			readUnsignedInteger(8);
+			length -= 8;
+		}
 	}
 
 	/**
@@ -121,19 +142,6 @@ public class BitInputStream implements AutoCloseable {
 	}
 
 	/**
-	 * Reads a string encoded with UTF-8 charset.
-	 *
-	 * @param length number of bytes to read
-	 * @return read string
-	 * @throws IOException I/O exception while reading a string
-	 */
-	public String readUTF(int length) throws IOException {
-
-		var bytes = readBytes(length);
-		return new String(bytes, StandardCharsets.UTF_8);
-	}
-
-	/**
 	 * Reads a 32-bits unsigned integer in little endian order.
 	 *
 	 * @return read integer
@@ -151,6 +159,125 @@ public class BitInputStream implements AutoCloseable {
 		}
 
 		return byte0 + (byte1 << 8) + (byte2 << 16) + (byte3 << 24);
+	}
+
+	/**
+	 * Reads a 32-bits unsigned integer in big endian order.
+	 *
+	 * @return read integer
+	 * @throws IOException I/O exception while reading an integer
+	 */
+	public long readBigEndianUnsignedInteger32() throws IOException {
+
+		long byte0 = readByte();
+		long byte1 = readByte();
+		long byte2 = readByte();
+		long byte3 = readByte();
+
+		if ((byte0 | byte1 | byte2 | byte3) < 0) {
+			throw new EOFException();
+		}
+
+		return byte3 + (byte2 << 8) + (byte1 << 16) + (byte0 << 24);
+	}
+
+	/**
+	 * Reads a string encoded with US-ASCII charset.
+	 * Reads but does not returns last NUL characters.
+	 *
+	 * @param length number of bytes to read
+	 * @param stripTrailingNul whether to strip trailing NUL characters
+	 * @return read string
+	 * @throws IOException I/O exception while reading a string
+	 */
+	public String readAsciiString(int length, boolean stripTrailingNul) throws IOException {
+
+		var bytes = readBytes(length);
+
+		if (stripTrailingNul) {
+
+			while (bytes[length - 1] == 0) {
+				length--;
+			}
+		}
+
+		return new String(bytes, 0, length, US_ASCII);
+	}
+
+	/**
+	 * Reads a string encoded with UTF-8 charset.
+	 *
+	 * @param length number of bytes to read
+	 * @return read string
+	 * @throws IOException I/O exception while reading a string
+	 */
+	public String readUtf8String(int length) throws IOException {
+
+		var bytes = readBytes(length);
+		return new String(bytes, UTF_8);
+	}
+
+	/**
+	 * Reads an unsigned, big-endian, 32-bits integer from the given input and then decode an US-ASCII string of
+	 * found length from the same input.
+	 *
+	 * @return read string
+	 * @throws IOException          I/O exception while reading a string
+	 * @throws FlacDecoderException if string length is not supported
+	 */
+	public String decodeAsciiString() throws FlacDecoderException, IOException {
+
+		var length = readBigEndianUnsignedInteger32();
+
+		if (length > Integer.MAX_VALUE) {
+
+			throw new FlacDecoderException(
+					"unsupported string length (" + length + "), maximum is " + Integer.MAX_VALUE);
+		}
+
+		return readAsciiString((int) length, false);
+	}
+
+	/**
+	 * Reads an unsigned, big-endian, 32-bits integer from the given input and then decode an US-ASCII string of
+	 * found length from the same input.
+	 *
+	 * @return read string
+	 * @throws IOException          I/O exception while reading a string
+	 * @throws FlacDecoderException if string length is not supported
+	 */
+	public String decodeUtf8String() throws FlacDecoderException, IOException {
+
+		var length = readBigEndianUnsignedInteger32();
+
+		if (length > Integer.MAX_VALUE) {
+
+			throw new FlacDecoderException(
+					"unsupported string length (" + length + "), maximum is " + Integer.MAX_VALUE);
+		}
+
+		return readUtf8String((int) length);
+	}
+
+	/**
+	 * Reads an unsigned, little-endian, 32-bits integer from the given input and then decode an UTF-8 string of
+	 * found length from the same input.
+	 *
+	 * @return read string
+	 * @throws IOException          I/O exception while reading a vorbis string
+	 * @throws FlacDecoderException if string length is not supported
+	 */
+	public String decodeVorbisString() throws FlacDecoderException, IOException {
+
+		var length = readLittleEndianUnsignedInteger32();
+
+		if (length > Integer.MAX_VALUE) {
+
+			throw new FlacDecoderException(
+					"unsupported string length (" + length + "), maximum is " + Integer.MAX_VALUE);
+		}
+
+		return readUtf8String((int) length);
 	}
 
 	/**

@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * vorbis comment, also known as FLAC tags
- * https://xiph.org/flac/format.html#metadata_block_vorbis_comment
- * https://www.xiph.org/vorbis/doc/v-comment.html
+ * FLAC METADATA_BLOCK_VORBIS_COMMENT
+ * It is also known as FLAC tags.
+ *
+ * <a href="https://xiph.org/flac/format.html#metadata_block_vorbis_comment">FLAC specifications</a>
+ * <a href="https://www.xiph.org/vorbis/doc/v-comment.html">Vorbis specifications</a>
  *
  * @author Jonathan Guéhenneux
  * @since 0.1.7
@@ -30,30 +32,9 @@ public class VorbisComment extends MetadataBlockData {
 	public static final String FIELD_CONTACT = "CONTACT";
 	public static final String FIELD_ISRC = "ISRC";
 
-	/**
-	 * Reads an unsigned, little-endian, 32-bits integer from the given input and then decode an UTF-8 string of
-	 * found length from the same input.
-	 *
-	 * @param input bit input stream to decode
-	 * @return read string
-	 * @throws IOException          I/O exception while reading a vorbis string
-	 * @throws FlacDecoderException if string length is not supported
-	 */
-	private static String decodeString(BitInputStream input) throws FlacDecoderException, IOException {
 
-		var length = input.readLittleEndianUnsignedInteger32();
-
-		if (length > Integer.MAX_VALUE) {
-
-			throw new FlacDecoderException(
-					"unsupported string length (" + length + "), maximum is " + Integer.MAX_VALUE);
-		}
-
-		return input.readUTF((int) length);
-	}
 
 	private final String vendor;
-
 	private final Map<String, String> userComments;
 
 	/**
@@ -65,7 +46,7 @@ public class VorbisComment extends MetadataBlockData {
 	 */
 	public VorbisComment(BitInputStream input) throws IOException, FlacDecoderException {
 
-		vendor = decodeString(input);
+		vendor = input.decodeVorbisString();
 
 		var userCommentCount = input.readLittleEndianUnsignedInteger32();
 
@@ -80,6 +61,13 @@ public class VorbisComment extends MetadataBlockData {
 		while (userComments.size() < userCommentCount) {
 			decodeUserComment(input);
 		}
+	}
+
+	/**
+	 * @return vendor name
+	 */
+	public String vendor() {
+		return vendor;
 	}
 
 	/**
@@ -98,7 +86,7 @@ public class VorbisComment extends MetadataBlockData {
 	 */
 	private void decodeUserComment(BitInputStream input) throws IOException, FlacDecoderException {
 
-		var userComment = decodeString(input);
+		var userComment = input.decodeVorbisString();
 		var equalsIndex = userComment.indexOf('=');
 		var fieldName = userComment.substring(0, equalsIndex);
 		var fieldValue = userComment.substring(equalsIndex + 1);

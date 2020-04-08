@@ -3,8 +3,9 @@ package com.github.achaaab.bragi.codec.flac;
 import java.io.IOException;
 
 /**
- * FLAC seek point
- * https://xiph.org/flac/format.html#seekpoint
+ * FLAC SEEKPOINT
+ *
+ * <a href="https://xiph.org/flac/format.html#seekpoint">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
  * @since 0.1.7

@@ -5,8 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * APPLICATION metadata block
- * https://xiph.org/flac/format.html#metadata_block_application
+ * FLAC METADATA_BLOCK_APPLICATION
+ *
+ * <a href="https://xiph.org/flac/format.html#metadata_block_application">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
  * @since 0.1.7

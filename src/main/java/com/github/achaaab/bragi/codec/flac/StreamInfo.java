@@ -3,8 +3,10 @@ package com.github.achaaab.bragi.codec.flac;
 import java.io.IOException;
 
 /**
- * STREAMINFO metadata block must be the first metadata block of a FLAC stream.
- * https://xiph.org/flac/format.html#metadata_block_streaminfo
+ * FLAC METADATA_BLOCK_STREAMINFO
+ * It must be the first metadata block data of a FLAC stream.
+ *
+ * <a href="https://xiph.org/flac/format.html#metadata_block_streaminfo">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
  * @since 0.1.7

@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * SEEKTABLE metadata block
- * https://xiph.org/flac/format.html#metadata_block_seektable
+ * FLAC METADATA_BLOCK_SEEKTABLE
+ *
+ * <a href="https://xiph.org/flac/format.html#metadata_block_seektable">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
  * @since 0.1.7

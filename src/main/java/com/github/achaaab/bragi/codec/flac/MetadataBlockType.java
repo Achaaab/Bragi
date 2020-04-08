@@ -3,8 +3,9 @@ package com.github.achaaab.bragi.codec.flac;
 import java.util.Map;
 
 /**
- * FLAC metadata block type
- * https://xiph.org/flac/format.html#metadata_block_header
+ * FLAC BLOCK_TYPE
+ *
+ * <a href="https://xiph.org/flac/format.html#metadata_block_header">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
  * @since 0.1.7

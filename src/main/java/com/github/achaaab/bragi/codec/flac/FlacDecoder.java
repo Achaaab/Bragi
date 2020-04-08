@@ -184,7 +184,7 @@ public class FlacDecoder {
 	 *
 	 * @param input      bit input stream to decode
 	 * @param sampleSize size of each sample in bits
-	 * @param subframe    subframe samples
+	 * @param subframe   subframe samples
 	 * @throws IOException          I/O exception while decoding a subframe
 	 * @throws FlacDecoderException if invalid or unsupported subframe is decoded
 	 */
@@ -242,23 +242,25 @@ public class FlacDecoder {
 	}
 
 	/**
-	 * @param input      bit input stream to read from
-	 * @param predOrder
-	 * @param sampleSize size of each sample in bits
-	 * @param result
-	 * @throws IOException
-	 * @throws FlacDecoderException
+	 * Decodes a subframe that was encoded with Fixed Linear Predictor.
+	 *
+	 * @param input          bit input stream to read from
+	 * @param predictorOrder order of linear predictor in [0, 4]
+	 * @param sampleSize     size of each sample in bits
+	 * @param samples        samples to decode
+	 * @throws IOException          I/O exception while decoding a subframe
+	 * @throws FlacDecoderException if an invalid or unsupported subframe is decoded
 	 */
 	private static void decodeFixedPredictionSubframe(
-			BitInputStream input, int predOrder, int sampleSize, long[] result)
+			BitInputStream input, int predictorOrder, int sampleSize, long[] samples)
 			throws IOException, FlacDecoderException {
 
-		for (var i = 0; i < predOrder; i++) {
-			result[i] = input.readSignedInt(sampleSize);
+		for (var i = 0; i < predictorOrder; i++) {
+			samples[i] = input.readSignedInt(sampleSize);
 		}
 
-		decodeResiduals(input, predOrder, result);
-		restoreLinearPrediction(result, FIXED_PREDICTION_COEFFICIENTS[predOrder], 0);
+		decodeResiduals(input, predictorOrder, samples);
+		restoreLinearPrediction(samples, FIXED_PREDICTION_COEFFICIENTS[predictorOrder], 0);
 	}
 
 	/**
@@ -294,7 +296,7 @@ public class FlacDecoder {
 	/**
 	 * @param input   bit input stream to read from
 	 * @param warmUp
-	 * @param samples
+	 * @param samples samples to decode
 	 * @throws IOException
 	 * @throws FlacDecoderException
 	 */

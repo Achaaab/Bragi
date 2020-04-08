@@ -1,12 +1,11 @@
 package com.github.achaaab.bragi.codec.flac;
 
-import com.github.achaaab.bragi.codec.flac.BitInputStream;
-
 import java.io.IOException;
 
 /**
- * FLAC metadata block data
- * https://xiph.org/flac/format.html#metadata_block_data
+ * FLAC METADATA_BLOCK_DATA
+ *
+ * <a href="https://xiph.org/flac/format.html#metadata_block_data">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
  * @since 0.1.7

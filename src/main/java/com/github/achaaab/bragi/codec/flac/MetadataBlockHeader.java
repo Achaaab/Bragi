@@ -5,8 +5,9 @@ import java.io.IOException;
 import static com.github.achaaab.bragi.codec.flac.MetadataBlockType.decode;
 
 /**
- * FLAC metadata block header
- * https://xiph.org/flac/format.html#metadata_block_header
+ * FLAC METADATA_BLOCK_HEADER
+ *
+ * <a href="https://xiph.org/flac/format.html#metadata_block_header">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
  * @since 0.1.7
