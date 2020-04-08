@@ -1,4 +1,9 @@
-package com.github.achaaab.bragi.codec.flac;
+package com.github.achaaab.bragi.codec.flac.header;
+
+import com.github.achaaab.bragi.codec.flac.FlacDecoderException;
+import com.github.achaaab.bragi.codec.flac.FlacInputStream;
+import com.github.achaaab.bragi.codec.flac.header.MetadataBlockData;
+import com.github.achaaab.bragi.codec.flac.header.PictureType;
 
 import java.io.IOException;
 

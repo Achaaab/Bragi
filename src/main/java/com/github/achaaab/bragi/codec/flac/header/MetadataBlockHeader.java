@@ -1,8 +1,11 @@
-package com.github.achaaab.bragi.codec.flac;
+package com.github.achaaab.bragi.codec.flac.header;
+
+import com.github.achaaab.bragi.codec.flac.FlacDecoderException;
+import com.github.achaaab.bragi.codec.flac.FlacInputStream;
 
 import java.io.IOException;
 
-import static com.github.achaaab.bragi.codec.flac.MetadataBlockType.decode;
+import static com.github.achaaab.bragi.codec.flac.header.MetadataBlockType.decode;
 
 /**
  * FLAC METADATA_BLOCK_HEADER
@@ -25,7 +28,7 @@ public class MetadataBlockHeader {
 	 * @throws IOException          I/O exception white decoding metadata block header
 	 * @throws FlacDecoderException if stream info metadata block header is invalid
 	 */
-	MetadataBlockHeader(FlacInputStream input) throws IOException, FlacDecoderException {
+	public MetadataBlockHeader(FlacInputStream input) throws IOException, FlacDecoderException {
 
 		last = input.readUnsignedInteger(1) == 1;
 		var typeCode = input.readUnsignedInteger(7);

@@ -1,5 +1,8 @@
-package com.github.achaaab.bragi.codec.flac;
+package com.github.achaaab.bragi.codec.flac.frame;
 
+import com.github.achaaab.bragi.codec.flac.FlacDecoderException;
+import com.github.achaaab.bragi.codec.flac.FlacInputStream;
+import com.github.achaaab.bragi.codec.flac.header.StreamInfo;
 import com.github.achaaab.bragi.codec.flac.channel.ChannelAssignment;
 
 import java.io.IOException;
@@ -202,7 +205,7 @@ public class FrameHeader {
 	 * @throws IOException          I/O exception while decoding subframes
 	 * @throws FlacDecoderException if invalid or unsupported subframes are decoded
 	 */
-	int[][] decodeSubframes() throws IOException, FlacDecoderException {
+	public int[][] decodeSubframes() throws IOException, FlacDecoderException {
 
 		var samples = channelAssignment.decodeSubframes(input, blockSize, sampleSize);
 		return convertSamples(samples);

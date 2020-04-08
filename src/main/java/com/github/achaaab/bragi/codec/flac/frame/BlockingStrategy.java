@@ -1,4 +1,4 @@
-package com.github.achaaab.bragi.codec.flac;
+package com.github.achaaab.bragi.codec.flac.frame;
 
 /**
  * FLAC blocking strategy
@@ -21,7 +21,7 @@ public enum BlockingStrategy {
 	 * @param code code of the blocking strategy, must be an unsigned 1-bit integer (in [0, 1])
 	 * @return blocking strategy corresponding to the given code
 	 */
-	static BlockingStrategy decode(int code) {
+	public static BlockingStrategy decode(int code) {
 		return DECODING_TABLE[code];
 	}
 }

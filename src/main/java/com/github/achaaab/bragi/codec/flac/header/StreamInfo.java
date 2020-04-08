@@ -1,4 +1,8 @@
-package com.github.achaaab.bragi.codec.flac;
+package com.github.achaaab.bragi.codec.flac.header;
+
+import com.github.achaaab.bragi.codec.flac.FlacDecoderException;
+import com.github.achaaab.bragi.codec.flac.FlacInputStream;
+import com.github.achaaab.bragi.codec.flac.header.MetadataBlockData;
 
 import java.io.IOException;
 
@@ -32,7 +36,7 @@ public class StreamInfo extends MetadataBlockData {
 	 * @throws IOException          I/O exception while decoding a STREAMINFO metadata block
 	 * @throws FlacDecoderException if STREAMINFO metadata block is invalid or not supported
 	 */
-	StreamInfo(FlacInputStream input) throws IOException, FlacDecoderException {
+	public StreamInfo(FlacInputStream input) throws IOException, FlacDecoderException {
 
 		minimumBlockSize = input.readUnsignedInteger(16);
 		maximumBlockSize = input.readUnsignedInteger(16);

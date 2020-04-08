@@ -1,4 +1,7 @@
-package com.github.achaaab.bragi.codec.flac;
+package com.github.achaaab.bragi.codec.flac.header;
+
+import com.github.achaaab.bragi.codec.flac.FlacInputStream;
+import com.github.achaaab.bragi.codec.flac.header.MetadataBlockData;
 
 import java.io.IOException;
 
@@ -20,6 +23,6 @@ public class Padding extends MetadataBlockData {
 	 * @throws IOException I/O exception while decoding a PADDING metadata block
 	 */
 	Padding(FlacInputStream input, int length) throws IOException {
-		super(input, length);
+		input.skip(length);
 	}
 }

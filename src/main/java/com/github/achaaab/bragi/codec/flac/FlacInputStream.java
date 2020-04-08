@@ -120,11 +120,12 @@ public class FlacInputStream implements AutoCloseable {
 	}
 
 	/**
+	 * Reads a signed integer encoded with Rice code.
 	 * more documentation on <a href="https://fr.wikipedia.org/wiki/Codage_de_Rice">Codage de Rice</a>
 	 *
-	 * @param k
-	 * @return
-	 * @throws IOException
+	 * @param k Rice code parameter
+	 * @return read integer
+	 * @throws IOException I/O exception while reading an integer
 	 */
 	public long readRiceSignedInteger(int k) throws IOException {
 

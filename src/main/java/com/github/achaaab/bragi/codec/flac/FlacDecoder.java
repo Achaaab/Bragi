@@ -1,5 +1,8 @@
 package com.github.achaaab.bragi.codec.flac;
 
+import com.github.achaaab.bragi.codec.flac.frame.FrameHeader;
+import com.github.achaaab.bragi.codec.flac.header.StreamInfo;
+
 import java.io.EOFException;
 import java.io.IOException;
 
@@ -181,8 +184,8 @@ public class FlacDecoder {
 	 * @param input   FLAC input stream to read from
 	 * @param warmUp
 	 * @param samples samples to decode
-	 * @throws IOException
-	 * @throws FlacDecoderException
+	 * @throws IOException          I/O exception while decoding residuals
+	 * @throws FlacDecoderException if invalid or unsupported residuals are decoded
 	 */
 	private static void decodeResiduals(FlacInputStream input, int warmUp, long[] samples)
 			throws IOException, FlacDecoderException {

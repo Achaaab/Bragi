@@ -1,4 +1,4 @@
-package com.github.achaaab.bragi.codec.flac;
+package com.github.achaaab.bragi.codec.flac.frame;
 
 /**
  * FLAC FRAME

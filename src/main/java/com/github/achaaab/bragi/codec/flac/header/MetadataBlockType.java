@@ -1,4 +1,6 @@
-package com.github.achaaab.bragi.codec.flac;
+package com.github.achaaab.bragi.codec.flac.header;
+
+import com.github.achaaab.bragi.codec.flac.FlacDecoderException;
 
 /**
  * FLAC BLOCK_TYPE

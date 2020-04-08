@@ -1,10 +1,15 @@
 package com.github.achaaab.bragi.codec.flac;
 
+import com.github.achaaab.bragi.codec.flac.header.MetadataBlock;
+import com.github.achaaab.bragi.codec.flac.header.MetadataBlockHeader;
+import com.github.achaaab.bragi.codec.flac.header.MetadataBlockType;
+import com.github.achaaab.bragi.codec.flac.header.StreamInfo;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.achaaab.bragi.codec.flac.MetadataBlock.decode;
+import static com.github.achaaab.bragi.codec.flac.header.MetadataBlock.decode;
 
 /**
  * header of a FLAC stream

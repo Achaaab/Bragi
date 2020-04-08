@@ -1,4 +1,4 @@
-package com.github.achaaab.bragi.codec.flac;
+package com.github.achaaab.bragi.codec.flac.header;
 
 import java.util.HashMap;
 import java.util.Map;
