@@ -21,4 +21,9 @@ public class AbstractNamedEntity implements NamedEntity {
 	public String name() {
 		return name;
 	}
+
+	@Override
+	public String toString() {
+		return name;
+	}
 }

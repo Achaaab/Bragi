@@ -60,9 +60,4 @@ public abstract class AbstractOutput extends AbstractNamedEntity implements Outp
 			buffers.remove(buffer);
 		}
 	}
-
-	@Override
-	public String toString() {
-		return name;
-	}
 }

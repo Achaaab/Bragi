@@ -13,7 +13,7 @@ import static java.lang.Math.pow;
  */
 public class Wave {
 
-	private final double sampleRate;
+	private final double frameDuration;
 
 	private Waveform waveform;
 	private double frequency;
@@ -31,7 +31,7 @@ public class Wave {
 		this.waveform = waveform;
 		this.frequency = frequency;
 
-		sampleRate = Settings.INSTANCE.frameRate();
+		frameDuration = Settings.INSTANCE.frameDuration();
 		lowerPeak = Settings.INSTANCE.minimalVoltage();
 		upperPeak = Settings.INSTANCE.maximalVoltage();
 
@@ -124,8 +124,9 @@ public class Wave {
 
 			var modulationSample = modulationSamples == null ? 0.0 : modulationSamples[sampleIndex];
 			var modulationFactor = pow(2.0, octave + modulationSample);
+			var actualFrequency = frequency * modulationFactor;
 
-			periodPercent = fma(frequency, modulationFactor / sampleRate, periodPercent) % 1.0;
+			periodPercent = fma(actualFrequency, frameDuration, periodPercent) % 1.0;
 		}
 
 		return samples;

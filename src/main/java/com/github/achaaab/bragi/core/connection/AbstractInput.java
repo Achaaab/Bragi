@@ -43,9 +43,4 @@ public abstract class AbstractInput extends AbstractNamedEntity implements Input
 	public void disconnect() {
 		buffer.disconnect();
 	}
-
-	@Override
-	public String toString() {
-		return name;
-	}
 }

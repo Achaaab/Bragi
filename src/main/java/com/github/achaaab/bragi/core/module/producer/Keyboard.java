@@ -2,14 +2,13 @@ package com.github.achaaab.bragi.core.module.producer;
 
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.core.connection.Output;
-import com.github.achaaab.bragi.gui.module.KeyboardView;
 import com.github.achaaab.bragi.core.module.Module;
+import com.github.achaaab.bragi.gui.module.KeyboardView;
 import org.slf4j.Logger;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.awt.event.KeyEvent.getExtendedKeyCodeForChar;
 import static javax.swing.SwingUtilities.invokeLater;
@@ -31,11 +30,10 @@ public class Keyboard extends Module {
 	private final Output gate;
 
 	private final List<Key> keys;
-	private final AtomicInteger pressedKeyCount;
 
-	private float voltage;
-
+	private int pressedKeyCount;
 	private int previousPressedKeyCount;
+	private float voltage;
 
 	/**
 	 * Creates a keyboard with default name.
@@ -100,7 +98,7 @@ public class Keyboard extends Module {
 		keys.add(new Key("E6", 19 * VOLTS_PER_OCTAVE / 12, KeyEvent.VK_COLON));
 
 		previousPressedKeyCount = 0;
-		pressedKeyCount = new AtomicInteger(0);
+		pressedKeyCount = 0;
 
 		invokeLater(() -> new KeyboardView(this));
 
@@ -120,17 +118,15 @@ public class Keyboard extends Module {
 
 		output.write(samples);
 
-		var newPressedKeyCount = pressedKeyCount.get();
-
 		var gateSample = 0.0f;
 
-		if (newPressedKeyCount > previousPressedKeyCount) {
+		if (pressedKeyCount > previousPressedKeyCount) {
 			gateSample = 1.0f;
-		} else if (newPressedKeyCount == 0 && previousPressedKeyCount > 0) {
+		} else if (pressedKeyCount == 0 && previousPressedKeyCount > 0) {
 			gateSample = -1.0f;
 		}
 
-		previousPressedKeyCount = newPressedKeyCount;
+		previousPressedKeyCount = pressedKeyCount;
 
 		gate.write(new float[] { gateSample });
 
@@ -140,18 +136,18 @@ public class Keyboard extends Module {
 	/**
 	 * @param voltage voltage output
 	 */
-	public void press(float voltage) {
+	public synchronized void press(float voltage) {
 
 		this.voltage = voltage;
 
-		pressedKeyCount.incrementAndGet();
+		pressedKeyCount++;
 	}
 
 	/**
 	 * release a key
 	 */
-	public void release() {
-		pressedKeyCount.decrementAndGet();
+	public synchronized void release() {
+		pressedKeyCount--;
 	}
 
 	/**

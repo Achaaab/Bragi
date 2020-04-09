@@ -14,7 +14,7 @@ import static java.lang.Math.fma;
  * @author Jonathan Guéhenneux
  * @since 0.0.6
  */
-public class SawtoothTriangular extends NamedWaveform {
+public class SawtoothTriangular extends AbstractWaveform {
 
 	private final float peakFraction;
 

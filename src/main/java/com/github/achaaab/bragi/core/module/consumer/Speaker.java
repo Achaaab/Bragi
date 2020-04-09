@@ -7,9 +7,13 @@ import com.github.achaaab.bragi.core.module.Module;
 import org.slf4j.Logger;
 
 import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
 import javax.sound.sampled.DataLine.Info;
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.spi.MixerProvider;
 
 import static java.lang.Math.round;
 import static javax.sound.sampled.AudioSystem.getLine;
@@ -37,6 +41,9 @@ public class Speaker extends Module {
 	private static final int THREE_BYTES_MIN_VALUE = 0xFF_80_00_00;
 	private static final int THREE_BYTES_MAX_VALUE = 0x00_7F_FF_FF;
 
+	private static final int FOUR_BYTES_MIN_VALUE = 0x80_00_00_00;
+	private static final int FOUR_BYTES_MAX_VALUE = 0x7F_FF_FF_FF;
+
 	private static final Normalizer ONE_BYTE_NORMALIZER = new Normalizer(
 			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage(),
 			ONE_BYTE_MIN_VALUE, ONE_BYTE_MAX_VALUE
@@ -50,6 +57,11 @@ public class Speaker extends Module {
 	private static final Normalizer THREE_BYTES_NORMALIZER = new Normalizer(
 			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage(),
 			THREE_BYTES_MIN_VALUE, THREE_BYTES_MAX_VALUE
+	);
+
+	private static final Normalizer FOUR_BYTES_NORMALIZER = new Normalizer(
+			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage(),
+			FOUR_BYTES_MIN_VALUE, FOUR_BYTES_MAX_VALUE
 	);
 
 	private final SourceDataLine line;
@@ -109,7 +121,7 @@ public class Speaker extends Module {
 	private void checkLineBufferHealth() {
 
 		if (line.available() == line.getBufferSize()) {
-			LOGGER.warn("speaker line is not written fast enough, thus some discontinuities in the sound may be heard");
+			LOGGER.warn("speaker line is not written fast enough, thus some discontinuities in the audio may be heard");
 		}
 	}
 
@@ -150,6 +162,7 @@ public class Speaker extends Module {
 		byte b0;
 		byte b1;
 		byte b2;
+		byte b3;
 
 		for (var frameIndex = 0; frameIndex < frameCount; frameIndex++) {
 
@@ -183,6 +196,18 @@ public class Speaker extends Module {
 						mix[byteIndex++] = b0;
 						mix[byteIndex++] = b1;
 						mix[byteIndex++] = b2;
+						break;
+
+					case 4:
+						normalizedSample = round(FOUR_BYTES_NORMALIZER.normalize(sample));
+						b0 = (byte) (normalizedSample >> 24);
+						b1 = (byte) ((normalizedSample >> 16) & 0xFF);
+						b2 = (byte) ((normalizedSample >> 8) & 0xFF);
+						b3 = (byte) (normalizedSample & 0xFF);
+						mix[byteIndex++] = b0;
+						mix[byteIndex++] = b1;
+						mix[byteIndex++] = b2;
+						mix[byteIndex++] = b3;
 						break;
 
 					default:

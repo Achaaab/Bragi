@@ -7,7 +7,7 @@ package com.github.achaaab.bragi.core.module.producer.wave;
  * @author Jonathan Guéhenneux
  * @since 0.0.2
  */
-public class ReverseSawtooth extends NamedWaveform {
+public class ReverseSawtooth extends AbstractWaveform {
 
 	/**
 	 * @see #REVERSE_SAWTOOTH

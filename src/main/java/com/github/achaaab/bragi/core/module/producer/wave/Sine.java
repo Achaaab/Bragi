@@ -11,7 +11,7 @@ import static java.lang.Math.sin;
  * @author Jonathan Guéhenneux
  * @since 0.0.2
  */
-public class Sine extends NamedWaveform {
+public class Sine extends AbstractWaveform {
 
 	private static final double SINE_PERIOD = 2 * PI;
 

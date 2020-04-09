@@ -51,7 +51,7 @@ public class Test {
 	 * @since 0.0.9
 	 */
 	public static void main(String... arguments) {
-		testFlacPlayer();
+		testPiano();
 	}
 
 	/**
@@ -349,12 +349,12 @@ public class Test {
 
 		var vco = new VCO();
 		var speaker = new Speaker();
-		var spectrum = new SpectrumAnalyzer();
 		var lfo = new LFO();
 
-		vco.connect(spectrum);
 		speaker.connectInputs(vco, vco);
 		lfo.connect(vco);
+
+		visualizeOutputs(vco);
 	}
 
 	/**

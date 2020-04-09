@@ -8,7 +8,7 @@ package com.github.achaaab.bragi.core.module.producer.wave;
  * @author Jonathan Guéhenneux
  * @since 0.0.2
  */
-public class Triangle extends NamedWaveform {
+public class Triangle extends AbstractWaveform {
 
 	/**
 	 * @see #TRIANGLE
