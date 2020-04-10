@@ -1,6 +1,6 @@
 package com.github.achaaab.bragi;
 
-import com.github.achaaab.bragi.core.Configuration;
+import com.github.achaaab.bragi.core.configuration.Configuration;
 
 /**
  * @author Jonathan Guéhenneux

@@ -6,7 +6,7 @@
 
 	<groupId>com.github.achaaab</groupId>
 	<artifactId>bragi</artifactId>
-	<version>0.1.7</version>
+	<version>0.1.8</version>
 	<packaging>jar</packaging>
 
 	<dependencies>

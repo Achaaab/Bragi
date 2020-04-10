@@ -8,7 +8,7 @@ package com.github.achaaab.bragi.core.module;
  */
 public class ModuleExecutionException extends RuntimeException {
 
-	private static final String DEFAULT_MESSAGE = "an exception prevented module execution";
+	private static final String DEFAULT_MESSAGE = "An exception prevented the execution of a module.";
 
 	/**
 	 * @param cause cause of module execution failure

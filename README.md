@@ -120,6 +120,6 @@ I thank:
 * [**Damien Di Fede**](https://github.com/ddf) for his FFT implementation,
 * [**Ernest Yu**](https://github.com/ernieyu) for his [range slider](https://github.com/ernieyu/Swing-range-slider),
 * [**Bram de Jong**](https://github.com/bdejong) for his useful compilation of DSP resources
-[musicdsp](https://github.com/bdejong/musicdsp) and the corresponding [web site](https://www.musicdsp.org),
+[musicdsp](https://github.com/bdejong/musicdsp) and the corresponding [website](https://www.musicdsp.org),
 * [**Project Nayuki**](https://github.com/nayuki) for his demystifying one-file FLAC decoder.
-His website is full of interesting articles and so is his [github](https://www.nayuki.io).
+His [website](https://www.nayuki.io) is also overflowing with interesting articles.

@@ -15,10 +15,10 @@ public class BandLimitedSquare extends AbstractWaveform {
 	private static final int HARMONIC_COUNT = 50;
 
 	/**
-	 * @see #SQUARE
+	 * @see #ANALOG_SQUARE
 	 */
 	BandLimitedSquare() {
-		super("Square");
+		super("Analog Square");
 	}
 
 	@Override
