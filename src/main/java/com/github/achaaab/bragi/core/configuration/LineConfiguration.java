@@ -78,12 +78,6 @@ public class LineConfiguration {
 		// TODO find the default mixer
 		setMixer(mixers[0]);
 
-		sampleRate = getSampleRates()[0];
-		channelCount = getChannelCounts()[0];
-		sampleSize = getSampleSizes()[0];
-		encoding = getEncodings()[0];
-		byteOrder = getByteOrders()[0];
-
 		try {
 			invokeAndWait(() -> view = new LineConfigurationView(this));
 		} catch (InterruptedException | InvocationTargetException cause) {
@@ -119,7 +113,7 @@ public class LineConfiguration {
 	public Integer[] getChannelCounts() {
 
 		return formats.stream().
-				map(AudioFormat::getChannels).distinct().
+				map(AudioFormat::getChannels).distinct().sorted().
 				toArray(Integer[]::new);
 	}
 
@@ -154,25 +148,8 @@ public class LineConfiguration {
 	public Integer[] getSampleSizes() {
 
 		return formats.stream().
-				map(AudioFormat::getSampleSizeInBits).distinct().
+				map(AudioFormat::getSampleSizeInBits).distinct().sorted().
 				toArray(Integer[]::new);
-	}
-
-	/**
-	 * @param mixer mixer to set
-	 */
-	public void setMixer(Mixer mixer) {
-
-		this.mixer = mixer;
-
-		formats = getFormats(mixer);
-	}
-
-	/**
-	 * @param sampleSize size of the samples in bits
-	 */
-	public void setSampleSize(int sampleSize) {
-		this.sampleSize = sampleSize;
 	}
 
 	/**
@@ -183,10 +160,33 @@ public class LineConfiguration {
 	}
 
 	/**
-	 * @return selected channel count
+	 * @param mixer mixer to set
+	 */
+	public void setMixer(Mixer mixer) {
+
+		this.mixer = mixer;
+
+		formats = getFormats(mixer);
+
+		sampleRate = getSampleRates()[0];
+		channelCount = getChannelCounts()[0];
+		sampleSize = getSampleSizes()[0];
+		encoding = getEncodings()[0];
+		byteOrder = getByteOrders()[0];
+	}
+
+	/**
+	 * @return selected number of channels
 	 */
 	public int getChannelCount() {
 		return channelCount;
+	}
+
+	/**
+	 * @param channelCount number of channels to set
+	 */
+	public void setChannelCount(int channelCount) {
+		this.channelCount = channelCount;
 	}
 
 	/**
@@ -197,6 +197,13 @@ public class LineConfiguration {
 	}
 
 	/**
+	 * @param sampleRate sample rate to set in hertz (Hz)
+	 */
+	public void setSampleRate(int sampleRate) {
+		this.sampleRate = sampleRate;
+	}
+
+	/**
 	 * @return selected sample size in bits (b)
 	 */
 	public int getSampleSize() {
@@ -204,17 +211,48 @@ public class LineConfiguration {
 	}
 
 	/**
+	 * @param sampleSize size of the samples in bits
+	 */
+	public void setSampleSize(int sampleSize) {
+		this.sampleSize = sampleSize;
+	}
+
+	/**
 	 * @return selected encoding
+	 * @see Encoding#PCM_SIGNED
+	 * @see Encoding#PCM_UNSIGNED
+	 * @see Encoding#PCM_FLOAT
 	 */
 	public Encoding getEncoding() {
 		return encoding;
 	}
 
 	/**
+	 * @param encoding encoding to set
+	 * @see Encoding#PCM_SIGNED
+	 * @see Encoding#PCM_UNSIGNED
+	 * @see Encoding#PCM_FLOAT
+	 */
+	public void setEncoding(Encoding encoding) {
+		this.encoding = encoding;
+	}
+
+	/**
 	 * @return selected byte order
+	 * @see ByteOrder#LITTLE_ENDIAN
+	 * @see ByteOrder#BIG_ENDIAN
 	 */
 	public ByteOrder getByteOrder() {
 		return byteOrder;
+	}
+
+	/**
+	 * @param byteOrder byte order to set
+	 * @see ByteOrder#LITTLE_ENDIAN
+	 * @see ByteOrder#BIG_ENDIAN
+	 */
+	public void setByteOrder(ByteOrder byteOrder) {
+		this.byteOrder = byteOrder;
 	}
 
 	/**

@@ -55,9 +55,18 @@ public class ViewScale {
 	 * @return scaled font
 	 */
 	public static Font scale(Font font) {
+		return scale(font, SCALE_FACTOR);
+	}
+
+	/**
+	 * @param font   font to scale
+	 * @param factor scale factor
+	 * @return scaled font
+	 */
+	public static Font scale(Font font, float factor) {
 
 		var fontSize = font.getSize();
-		var scaledFontSize = SCALE_FACTOR * fontSize;
+		var scaledFontSize = factor * fontSize;
 
 		return font.deriveFont(scaledFontSize);
 	}
