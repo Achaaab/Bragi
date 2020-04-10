@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.GridLayout;
 
+import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
 import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
@@ -28,13 +29,18 @@ public class ConfigurationView extends JPanel {
 		inputView.setBorder(createTitledBorder("Input"));
 		outputView.setBorder(createTitledBorder("Output"));
 
-		setLayout(new GridLayout(2, 1));
+		var layout = new GridLayout(2, 1);
+		layout.setVgap(scale(15));
+		setLayout(layout);
+
 		add(inputView);
 		add(outputView);
 
+		scale(this);
+
 		var frame = new JFrame("Synthesizer");
-		frame.setSize(600, 240);
 		frame.setContentPane(this);
+		frame.pack();
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}
