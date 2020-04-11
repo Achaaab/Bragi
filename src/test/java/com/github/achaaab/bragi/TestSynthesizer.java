@@ -1,6 +1,6 @@
 package com.github.achaaab.bragi;
 
-import com.github.achaaab.bragi.core.configuration.Configuration;
+import com.github.achaaab.bragi.core.Synthesizer;
 
 /**
  * @author Jonathan Guéhenneux
@@ -13,6 +13,6 @@ public class TestSynthesizer {
 	 */
 	public static void main(String... arguments) {
 
-		var synthesizer = new Configuration();
+		var synthesizer = new Synthesizer();
 	}
 }

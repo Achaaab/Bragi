@@ -1,6 +1,7 @@
 package com.github.achaaab.bragi.gui.common;
 
 import javax.swing.JComponent;
+import javax.swing.JMenu;
 import javax.swing.border.TitledBorder;
 import java.awt.Component;
 import java.awt.Container;
@@ -24,8 +25,12 @@ public class ViewScale {
 	public static void scale(Component component) {
 
 		var font = component.getFont();
-		var scaledFont = scale(font);
-		component.setFont(scaledFont);
+
+		if (font != null) {
+
+			var scaledFont = scale(font);
+			component.setFont(scaledFont);
+		}
 
 		if (component instanceof JComponent jComponent) {
 
@@ -36,7 +41,7 @@ public class ViewScale {
 				if (border instanceof TitledBorder titledBorder) {
 
 					font = titledBorder.getTitleFont();
-					scaledFont = scale(font);
+					var scaledFont = scale(font);
 					titledBorder.setTitleFont(scaledFont);
 				}
 			}
@@ -45,6 +50,13 @@ public class ViewScale {
 		if (component instanceof Container container) {
 
 			for (var child : container.getComponents()) {
+				scale(child);
+			}
+		}
+
+		if (component instanceof JMenu menu) {
+
+			for (var child : menu.getMenuComponents()) {
 				scale(child);
 			}
 		}

@@ -1,14 +1,11 @@
 package com.github.achaaab.bragi.core.configuration;
 
-import com.github.achaaab.bragi.gui.configuration.LineConfigurationView;
-
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.Line;
 import javax.sound.sampled.Mixer;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +17,6 @@ import static java.nio.ByteOrder.LITTLE_ENDIAN;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static javax.sound.sampled.AudioSystem.getMixerInfo;
-import static javax.swing.SwingUtilities.invokeAndWait;
 
 /**
  * line configuration
@@ -48,7 +44,7 @@ public class LineConfiguration {
 		return format.isBigEndian() ? BIG_ENDIAN : LITTLE_ENDIAN;
 	}
 
-	private final Function<Mixer, Line.Info[]> suitableLinesFunction;
+	private final Function<Mixer, Line.Info[]> suitableLineFunction;
 
 	private Mixer mixer;
 	private List<AudioFormat> formats;
@@ -58,18 +54,16 @@ public class LineConfiguration {
 	private Encoding encoding;
 	private ByteOrder byteOrder;
 
-	private LineConfigurationView view;
-
 	/**
 	 * Creates a new line configuration.
 	 *
-	 * @param suitableLinesFunction function that extracts suitable line information from a mixer
+	 * @param suitableLineFunction function that extracts suitable line information from a mixer
 	 */
-	public LineConfiguration(Function<Mixer, Line.Info[]> suitableLinesFunction) {
+	public LineConfiguration(Function<Mixer, Line.Info[]> suitableLineFunction) {
 
-		this.suitableLinesFunction = suitableLinesFunction;
+		this.suitableLineFunction = suitableLineFunction;
 
-		var mixers = getMixers();
+		var mixers = mixers();
 
 		if (mixers.length == 0) {
 			throw new ConfigurationException("no suitable mixer");
@@ -78,24 +72,13 @@ public class LineConfiguration {
 		// TODO find the default mixer
 		setMixer(mixers[0]);
 
-		try {
-			invokeAndWait(() -> view = new LineConfigurationView(this));
-		} catch (InterruptedException | InvocationTargetException cause) {
-			throw new ConfigurationException(cause);
-		}
-	}
-
-	/**
-	 * @return view of this line configuration
-	 */
-	public LineConfigurationView view() {
-		return view;
+		sampleRate = sampleRates()[0];
 	}
 
 	/**
 	 * @return suitable mixers
 	 */
-	public Mixer[] getMixers() {
+	public Mixer[] mixers() {
 		return getAvailableMixers().filter(this::isSuitable).toArray(Mixer[]::new);
 	}
 
@@ -103,14 +86,14 @@ public class LineConfiguration {
 	/**
 	 * @return available sample rates
 	 */
-	public Integer[] getSampleRates() {
+	public Integer[] sampleRates() {
 		return SAMPLE_RATES;
 	}
 
 	/**
 	 * @return suitable channel counts
 	 */
-	public Integer[] getChannelCounts() {
+	public Integer[] channelCounts() {
 
 		return formats.stream().
 				map(AudioFormat::getChannels).distinct().sorted().
@@ -123,7 +106,7 @@ public class LineConfiguration {
 	 * @see Encoding#PCM_UNSIGNED
 	 * @see Encoding#PCM_FLOAT
 	 */
-	public Encoding[] getEncodings() {
+	public Encoding[] encodings() {
 
 		return formats.stream().
 				map(AudioFormat::getEncoding).distinct().
@@ -135,7 +118,7 @@ public class LineConfiguration {
 	 * @see ByteOrder#LITTLE_ENDIAN
 	 * @see ByteOrder#BIG_ENDIAN
 	 */
-	public ByteOrder[] getByteOrders() {
+	public ByteOrder[] byteOrders() {
 
 		return formats.stream().
 				map(LineConfiguration::getByteOrder).distinct().
@@ -145,7 +128,7 @@ public class LineConfiguration {
 	/**
 	 * @return suitable sample sizes in bits (b)
 	 */
-	public Integer[] getSampleSizes() {
+	public Integer[] sampleSizes() {
 
 		return formats.stream().
 				map(AudioFormat::getSampleSizeInBits).distinct().sorted().
@@ -168,11 +151,10 @@ public class LineConfiguration {
 
 		formats = getFormats(mixer);
 
-		sampleRate = getSampleRates()[0];
-		channelCount = getChannelCounts()[0];
-		sampleSize = getSampleSizes()[0];
-		encoding = getEncodings()[0];
-		byteOrder = getByteOrders()[0];
+		channelCount = channelCounts()[0];
+		sampleSize = sampleSizes()[0];
+		encoding = encodings()[0];
+		byteOrder = byteOrders()[0];
 	}
 
 	/**
@@ -256,6 +238,39 @@ public class LineConfiguration {
 	}
 
 	/**
+	 * @return copy of this line configuration
+	 */
+	public LineConfiguration copy() {
+
+		var clone = new LineConfiguration(suitableLineFunction);
+
+		clone.setMixer(mixer);
+		clone.setSampleRate(sampleRate);
+		clone.setChannelCount(channelCount);
+		clone.setSampleSize(sampleSize);
+		clone.setEncoding(encoding);
+		clone.setByteOrder(byteOrder);
+
+		return clone;
+	}
+
+	/**
+	 * Copies the given line configuration into this.
+	 * We assume they both have the same {@code suitableLineFunction}.
+	 *
+	 * @param lineConfiguration line configuration to copy
+	 */
+	public void copy(LineConfiguration lineConfiguration) {
+
+		mixer = lineConfiguration.mixer;
+		sampleRate = lineConfiguration.sampleRate;
+		channelCount = lineConfiguration.channelCount;
+		sampleSize = lineConfiguration.sampleSize;
+		encoding = lineConfiguration.encoding;
+		byteOrder = lineConfiguration.byteOrder;
+	}
+
+	/**
 	 * @param mixer mixer
 	 * @return whether the given mixer has a suitable line
 	 */
@@ -269,25 +284,11 @@ public class LineConfiguration {
 	 */
 	private List<AudioFormat> getFormats(Mixer mixer) {
 
-		return stream(suitableLinesFunction.apply(mixer)).
+		return stream(suitableLineFunction.apply(mixer)).
 				filter(DataLine.Info.class::isInstance).
 				map(DataLine.Info.class::cast).
 				map(DataLine.Info::getFormats).
 				flatMap(Arrays::stream).
 				collect(toList());
-	}
-
-	/**
-	 * @param format audio format to check
-	 * @return whether the given audio format matches the selected criteria
-	 */
-	private boolean isSuitable(AudioFormat format) {
-
-		var suitable = format.getChannels() == channelCount;
-		suitable &= format.getSampleSizeInBits() == sampleSize;
-		suitable &= getByteOrder(format) == byteOrder;
-		suitable &= format.getEncoding() == encoding;
-
-		return suitable;
 	}
 }
