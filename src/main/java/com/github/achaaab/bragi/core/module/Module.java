@@ -9,6 +9,7 @@ import com.github.achaaab.bragi.core.connection.SecondaryInput;
 import com.github.achaaab.bragi.core.connection.SecondaryOutput;
 import org.slf4j.Logger;
 
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,8 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	protected boolean started;
 	protected double computingFrameRate;
 
+	protected Component view;
+
 	/**
 	 * @param name name of the module
 	 */
@@ -47,6 +50,13 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 
 		started = false;
 		computingFrameRate = 0.0;
+	}
+
+	/**
+	 * @return view of this module
+	 */
+	public Component view() {
+		return view;
 	}
 
 	/**
@@ -183,7 +193,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	 */
 	protected PrimaryInput addPrimaryInput(String name) {
 
-		var input = new PrimaryInput(name);
+		var input = new PrimaryInput(this, name);
 		inputs.add(input);
 		return input;
 	}
@@ -196,7 +206,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	 */
 	protected SecondaryInput addSecondaryInput(String name) {
 
-		var secondaryInput = new SecondaryInput(name);
+		var secondaryInput = new SecondaryInput(this, name);
 		inputs.add(secondaryInput);
 		return secondaryInput;
 	}
@@ -209,7 +219,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	 */
 	protected Output addPrimaryOutput(String name) {
 
-		var output = new PrimaryOutput(name);
+		var output = new PrimaryOutput(this, name);
 		outputs.add(output);
 		return output;
 	}
@@ -222,15 +232,49 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	 */
 	protected Output addSecondaryOutput(String name) {
 
-		var output = new SecondaryOutput(name);
+		var output = new SecondaryOutput(this, name);
 		outputs.add(output);
 		return output;
 	}
 
 	/**
+	 * @return modules connected to one of the inputs of this module
+	 */
+	public List<Module> inputModules() {
+
+		var inputModules = new ArrayList<Module>();
+
+		for (var input : inputs) {
+
+			if (input.isConnected()) {
+				inputModules.add(input.getBuffer().output().module());
+			}
+		}
+
+		return inputModules;
+	}
+
+	/**
+	 * @return modules connected to one of the outputs of this module
+	 */
+	public List<Module> outputModules() {
+
+		var outputModules = new ArrayList<Module>();
+
+		for (var output : outputs) {
+
+			for (var buffer : output.buffers()) {
+				outputModules.add(buffer.input().module());
+			}
+		}
+
+		return outputModules;
+	}
+
+	/**
 	 * Start the module in a new thread.
 	 */
-	protected void start() {
+	public void start() {
 
 		started = true;
 
@@ -242,7 +286,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	/**
 	 * Stop the module.
 	 */
-	protected void stop() {
+	public void stop() {
 		started = false;
 	}
 

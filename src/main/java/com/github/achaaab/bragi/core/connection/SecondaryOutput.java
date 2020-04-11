@@ -1,5 +1,6 @@
 package com.github.achaaab.bragi.core.connection;
 
+import com.github.achaaab.bragi.core.module.Module;
 import org.slf4j.Logger;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -19,10 +20,12 @@ public class SecondaryOutput extends AbstractOutput {
 	/**
 	 * Create a secondary output, initially not connected.
 	 *
-	 * @param name name of the secondary output to create
+	 * @param module module that will contain the created output
+	 * @param name   name of the secondary output to create
+	 * @since 0.1.8
 	 */
-	public SecondaryOutput(String name) {
-		super(name);
+	public SecondaryOutput(Module module, String name) {
+		super(module, name);
 	}
 
 	@Override
@@ -34,9 +37,9 @@ public class SecondaryOutput extends AbstractOutput {
 
 				for (var buffer : buffers) {
 
-					LOGGER.debug("writing chunk from {} to {}", this, buffer.getInput());
+					LOGGER.debug("writing chunk from {} to {}", this, buffer.input());
 					buffer.write(chunk);
-					LOGGER.debug("chunk written from {} to {}", this, buffer.getInput());
+					LOGGER.debug("chunk written from {} to {}", this, buffer.input());
 				}
 			}
 		}

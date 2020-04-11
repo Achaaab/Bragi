@@ -1,5 +1,6 @@
 package com.github.achaaab.bragi.core.connection;
 
+import com.github.achaaab.bragi.core.module.Module;
 import org.slf4j.Logger;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -19,10 +20,12 @@ public class PrimaryOutput extends AbstractOutput {
 	/**
 	 * Create a primary output, initially not connected.
 	 *
-	 * @param name name of the primary output to create
+	 * @param module module that will contain the created output
+	 * @param name   name of the primary output to create
+	 * @since 0.1.8
 	 */
-	public PrimaryOutput(String name) {
-		super(name);
+	public PrimaryOutput(Module module, String name) {
+		super(module, name);
 	}
 
 	@Override
@@ -38,9 +41,9 @@ public class PrimaryOutput extends AbstractOutput {
 
 			for (var buffer : buffers) {
 
-				LOGGER.debug("writing chunk from {} to {}", this, buffer.getInput());
+				LOGGER.debug("writing chunk from {} to {}", this, buffer.input());
 				buffer.write(chunk);
-				LOGGER.debug("chunk written from {} to {}", this, buffer.getInput());
+				LOGGER.debug("chunk written from {} to {}", this, buffer.input());
 			}
 		}
 	}

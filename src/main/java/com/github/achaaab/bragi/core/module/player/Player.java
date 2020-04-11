@@ -1,16 +1,19 @@
 package com.github.achaaab.bragi.core.module.player;
 
 import com.github.achaaab.bragi.common.Interpolator;
+import com.github.achaaab.bragi.common.Settings;
+import com.github.achaaab.bragi.core.module.Module;
 import com.github.achaaab.bragi.core.module.ModuleCreationException;
 import com.github.achaaab.bragi.core.module.ModuleExecutionException;
-import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.file.AudioFile;
 import com.github.achaaab.bragi.file.AudioFileException;
 import com.github.achaaab.bragi.gui.module.PlayerView;
-import com.github.achaaab.bragi.core.module.Module;
 import org.slf4j.Logger;
 
+import java.lang.reflect.InvocationTargetException;
+
 import static com.github.achaaab.bragi.common.Interpolator.CUBIC_HERMITE_SPLINE;
+import static javax.swing.SwingUtilities.invokeAndWait;
 import static javax.swing.SwingUtilities.invokeLater;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -26,7 +29,7 @@ public abstract class Player extends Module {
 
 	protected AudioFile file;
 	protected boolean playing;
-	protected PlayerView view;
+	protected PlayerView playerView;
 
 	/**
 	 * @param name name of the player to create
@@ -51,9 +54,11 @@ public abstract class Player extends Module {
 			throw new ModuleCreationException(cause);
 		}
 
-		start();
-
-		invokeLater(() -> view = new PlayerView(this));
+		try {
+			invokeAndWait(() -> view = playerView = new PlayerView(this));
+		} catch (InterruptedException | InvocationTargetException cause) {
+			throw new ModuleCreationException(cause);
+		}
 	}
 
 	@Override
@@ -185,8 +190,8 @@ public abstract class Player extends Module {
 	 */
 	protected void updateView() {
 
-		if (view != null) {
-			invokeLater(() -> view.updateTime());
+		if (playerView != null) {
+			invokeLater(() -> playerView.updateTime());
 		}
 	}
 }

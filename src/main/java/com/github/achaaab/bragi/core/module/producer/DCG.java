@@ -2,10 +2,13 @@ package com.github.achaaab.bragi.core.module.producer;
 
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.core.connection.Output;
-import com.github.achaaab.bragi.gui.module.DCGView;
 import com.github.achaaab.bragi.core.module.Module;
+import com.github.achaaab.bragi.core.module.ModuleCreationException;
+import com.github.achaaab.bragi.gui.module.DCGView;
 
-import static javax.swing.SwingUtilities.invokeLater;
+import java.lang.reflect.InvocationTargetException;
+
+import static javax.swing.SwingUtilities.invokeAndWait;
 
 /**
  * Direct Current Generator
@@ -49,9 +52,11 @@ public class DCG extends Module {
 
 		voltage = (minimalVoltage + maximalVoltage) / 2;
 
-		invokeLater(() -> new DCGView(this));
-
-		start();
+		try {
+			invokeAndWait(() -> view = new DCGView(this));
+		} catch (InterruptedException | InvocationTargetException cause) {
+			throw new ModuleCreationException(cause);
+		}
 	}
 
 	@Override

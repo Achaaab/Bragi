@@ -47,8 +47,6 @@ public class WhiteNoiseGenerator extends Module {
 		super(name);
 
 		output = addPrimaryOutput(name + "_output");
-
-		start();
 	}
 
 	@Override

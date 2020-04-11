@@ -3,14 +3,17 @@ package com.github.achaaab.bragi.core.module.consumer;
 import com.github.achaaab.bragi.common.CircularFloatArray;
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.core.connection.Input;
+import com.github.achaaab.bragi.core.module.Module;
+import com.github.achaaab.bragi.core.module.ModuleCreationException;
 import com.github.achaaab.bragi.dsp.fft.FastFourierTransform;
 import com.github.achaaab.bragi.dsp.fft.FourierTransform;
 import com.github.achaaab.bragi.dsp.fft.HammingWindow;
 import com.github.achaaab.bragi.gui.module.SpectrumAnalyzerView;
-import com.github.achaaab.bragi.core.module.Module;
 import org.slf4j.Logger;
 
-import static javax.swing.SwingUtilities.invokeLater;
+import java.lang.reflect.InvocationTargetException;
+
+import static javax.swing.SwingUtilities.invokeAndWait;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -60,9 +63,11 @@ public class SpectrumAnalyzer extends Module {
 		fourierTransformSamples = new float[FOURIER_TRANSFORM_SIZE];
 		buffer = new CircularFloatArray(FOURIER_TRANSFORM_SIZE);
 
-		invokeLater(() -> new SpectrumAnalyzerView(this));
-
-		start();
+		try {
+			invokeAndWait(() -> view = new SpectrumAnalyzerView(this));
+		} catch (InterruptedException | InvocationTargetException cause) {
+			throw new ModuleCreationException(cause);
+		}
 	}
 
 	@Override

@@ -2,11 +2,14 @@ package com.github.achaaab.bragi.core.module.producer;
 
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.core.connection.Output;
-import com.github.achaaab.bragi.gui.module.ThereminView;
 import com.github.achaaab.bragi.core.module.Module;
+import com.github.achaaab.bragi.core.module.ModuleCreationException;
+import com.github.achaaab.bragi.gui.module.ThereminView;
 import org.slf4j.Logger;
 
-import static javax.swing.SwingUtilities.invokeLater;
+import java.lang.reflect.InvocationTargetException;
+
+import static javax.swing.SwingUtilities.invokeAndWait;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -50,9 +53,11 @@ public class Theremin extends Module {
 		pitch = addPrimaryOutput(name + "_pitch");
 		volume = addSecondaryOutput(name + "_volume");
 
-		invokeLater(() -> new ThereminView(this));
-
-		start();
+		try {
+			invokeAndWait(() -> view = new ThereminView(this));
+		} catch (InterruptedException | InvocationTargetException cause) {
+			throw new ModuleCreationException(cause);
+		}
 	}
 
 	@Override

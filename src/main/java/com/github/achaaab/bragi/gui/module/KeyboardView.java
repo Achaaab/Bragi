@@ -3,13 +3,11 @@ package com.github.achaaab.bragi.gui.module;
 import com.github.achaaab.bragi.core.module.producer.Keyboard;
 
 import javax.swing.AbstractAction;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
 import static javax.swing.KeyStroke.getKeyStroke;
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
  * keyboard Swing view
@@ -34,8 +32,6 @@ public class KeyboardView extends JPanel {
 
 		var inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
 		var actionMap = getActionMap();
-
-		setFocusTraversalKeysEnabled(false);
 
 		for (var key : keys) {
 
@@ -70,11 +66,5 @@ public class KeyboardView extends JPanel {
 				}
 			});
 		}
-
-		var frame = new JFrame(model.name());
-		frame.setContentPane(this);
-		frame.pack();
-		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		frame.setVisible(true);
 	}
 }

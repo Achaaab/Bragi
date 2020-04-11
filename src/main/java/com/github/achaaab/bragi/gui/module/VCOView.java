@@ -1,17 +1,17 @@
 package com.github.achaaab.bragi.gui.module;
 
-import com.github.achaaab.bragi.gui.component.WaveformComboBox;
 import com.github.achaaab.bragi.core.module.producer.VCO;
+import com.github.achaaab.bragi.gui.component.WaveformComboBox;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.border.TitledBorder;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
+import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
  * VCO Swing view
@@ -20,6 +20,8 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
  * @since 0.0.4
  */
 public class VCOView extends JPanel {
+
+	private static final Dimension SLIDERS_SIZE = scale(new Dimension(350, 60));
 
 	/**
 	 * @param model VCO model
@@ -38,17 +40,13 @@ public class VCOView extends JPanel {
 		octaveSlider.setPaintTicks(true);
 		octaveSlider.setPaintLabels(true);
 
+		octaveSlider.setPreferredSize(SLIDERS_SIZE);
+
 		waveformComboBox.addActionListener(actionEvent -> model.setWaveform(waveformComboBox.getSelectedWaveform()));
 		octaveSlider.addChangeListener(changeEvent -> model.setOctave(octaveSlider.getValue()));
 
 		setLayout(new BorderLayout());
 		add(waveformComboBox, NORTH);
 		add(octaveSlider, CENTER);
-
-		var frame = new JFrame(model.name());
-		frame.setContentPane(this);
-		frame.setSize(400, 250);
-		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		frame.setVisible(true);
 	}
 }

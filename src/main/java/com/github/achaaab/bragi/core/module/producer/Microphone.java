@@ -100,8 +100,6 @@ public class Microphone extends Module {
 		}
 
 		line.start();
-
-		start();
 	}
 
 	/**

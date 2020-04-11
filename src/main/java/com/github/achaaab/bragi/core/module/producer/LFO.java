@@ -1,12 +1,15 @@
 package com.github.achaaab.bragi.core.module.producer;
 
 import com.github.achaaab.bragi.common.Settings;
+import com.github.achaaab.bragi.core.module.ModuleCreationException;
 import com.github.achaaab.bragi.core.module.producer.wave.Waveform;
 import com.github.achaaab.bragi.gui.module.LFOView;
 import org.slf4j.Logger;
 
+import java.lang.reflect.InvocationTargetException;
+
 import static com.github.achaaab.bragi.core.module.producer.wave.Waveform.SINE;
-import static javax.swing.SwingUtilities.invokeLater;
+import static javax.swing.SwingUtilities.invokeAndWait;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -45,9 +48,11 @@ public class LFO extends Oscillator {
 		setLowerPeak(INITIAL_LOWER_PEAK);
 		setUpperPeak(INITIAL_UPPER_PEAK);
 
-		invokeLater(() -> new LFOView(this));
-
-		start();
+		try {
+			invokeAndWait(() -> view = new LFOView(this));
+		} catch (InterruptedException | InvocationTargetException cause) {
+			throw new ModuleCreationException(cause);
+		}
 	}
 
 	@Override

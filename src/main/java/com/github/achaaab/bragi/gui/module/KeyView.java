@@ -1,13 +1,17 @@
 package com.github.achaaab.bragi.gui.module;
 
-import com.github.achaaab.bragi.core.module.producer.Keyboard;
 import com.github.achaaab.bragi.core.module.producer.Key;
+import com.github.achaaab.bragi.core.module.producer.Keyboard;
 
 import javax.swing.JButton;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+
+import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.WHITE;
+import static java.awt.event.InputEvent.BUTTON1_DOWN_MASK;
 
 /**
  * key Swing view
@@ -17,29 +21,33 @@ import java.awt.event.MouseListener;
  */
 public class KeyView extends JButton implements MouseListener {
 
+	private static final Dimension SIZE = scale(new Dimension(40, 200));
+
 	private final Key model;
 	private final Keyboard keyboard;
 
 	private boolean pressed;
 
 	/**
-	 * @param model key model
+	 * @param model    key model
 	 * @param keyboard keyboard model
 	 */
 	public KeyView(Key model, Keyboard keyboard) {
 
-		super(model.toString());
-
 		this.model = model;
 		this.keyboard = keyboard;
 
-		setFocusTraversalKeysEnabled(false);
-		setPreferredSize(new Dimension(65, 300));
-		setBackground(model.toString().contains("#") ? Color.BLACK : Color.WHITE);
-		setForeground(model.toString().contains("#") ? Color.WHITE : Color.BLACK);
+		setPreferredSize(SIZE);
+
+		if (model.c() && !model.sharp()) {
+			setText(Character.toString(model.octave()));
+		}
+
+		setBackground(model.sharp() ? BLACK : WHITE);
+		setForeground(model.sharp() ? WHITE : BLACK);
 
 		pressed = false;
-
+		setFocusTraversalKeysEnabled(false);
 		addMouseListener(this);
 	}
 
@@ -63,7 +71,7 @@ public class KeyView extends JButton implements MouseListener {
 
 		int modifiers = mouseEvent.getModifiersEx();
 
-		if ((modifiers & MouseEvent.BUTTON1_DOWN_MASK) == MouseEvent.BUTTON1_DOWN_MASK) {
+		if ((modifiers & BUTTON1_DOWN_MASK) == BUTTON1_DOWN_MASK) {
 			press();
 		}
 	}
@@ -74,7 +82,7 @@ public class KeyView extends JButton implements MouseListener {
 	}
 
 	/**
-	 *
+	 * Presses this key.
 	 */
 	public void press() {
 
@@ -86,7 +94,7 @@ public class KeyView extends JButton implements MouseListener {
 	}
 
 	/**
-	 *
+	 * Releases this key.
 	 */
 	public void release() {
 

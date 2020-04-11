@@ -2,14 +2,13 @@ package com.github.achaaab.bragi.gui.module;
 
 import com.github.achaaab.bragi.core.module.transformer.VCA;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.border.TitledBorder;
-
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
 
 /**
  * VCA Swing view
@@ -18,6 +17,8 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
  * @since 0.0.4
  */
 public class VCAView extends JPanel {
+
+	private static final Dimension SLIDERS_SIZE = scale(new Dimension(350, 60));
 
 	/**
 	 * @param model VCA model
@@ -30,16 +31,12 @@ public class VCAView extends JPanel {
 		initialGainSlider.setPaintLabels(true);
 		initialGainSlider.setBorder(new TitledBorder("Initial gain (dB)"));
 
+		initialGainSlider.setPreferredSize(SLIDERS_SIZE);
+
 		initialGainSlider.setValue(model.getInitialGain());
 		initialGainSlider.addChangeListener(event -> model.setInitialGain(initialGainSlider.getValue()));
 
 		setLayout(new BorderLayout());
 		add(initialGainSlider);
-
-		var frame = new JFrame(model.name());
-		frame.setContentPane(this);
-		frame.setSize(400, 200);
-		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		frame.setVisible(true);
 	}
 }

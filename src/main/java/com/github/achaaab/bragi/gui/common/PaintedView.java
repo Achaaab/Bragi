@@ -4,6 +4,7 @@ import javax.swing.JComponent;
 import java.awt.Graphics2D;
 import java.awt.Point;
 
+import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
 import static java.awt.Color.RED;
 import static java.lang.Math.round;
 
@@ -15,8 +16,7 @@ public abstract class PaintedView extends JComponent {
 
 	protected static final double DEFAULT_TARGET_FRAME_RATE = 60.0;
 
-	private static final float FPS_MESSAGE_FONT_SIZE = 30.0f;
-	private static final Point FPS_MESSAGE_POSITION = new Point(10, 10);
+	private static final Point FPS_MESSAGE_POSITION = scale(new Point(7, 7));
 
 	protected final PaintingLoop paintingLoop;
 	protected final double targetFrameTime;
@@ -51,7 +51,7 @@ public abstract class PaintedView extends JComponent {
 		var frameRate = paintingLoop.getFrameRate();
 		var frameRateMessage = round(frameRate) + " fps";
 
-		var font = graphics.getFont().deriveFont(FPS_MESSAGE_FONT_SIZE);
+		var font = graphics.getFont();
 		var fontRenderContext = graphics.getFontRenderContext();
 		var glyphVector = font.createGlyphVector(fontRenderContext, frameRateMessage);
 		var messageBounds = glyphVector.getPixelBounds(null, 0, 0);

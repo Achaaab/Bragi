@@ -3,11 +3,14 @@ package com.github.achaaab.bragi.core.module.consumer;
 import com.github.achaaab.bragi.common.CircularFloatArray;
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.core.connection.Input;
-import com.github.achaaab.bragi.gui.module.OscilloscopeView;
 import com.github.achaaab.bragi.core.module.Module;
+import com.github.achaaab.bragi.core.module.ModuleCreationException;
+import com.github.achaaab.bragi.gui.module.OscilloscopeView;
 import org.slf4j.Logger;
 
-import static javax.swing.SwingUtilities.invokeLater;
+import java.lang.reflect.InvocationTargetException;
+
+import static javax.swing.SwingUtilities.invokeAndWait;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -47,9 +50,11 @@ public class Oscilloscope extends Module {
 		var oscilloscopeSampleCount = Settings.INSTANCE.frameRate();
 		buffer = new CircularFloatArray(oscilloscopeSampleCount);
 
-		invokeLater(() -> new OscilloscopeView(this));
-
-		start();
+		try {
+			invokeAndWait(() -> view = new OscilloscopeView(this));
+		} catch (InterruptedException | InvocationTargetException cause) {
+			throw new ModuleCreationException(cause);
+		}
 	}
 
 	@Override

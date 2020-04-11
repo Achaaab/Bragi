@@ -2,7 +2,6 @@ package com.github.achaaab.bragi.gui.module;
 
 import com.github.achaaab.bragi.core.module.producer.Theremin;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -10,7 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
 
 /**
  * theremin Swing view
@@ -19,6 +18,9 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
  * @since 0.0.4
  */
 public class ThereminView extends JPanel {
+
+	private static final Dimension SIZE = scale(new Dimension(300, 300));
+	private static final Color BACKGROUND_COLOR = new Color(64, 64, 64);
 
 	private static final float MINIMAL_PITCH = -2.5f;
 	private static final float MAXIMAL_PITCH = 2.5f;
@@ -37,14 +39,8 @@ public class ThereminView extends JPanel {
 
 		this.model = model;
 
-		setPreferredSize(new Dimension(400, 400));
-		setBackground(Color.DARK_GRAY);
-
-		var frame = new JFrame(model.name());
-		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		frame.setContentPane(this);
-		frame.pack();
-		frame.setVisible(true);
+		setPreferredSize(SIZE);
+		setBackground(BACKGROUND_COLOR);
 
 		addMouseMotionListener(new MouseMotionAdapter() {
 

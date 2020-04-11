@@ -1,5 +1,6 @@
 package com.github.achaaab.bragi.core.connection;
 
+import com.github.achaaab.bragi.core.module.Module;
 import org.slf4j.Logger;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -20,10 +21,12 @@ public class SecondaryInput extends AbstractInput {
 	/**
 	 * Create a secondary input, initially not connected.
 	 *
-	 * @param name name of the secondary input to create
+	 * @param module module that will contain the created input
+	 * @param name   name of the secondary input to create
+	 * @since 0.1.8
 	 */
-	public SecondaryInput(String name) {
-		super(name);
+	public SecondaryInput(Module module, String name) {
+		super(module, name);
 	}
 
 	/**
@@ -50,22 +53,22 @@ public class SecondaryInput extends AbstractInput {
 
 			if (firstRead) {
 
-				LOGGER.debug("trying to read chunk from {} to {}", buffer.getOutput(), this);
+				LOGGER.debug("trying to read chunk from {} to {}", buffer.output(), this);
 				chunk = buffer.tryRead();
 
 				if (chunk == null) {
 
-					LOGGER.debug("no chunk read from {} to {}", buffer.getOutput(), this);
+					LOGGER.debug("no chunk read from {} to {}", buffer.output(), this);
 
 				} else {
 
-					LOGGER.debug("chunk read from {} to {}", buffer.getOutput(), this);
+					LOGGER.debug("chunk read from {} to {}", buffer.output(), this);
 					firstRead = false;
 				}
 
 			} else {
 
-				LOGGER.debug("reading chunk from {} to {}", buffer.getOutput(), this);
+				LOGGER.debug("reading chunk from {} to {}", buffer.output(), this);
 				chunk = buffer.read();
 				LOGGER.debug("read chunk from " + this);
 			}

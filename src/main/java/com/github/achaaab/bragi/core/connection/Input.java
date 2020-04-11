@@ -1,6 +1,7 @@
 package com.github.achaaab.bragi.core.connection;
 
 import com.github.achaaab.bragi.common.NamedEntity;
+import com.github.achaaab.bragi.core.module.Module;
 
 /**
  * input of a module
@@ -9,6 +10,19 @@ import com.github.achaaab.bragi.common.NamedEntity;
  * @since 0.0.1
  */
 public interface Input extends NamedEntity {
+
+	/**
+	 * @return modules containing this input
+	 * @since 0.1.8
+	 */
+	Module module();
+
+	/**
+	 * @return buffer from which this inputs reads samples, {@code null} if this input is not connected
+	 * @see #isConnected()
+	 * @since 0.1.8
+	 */
+	Buffer getBuffer();
 
 	/**
 	 * @param buffer buffer to read from

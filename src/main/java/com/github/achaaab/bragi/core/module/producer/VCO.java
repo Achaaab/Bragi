@@ -2,12 +2,15 @@ package com.github.achaaab.bragi.core.module.producer;
 
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.core.connection.Input;
+import com.github.achaaab.bragi.core.module.ModuleCreationException;
 import com.github.achaaab.bragi.core.module.producer.wave.Waveform;
 import com.github.achaaab.bragi.gui.module.VCOView;
 import org.slf4j.Logger;
 
+import java.lang.reflect.InvocationTargetException;
+
 import static com.github.achaaab.bragi.core.module.producer.wave.Waveform.SINE;
-import static javax.swing.SwingUtilities.invokeLater;
+import static javax.swing.SwingUtilities.invokeAndWait;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -49,9 +52,11 @@ public class VCO extends Oscillator {
 
 		octave = 0;
 
-		invokeLater(() -> new VCOView(this));
-
-		start();
+		try {
+			invokeAndWait(() -> view = new VCOView(this));
+		} catch (InterruptedException | InvocationTargetException cause) {
+			throw new ModuleCreationException(cause);
+		}
 	}
 
 	@Override

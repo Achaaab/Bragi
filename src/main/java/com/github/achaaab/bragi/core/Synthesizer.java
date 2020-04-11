@@ -1,26 +1,43 @@
 package com.github.achaaab.bragi.core;
 
+import com.github.achaaab.bragi.common.AbstractNamedEntity;
 import com.github.achaaab.bragi.core.configuration.Configuration;
+import com.github.achaaab.bragi.core.module.Module;
+import com.github.achaaab.bragi.core.SynthesizerCreationException;
 import com.github.achaaab.bragi.gui.SynthesizerView;
 
-import static javax.swing.SwingUtilities.invokeLater;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
+import java.util.Set;
+
+import static javax.swing.SwingUtilities.invokeAndWait;
 
 /**
  * @author Jonathan Guéhenneux
  * @since 0.1.8
  */
-public class Synthesizer {
+public class Synthesizer extends AbstractNamedEntity {
+
+	private static final String DEFAULT_NAME = "synthesizer";
 
 	private final Configuration configuration;
+
+	private SynthesizerView view;
 
 	/**
 	 * Creates a synthesizer.
 	 */
 	public Synthesizer() {
 
+		super(DEFAULT_NAME);
+
 		configuration = new Configuration();
 
-		invokeLater(() -> new SynthesizerView(this));
+		try {
+			invokeAndWait(() -> view = new SynthesizerView(this));
+		} catch (InterruptedException | InvocationTargetException cause) {
+			throw new SynthesizerCreationException(cause);
+		}
 	}
 
 	/**
@@ -28,5 +45,48 @@ public class Synthesizer {
 	 */
 	public Configuration configuration() {
 		return configuration;
+	}
+
+	/**
+	 * Adds a module to this synthesizer.
+	 *
+	 * @param module module to add
+	 */
+	public void addModule(Module module) {
+
+		module.start();
+		view.display(module);
+	}
+
+	/**
+	 * Add the given module to this synthesizer and recursively add all its input modules and output modules.
+	 *
+	 * @param module module to add
+	 */
+	public void addChain(Module module) {
+		addChain(module, new HashSet<>());
+	}
+
+	/**
+	 * Add the given module to this synthesizer and recursively add all its input modules and output modules.
+	 *
+	 * @param module       module to add
+	 * @param addedModules modules already added, that will be ignored
+	 */
+	public void addChain(Module module, Set<Module> addedModules) {
+
+		if (!addedModules.contains(module)) {
+
+			addModule(module);
+			addedModules.add(module);
+
+			for (var inputModule : module.inputModules()) {
+				addChain(inputModule, addedModules);
+			}
+
+			for (var outputModule : module.outputModules()) {
+				addChain(outputModule, addedModules);
+			}
+		}
 	}
 }

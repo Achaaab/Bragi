@@ -18,7 +18,7 @@ public class Buffer {
 	 * Create a new empty buffer between specified output and input with a capacity of 1 chunk.
 	 *
 	 * @param output output that will write to this buffer
-	 * @param input input that will read from this buffer
+	 * @param input  input that will read from this buffer
 	 */
 	public Buffer(Output output, Input input) {
 
@@ -77,15 +77,17 @@ public class Buffer {
 
 	/**
 	 * @return output that write to this buffer
+	 * @since 0.1.8
 	 */
-	public Output getOutput() {
+	public Output output() {
 		return output;
 	}
 
 	/**
 	 * @return input that reads from this buffer
+	 * @since 0.1.8
 	 */
-	public Input getInput() {
+	public Input input() {
 		return input;
 	}
 }

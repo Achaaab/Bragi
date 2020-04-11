@@ -41,8 +41,6 @@ public class Ditherer extends Module {
 
 		input = addPrimaryInput(name + "_input");
 		output = addPrimaryOutput(name + "_output");
-
-		start();
 	}
 
 	@Override

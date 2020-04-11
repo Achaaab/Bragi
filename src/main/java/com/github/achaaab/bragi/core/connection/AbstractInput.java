@@ -1,6 +1,7 @@
 package com.github.achaaab.bragi.core.connection;
 
 import com.github.achaaab.bragi.common.AbstractNamedEntity;
+import com.github.achaaab.bragi.core.module.Module;
 
 /**
  * A default implementation for inputs.
@@ -10,23 +11,39 @@ import com.github.achaaab.bragi.common.AbstractNamedEntity;
  */
 public abstract class AbstractInput extends AbstractNamedEntity implements Input {
 
+	protected final Module module;
+
 	protected Buffer buffer;
 
 	/**
 	 * Create an input, initially not connected.
 	 *
-	 * @param name name of the input to create
+	 * @param module module that will contain the created input
+	 * @param name   name of the input to create
+	 * @since 0.1.8
 	 */
-	public AbstractInput(String name) {
+	public AbstractInput(Module module, String name) {
 
 		super(name);
+
+		this.module = module;
 
 		buffer = null;
 	}
 
 	@Override
+	public Module module() {
+		return module;
+	}
+
+	@Override
 	public boolean isConnected() {
 		return buffer != null;
+	}
+
+	@Override
+	public Buffer getBuffer() {
+		return buffer;
 	}
 
 	@Override

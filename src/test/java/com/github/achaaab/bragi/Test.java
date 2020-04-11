@@ -1,6 +1,7 @@
 package com.github.achaaab.bragi;
 
 import com.github.achaaab.bragi.common.Settings;
+import com.github.achaaab.bragi.core.Synthesizer;
 import com.github.achaaab.bragi.core.module.Module;
 import com.github.achaaab.bragi.core.module.consumer.Oscilloscope;
 import com.github.achaaab.bragi.core.module.consumer.Speaker;
@@ -67,6 +68,7 @@ public class Test {
 		player.connect(speaker);
 
 		visualizeOutputs(player);
+		createSynthesizer(player);
 	}
 
 	/**
@@ -82,6 +84,7 @@ public class Test {
 		player.connect(speaker);
 
 		visualizeOutputs(player);
+		createSynthesizer(player);
 	}
 
 	/**
@@ -101,6 +104,8 @@ public class Test {
 		low.connect(high);
 		speaker.connectInputs(high, high);
 		high.connect(spectrum);
+
+		createSynthesizer(noise);
 	}
 
 	/**
@@ -144,6 +149,7 @@ public class Test {
 		filter.setCutoffFrequency(7040.f);
 
 		visualizeOutputs(tremolo);
+		createSynthesizer(keyboard);
 	}
 
 	/**
@@ -173,6 +179,7 @@ public class Test {
 		speaker.connectInputs(filter, filter);
 
 		visualizeOutputs(filter);
+		createSynthesizer(noise);
 	}
 
 	/**
@@ -207,6 +214,7 @@ public class Test {
 		adsr.setRelease(2.0);
 
 		visualizeOutputs(vcaTremolo);
+		createSynthesizer(keyboard);
 	}
 
 	/**
@@ -222,6 +230,7 @@ public class Test {
 		player.connectOutputs(speaker);
 
 		visualizeOutputs(player);
+		createSynthesizer(player);
 	}
 
 	/**
@@ -237,6 +246,7 @@ public class Test {
 		dcg.setComputingFrameRate(Settings.INSTANCE.frameRate());
 
 		dcg.connect(oscilloscope);
+		createSynthesizer(dcg);
 	}
 
 	/**
@@ -257,6 +267,8 @@ public class Test {
 		speaker.connectInputs(vca, vca);
 		keyboard.getGate().connect(adsr.getGate());
 		adsr.connect(vca.getGain());
+
+		createSynthesizer(keyboard);
 	}
 
 	/**
@@ -274,6 +286,7 @@ public class Test {
 		player.connectOutputs(speaker);
 
 		visualizeOutputs(player);
+		createSynthesizer(player);
 	}
 
 	/**
@@ -291,6 +304,8 @@ public class Test {
 		noise.connect(filter);
 		filter.connect(spectrum);
 		speaker.connectInputs(filter, filter);
+
+		createSynthesizer(noise);
 	}
 
 	/**
@@ -308,6 +323,8 @@ public class Test {
 		noise.connect(filter);
 		filter.connect(spectrum);
 		speaker.connectInputs(filter, filter);
+
+		createSynthesizer(noise);
 	}
 
 	/**
@@ -323,6 +340,7 @@ public class Test {
 		speaker.connectInputs(noise, noise);
 
 		visualizeOutputs(noise);
+		createSynthesizer(noise);
 	}
 
 	/**
@@ -338,6 +356,7 @@ public class Test {
 		speaker.connectInputs(noise, noise);
 
 		visualizeOutputs(noise);
+		createSynthesizer(noise);
 	}
 
 	/**
@@ -355,6 +374,7 @@ public class Test {
 		lfo.connect(vco);
 
 		visualizeOutputs(vco);
+		createSynthesizer(vco);
 	}
 
 	/**
@@ -375,6 +395,8 @@ public class Test {
 		vco.connect(vca);
 		vca.connect(spectrum);
 		theremin.getVolume().connect(vca.getGain());
+
+		createSynthesizer(theremin);
 	}
 
 	/**
@@ -392,6 +414,8 @@ public class Test {
 		keyboard.connect(vco);
 		vco.connect(oscilloscope);
 		speaker.connectInputs(vco, vco);
+
+		createSynthesizer(keyboard);
 	}
 
 	/**
@@ -413,6 +437,8 @@ public class Test {
 		vca.connect(oscilloscope);
 
 		theremin.getVolume().connect(vca.getGain());
+
+		createSynthesizer(theremin);
 	}
 
 	/**
@@ -428,6 +454,8 @@ public class Test {
 		oscilloscope.setComputingFrameRate(Settings.INSTANCE.frameRate());
 
 		vco.connect(oscilloscope);
+
+		createSynthesizer(vco);
 	}
 
 	/**
@@ -443,6 +471,7 @@ public class Test {
 		microphone.connectOutputs(speaker);
 
 		visualizeOutputs(microphone);
+		createSynthesizer(microphone);
 	}
 
 	/**
@@ -458,6 +487,7 @@ public class Test {
 		player.connectOutputs(speaker);
 
 		visualizeOutputs(player);
+		createSynthesizer(player);
 	}
 
 	/**
@@ -475,6 +505,7 @@ public class Test {
 		leftSpectrum.setComputingFrameRate(Settings.INSTANCE.frameRate());
 
 		player.connectOutputs(leftSpectrum, rightSpectrum);
+		createSynthesizer(player);
 	}
 
 	/**
@@ -493,5 +524,17 @@ public class Test {
 			output.connect(oscilloscope.getInput());
 			output.connect(spectrum.getInput());
 		}
+	}
+
+	/**
+	 * Creates a new synthesizer and add given module to it.
+	 * Also adds recursively every module connected directly or not to the given module.
+	 *
+	 * @param module module to add to the created synthesizer
+	 */
+	private static void createSynthesizer(Module module) {
+
+		var synthesizer = new Synthesizer();
+		synthesizer.addChain(module);
 	}
 }

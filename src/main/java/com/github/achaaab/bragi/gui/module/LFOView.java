@@ -1,16 +1,16 @@
 package com.github.achaaab.bragi.gui.module;
 
+import com.github.achaaab.bragi.core.module.producer.LFO;
 import com.github.achaaab.bragi.gui.component.FrequencySlider;
 import com.github.achaaab.bragi.gui.component.LinearRangeSlider;
 import com.github.achaaab.bragi.gui.component.WaveformComboBox;
-import com.github.achaaab.bragi.core.module.producer.LFO;
 
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
 
 /**
  * LFO Swing view
@@ -19,6 +19,8 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
  * @since 0.1.0
  */
 public class LFOView extends JPanel {
+
+	private static final Dimension SLIDERS_SIZE = scale(new Dimension(700, 60));
 
 	/**
 	 * @param model LFO model
@@ -41,6 +43,9 @@ public class LFOView extends JPanel {
 		amplitudeSlider.setDecimalLowerValue(model.getLowerPeak());
 		amplitudeSlider.setDecimalUpperValue(model.getUpperPeak());
 
+		frequencySlider.setPreferredSize(SLIDERS_SIZE);
+		amplitudeSlider.setPreferredSize(SLIDERS_SIZE);
+
 		waveformComboBox.addActionListener(event -> model.setWaveform(waveformComboBox.getSelectedWaveform()));
 		frequencySlider.addChangeListener(changeEvent -> model.setFrequency(frequencySlider.getDecimalValue()));
 
@@ -53,11 +58,5 @@ public class LFOView extends JPanel {
 		add(waveformComboBox);
 		add(frequencySlider);
 		add(amplitudeSlider);
-
-		var frame = new JFrame(model.name());
-		frame.setSize(600, 300);
-		frame.setContentPane(this);
-		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		frame.setVisible(true);
 	}
 }

@@ -1,14 +1,14 @@
 package com.github.achaaab.bragi.gui.module;
 
-import com.github.achaaab.bragi.gui.component.LinearSlider;
 import com.github.achaaab.bragi.core.module.producer.DCG;
+import com.github.achaaab.bragi.gui.component.LinearSlider;
 
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
 
 /**
  * DCG view
@@ -17,6 +17,8 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
  * @since 0.1.6
  */
 public class DCGView extends JPanel {
+
+	private static final Dimension SLIDERS_SIZE = scale(new Dimension(350, 60));
 
 	/**
 	 * @param model DCG model
@@ -33,17 +35,13 @@ public class DCGView extends JPanel {
 		voltageSlider.setPaintLabels(true);
 		voltageSlider.setBorder(BorderFactory.createTitledBorder("Voltage (V)"));
 
+		voltageSlider.setPreferredSize(SLIDERS_SIZE);
+
 		voltageSlider.setDecimalValue(voltage);
 
 		voltageSlider.addChangeListener(event -> model.setVoltage((float) voltageSlider.getDecimalValue()));
 
 		setLayout(new BorderLayout());
 		add(voltageSlider, BorderLayout.CENTER);
-
-		var frame = new JFrame(model.name());
-		frame.setContentPane(this);
-		frame.setSize(400, 200);
-		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		frame.setVisible(true);
 	}
 }

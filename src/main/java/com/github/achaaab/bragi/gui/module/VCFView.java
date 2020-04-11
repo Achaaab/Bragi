@@ -3,15 +3,15 @@ package com.github.achaaab.bragi.gui.module;
 import com.github.achaaab.bragi.core.module.transformer.VCF;
 import com.github.achaaab.bragi.gui.component.FrequencySlider;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.border.TitledBorder;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 
+import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
 import static java.lang.Math.round;
 import static javax.swing.SwingConstants.HORIZONTAL;
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
  * VCF Swing view
@@ -20,6 +20,8 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
  * @since 0.0.4
  */
 public class VCFView extends JPanel {
+
+	private static final Dimension SLIDERS_SIZE = scale(new Dimension(700, 60));
 
 	/**
 	 * @param model VCF model
@@ -36,6 +38,9 @@ public class VCFView extends JPanel {
 		emphasisSlider.setPaintLabels(true);
 		emphasisSlider.setBorder(new TitledBorder("Emphasis (%)"));
 
+		cutOffFrequencySlider.setPreferredSize(SLIDERS_SIZE);
+		emphasisSlider.setPreferredSize(SLIDERS_SIZE);
+
 		setLayout(new GridLayout(2, 1));
 		add(cutOffFrequencySlider);
 		add(emphasisSlider);
@@ -45,11 +50,5 @@ public class VCFView extends JPanel {
 
 		emphasisSlider.addChangeListener(event ->
 				model.setEmphasis((float) emphasisSlider.getValue() / 100));
-
-		var frame = new JFrame(model.name());
-		frame.setSize(700, 250);
-		frame.setContentPane(this);
-		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		frame.setVisible(true);
 	}
 }

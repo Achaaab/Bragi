@@ -1,6 +1,7 @@
 package com.github.achaaab.bragi.core.connection;
 
 import com.github.achaaab.bragi.common.AbstractNamedEntity;
+import com.github.achaaab.bragi.core.module.Module;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -18,18 +19,33 @@ public abstract class AbstractOutput extends AbstractNamedEntity implements Outp
 
 	private static final Logger LOGGER = getLogger(AbstractOutput.class);
 
+	protected final Module module;
 	protected final List<Buffer> buffers;
 
 	/**
 	 * Create an output, initially not connected.
 	 *
-	 * @param name name of the output to create
+	 * @param module module that will contain the created output
+	 * @param name   name of the output to create
+	 * @since 0.1.8
 	 */
-	public AbstractOutput(String name) {
+	public AbstractOutput(Module module, String name) {
 
 		super(name);
 
+		this.module = module;
+
 		buffers = new ArrayList<>();
+	}
+
+	@Override
+	public Module module() {
+		return module;
+	}
+
+	@Override
+	public List<Buffer> buffers() {
+		return buffers;
 	}
 
 	@Override

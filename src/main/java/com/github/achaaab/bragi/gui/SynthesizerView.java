@@ -2,7 +2,9 @@ package com.github.achaaab.bragi.gui;
 
 import com.github.achaaab.bragi.core.Synthesizer;
 import com.github.achaaab.bragi.core.configuration.LineConfiguration;
+import com.github.achaaab.bragi.core.module.Module;
 import com.github.achaaab.bragi.gui.configuration.LineConfigurationView;
+import org.slf4j.Logger;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -11,18 +13,27 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 
 import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author Jonathan Guéhenneux
  */
 public class SynthesizerView extends JPanel {
+
+	private static final Logger LOGGER = getLogger(SynthesizerView.class);
+
+	private static final Color MODULES_PANEL_BACKGROUND_COLOR = new Color(48, 48, 48);
+	private static final Dimension MODULES_PANEL_DIMENSION = scale(new Dimension(3200, 1800));
 
 	private final Synthesizer model;
 
@@ -32,10 +43,14 @@ public class SynthesizerView extends JPanel {
 	private final JFrame inputConfigurationFrame;
 	private final JFrame outputConfigurationFrame;
 
+	private final JDesktopPane modulesPanel;
+
 	/**
 	 * @param model synthesizer model
 	 */
 	public SynthesizerView(Synthesizer model) {
+
+		LOGGER.info("creating view for the synthesizer: {}", model);
 
 		this.model = model;
 
@@ -59,13 +74,9 @@ public class SynthesizerView extends JPanel {
 
 		inputConfigurationFrame = new JFrame("Input configuration");
 		inputConfigurationFrame.setContentPane(inputConfigurationView);
-		scale(inputConfigurationFrame);
-		inputConfigurationFrame.pack();
 
 		outputConfigurationFrame = new JFrame("Output configuration");
 		outputConfigurationFrame.setContentPane(outputConfigurationView);
-		scale(outputConfigurationFrame);
-		outputConfigurationFrame.pack();
 
 		inputConfigurationInput.addActionListener(this::inputConfigurationSelected);
 		outputConfigurationInput.addActionListener(this::outputConfigurationSelected);
@@ -76,26 +87,52 @@ public class SynthesizerView extends JPanel {
 		inputConfigurationView.onCancel(() -> inputConfigurationFrame.setVisible(false));
 		outputConfigurationView.onCancel(() -> outputConfigurationFrame.setVisible(false));
 
+		modulesPanel = new JDesktopPane();
+		modulesPanel.setPreferredSize(MODULES_PANEL_DIMENSION);
+		modulesPanel.setBackground(MODULES_PANEL_BACKGROUND_COLOR);
+
 		var layout = new BorderLayout();
 		setLayout(layout);
-
 		add(menuBar, NORTH);
-
-		var pane = new JDesktopPane();
-		var internalFrame = new JInternalFrame();
-		internalFrame.setSize(320, 180);
-		internalFrame.setVisible(true);
-		pane.add(internalFrame);
-
-		add(pane, CENTER);
+		add(new JScrollPane(modulesPanel), CENTER);
 
 		scale(this);
+		scale(inputConfigurationFrame);
+		scale(outputConfigurationFrame);
 
 		var frame = new JFrame("Synthesizer");
 		frame.setContentPane(this);
-		frame.setSize(1600, 900);
+		frame.pack();
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		frame.setVisible(true);
+
+		LOGGER.info("view created for the synthesizer: {}", model);
+	}
+
+	/**
+	 * Displays the module view, if it is not {@code null}.
+	 *
+	 * @param module module to display
+	 */
+	public void display(Module module) {
+
+		var moduleView = module.view();
+
+		if (moduleView != null) {
+
+			LOGGER.info("adding view of the module {}", module);
+
+			var moduleFrame = new JInternalFrame(module.name());
+			moduleFrame.add(moduleView);
+			modulesPanel.add(moduleFrame);
+			scale(moduleFrame);
+
+			moduleFrame.pack();
+			moduleFrame.setResizable(true);
+			moduleFrame.setVisible(true);
+
+			LOGGER.info("view of the module {} added", module);
+		}
 	}
 
 	/**

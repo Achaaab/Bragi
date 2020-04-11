@@ -1,12 +1,27 @@
 package com.github.achaaab.bragi.core.connection;
 
 import com.github.achaaab.bragi.common.NamedEntity;
+import com.github.achaaab.bragi.core.module.Module;
+
+import java.util.List;
 
 /**
  * @author Jonathan Guéhenneux
  * @since 0.1.0
  */
 public interface Output extends NamedEntity {
+
+	/**
+	 * @return modules containing this output
+	 * @since 0.1.8
+	 */
+	Module module();
+
+	/**
+	 * @return buffers to which this output writes
+	 * @since 0.1.8
+	 */
+	List<Buffer> buffers();
 
 	/**
 	 * Connect this output to the specified input.

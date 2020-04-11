@@ -1,9 +1,13 @@
 package com.github.achaaab.bragi.gui.component;
 
+import com.github.achaaab.bragi.gui.common.ViewScale;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import java.text.DecimalFormat;
 import java.util.Hashtable;
+
+import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
 
 /**
  * range slider with floating point values
@@ -55,7 +59,10 @@ public abstract class DecimalRangeSlider extends RangeSlider {
 
 		var decimalValue = getDecimalValue(value);
 		var text = LABEL_FORMAT.format(decimalValue);
-		return new JLabel(text);
+		var label = new JLabel(text);
+		scale(label);
+
+		return label;
 	}
 
 	/**

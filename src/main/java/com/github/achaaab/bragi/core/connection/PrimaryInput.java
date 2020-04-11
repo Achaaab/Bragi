@@ -1,5 +1,6 @@
 package com.github.achaaab.bragi.core.connection;
 
+import com.github.achaaab.bragi.core.module.Module;
 import org.slf4j.Logger;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -19,10 +20,12 @@ public class PrimaryInput extends AbstractInput {
 	/**
 	 * Create a primary input, initially not connected.
 	 *
-	 * @param name name of the primary input to create
+	 * @param module module that will contain the created input
+	 * @param name   name of the primary input to create
+	 * @since 0.1.8
 	 */
-	public PrimaryInput(String name) {
-		super(name);
+	public PrimaryInput(Module module, String name) {
+		super(module, name);
 	}
 
 	/**
@@ -42,9 +45,9 @@ public class PrimaryInput extends AbstractInput {
 			}
 		}
 
-		LOGGER.debug("reading chunk from {} to {}", buffer.getOutput(), this);
+		LOGGER.debug("reading chunk from {} to {}", buffer.output(), this);
 		var chunk = buffer.read();
-		LOGGER.debug("chunk read from {} to {}", buffer.getOutput(), this);
+		LOGGER.debug("chunk read from {} to {}", buffer.output(), this);
 
 		return chunk;
 	}

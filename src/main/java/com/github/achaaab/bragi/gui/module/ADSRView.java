@@ -1,15 +1,16 @@
 package com.github.achaaab.bragi.gui.module;
 
+import com.github.achaaab.bragi.core.module.producer.ADSR;
+import com.github.achaaab.bragi.gui.common.ViewScale;
 import com.github.achaaab.bragi.gui.component.LinearSlider;
 import com.github.achaaab.bragi.gui.component.LogarithmicSlider;
-import com.github.achaaab.bragi.core.module.producer.ADSR;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 
+import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
 import static javax.swing.BorderFactory.createTitledBorder;
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
  * ADSR Swing view
@@ -18,6 +19,8 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
  * @since 0.0.6
  */
 public class ADSRView extends JPanel {
+
+	private static final Dimension SLIDERS_SIZE = scale(new Dimension(350, 60));
 
 	/**
 	 * @param model ADSR model
@@ -49,6 +52,11 @@ public class ADSRView extends JPanel {
 		sustainSlider.setPaintLabels(true);
 		releaseSlider.setPaintLabels(true);
 
+		attackSlider.setPreferredSize(SLIDERS_SIZE);
+		decaySlider.setPreferredSize(SLIDERS_SIZE);
+		sustainSlider.setPreferredSize(SLIDERS_SIZE);
+		releaseSlider.setPreferredSize(SLIDERS_SIZE);
+
 		setLayout(new GridLayout(4, 1));
 		add(attackSlider);
 		add(decaySlider);
@@ -64,11 +72,5 @@ public class ADSRView extends JPanel {
 		decaySlider.addChangeListener(event -> model.setDecay(decaySlider.getDecimalValue()));
 		sustainSlider.addChangeListener(event -> model.setSustain(sustainSlider.getDecimalValue()));
 		releaseSlider.addChangeListener(event -> model.setRelease(releaseSlider.getDecimalValue()));
-
-		var frame = new JFrame(model.name());
-		frame.setSize(400, 300);
-		frame.setContentPane(this);
-		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		frame.setVisible(true);
 	}
 }

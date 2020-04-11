@@ -113,8 +113,6 @@ public class PinkNoiseGenerator extends Module {
 		output = addPrimaryOutput(name + "_output");
 
 		pinkNoise = createPinkNoise();
-
-		start();
 	}
 
 	@Override

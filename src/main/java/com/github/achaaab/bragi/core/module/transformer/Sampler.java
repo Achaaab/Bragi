@@ -45,8 +45,6 @@ public class Sampler extends Module {
 
 		input = addPrimaryInput(name + "_input");
 		output = addPrimaryOutput(name + "_output");
-
-		start();
 	}
 
 	@Override

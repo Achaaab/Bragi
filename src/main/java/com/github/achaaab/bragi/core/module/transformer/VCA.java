@@ -2,12 +2,15 @@ package com.github.achaaab.bragi.core.module.transformer;
 
 import com.github.achaaab.bragi.core.connection.Input;
 import com.github.achaaab.bragi.core.connection.Output;
-import com.github.achaaab.bragi.gui.module.VCAView;
 import com.github.achaaab.bragi.core.module.Module;
+import com.github.achaaab.bragi.core.module.ModuleCreationException;
+import com.github.achaaab.bragi.gui.module.VCAView;
 import org.slf4j.Logger;
 
+import java.lang.reflect.InvocationTargetException;
+
 import static java.lang.Math.pow;
-import static javax.swing.SwingUtilities.invokeLater;
+import static javax.swing.SwingUtilities.invokeAndWait;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -52,9 +55,11 @@ public class VCA extends Module {
 
 		initialGain = 0;
 
-		invokeLater(() -> new VCAView(this));
-
-		start();
+		try {
+			invokeAndWait(() -> view = new VCAView(this));
+		} catch (InterruptedException | InvocationTargetException cause) {
+			throw new ModuleCreationException(cause);
+		}
 	}
 
 	@Override

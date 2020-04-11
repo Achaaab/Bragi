@@ -1,19 +1,15 @@
 package com.github.achaaab.bragi.core.module.consumer;
 
-import com.github.achaaab.bragi.core.module.ModuleCreationException;
 import com.github.achaaab.bragi.common.Normalizer;
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.core.module.Module;
+import com.github.achaaab.bragi.core.module.ModuleCreationException;
 import org.slf4j.Logger;
 
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
 import javax.sound.sampled.DataLine.Info;
 import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.spi.MixerProvider;
 
 import static java.lang.Math.round;
 import static javax.sound.sampled.AudioSystem.getLine;
@@ -110,8 +106,6 @@ public class Speaker extends Module {
 		}
 
 		line.start();
-
-		start();
 	}
 
 	/**

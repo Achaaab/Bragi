@@ -1,23 +1,22 @@
 package com.github.achaaab.bragi.gui.module;
 
-import com.github.achaaab.bragi.gui.component.TimeSlider;
 import com.github.achaaab.bragi.core.module.player.Player;
+import com.github.achaaab.bragi.gui.component.TimeSlider;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 
+import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
 import static java.awt.FlowLayout.LEFT;
 import static java.lang.ClassLoader.getSystemResource;
 import static java.lang.Math.round;
 import static java.time.Duration.ofSeconds;
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
  * player Swing view
@@ -26,6 +25,8 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
  * @since 0.1.0
  */
 public class PlayerView extends JPanel {
+
+	private static final Dimension SLIDERS_SIZE = scale(new Dimension(250, 50));
 
 	private static final Icon PLAY_ICON;
 	private static final Icon PAUSE_ICON;
@@ -76,7 +77,9 @@ public class PlayerView extends JPanel {
 		timeLabel = new JLabel();
 		timeSlider = new TimeSlider();
 
-		timeSlider.setPreferredSize(new Dimension(300, 50));
+		updateTimeLabel(model.getTime(), model.getDuration());
+
+		timeSlider.setPreferredSize(SLIDERS_SIZE);
 
 		playButton.addActionListener(event -> model.play());
 		pauseButton.addActionListener(event -> model.pause());
@@ -90,12 +93,6 @@ public class PlayerView extends JPanel {
 		add(pauseButton);
 		add(timeLabel);
 		add(timeSlider);
-
-		var frame = new JFrame(model.name());
-		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		frame.setContentPane(this);
-		frame.setSize(684, 117);
-		frame.setVisible(true);
 	}
 
 	/**

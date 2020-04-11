@@ -6,6 +6,8 @@ import javax.swing.JSlider;
 import java.text.DecimalFormat;
 import java.util.Hashtable;
 
+import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
+
 /**
  * slider with floating point values
  *
@@ -58,7 +60,10 @@ public abstract class DecimalSlider extends JSlider {
 
 		var decimalValue = getDecimalValue(value);
 		var text = LABEL_FORMAT.format(decimalValue);
-		return new JLabel(text);
+		var label = new JLabel(text);
+		scale(label);
+
+		return label;
 	}
 
 	/**

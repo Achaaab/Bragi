@@ -4,10 +4,13 @@ import com.github.achaaab.bragi.common.Normalizer;
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.core.connection.Input;
 import com.github.achaaab.bragi.core.connection.Output;
-import com.github.achaaab.bragi.gui.module.VCFView;
 import com.github.achaaab.bragi.core.module.Module;
+import com.github.achaaab.bragi.core.module.ModuleCreationException;
+import com.github.achaaab.bragi.gui.module.VCFView;
 
-import static javax.swing.SwingUtilities.invokeLater;
+import java.lang.reflect.InvocationTargetException;
+
+import static javax.swing.SwingUtilities.invokeAndWait;
 
 /**
  * Voltage-Controlled Filter
@@ -70,9 +73,11 @@ public abstract class VCF extends Module {
 		oldY2 = 0.0;
 		oldY3 = 0.0;
 
-		invokeLater(() -> new VCFView(this));
-
-		start();
+		try {
+			invokeAndWait(() -> view = new VCFView(this));
+		} catch (InterruptedException | InvocationTargetException cause) {
+			throw new ModuleCreationException(cause);
+		}
 	}
 
 	@Override

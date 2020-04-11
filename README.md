@@ -1,5 +1,5 @@
 # Bragi
-![Screenshot](src/site/tremolo.png)
+![Screenshot](src/site/piano.png)
 Bragi is a modular, real-time, sound synthesizer written in Java. It is still in progress and only has a rudimentary
 user interface. Following modules are provided:
 * **LFO**: Low Frequency Oscillator

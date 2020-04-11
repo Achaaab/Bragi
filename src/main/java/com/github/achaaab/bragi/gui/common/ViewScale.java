@@ -2,10 +2,13 @@ package com.github.achaaab.bragi.gui.common;
 
 import javax.swing.JComponent;
 import javax.swing.JMenu;
+import javax.swing.JSlider;
 import javax.swing.border.TitledBorder;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
 
 import static java.lang.Math.round;
 
@@ -84,10 +87,44 @@ public class ViewScale {
 	}
 
 	/**
-	 * @param size size
+	 * @param size size to scale
 	 * @return scaled size
 	 */
 	public static int scale(int size) {
 		return round(SCALE_FACTOR * size);
+	}
+
+	/**
+	 * @param size size to scale
+	 * @return scaled size
+	 */
+	public static float scale(float size) {
+		return SCALE_FACTOR * size;
+	}
+
+	/**
+	 * @param dimension dimension to scale, in place
+	 * @return scaled dimension
+	 */
+	public static Dimension scale(Dimension dimension) {
+
+		dimension.width = scale(dimension.width);
+		dimension.height = scale(dimension.height);
+
+		return dimension;
+	}
+
+	/**
+	 * "Scales" the given point in place. Increases its distance from origin by scale factor.
+	 *
+	 * @param point point to scale, in place
+	 * @return scaled point
+	 */
+	public static Point scale(Point point) {
+
+		point.x = scale(point.x);
+		point.y = scale(point.y);
+
+		return point;
 	}
 }

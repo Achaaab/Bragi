@@ -3,15 +3,17 @@ package com.github.achaaab.bragi.core.module.producer;
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.core.connection.Output;
 import com.github.achaaab.bragi.core.module.Module;
+import com.github.achaaab.bragi.core.module.ModuleCreationException;
 import com.github.achaaab.bragi.gui.module.KeyboardView;
 import org.slf4j.Logger;
 
 import java.awt.event.KeyEvent;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.awt.event.KeyEvent.getExtendedKeyCodeForChar;
-import static javax.swing.SwingUtilities.invokeLater;
+import static javax.swing.SwingUtilities.invokeAndWait;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -100,9 +102,11 @@ public class Keyboard extends Module {
 		previousPressedKeyCount = 0;
 		pressedKeyCount = 0;
 
-		invokeLater(() -> new KeyboardView(this));
-
-		start();
+		try {
+			invokeAndWait(() -> view = new KeyboardView(this));
+		} catch (InterruptedException | InvocationTargetException cause) {
+			throw new ModuleCreationException(cause);
+		}
 	}
 
 	@Override

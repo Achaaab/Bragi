@@ -1,22 +1,21 @@
 package com.github.achaaab.bragi.gui.module;
 
 import com.github.achaaab.bragi.common.Normalizer;
-import com.github.achaaab.bragi.gui.common.PaintedView;
 import com.github.achaaab.bragi.core.module.consumer.SpectrumAnalyzer;
+import com.github.achaaab.bragi.gui.common.PaintedView;
 
-import javax.swing.JFrame;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
 import static java.awt.Color.getHSBColor;
 import static java.lang.Math.fma;
 import static java.lang.Math.log10;
 import static java.lang.Math.max;
 import static java.lang.Math.round;
 import static java.util.Arrays.fill;
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
  * A basic spectrum analyzer view made with Swing and AWT.
@@ -28,7 +27,8 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
  */
 public class SpectrumAnalyzerView extends PaintedView {
 
-	private static final float MARGIN = 5.0f;
+	private static final Dimension SIZE = scale(new Dimension(432, 243));
+	private static final float MARGIN = scale(3.0f);
 	private static final int SEGMENT_COUNT = 128;
 	private static final float BASE_MAGNITUDE = 25_000.0f;
 	private static final float MINIMAL_DECIBELS = -60.0f;
@@ -75,13 +75,7 @@ public class SpectrumAnalyzerView extends PaintedView {
 
 		this.model = model;
 
-		setPreferredSize(new Dimension(640, 360));
-
-		var frame = new JFrame(model.name());
-		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		frame.add(this);
-		frame.pack();
-		frame.setVisible(true);
+		setPreferredSize(SIZE);
 	}
 
 	/**
