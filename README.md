@@ -16,6 +16,7 @@ user interface. Following modules are provided:
 * **ADSR**: envelope generator with Attack, Decay, Sustain and Release parameters
 * **VCA**: Voltage Controlled Amplifier
 * **VCF**: Voltage Controlled Filter (with low-pass or high-pass response)
+* **Mixer**: Mixer with two inputs controlled with gain sliders
 * **Sampler**: an experimentation to change the sample rate or sample size
 * **Ditherer**: an experimentation with dithering
 * **Oscilloscope**: basic oscilloscope

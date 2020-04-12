@@ -20,6 +20,7 @@ import com.github.achaaab.bragi.core.module.producer.VCO;
 import com.github.achaaab.bragi.core.module.producer.WhiteNoiseGenerator;
 import com.github.achaaab.bragi.core.module.transformer.HighPassVCF;
 import com.github.achaaab.bragi.core.module.transformer.LowPassVCF;
+import com.github.achaaab.bragi.core.module.transformer.Mixer;
 import com.github.achaaab.bragi.core.module.transformer.VCA;
 import org.slf4j.Logger;
 
@@ -117,39 +118,37 @@ public class Test {
 
 		// main chain
 		var keyboard = new Keyboard();
-		var vcoLeft = new VCO("left");
-		var vcoRight = new VCO("right");
-		var filterLeft = new LowPassVCF("left");
-		var filterRight = new LowPassVCF("right");
-		var envelopeLeft = new VCA("envelope_left");
-		var envelopeRight = new VCA("envelope_right");
+		var vcoHigh = new VCO("high");
+		var vcoLow = new VCO("low");
+		var mixer = new Mixer();
+		var filter = new LowPassVCF();
+		var envelope = new VCA();
 		var speaker = new Speaker();
-		keyboard.connect(vcoLeft, vcoRight);
-		keyboard.connect(filterLeft.modulation(), filterRight.modulation());
 
-		vcoLeft.connect(filterLeft);
-		vcoRight.connect(filterRight);
-		filterLeft.connect(envelopeLeft);
-		filterRight.connect(envelopeRight);
+		keyboard.connect(vcoHigh, vcoLow);
+		keyboard.connect(filter.modulation());
 
-		speaker.connectInputs(envelopeLeft, envelopeRight);
+		mixer.connectInputs(vcoHigh, vcoLow);
+		mixer.connect(filter);
+		filter.connect(envelope);
+
+		speaker.connectInputs(envelope, envelope);
 
 		var adsr = new ADSR();
 		keyboard.gate().connect(adsr.gate());
-		adsr.connect(envelopeLeft.gain(), envelopeRight.gain());
+		adsr.connect(envelope.gain());
 
-		vcoLeft.setWaveform(SAWTOOTH);
-		vcoRight.setWaveform(ANALOG_SQUARE);
-		vcoLeft.setOctave(0);
-		vcoRight.setOctave(-2);
+		vcoHigh.setWaveform(SAWTOOTH);
+		vcoLow.setWaveform(ANALOG_SQUARE);
+		vcoHigh.setOctave(0);
+		vcoLow.setOctave(-2);
 		adsr.setAttack(1000);
 		adsr.setRelease(100);
 		adsr.setSustain(-0.2f);
 		adsr.setRelease(3.0f);
-		filterLeft.setCutoffFrequency(10240.0f);
-		filterRight.setCutoffFrequency(10240.0f);
+		filter.setCutoffFrequency(10240.0f);
 
-		visualizeOutputs(envelopeLeft, envelopeRight);
+		visualizeOutputs(envelope);
 		createSynthesizer(keyboard);
 	}
 
