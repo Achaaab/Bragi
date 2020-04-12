@@ -90,7 +90,7 @@ public class VCA extends Module {
 	/**
 	 * @return gain gain input
 	 */
-	public Input getGain() {
+	public Input gain() {
 		return gain;
 	}
 

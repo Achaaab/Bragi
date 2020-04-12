@@ -62,28 +62,28 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	/**
 	 * @return inputs of this module
 	 */
-	public List<Input> getInputs() {
+	public List<Input> inputs() {
 		return inputs;
 	}
 
 	/**
 	 * @return outputs of this module
 	 */
-	public List<Output> getOutputs() {
+	public List<Output> outputs() {
 		return outputs;
 	}
 
 	/**
 	 * @return first input (by convention it is the main input), {@code null} if there is no input
 	 */
-	public Input getInput() {
+	public Input input() {
 		return inputs.isEmpty() ? null : inputs.get(0);
 	}
 
 	/**
 	 * @return first output (by convention it is the main output), {@code null} if there is no output
 	 */
-	public Output getOutput() {
+	public Output output() {
 		return outputs.isEmpty() ? null : outputs.get(0);
 	}
 
@@ -99,8 +99,8 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 
 		for (var channel = 0; channel < channelCount; channel++) {
 
-			var output = getOutputs().get(channel);
-			var input = module.getInputs().get(channel);
+			var output = outputs().get(channel);
+			var input = module.inputs().get(channel);
 
 			output.connect(input);
 		}
@@ -118,7 +118,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 
 		for (var channel = 0; channel < channelCount; channel++) {
 
-			var output = getOutputs().get(channel);
+			var output = outputs().get(channel);
 			modules[channel].connect(output);
 		}
 	}
@@ -135,7 +135,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 
 		for (var channel = 0; channel < channelCount; channel++) {
 
-			var input = getInputs().get(channel);
+			var input = inputs().get(channel);
 			modules[channel].connect(input);
 		}
 	}
@@ -147,7 +147,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	 */
 	public void connect(Module module) {
 
-		var input = module.getInput();
+		var input = module.input();
 		connect(input);
 	}
 
@@ -169,8 +169,23 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	 */
 	public void connect(Input input) {
 
-		var output = getOutput();
+		var output = output();
 		output.connect(input);
+	}
+
+	/**
+	 * Connects the main output of this module to the given inputs.
+	 *
+	 * @param inputs inputs to connect
+	 * @since 0.1.8
+	 */
+	public void connect(Input... inputs) {
+
+		var output = output();
+
+		for (var input : inputs) {
+			output.connect(input);
+		}
 	}
 
 	/**
@@ -181,7 +196,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	 */
 	public void connect(Output output) {
 
-		var input = getInput();
+		var input = input();
 		output.connect(input);
 	}
 

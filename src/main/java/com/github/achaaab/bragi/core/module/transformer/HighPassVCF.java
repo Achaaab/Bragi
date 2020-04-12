@@ -56,10 +56,10 @@ public class HighPassVCF extends VCF {
 			} else {
 
 				modulationSample = modulationSamples[sampleIndex];
-				actualCutoffFrequency = cutoffFrequency * pow(2.0, modulationSample / VOLTS_PER_OCTAVE);
+				actualCutoffFrequency = cutoffFrequency * pow(2.0, modulationSample);
 			}
 
-			var f = actualCutoffFrequency / nyquistFrequency;
+			var f = min(1.0, actualCutoffFrequency / nyquistFrequency);
 
 			// empirical tuning
 			var k = fma(f, 3.6 - 1.6 * f, -1);

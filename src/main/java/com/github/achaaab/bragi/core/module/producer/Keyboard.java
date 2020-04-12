@@ -164,7 +164,7 @@ public class Keyboard extends Module {
 	/**
 	 * @return keyboard gate
 	 */
-	public Output getGate() {
+	public Output gate() {
 		return gate;
 	}
 }

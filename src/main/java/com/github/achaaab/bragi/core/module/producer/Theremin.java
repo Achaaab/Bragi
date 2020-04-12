@@ -83,14 +83,14 @@ public class Theremin extends Module {
 	/**
 	 * @return pitch output of this theremin
 	 */
-	public Output getPitch() {
+	public Output pitch() {
 		return pitch;
 	}
 
 	/**
 	 * @return volume output of this theremin
 	 */
-	public Output getVolume() {
+	public Output volume() {
 		return volume;
 	}
 

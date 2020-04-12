@@ -101,7 +101,7 @@ public abstract class VCF extends Module {
 	/**
 	 * @return modulation input
 	 */
-	public Input getModulation() {
+	public Input modulation() {
 		return modulation;
 	}
 

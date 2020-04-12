@@ -56,10 +56,10 @@ public class LowPassVCF extends VCF {
 			} else {
 
 				modulationSample = modulationSamples[sampleIndex];
-				actualCutoffFrequency = cutoffFrequency * pow(2.0, modulationSample / VOLTS_PER_OCTAVE);
+				actualCutoffFrequency = cutoffFrequency * pow(2.0, modulationSample);
 			}
 
-			var f = actualCutoffFrequency / nyquistFrequency;
+			var f = min(1.0, actualCutoffFrequency / nyquistFrequency);
 
 			// empirical tuning
 			var k = fma(f, 3.6 - 1.6 * f, -1);
@@ -87,11 +87,11 @@ public class LowPassVCF extends VCF {
 
 			/*
 			With high cutoff frequency and high emphasis, typically 10Khz and 100% we have an issue with
-			float overflow, starting with y4. To prevent this, we keep y4 in [-1.0f, 1.0f]. It does not seem
+			float overflow, starting with y4. To prevent this, we keep y4 in [-1.5f, 1.5f]. It does not seem
 			to deteriorate the filter.
 			 */
 
-			y4 = min(1.5f, max(-1.5f, y4));
+			y4 = min(1.5, max(-1.5, y4));
 
 			outputSamples[sampleIndex] = NORMALIZER.inverseNormalize(y4);
 		}

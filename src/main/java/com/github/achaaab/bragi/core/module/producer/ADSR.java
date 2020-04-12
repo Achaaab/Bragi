@@ -155,7 +155,7 @@ public class ADSR extends Module {
 	/**
 	 * @return ADSR gate input
 	 */
-	public Input getGate() {
+	public Input gate() {
 		return gate;
 	}
 

@@ -76,7 +76,7 @@ public class VCO extends Oscillator {
 	/**
 	 * @return modulation input
 	 */
-	public Input getModulation() {
+	public Input modulation() {
 		return modulation;
 	}
 

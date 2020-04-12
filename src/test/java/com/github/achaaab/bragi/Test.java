@@ -26,9 +26,9 @@ import org.slf4j.Logger;
 import java.nio.file.Path;
 
 import static com.github.achaaab.bragi.ResourceUtils.getPath;
+import static com.github.achaaab.bragi.core.module.producer.wave.Waveform.ANALOG_SQUARE;
+import static com.github.achaaab.bragi.core.module.producer.wave.Waveform.SAWTOOTH;
 import static com.github.achaaab.bragi.core.module.producer.wave.Waveform.SAWTOOTH_TRIANGULAR;
-import static com.github.achaaab.bragi.core.module.producer.wave.Waveform.SINE;
-import static com.github.achaaab.bragi.core.module.producer.wave.Waveform.TRIANGLE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -117,38 +117,39 @@ public class Test {
 
 		// main chain
 		var keyboard = new Keyboard();
-		var vco = new VCO();
-		var filter = new LowPassVCF();
-		var envelope = new VCA("envelope");
-		var tremolo = new VCA("tremolo");
+		var vcoLeft = new VCO("left");
+		var vcoRight = new VCO("right");
+		var filterLeft = new LowPassVCF("left");
+		var filterRight = new LowPassVCF("right");
+		var envelopeLeft = new VCA("envelope_left");
+		var envelopeRight = new VCA("envelope_right");
 		var speaker = new Speaker();
-		keyboard.connect(vco);
-		vco.connect(filter);
-		filter.connect(envelope);
-		envelope.connect(tremolo);
-		speaker.connectInputs(tremolo, tremolo);
+		keyboard.connect(vcoLeft, vcoRight);
+		keyboard.connect(filterLeft.modulation(), filterRight.modulation());
 
-		// envelope
+		vcoLeft.connect(filterLeft);
+		vcoRight.connect(filterRight);
+		filterLeft.connect(envelopeLeft);
+		filterRight.connect(envelopeRight);
+
+		speaker.connectInputs(envelopeLeft, envelopeRight);
+
 		var adsr = new ADSR();
-		keyboard.getGate().connect(adsr.getGate());
-		adsr.connect(envelope.getGain());
+		keyboard.gate().connect(adsr.gate());
+		adsr.connect(envelopeLeft.gain(), envelopeRight.gain());
 
-		// a little bit of tremolo
-		var lfo = new LFO();
-		lfo.connect(tremolo.getGain());
-
-		lfo.setWaveform(SINE);
-		vco.setWaveform(TRIANGLE);
-		lfo.setFrequency(6.875);
-		lfo.setLowerPeak(-0.1f);
-		lfo.setUpperPeak(0.0f);
+		vcoLeft.setWaveform(SAWTOOTH);
+		vcoRight.setWaveform(ANALOG_SQUARE);
+		vcoLeft.setOctave(0);
+		vcoRight.setOctave(-2);
 		adsr.setAttack(1000);
 		adsr.setRelease(100);
 		adsr.setSustain(-0.2f);
 		adsr.setRelease(3.0f);
-		filter.setCutoffFrequency(7040.f);
+		filterLeft.setCutoffFrequency(10240.0f);
+		filterRight.setCutoffFrequency(10240.0f);
 
-		visualizeOutputs(tremolo);
+		visualizeOutputs(envelopeLeft, envelopeRight);
 		createSynthesizer(keyboard);
 	}
 
@@ -204,9 +205,9 @@ public class Test {
 		speaker.connectInputs(vcaTremolo, vcaTremolo);
 
 		// ADSR + tremolo
-		keyboard.getGate().connect(adsr.getGate());
-		adsr.connect(vcaEnvelope.getGain());
-		lfo.connect(vcaTremolo.getGain());
+		keyboard.gate().connect(adsr.gate());
+		adsr.connect(vcaEnvelope.gain());
+		lfo.connect(vcaTremolo.gain());
 
 		// some tuning
 		vco.setWaveform(SAWTOOTH_TRIANGULAR);
@@ -265,8 +266,8 @@ public class Test {
 		keyboard.connect(vco);
 		vco.connect(vca);
 		speaker.connectInputs(vca, vca);
-		keyboard.getGate().connect(adsr.getGate());
-		adsr.connect(vca.getGain());
+		keyboard.gate().connect(adsr.gate());
+		adsr.connect(vca.gain());
 
 		createSynthesizer(keyboard);
 	}
@@ -394,7 +395,7 @@ public class Test {
 		theremin.connect(vco);
 		vco.connect(vca);
 		vca.connect(spectrum);
-		theremin.getVolume().connect(vca.getGain());
+		theremin.volume().connect(vca.gain());
 
 		createSynthesizer(theremin);
 	}
@@ -436,7 +437,7 @@ public class Test {
 		vco.connect(vca);
 		vca.connect(oscilloscope);
 
-		theremin.getVolume().connect(vca.getGain());
+		theremin.volume().connect(vca.gain());
 
 		createSynthesizer(theremin);
 	}
@@ -511,18 +512,21 @@ public class Test {
 	/**
 	 * Adds 1 spectrum and 1 oscilloscope for each output of the given module.
 	 *
-	 * @param module module to visualize
-	 * @since 0.1.6
+	 * @param modules modules to visualize
+	 * @since 0.1.8
 	 */
-	private static void visualizeOutputs(Module module) {
+	private static void visualizeOutputs(Module... modules) {
 
-		for (var output : module.getOutputs()) {
+		for (var module : modules) {
 
-			var oscilloscope = new Oscilloscope(Oscilloscope.DEFAULT_NAME + "_" + output.name());
-			var spectrum = new SpectrumAnalyzer(SpectrumAnalyzer.DEFAULT_NAME + "_" + output.name());
+			for (var output : module.outputs()) {
 
-			output.connect(oscilloscope.getInput());
-			output.connect(spectrum.getInput());
+				var oscilloscope = new Oscilloscope(Oscilloscope.DEFAULT_NAME + "_" + output.name());
+				var spectrum = new SpectrumAnalyzer(SpectrumAnalyzer.DEFAULT_NAME + "_" + output.name());
+
+				output.connect(oscilloscope.input());
+				output.connect(spectrum.input());
+			}
 		}
 	}
 
