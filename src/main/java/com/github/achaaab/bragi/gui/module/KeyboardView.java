@@ -39,7 +39,7 @@ public class KeyboardView extends JPanel {
 			add(keyView);
 
 			var code = key.code();
-			var name = key.name();
+			var name = key.note().name();
 
 			var keyPressed = getKeyStroke(code, 0, false);
 			var keyReleased = getKeyStroke(code, 0, true);

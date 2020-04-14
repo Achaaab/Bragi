@@ -39,8 +39,8 @@ public class KeyView extends JButton implements MouseListener {
 
 		setPreferredSize(SIZE);
 
-		if (model.c() && !model.sharp()) {
-			setText(Character.toString(model.octave()));
+		if (model.note().tone() == 0) {
+			setText(Integer.toString(model.note().octave()));
 		}
 
 		setBackground(model.sharp() ? BLACK : WHITE);
@@ -69,7 +69,7 @@ public class KeyView extends JButton implements MouseListener {
 	@Override
 	public void mouseEntered(MouseEvent mouseEvent) {
 
-		int modifiers = mouseEvent.getModifiersEx();
+		var modifiers = mouseEvent.getModifiersEx();
 
 		if ((modifiers & BUTTON1_DOWN_MASK) == BUTTON1_DOWN_MASK) {
 			press();
