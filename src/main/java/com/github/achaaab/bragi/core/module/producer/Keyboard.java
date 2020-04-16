@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.achaaab.bragi.scale.ChromaticScale.BASE_FREQUENCY;
-import static com.github.achaaab.bragi.scale.ChromaticScale.isSharp;
+import static com.github.achaaab.bragi.scale.ChromaticScale.sharp;
 import static java.awt.event.KeyEvent.getExtendedKeyCodeForChar;
 import static java.lang.Math.log;
 import static javax.swing.SwingUtilities.invokeAndWait;
@@ -32,22 +32,55 @@ public class Keyboard extends Module {
 
 	public static final String DEFAULT_NAME = "keyboard";
 
-	private static final float VOLTS_PER_OCTAVE = 1.0f;
+	private static final double VOLTS_PER_OCTAVE = 1.0;
 	private static final double LOG_2 = log(2);
 
-	/**
-	 * @param note key note
-	 * @param code key code
-	 * @return created key
-	 */
-	private static Key createKey(Note note, int code) {
+	private static final int[] KEY_CODES = {
 
-		var sharp = isSharp(note);
-		var frequency = note.frequency();
-		var voltage = (float) (log(frequency / BASE_FREQUENCY) / LOG_2);
+			// third octave (from F3 to B3)
+			KeyEvent.VK_TAB,
+			getExtendedKeyCodeForChar('&'),
+			KeyEvent.VK_A,
+			getExtendedKeyCodeForChar('é'),
+			KeyEvent.VK_Z,
+			getExtendedKeyCodeForChar('"'),
+			KeyEvent.VK_E,
 
-		return new Key(note, sharp, voltage, code);
-	}
+			// fourth octave (from C4 to B4)
+			KeyEvent.VK_R,
+			getExtendedKeyCodeForChar('('),
+			KeyEvent.VK_T,
+			getExtendedKeyCodeForChar('-'),
+			KeyEvent.VK_Y,
+			KeyEvent.VK_U,
+			getExtendedKeyCodeForChar('_'),
+			KeyEvent.VK_I,
+			getExtendedKeyCodeForChar('ç'),
+			KeyEvent.VK_O,
+			getExtendedKeyCodeForChar('à'),
+			KeyEvent.VK_P,
+
+			// fifth octave (from C5 to B5)
+			KeyEvent.VK_LESS,
+			KeyEvent.VK_Q,
+			KeyEvent.VK_W,
+			KeyEvent.VK_S,
+			KeyEvent.VK_X,
+			KeyEvent.VK_C,
+			KeyEvent.VK_F,
+			KeyEvent.VK_V,
+			KeyEvent.VK_G,
+			KeyEvent.VK_B,
+			KeyEvent.VK_H,
+			KeyEvent.VK_N,
+
+			// sixth octave (from C6 to E6)
+			KeyEvent.VK_COMMA,
+			KeyEvent.VK_K,
+			KeyEvent.VK_SEMICOLON,
+			KeyEvent.VK_L,
+			KeyEvent.VK_COLON
+	};
 
 	private final Output output;
 	private final Output gate;
@@ -80,47 +113,15 @@ public class Keyboard extends Module {
 		gate = addSecondaryOutput(name + "_gate");
 
 		scale = new ChromaticScale();
-
-		var note = scale.note(3, 5);
-
 		keys = new ArrayList<>();
 
-		keys.add(createKey(note, KeyEvent.VK_TAB));
-		keys.add(createKey(note = scale.followingNote(note), getExtendedKeyCodeForChar('&')));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_A));
-		keys.add(createKey(note = scale.followingNote(note), getExtendedKeyCodeForChar('é')));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_Z));
-		keys.add(createKey(note = scale.followingNote(note), getExtendedKeyCodeForChar('"')));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_E));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_R));
-		keys.add(createKey(note = scale.followingNote(note), getExtendedKeyCodeForChar('(')));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_T));
-		keys.add(createKey(note = scale.followingNote(note), getExtendedKeyCodeForChar('-')));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_Y));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_U));
-		keys.add(createKey(note = scale.followingNote(note), getExtendedKeyCodeForChar('_')));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_I));
-		keys.add(createKey(note = scale.followingNote(note), getExtendedKeyCodeForChar('ç')));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_O));
-		keys.add(createKey(note = scale.followingNote(note), getExtendedKeyCodeForChar('à')));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_P));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_LESS));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_Q));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_W));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_S));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_X));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_C));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_F));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_V));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_G));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_B));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_H));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_N));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_COMMA));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_K));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_SEMICOLON));
-		keys.add(createKey(note = scale.followingNote(note), KeyEvent.VK_L));
-		keys.add(createKey(scale.followingNote(note), KeyEvent.VK_COLON));
+		var note = new Note(3, 5);
+
+		for (int code : KEY_CODES) {
+
+			keys.add(createKey(note, code));
+			note = scale.followingNote(note);
+		}
 
 		previousPressedKeyCount = 0;
 		pressedKeyCount = 0;
@@ -161,12 +162,46 @@ public class Keyboard extends Module {
 	}
 
 	/**
-	 * @param voltage voltage output
+	 * @param note note
+	 * @return corresponding voltage
 	 */
-	public synchronized void press(float voltage) {
+	private float voltage(Note note) {
 
-		this.voltage = voltage;
+		var frequency = scale.frequency(note);
+		return (float) (VOLTS_PER_OCTAVE * log(frequency / BASE_FREQUENCY) / LOG_2);
+	}
 
+	/**
+	 * @param note key note
+	 * @param code key code
+	 * @return created key
+	 */
+	private Key createKey(Note note, int code) {
+
+		var name = scale.name(note);
+		var sharp = sharp(note);
+		var voltage = voltage(note);
+
+		return new Key(note, name, sharp, voltage, code);
+	}
+
+	/**
+	 * Presses the key associated to the given note.
+	 *
+	 * @param note note of the key to press
+	 */
+	public synchronized void press(Note note) {
+
+		voltage = voltage(note);
+		pressedKeyCount++;
+	}
+
+	/**
+	 * @param key pressed key
+	 */
+	public synchronized void press(Key key) {
+
+		voltage = key.voltage();
 		pressedKeyCount++;
 	}
 
@@ -180,7 +215,7 @@ public class Keyboard extends Module {
 	/**
 	 * @return keys keys
 	 */
-	public List<Key> getKeys() {
+	public List<Key> keys() {
 		return keys;
 	}
 

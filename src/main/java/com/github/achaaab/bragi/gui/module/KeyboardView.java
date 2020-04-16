@@ -25,7 +25,7 @@ public class KeyboardView extends JPanel {
 	 */
 	public KeyboardView(Keyboard model) {
 
-		var keys = model.getKeys();
+		var keys = model.keys();
 		var keyCount = keys.size();
 
 		setLayout(new GridLayout(1, keyCount));
@@ -39,7 +39,7 @@ public class KeyboardView extends JPanel {
 			add(keyView);
 
 			var code = key.code();
-			var name = key.note().name();
+			var name = key.name();
 
 			var keyPressed = getKeyStroke(code, 0, false);
 			var keyReleased = getKeyStroke(code, 0, true);

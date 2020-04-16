@@ -22,14 +22,15 @@ import com.github.achaaab.bragi.core.module.transformer.HighPassVCF;
 import com.github.achaaab.bragi.core.module.transformer.LowPassVCF;
 import com.github.achaaab.bragi.core.module.transformer.Mixer;
 import com.github.achaaab.bragi.core.module.transformer.VCA;
+import com.github.achaaab.bragi.mml.Player;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
 
 import static com.github.achaaab.bragi.ResourceUtils.getPath;
-import static com.github.achaaab.bragi.core.module.producer.wave.Waveform.ANALOG_SQUARE;
 import static com.github.achaaab.bragi.core.module.producer.wave.Waveform.SAWTOOTH;
 import static com.github.achaaab.bragi.core.module.producer.wave.Waveform.SAWTOOTH_TRIANGULAR;
+import static com.github.achaaab.bragi.core.module.producer.wave.Waveform.TRIANGLE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -138,10 +139,10 @@ public class Test {
 		keyboard.gate().connect(adsr.gate());
 		adsr.connect(envelope.gain());
 
-		vcoHigh.setWaveform(SAWTOOTH);
-		vcoLow.setWaveform(ANALOG_SQUARE);
+		vcoHigh.setWaveform(TRIANGLE);
+		vcoLow.setWaveform(SAWTOOTH_TRIANGULAR);
 		vcoHigh.setOctave(0);
-		vcoLow.setOctave(-2);
+		vcoLow.setOctave(-1);
 		adsr.setAttack(1000);
 		adsr.setRelease(100);
 		adsr.setSustain(-0.2f);
@@ -150,6 +151,13 @@ public class Test {
 
 		visualizeOutputs(envelope);
 		createSynthesizer(keyboard);
+
+		var mmlPlayer = new Player(keyboard);
+
+		mmlPlayer.play("""
+				l8<b->c+f4d+c+d+f4fd+c+cc+4<a+4>fd+c+cc+4<a+4g+a+>c+2&c+<b->c+f4d+c+d+f4fg+fd+f4f2.&fa2.<aa+4.a+>c+f4d+
+				c+d+f4fd+c+cc+4<a+4>fd+c+cc+4<a+4g+a+>c+2&c+<b->c+f4d+c+d+f4fg+fd+f4f2.&f<a1a+2.&a+.&a+64
+				""");
 	}
 
 	/**

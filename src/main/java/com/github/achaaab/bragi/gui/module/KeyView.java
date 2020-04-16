@@ -89,7 +89,7 @@ public class KeyView extends JButton implements MouseListener {
 		if (!pressed) {
 
 			pressed = true;
-			keyboard.press(model.voltage());
+			keyboard.press(model);
 		}
 	}
 

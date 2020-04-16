@@ -14,11 +14,16 @@ public interface Scale {
 	int toneCount();
 
 	/**
-	 * @param octave octave of the note
-	 * @param tone   tone in [0, toneCount[
-	 * @return note
+	 * @param note musical note
+	 * @return unique name of the given note
 	 */
-	Note note(int octave, int tone);
+	String name(Note note);
+
+	/**
+	 * @param note musical note
+	 * @return frequency of the given note in hertz (Hz)
+	 */
+	double frequency(Note note);
 
 	/**
 	 * If the given note is the last note of its octave, the following note will be the first note of the
@@ -32,6 +37,8 @@ public interface Scale {
 		var octave = note.octave();
 		var tone = note.tone();
 
-		return tone + 1 == toneCount() ? note(octave + 1, 0) : note(octave, tone + 1);
+		return tone + 1 == toneCount() ?
+				new Note(octave + 1, 0) :
+				new Note(octave, tone + 1);
 	}
 }

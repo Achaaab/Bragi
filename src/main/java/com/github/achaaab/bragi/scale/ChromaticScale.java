@@ -1,5 +1,7 @@
 package com.github.achaaab.bragi.scale;
 
+import static java.lang.Math.pow;
+
 /**
  * chromatic scale with C tonic
  *
@@ -23,38 +25,32 @@ public class ChromaticScale implements Scale {
 	 * @param note note
 	 * @return whether the note is a sharp note in chromatic scale
 	 */
-	public static boolean isSharp(Note note) {
+	public static boolean sharp(Note note) {
 		return SHARP_TONES[note.tone()];
 	}
 
-	/**
-	 * @param octave octave of the note
-	 * @param tone   tone of the note
-	 * @return name of the note
-	 */
-	private static String getName(int octave, int tone) {
+	@Override
+	public String name(Note note) {
+
+		var octave = note.octave();
+		var tone = note.tone();
+
 		return NAMES[tone] + octave;
 	}
 
-	/**
-	 * @param octave octave
-	 * @param tone   tone
-	 * @return frequency for the given octave and tone, in hertz (Hz)
-	 */
-	private static double getFrequency(int octave, int tone) {
+	@Override
+	public double frequency(Note note) {
+
+		var octave = note.octave();
+		var tone = note.tone();
 
 		double interval = TONE_COUNT * (octave - BASE_OCTAVE) + tone - BASE_TONE;
 
-		return BASE_FREQUENCY * Math.pow(2, interval / TONE_COUNT);
+		return BASE_FREQUENCY * pow(2, interval / TONE_COUNT);
 	}
 
 	@Override
 	public int toneCount() {
 		return TONE_COUNT;
-	}
-
-	@Override
-	public Note note(int octave, int tone) {
-		return new Note(getName(octave, tone), octave, tone, getFrequency(octave, tone));
 	}
 }

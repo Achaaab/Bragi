@@ -7,9 +7,7 @@ package com.github.achaaab.bragi.scale;
  * @since 0.1.8
  */
 public record Note(
-		String name,
 		int octave,
-		int tone,
-		double frequency) {
+		int tone) {
 
 }

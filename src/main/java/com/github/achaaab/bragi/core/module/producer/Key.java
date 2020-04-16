@@ -10,6 +10,7 @@ import com.github.achaaab.bragi.scale.Note;
  */
 public record Key(
 		Note note,
+		String name,
 		boolean sharp,
 		float voltage,
 		int code) {
