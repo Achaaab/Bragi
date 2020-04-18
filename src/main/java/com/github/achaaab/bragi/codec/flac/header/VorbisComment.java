@@ -1,8 +1,7 @@
 package com.github.achaaab.bragi.codec.flac.header;
 
-import com.github.achaaab.bragi.codec.flac.FlacDecoderException;
+import com.github.achaaab.bragi.codec.flac.FlacException;
 import com.github.achaaab.bragi.codec.flac.FlacInputStream;
-import com.github.achaaab.bragi.codec.flac.header.MetadataBlockData;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -11,14 +10,14 @@ import java.util.Map;
 /**
  * FLAC METADATA_BLOCK_VORBIS_COMMENT
  * It is also known as FLAC tags.
- *
+ * <p>
  * <a href="https://xiph.org/flac/format.html#metadata_block_vorbis_comment">FLAC specifications</a>
  * <a href="https://www.xiph.org/vorbis/doc/v-comment.html">Vorbis specifications</a>
  *
  * @author Jonathan Guéhenneux
  * @since 0.1.7
  */
-public class VorbisComment extends MetadataBlockData {
+public class VorbisComment implements MetadataBlockData {
 
 	public static final String FIELD_TITLE = "TITLE";
 	public static final String FIELD_VERSION = "VERSION";
@@ -37,7 +36,6 @@ public class VorbisComment extends MetadataBlockData {
 	public static final String FIELD_ISRC = "ISRC";
 
 
-
 	private final String vendor;
 	private final Map<String, String> userComments;
 
@@ -45,10 +43,10 @@ public class VorbisComment extends MetadataBlockData {
 	 * Decodes a vorbis comment from the given input stream.
 	 *
 	 * @param input FLAC input stream to decode
-	 * @throws IOException          I/O exception while decoding a vorbis comment
-	 * @throws FlacDecoderException if invalid or unsupported vorbis comment is decoded
+	 * @throws IOException   I/O exception while decoding a vorbis comment
+	 * @throws FlacException if invalid or unsupported vorbis comment is decoded
 	 */
-	public VorbisComment(FlacInputStream input) throws IOException, FlacDecoderException {
+	public VorbisComment(FlacInputStream input) throws IOException, FlacException {
 
 		vendor = input.decodeVorbisString();
 
@@ -56,7 +54,7 @@ public class VorbisComment extends MetadataBlockData {
 
 		if (userCommentCount > Integer.MAX_VALUE) {
 
-			throw new FlacDecoderException(
+			throw new FlacException(
 					"unsupported user comment count (" + userCommentCount + "), maximum is " + Integer.MAX_VALUE);
 		}
 
@@ -85,10 +83,10 @@ public class VorbisComment extends MetadataBlockData {
 	 * Decodes a vorbis user comment from the given FLAC input stream.
 	 *
 	 * @param input FLAC input stream to decode
-	 * @throws IOException          I/O exception while decoding a user comment
-	 * @throws FlacDecoderException if user comment is invalid or unsupported
+	 * @throws IOException   I/O exception while decoding a user comment
+	 * @throws FlacException if user comment is invalid or unsupported
 	 */
-	private void decodeUserComment(FlacInputStream input) throws IOException, FlacDecoderException {
+	private void decodeUserComment(FlacInputStream input) throws IOException, FlacException {
 
 		var userComment = input.decodeVorbisString();
 		var equalsIndex = userComment.indexOf('=');

@@ -8,13 +8,13 @@ import java.util.List;
 
 /**
  * FLAC METADATA_BLOCK_CUESHEET
- *
+ * <p>
  * <a href="https://xiph.org/flac/format.html#metadata_block_cuesheet">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
  * @since 0.1.7
  */
-public class CueSheet extends MetadataBlockData {
+public class CueSheet implements MetadataBlockData {
 
 	private final String catalogNumber;
 	private final long leadInSampleCount;

@@ -1,11 +1,6 @@
 package com.github.achaaab.bragi.codec.flac.channel;
 
-import com.github.achaaab.bragi.codec.flac.FlacDecoderException;
-import com.github.achaaab.bragi.codec.flac.FlacInputStream;
-
-import java.io.IOException;
-
-import static com.github.achaaab.bragi.codec.flac.FlacDecoder.decodeSubframe;
+import com.github.achaaab.bragi.codec.flac.frame.Frame;
 
 /**
  * channel assignments where channels are uncorrelated
@@ -25,13 +20,27 @@ public class UncorrelatedChannelAssignment extends AbstractChannelAssignment {
 	}
 
 	@Override
-	public long[][] decodeSubframes(FlacInputStream input, int blockSize, int sampleSize)
-			throws IOException, FlacDecoderException {
+	public boolean extraBit(int channelIndex) {
+		return false;
+	}
 
-		var samples = new long[channelCount][blockSize];
+	@Override
+	public int[][] assembleSubFrames(Frame frame) {
+
+		var header = frame.header();
+		var subframes = frame.subframes();
+		var sampleCount = header.blockSize();
+
+		var samples = new int[channelCount][sampleCount];
 
 		for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
-			decodeSubframe(input, sampleSize, samples[channelIndex]);
+
+			var subframe = subframes[channelIndex];
+			var subframeSamples = subframe.samples();
+
+			for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
+				samples[channelIndex][sampleIndex] = (int) subframeSamples[sampleIndex];
+			}
 		}
 
 		return samples;

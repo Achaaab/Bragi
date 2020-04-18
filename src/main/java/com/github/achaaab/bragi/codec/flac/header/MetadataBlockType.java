@@ -1,10 +1,10 @@
 package com.github.achaaab.bragi.codec.flac.header;
 
-import com.github.achaaab.bragi.codec.flac.FlacDecoderException;
+import com.github.achaaab.bragi.codec.flac.FlacException;
 
 /**
  * FLAC BLOCK_TYPE
- *
+ * <p>
  * <a href="https://xiph.org/flac/format.html#metadata_block_header">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -27,12 +27,12 @@ public enum MetadataBlockType {
 	/**
 	 * @param code metadata block type code
 	 * @return metadata block type corresponding to the given code,
-	 * @throws FlacDecoderException if the block type code is unsupported
+	 * @throws FlacException if the block type code is unsupported
 	 */
-	static MetadataBlockType decode(int code) throws FlacDecoderException {
+	static MetadataBlockType decode(int code) throws FlacException {
 
 		if (code < 0 || code >= DECODING_TABLE.length) {
-			throw new FlacDecoderException("unsupported code for metadata block type: " + code);
+			throw new FlacException("unsupported code for metadata block type: " + code);
 		}
 
 		return DECODING_TABLE[code];

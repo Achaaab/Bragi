@@ -1,21 +1,19 @@
 package com.github.achaaab.bragi.codec.flac.header;
 
-import com.github.achaaab.bragi.codec.flac.FlacDecoderException;
+import com.github.achaaab.bragi.codec.flac.FlacException;
 import com.github.achaaab.bragi.codec.flac.FlacInputStream;
-import com.github.achaaab.bragi.codec.flac.header.MetadataBlockData;
-import com.github.achaaab.bragi.codec.flac.header.PictureType;
 
 import java.io.IOException;
 
 /**
  * FLAC METADATA_BLOCK_PICTURE
- *
+ * <p>
  * <a href="https://xiph.org/flac/format.html#metadata_block_picture">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
  * @since 0.1.7
  */
-public class Picture extends MetadataBlockData {
+public class Picture implements MetadataBlockData {
 
 	private final PictureType type;
 	private final String mimeType;
@@ -30,13 +28,12 @@ public class Picture extends MetadataBlockData {
 	 * Decodes a picture from the given FLAC input stream.
 	 *
 	 * @param input FLAC input stream to decode
-	 * @throws IOException          I/O exception while decoding a picture
-	 * @throws FlacDecoderException if invalid or unsupported picture is decoded
+	 * @throws IOException   I/O exception while decoding a picture
+	 * @throws FlacException if invalid or unsupported picture is decoded
 	 */
-	public Picture(FlacInputStream input) throws IOException, FlacDecoderException {
+	public Picture(FlacInputStream input) throws IOException, FlacException {
 
-		var typeCode = input.readBigEndianUnsignedInteger();
-		type = PictureType.decode(typeCode);
+		type = PictureType.decode(input);
 		mimeType = input.decodeAsciiString();
 		description = input.decodeUtf8String();
 		width = input.readBigEndianUnsignedInteger();
@@ -47,7 +44,7 @@ public class Picture extends MetadataBlockData {
 
 		if (dataLength > Integer.MAX_VALUE) {
 
-			throw new FlacDecoderException(
+			throw new FlacException(
 					"unsupported data length (" + dataLength + "), maximum is " + Integer.MAX_VALUE);
 		}
 

@@ -1,14 +1,15 @@
 package com.github.achaaab.bragi.codec.flac.channel;
 
-import com.github.achaaab.bragi.codec.flac.FlacDecoderException;
+import com.github.achaaab.bragi.codec.flac.FlacException;
 import com.github.achaaab.bragi.codec.flac.FlacInputStream;
+import com.github.achaaab.bragi.codec.flac.frame.Frame;
 
 import java.io.IOException;
 
 /**
  * FLAC channel assignment
  * Where defined, the channel order follows SMPTE/ITU-R recommendations.
- *
+ * <p>
  * <a href="https://xiph.org/flac/format.html#frame_header">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -61,10 +62,21 @@ public interface ChannelAssignment {
 	};
 
 	/**
-	 * @param code channel assignment code in [0, 10]
-	 * @return corresponding channel assignment
+	 * Reads a channel assignment code and returns the corresponding channel assignment.
+	 *
+	 * @param input FLAC input stream from which to decode a channel assignment
+	 * @return decoded channel assignment
+	 * @throws IOException          I/O exception while reading from the given FLAC input stream
+	 * @throws FlacException if the read code is unknown
 	 */
-	static ChannelAssignment decode(int code) {
+	static ChannelAssignment decode(FlacInputStream input) throws IOException, FlacException {
+
+		var code = input.readUnsignedInteger(4);
+
+		if (code >= DECODING_TABLE.length) {
+			throw new FlacException("unknown code for channel assignment: " + code);
+		}
+
 		return DECODING_TABLE[code];
 	}
 
@@ -80,15 +92,14 @@ public interface ChannelAssignment {
 	String description(int channelIndex);
 
 	/**
-	 * Decodes subframes from the given FLAC input stream.
-	 *
-	 * @param input      FLAC input stream
-	 * @param blockSize  size of the block in inter-channel samples
-	 * @param sampleSize size of the samples in bits
-	 * @return decoded subframes
-	 * @throws IOException          I/O exception while decoding subframes
-	 * @throws FlacDecoderException if invalid or unsupported subframes are decoded
+	 * @param channelIndex index of a channel
+	 * @return whether samples of the specified channel have an extra bit (difference channel)
 	 */
-	long[][] decodeSubframes(FlacInputStream input, int blockSize, int sampleSize)
-			throws IOException, FlacDecoderException;
+	boolean extraBit(int channelIndex);
+
+	/**
+	 * @param frame decoded FLAC frame
+	 * @return assembled samples of the frame
+	 */
+	int[][] assembleSubFrames(Frame frame);
 }

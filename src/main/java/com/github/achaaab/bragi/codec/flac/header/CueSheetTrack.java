@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * FLAC CUESHEET_TACK
- *
+ * <p>
  * <a href="https://xiph.org/flac/format.html#cuesheet_track">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux

@@ -98,7 +98,7 @@ public abstract class Player extends Module {
 				updateView();
 
 				var channelCount = chunk.length;
-				var sourceSampleRate = file.getSampleRate();
+				var sourceSampleRate = file.sampleRate();
 				var targetSampleRate = Settings.INSTANCE.frameRate();
 
 				for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
@@ -160,14 +160,14 @@ public abstract class Player extends Module {
 	 * @return current playback time in seconds
 	 */
 	public double getTime() {
-		return file.getTime();
+		return file.time();
 	}
 
 	/**
 	 * @return track duration in seconds
 	 */
 	public double getDuration() {
-		return file.getDuration();
+		return file.duration();
 	}
 
 	/**

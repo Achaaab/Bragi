@@ -1,11 +1,6 @@
 package com.github.achaaab.bragi.codec.flac.channel;
 
-import com.github.achaaab.bragi.codec.flac.FlacDecoderException;
-import com.github.achaaab.bragi.codec.flac.FlacInputStream;
-
-import java.io.IOException;
-
-import static com.github.achaaab.bragi.codec.flac.FlacDecoder.decodeSubframe;
+import com.github.achaaab.bragi.codec.flac.frame.Frame;
 
 /**
  * 2 channels:
@@ -29,21 +24,31 @@ public class RightSideStereo extends AbstractChannelAssignment {
 	}
 
 	@Override
-	public long[][] decodeSubframes(FlacInputStream input, int blockSize, int sampleSize)
-			throws IOException, FlacDecoderException {
+	public boolean extraBit(int channelIndex) {
+		return channelIndex == 0;
+	}
 
-		var side = new long[sampleSize];
-		var right = new long[sampleSize];
+	@Override
+	public int[][] assembleSubFrames(Frame frame) {
 
-		decodeSubframe(input, sampleSize + 1, side);
-		decodeSubframe(input, sampleSize, right);
+		var header = frame.header();
+		var subframes = frame.subframes();
+		var sampleCount = header.blockSize();
+		var side = subframes[0].samples();
+		var right = subframes[1].samples();
 
-		// we compute left channel samples in place, in side samples
+		var leftSamples = new int[sampleCount];
+		var rightSamples = new int[sampleCount];
 
-		for (var sampleIndex = 0; sampleIndex < blockSize; sampleIndex++) {
-			side[sampleIndex] += right[sampleIndex];
+		for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
+
+			var sideSample = side[sampleIndex];
+			var rightSample = right[sampleIndex];
+
+			leftSamples[sampleIndex] = (int) (sideSample + rightSample);
+			rightSamples[sampleIndex] = (int) rightSample;
 		}
 
-		return new long[][] { side, right };
+		return new int[][] { leftSamples, rightSamples };
 	}
 }

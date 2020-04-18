@@ -1,21 +1,20 @@
 package com.github.achaaab.bragi.codec.flac.header;
 
-import com.github.achaaab.bragi.codec.flac.FlacDecoderException;
+import com.github.achaaab.bragi.codec.flac.FlacException;
 import com.github.achaaab.bragi.codec.flac.FlacInputStream;
-import com.github.achaaab.bragi.codec.flac.header.MetadataBlockData;
 
 import java.io.IOException;
 
 /**
  * FLAC METADATA_BLOCK_STREAMINFO
  * It must be the first metadata block data of a FLAC stream.
- *
+ * <p>
  * <a href="https://xiph.org/flac/format.html#metadata_block_streaminfo">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
  * @since 0.1.7
  */
-public class StreamInfo extends MetadataBlockData {
+public class StreamInfo implements MetadataBlockData {
 
 	private final int minimumBlockSize;
 	private final int maximumBlockSize;
@@ -33,10 +32,10 @@ public class StreamInfo extends MetadataBlockData {
 	 * Decodes a STREAMINFO metadata block from the given FLAC input stream.
 	 *
 	 * @param input FLAC input stream to decode
-	 * @throws IOException          I/O exception while decoding a STREAMINFO metadata block
-	 * @throws FlacDecoderException if STREAMINFO metadata block is invalid or not supported
+	 * @throws IOException   I/O exception while decoding a STREAMINFO metadata block
+	 * @throws FlacException if STREAMINFO metadata block is invalid or not supported
 	 */
-	public StreamInfo(FlacInputStream input) throws IOException, FlacDecoderException {
+	public StreamInfo(FlacInputStream input) throws IOException, FlacException {
 
 		minimumBlockSize = input.readUnsignedInteger(16);
 		maximumBlockSize = input.readUnsignedInteger(16);
@@ -49,7 +48,7 @@ public class StreamInfo extends MetadataBlockData {
 		md5Signature = input.readBytes(16);
 
 		if (sampleSize % 8 != 0) {
-			throw new FlacDecoderException("sample size not supported: " + sampleSize);
+			throw new FlacException("sample size not supported: " + sampleSize);
 		}
 
 		duration = (float) sampleCount / sampleRate;

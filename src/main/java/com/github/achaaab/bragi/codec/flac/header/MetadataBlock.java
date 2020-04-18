@@ -1,13 +1,13 @@
 package com.github.achaaab.bragi.codec.flac.header;
 
-import com.github.achaaab.bragi.codec.flac.FlacDecoderException;
+import com.github.achaaab.bragi.codec.flac.FlacException;
 import com.github.achaaab.bragi.codec.flac.FlacInputStream;
 
 import java.io.IOException;
 
 /**
  * FLAC METADATA_BLOCK
- *
+ * <p>
  * <a href="https://xiph.org/flac/format.html#metadata_block">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -20,10 +20,10 @@ public class MetadataBlock {
 	 *
 	 * @param input FLAC input stream to decode
 	 * @return decoded metadata block
-	 * @throws IOException          I/O exception white decoding metadata block
-	 * @throws FlacDecoderException if stream info metadata block is invalid
+	 * @throws IOException   I/O exception white decoding metadata block
+	 * @throws FlacException if stream info metadata block is invalid
 	 */
-	public static MetadataBlock decode(FlacInputStream input) throws IOException, FlacDecoderException {
+	public static MetadataBlock decode(FlacInputStream input) throws IOException, FlacException {
 
 		var header = new MetadataBlockHeader(input);
 		var type = header.type();

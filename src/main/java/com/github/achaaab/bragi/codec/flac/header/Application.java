@@ -8,13 +8,13 @@ import java.util.Map;
 
 /**
  * FLAC METADATA_BLOCK_APPLICATION
- *
+ * <p>
  * <a href="https://xiph.org/flac/format.html#metadata_block_application">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
  * @since 0.1.7
  */
-public class Application extends MetadataBlockData {
+public class Application implements MetadataBlockData {
 
 	private static final Map<Integer, String> KNOWN_APPLICATION_NAMES;
 

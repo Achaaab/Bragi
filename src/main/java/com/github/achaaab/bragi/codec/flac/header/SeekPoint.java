@@ -1,19 +1,18 @@
 package com.github.achaaab.bragi.codec.flac.header;
 
 import com.github.achaaab.bragi.codec.flac.FlacInputStream;
-import com.github.achaaab.bragi.codec.flac.header.MetadataBlockData;
 
 import java.io.IOException;
 
 /**
  * FLAC SEEKPOINT
- *
+ * <p>
  * <a href="https://xiph.org/flac/format.html#seekpoint">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
  * @since 0.1.7
  */
-public class SeekPoint extends MetadataBlockData {
+public class SeekPoint {
 
 	/**
 	 * length of seek points in bytes

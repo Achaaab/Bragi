@@ -10,7 +10,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 /**
  * FLAC input stream
  *
- * @author Project Nayuki
  * @author Jonathan Guéhenneux
  * @since 0.1.7
  */
@@ -161,6 +160,24 @@ public class FlacInputStream implements AutoCloseable {
 	}
 
 	/**
+	 * Reads bits while they are equals to the given bit.
+	 *
+	 * @param bit expected unary bit value
+	 * @return number of bits read equals to the given bit
+	 * @throws IOException I/O exception while reading a unary integer
+	 */
+	public int readUnary(int bit) throws IOException {
+
+		var unary = 0;
+
+		while (readUnsignedInteger(1) == bit) {
+			unary++;
+		}
+
+		return unary;
+	}
+
+	/**
 	 * Reads a 32-bits unsigned integer in big endian order.
 	 *
 	 * @return read integer
@@ -222,15 +239,15 @@ public class FlacInputStream implements AutoCloseable {
 	 *
 	 * @return read string
 	 * @throws IOException          I/O exception while reading a string
-	 * @throws FlacDecoderException if string length is not supported
+	 * @throws FlacException if string length is not supported
 	 */
-	public String decodeAsciiString() throws FlacDecoderException, IOException {
+	public String decodeAsciiString() throws FlacException, IOException {
 
 		var length = readBigEndianUnsignedInteger();
 
 		if (length > Integer.MAX_VALUE) {
 
-			throw new FlacDecoderException(
+			throw new FlacException(
 					"unsupported string length (" + length + "), maximum is " + Integer.MAX_VALUE);
 		}
 
@@ -243,15 +260,15 @@ public class FlacInputStream implements AutoCloseable {
 	 *
 	 * @return read string
 	 * @throws IOException          I/O exception while reading a string
-	 * @throws FlacDecoderException if string length is not supported
+	 * @throws FlacException if string length is not supported
 	 */
-	public String decodeUtf8String() throws FlacDecoderException, IOException {
+	public String decodeUtf8String() throws FlacException, IOException {
 
 		var length = readBigEndianUnsignedInteger();
 
 		if (length > Integer.MAX_VALUE) {
 
-			throw new FlacDecoderException(
+			throw new FlacException(
 					"unsupported string length (" + length + "), maximum is " + Integer.MAX_VALUE);
 		}
 
@@ -264,15 +281,15 @@ public class FlacInputStream implements AutoCloseable {
 	 *
 	 * @return read string
 	 * @throws IOException          I/O exception while reading a vorbis string
-	 * @throws FlacDecoderException if string length is not supported
+	 * @throws FlacException if string length is not supported
 	 */
-	public String decodeVorbisString() throws FlacDecoderException, IOException {
+	public String decodeVorbisString() throws FlacException, IOException {
 
 		var length = readLittleEndianUnsignedInteger();
 
 		if (length > Integer.MAX_VALUE) {
 
-			throw new FlacDecoderException(
+			throw new FlacException(
 					"unsupported string length (" + length + "), maximum is " + Integer.MAX_VALUE);
 		}
 

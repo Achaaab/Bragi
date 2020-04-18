@@ -52,12 +52,12 @@ public interface AudioFile {
 	/**
 	 * @return current playback time in seconds (s)
 	 */
-	float getTime();
+	float time();
 
 	/**
 	 * @return file duration in seconds (s)
 	 */
-	float getDuration();
+	float duration();
 
 	/**
 	 * Seeks the target time in the file.
@@ -76,24 +76,17 @@ public interface AudioFile {
 	/**
 	 * @return sample rate of this file
 	 */
-	float getSampleRate();
-
-	/**
-	 * @return size of each sample in bits (b)
-	 * @since 0.1.7
-	 */
-	int sampleSize();
+	float sampleRate();
 
 	/**
 	 * Normalize an integer sample.
 	 *
-	 * @param sample an integer sample
+	 * @param sample     an integer sample
+	 * @param sampleSize size of the sample in bits (b)
 	 * @return normalized float sample between minimal voltage and maximal voltage
 	 * @throws AudioFileException if sample size is not supported
 	 */
-	default float normalize(int sample) throws AudioFileException {
-
-		var sampleSize = sampleSize();
+	default float normalize(int sample, int sampleSize) throws AudioFileException {
 
 		return switch (sampleSize) {
 			case 8 -> ONE_BYTE_NORMALIZER.normalize(sample);

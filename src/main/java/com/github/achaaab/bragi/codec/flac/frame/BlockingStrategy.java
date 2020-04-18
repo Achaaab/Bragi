@@ -1,8 +1,13 @@
 package com.github.achaaab.bragi.codec.flac.frame;
 
+import com.github.achaaab.bragi.codec.flac.FlacException;
+import com.github.achaaab.bragi.codec.flac.FlacInputStream;
+
+import java.io.IOException;
+
 /**
  * FLAC blocking strategy
- *
+ * <p>
  * <a href="https://xiph.org/flac/format.html#frame_header">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -18,10 +23,19 @@ public enum BlockingStrategy {
 	};
 
 	/**
-	 * @param code code of the blocking strategy, must be an unsigned 1-bit integer (in [0, 1])
-	 * @return blocking strategy corresponding to the given code
+	 * @param input FLAC input stream from which to read a method for residual coding
+	 * @return decoded blocking strategy
+	 * @throws IOException   I/O exception while reading from the given FLAC input stream
+	 * @throws FlacException if the read code is unknown
 	 */
-	public static BlockingStrategy decode(int code) {
+	public static BlockingStrategy decode(FlacInputStream input) throws IOException, FlacException {
+
+		var code = input.readUnsignedInteger(1);
+
+		if (code >= DECODING_TABLE.length) {
+			throw new FlacException("unknown code for blocking strategy: " + code);
+		}
+
 		return DECODING_TABLE[code];
 	}
 }

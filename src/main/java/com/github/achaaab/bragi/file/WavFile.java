@@ -81,12 +81,12 @@ public class WavFile implements AudioFile {
 	}
 
 	@Override
-	public float getTime() {
+	public float time() {
 		return (float) offset / header.byteRate();
 	}
 
 	@Override
-	public float getDuration() {
+	public float duration() {
 		return duration;
 	}
 
@@ -153,13 +153,8 @@ public class WavFile implements AudioFile {
 	}
 
 	@Override
-	public float getSampleRate() {
+	public float sampleRate() {
 		return header.frameRate();
-	}
-
-	@Override
-	public int sampleSize() {
-		return header.sampleSize();
 	}
 
 	/**

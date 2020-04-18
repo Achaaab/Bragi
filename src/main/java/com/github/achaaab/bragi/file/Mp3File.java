@@ -31,8 +31,6 @@ public class Mp3File implements AudioFile {
 
 	private static final Logger LOGGER = getLogger(Mp3File.class);
 
-	private static final int SAMPLE_SIZE = 16;
-
 	private final Path path;
 
 	private Bitstream bitStream;
@@ -52,14 +50,14 @@ public class Mp3File implements AudioFile {
 	/**
 	 * @return time of the current MP3 frame in seconds
 	 */
-	public float getTime() {
+	public float time() {
 		return time;
 	}
 
 	/**
 	 * @return estimated duration of this MP3 file in seconds
 	 */
-	public float getDuration() {
+	public float duration() {
 		return duration;
 	}
 
@@ -159,13 +157,8 @@ public class Mp3File implements AudioFile {
 	}
 
 	@Override
-	public float getSampleRate() {
+	public float sampleRate() {
 		return sampleRate;
-	}
-
-	@Override
-	public int sampleSize() {
-		return SAMPLE_SIZE;
 	}
 
 	/**

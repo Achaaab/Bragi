@@ -4,12 +4,12 @@ package com.github.achaaab.bragi.codec.flac;
  * @author Jonathan Guéhenneux
  * @since 0.1.7
  */
-public class FlacDecoderException extends Exception {
+public class FlacException extends Exception {
 
 	/**
 	 * @param message message of this exception
 	 */
-	public FlacDecoderException(String message) {
+	public FlacException(String message) {
 		super(message);
 	}
 }

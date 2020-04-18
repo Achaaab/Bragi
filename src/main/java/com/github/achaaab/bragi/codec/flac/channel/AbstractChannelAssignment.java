@@ -2,7 +2,7 @@ package com.github.achaaab.bragi.codec.flac.channel;
 
 /**
  * abstract FLAC channel assignment
- *
+ * <p>
  * <a href="https://xiph.org/flac/format.html#frame_header">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux

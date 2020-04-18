@@ -1,11 +1,14 @@
 package com.github.achaaab.bragi.codec.flac.header;
 
+import com.github.achaaab.bragi.codec.flac.FlacInputStream;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * FLAC METADATA_BLOCK_PICTURE_TYPE
- *
+ * <p>
  * <a href="https://xiph.org/flac/format.html#metadata_block_picture">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -48,10 +51,15 @@ public enum PictureType {
 	}
 
 	/**
-	 * @param code code of the picture type, must be an unsigned 32-bits integer (in [0, 2³²-1])
-	 * @return picture type corresponding to the given code, {@code null} the the code is unknown
+	 * Reads a 32-bits integer from the given FLAC input stream and returns the corresponding picture type.
+	 *
+	 * @param input FLAC input stream from which to decode a picture type
+	 * @return decoded picture type
+	 * @throws IOException I/O exception while reading from the given FLAC input stream
 	 */
-	static PictureType decode(long code) {
+	static PictureType decode(FlacInputStream input) throws IOException {
+
+		var code = input.readBigEndianUnsignedInteger();
 		return DECODING_TABLE.get(code);
 	}
 }

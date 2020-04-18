@@ -33,12 +33,12 @@ public class FlacHeader {
 	 *
 	 * @param input FLAC input stream to decode
 	 */
-	FlacHeader(FlacInputStream input) throws IOException, FlacDecoderException {
+	public FlacHeader(FlacInputStream input) throws IOException, FlacException {
 
 		marker = input.readUnsignedInteger(32);
 
 		if (marker != FLAC_MARKER) {
-			throw new FlacDecoderException("not a FLAC stream");
+			throw new FlacException("not a FLAC stream");
 		}
 
 		var metadataBlockHeader = new MetadataBlockHeader(input);
@@ -47,7 +47,7 @@ public class FlacHeader {
 
 		if (metadataBlockType != MetadataBlockType.STREAMINFO) {
 
-			throw new FlacDecoderException("first metadata block type (" + metadataBlockType + ")" +
+			throw new FlacException("first metadata block type (" + metadataBlockType + ")" +
 					"is not " + MetadataBlockType.STREAMINFO);
 		}
 

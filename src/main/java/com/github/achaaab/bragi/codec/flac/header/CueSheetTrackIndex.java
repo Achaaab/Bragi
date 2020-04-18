@@ -6,7 +6,7 @@ import java.io.IOException;
 
 /**
  * FLAC CUESHEET_TRACK_INDEX
- *
+ * <p>
  * <a href="https://xiph.org/flac/format.html#cuesheet_track_index">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux

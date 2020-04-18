@@ -1,16 +1,16 @@
 package com.github.achaaab.bragi.file;
 
-import com.github.achaaab.bragi.codec.flac.FlacDecoderException;
+import com.github.achaaab.bragi.codec.flac.FlacException;
 import com.github.achaaab.bragi.codec.flac.FlacHeader;
 import com.github.achaaab.bragi.codec.flac.FlacInputStream;
+import com.github.achaaab.bragi.codec.flac.frame.Frame;
 import org.slf4j.Logger;
 
 import java.io.BufferedInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static com.github.achaaab.bragi.codec.flac.FlacDecoder.decodeFrame;
-import static com.github.achaaab.bragi.codec.flac.FlacDecoder.decodeHeader;
 import static java.nio.file.Files.newInputStream;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -45,10 +45,10 @@ public class FlacFile implements AudioFile {
 			var inputStream = newInputStream(path);
 			var bufferedInputStream = new BufferedInputStream(inputStream);
 			flacInputStream = new FlacInputStream(bufferedInputStream);
-			header = decodeHeader(flacInputStream);
+			header = new FlacHeader(flacInputStream);
 			time = 0.0f;
 
-		} catch (IOException | FlacDecoderException cause) {
+		} catch (IOException | FlacException cause) {
 
 			throw new AudioFileException(cause);
 		}
@@ -67,12 +67,12 @@ public class FlacFile implements AudioFile {
 	}
 
 	@Override
-	public float getTime() {
+	public float time() {
 		return time;
 	}
 
 	@Override
-	public float getDuration() {
+	public float duration() {
 		return header.streamInfo().duration();
 	}
 
@@ -84,30 +84,35 @@ public class FlacFile implements AudioFile {
 	@Override
 	public float[][] readChunk() throws AudioFileException {
 
-		float[][] chunk = null;
+		float[][] chunk;
 
 		try {
 
-			var frame = decodeFrame(flacInputStream, header.streamInfo());
+			var frame = new Frame(flacInputStream, header.streamInfo());
+			var frameHeader = frame.header();
+			var channelCount = frameHeader.channelAssignment().channelCount();
+			var sampleCount = frameHeader.blockSize();
+			var sampleSize = frameHeader.sampleSize();
+			var samples = frame.samples();
 
-			if (frame != null) {
+			time += (double) sampleCount / header.streamInfo().sampleRate();
 
-				var channelCount = frame.length;
-				var sampleCount = frame[0].length;
+			chunk = new float[channelCount][sampleCount];
 
-				time += (double) sampleCount / header.streamInfo().sampleRate();
+			for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
 
-				chunk = new float[channelCount][sampleCount];
+				for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 
-				for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
-
-					for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
-						chunk[channelIndex][sampleIndex] = normalize(frame[channelIndex][sampleIndex]);
-					}
+					var sample = samples[channelIndex][sampleIndex];
+					chunk[channelIndex][sampleIndex] = normalize(sample, sampleSize);
 				}
 			}
 
-		} catch (IOException | FlacDecoderException cause) {
+		} catch (EOFException endOfFile) {
+
+			chunk = null;
+
+		} catch (IOException | FlacException cause) {
 
 			throw new AudioFileException(cause);
 		}
@@ -116,12 +121,7 @@ public class FlacFile implements AudioFile {
 	}
 
 	@Override
-	public float getSampleRate() {
+	public float sampleRate() {
 		return header.streamInfo().sampleRate();
-	}
-
-	@Override
-	public int sampleSize() {
-		return header.streamInfo().sampleSize();
 	}
 }

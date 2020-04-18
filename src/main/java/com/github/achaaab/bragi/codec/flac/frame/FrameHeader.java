@@ -1,9 +1,9 @@
 package com.github.achaaab.bragi.codec.flac.frame;
 
-import com.github.achaaab.bragi.codec.flac.FlacDecoderException;
+import com.github.achaaab.bragi.codec.flac.FlacException;
 import com.github.achaaab.bragi.codec.flac.FlacInputStream;
-import com.github.achaaab.bragi.codec.flac.header.StreamInfo;
 import com.github.achaaab.bragi.codec.flac.channel.ChannelAssignment;
+import com.github.achaaab.bragi.codec.flac.header.StreamInfo;
 
 import java.io.IOException;
 
@@ -11,7 +11,7 @@ import static java.lang.Integer.numberOfLeadingZeros;
 
 /**
  * FLAC FRAME_HEADER
- *
+ * <p>
  * <a href="https://xiph.org/flac/format.html#frame_header">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -27,11 +27,11 @@ public class FrameHeader {
 	 * @param code  code of the block size
 	 * @param input FLAC input stream to decode
 	 * @return block size in inter-channel samples
-	 * @throws IOException          I/O exception while decoding the block size
-	 * @throws FlacDecoderException if invalid code is provided
+	 * @throws IOException   I/O exception while decoding the block size
+	 * @throws FlacException if invalid code is provided
 	 */
 	private static int decodeBlockSize(int code, FlacInputStream input)
-			throws IOException, FlacDecoderException {
+			throws IOException, FlacException {
 
 		return switch (code) {
 
@@ -50,7 +50,7 @@ public class FrameHeader {
 			case 0b1101 -> 8192;
 			case 0b1110 -> 16384;
 			case 0b1111 -> 32768;
-			default -> throw new FlacDecoderException("invalid block size code: " + code);
+			default -> throw new FlacException("invalid block size code: " + code);
 		};
 	}
 
@@ -62,11 +62,11 @@ public class FrameHeader {
 	 * @param streamInfo stream info metadata
 	 * @param input      FLAC input stream to decode
 	 * @return decoded sample rate in inter-channel sample per second
-	 * @throws IOException          I/O exception while decoding the sample rate
-	 * @throws FlacDecoderException if invalid sample rate code is provided
+	 * @throws IOException   I/O exception while decoding the sample rate
+	 * @throws FlacException if invalid sample rate code is provided
 	 */
 	private static int decodeSampleRate(int code, StreamInfo streamInfo, FlacInputStream input)
-			throws IOException, FlacDecoderException {
+			throws IOException, FlacException {
 
 		return switch (code) {
 
@@ -85,7 +85,7 @@ public class FrameHeader {
 			case 0b1100 -> 1000 * input.readUnsignedInteger(8);
 			case 0b1101 -> input.readUnsignedInteger(16);
 			case 0b1110 -> 10 * input.readUnsignedInteger(16);
-			default -> throw new FlacDecoderException("invalid sample rate code: " + code);
+			default -> throw new FlacException("invalid sample rate code: " + code);
 		};
 	}
 
@@ -95,9 +95,9 @@ public class FrameHeader {
 	 * @param code       code of the sample size
 	 * @param streamInfo stream info metadata
 	 * @return decoded sample rate
-	 * @throws FlacDecoderException if invalid sample size code is provided
+	 * @throws FlacException if invalid sample size code is provided
 	 */
-	private static int decodeSampleSize(int code, StreamInfo streamInfo) throws FlacDecoderException {
+	private static int decodeSampleSize(int code, StreamInfo streamInfo) throws FlacException {
 
 		return switch (code) {
 
@@ -107,32 +107,9 @@ public class FrameHeader {
 			case 0b100 -> 16;
 			case 0b101 -> 20;
 			case 0b110 -> 24;
-			default -> throw new FlacDecoderException("invalid sample size code: " + code);
+			default -> throw new FlacException("invalid sample size code: " + code);
 		};
 	}
-
-	/**
-	 * @param samples long samples
-	 * @return subframes with samples truncated to 32 bits
-	 */
-	static int[][] convertSamples(long[][] samples) {
-
-		var channelCount = samples.length;
-		var blockSize = samples[0].length;
-
-		var subframes = new int[channelCount][blockSize];
-
-		for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
-
-			for (var sampleIndex = 0; sampleIndex < blockSize; sampleIndex++) {
-				subframes[channelIndex][sampleIndex] = (int) samples[channelIndex][sampleIndex];
-			}
-		}
-
-		return subframes;
-	}
-
-	private final FlacInputStream input;
 
 	private final int syncCode;
 	private final BlockingStrategy blockingStrategy;
@@ -147,33 +124,29 @@ public class FrameHeader {
 	 *
 	 * @param input      FLAC input stream
 	 * @param streamInfo global stream information
-	 * @throws IOException          I/O exception while decoding the frame header
-	 * @throws FlacDecoderException if invalid or unsupported frame header is decoded
+	 * @throws IOException   I/O exception while decoding the frame header
+	 * @throws FlacException if invalid or unsupported frame header is decoded
 	 */
-	public FrameHeader(FlacInputStream input, StreamInfo streamInfo) throws IOException, FlacDecoderException {
-
-		this.input = input;
+	public FrameHeader(FlacInputStream input, StreamInfo streamInfo) throws IOException, FlacException {
 
 		syncCode = input.readUnsignedInteger(14);
 
 		if (syncCode != EXPECTED_SYNC_CODE) {
-			throw new FlacDecoderException("expecting a sync code (" + EXPECTED_SYNC_CODE + "), read: " + syncCode);
+			throw new FlacException("expecting a sync code (" + EXPECTED_SYNC_CODE + "), read: " + syncCode);
 		}
 
 		var reserved = input.readUnsignedInteger(1);
 
 		if (reserved != 0) {
-			throw new FlacDecoderException("reserved bit not supported: " + reserved);
+			throw new FlacException("reserved bit not supported: " + reserved);
 		}
 
-		var blockingStrategyCode = input.readUnsignedInteger(1);
-		blockingStrategy = BlockingStrategy.decode(blockingStrategyCode);
+		blockingStrategy = BlockingStrategy.decode(input);
 
 		var blockSizeCode = input.readUnsignedInteger(4);
 		var sampleRateCode = input.readUnsignedInteger(4);
 
-		var channelAssignmentCode = input.readUnsignedInteger(4);
-		channelAssignment = ChannelAssignment.decode(channelAssignmentCode);
+		channelAssignment = ChannelAssignment.decode(input);
 
 		var sampleSizeCode = input.readUnsignedInteger(3);
 		sampleSize = decodeSampleSize(sampleSizeCode, streamInfo);
@@ -181,7 +154,7 @@ public class FrameHeader {
 		reserved = input.readUnsignedInteger(1);
 
 		if (reserved != 0) {
-			throw new FlacDecoderException("reserved bit not supported: " + reserved);
+			throw new FlacException("reserved bit not supported: " + reserved);
 		}
 
 		// sample number or frame number
@@ -196,19 +169,6 @@ public class FrameHeader {
 		sampleRate = decodeSampleRate(sampleRateCode, streamInfo, input);
 
 		crc8 = input.readUnsignedInteger(8);
-	}
-
-	/**
-	 * Decodes subframes from the given FLAC input stream.
-	 *
-	 * @return decoded subframes
-	 * @throws IOException          I/O exception while decoding subframes
-	 * @throws FlacDecoderException if invalid or unsupported subframes are decoded
-	 */
-	public int[][] decodeSubframes() throws IOException, FlacDecoderException {
-
-		var samples = channelAssignment.decodeSubframes(input, blockSize, sampleSize);
-		return convertSamples(samples);
 	}
 
 	/**
