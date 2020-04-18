@@ -22,7 +22,7 @@ public class SubframeLpc extends SubframeLinearPredictor {
 	 * @param header      header of this subframe
 	 * @param input       FLAC input stream from which to read the fixed subframe
 	 * @param extraBit    whether to add an extra bit (used for difference channel)
-	 * @throws IOException          I/O exception while reading from the given FLAC input stream
+	 * @throws IOException   I/O exception while reading from the given FLAC input stream
 	 * @throws FlacException if invalid fixed subframe is decoded
 	 */
 	public SubframeLpc(FrameHeader frameHeader, SubframeHeader header, FlacInputStream input, boolean extraBit)

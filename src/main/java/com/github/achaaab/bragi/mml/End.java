@@ -6,17 +6,17 @@ package com.github.achaaab.bragi.mml;
  * @author Jonathan Guéhenneux
  * @since 0.1.8
  */
-public class End implements Command {
+public class End extends AbstractCommand {
 
 	/**
-	 * @see #END
+	 * Creates a new command that ends MML playing.
 	 */
 	End() {
 
 	}
 
 	@Override
-	public void execute(Player player) {
+	public void execute(MmlPlayer player) {
 		player.end();
 	}
 }

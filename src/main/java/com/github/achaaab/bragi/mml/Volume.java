@@ -6,7 +6,7 @@ package com.github.achaaab.bragi.mml;
  * @author Jonathan Guéhenneux
  * @since 0.1.8
  */
-public class Volume implements Command {
+public class Volume extends AbstractCommand {
 
 	private final int value;
 
@@ -18,7 +18,7 @@ public class Volume implements Command {
 	}
 
 	@Override
-	public void execute(Player player) {
+	public void execute(MmlPlayer player) {
 		player.volume(value);
 	}
 }

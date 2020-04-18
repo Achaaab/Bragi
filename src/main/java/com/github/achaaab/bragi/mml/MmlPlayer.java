@@ -3,11 +3,12 @@ package com.github.achaaab.bragi.mml;
 import com.github.achaaab.bragi.core.module.producer.Keyboard;
 import com.github.achaaab.bragi.scale.Note;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
+import static javax.swing.SwingUtilities.invokeAndWait;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -16,9 +17,9 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Jonathan Guéhenneux
  * @since 0.1.8
  */
-public class Player {
+public class MmlPlayer {
 
-	private static final Logger LOGGER = getLogger(Player.class);
+	private static final Logger LOGGER = getLogger(MmlPlayer.class);
 
 	public static final int DEFAULT_TEMPO = 120;
 	public static final int DEFAULT_OCTAVE = 4;
@@ -32,14 +33,27 @@ public class Player {
 
 	private boolean end;
 
+	private MmlPlayerView view;
+
 	/**
 	 * @param keyboard keyboard on which to play
 	 */
-	public Player(Keyboard keyboard) {
+	public MmlPlayer(Keyboard keyboard) {
 
 		this.keyboard = keyboard;
 
-		start();
+		try {
+			invokeAndWait(() -> view = new MmlPlayerView(this));
+		} catch (InterruptedException | InvocationTargetException cause) {
+			throw new MmlException(cause);
+		}
+	}
+
+	/**
+	 * @return view of this MML player
+	 */
+	public MmlPlayerView view() {
+		return view;
 	}
 
 	/**
@@ -47,17 +61,21 @@ public class Player {
 	 */
 	public void play(String mml) {
 
+		start();
 		var parser = new Parser(mml);
 
 		while (!end) {
-			parser.nextCommand().execute(this);
+
+			var command = parser.nextCommand();
+			view.showCurrentCommand(command);
+			command.execute(this);
 		}
 	}
 
 	/**
 	 * Plays a note.
 	 *
-	 * @param tone      tone of the note to play
+	 * @param tone    tone of the note to play
 	 * @param lengths fractions of a whole note to play
 	 */
 	void play(int tone, List<Length> lengths) {
@@ -78,9 +96,9 @@ public class Player {
 
 		var note = new Note(noteOctave, noteTone);
 
-		keyboard.press(note);
+		keyboard.play(note);
 		wait(lengths);
-		keyboard.release();
+		keyboard.stop(note);
 	}
 
 	/**

@@ -2,7 +2,6 @@ package com.github.achaaab.bragi.gui.common;
 
 import javax.swing.JComponent;
 import javax.swing.JMenu;
-import javax.swing.JSlider;
 import javax.swing.border.TitledBorder;
 import java.awt.Component;
 import java.awt.Container;

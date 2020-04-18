@@ -6,7 +6,7 @@ package com.github.achaaab.bragi.mml;
  * @author Jonathan Guéhenneux
  * @since 0.1.8
  */
-public class SetLength implements Command {
+public class SetLength extends AbstractCommand {
 
 	private final Length length;
 
@@ -20,7 +20,7 @@ public class SetLength implements Command {
 	}
 
 	@Override
-	public void execute(Player player) {
+	public void execute(MmlPlayer player) {
 		player.length(length);
 	}
 }

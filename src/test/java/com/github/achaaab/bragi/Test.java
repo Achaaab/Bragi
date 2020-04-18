@@ -22,13 +22,11 @@ import com.github.achaaab.bragi.core.module.transformer.HighPassVCF;
 import com.github.achaaab.bragi.core.module.transformer.LowPassVCF;
 import com.github.achaaab.bragi.core.module.transformer.Mixer;
 import com.github.achaaab.bragi.core.module.transformer.VCA;
-import com.github.achaaab.bragi.mml.Player;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
 
 import static com.github.achaaab.bragi.ResourceUtils.getPath;
-import static com.github.achaaab.bragi.core.module.producer.wave.Waveform.SAWTOOTH;
 import static com.github.achaaab.bragi.core.module.producer.wave.Waveform.SAWTOOTH_TRIANGULAR;
 import static com.github.achaaab.bragi.core.module.producer.wave.Waveform.TRIANGLE;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -54,7 +52,7 @@ public class Test {
 	 * @since 0.0.9
 	 */
 	public static void main(String... arguments) {
-		testFlacPlayer();
+		testPiano();
 	}
 
 	/**
@@ -151,13 +149,6 @@ public class Test {
 
 		visualizeOutputs(envelope);
 		createSynthesizer(keyboard);
-
-		var mmlPlayer = new Player(keyboard);
-
-		mmlPlayer.play("""
-				l8<b->c+f4d+c+d+f4fd+c+cc+4<a+4>fd+c+cc+4<a+4g+a+>c+2&c+<b->c+f4d+c+d+f4fg+fd+f4f2.&fa2.<aa+4.a+>c+f4d+
-				c+d+f4fd+c+cc+4<a+4>fd+c+cc+4<a+4g+a+>c+2&c+<b->c+f4d+c+d+f4fg+fd+f4f2.&f<a1a+2.&a+.&a+64
-				""");
 	}
 
 	/**

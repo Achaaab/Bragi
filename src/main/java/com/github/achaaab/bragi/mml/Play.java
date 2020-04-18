@@ -10,7 +10,7 @@ import java.util.Map;
  * @author Jonathan Guéhenneux
  * @since 0.1.8
  */
-public class Play implements Command {
+public class Play extends AbstractCommand {
 
 	private static final Map<String, Integer> TONES;
 
@@ -70,7 +70,7 @@ public class Play implements Command {
 	}
 
 	@Override
-	public void execute(Player player) {
+	public void execute(MmlPlayer player) {
 		player.play(tone, lengths);
 	}
 }

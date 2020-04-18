@@ -5,6 +5,7 @@ import com.github.achaaab.bragi.core.connection.Output;
 import com.github.achaaab.bragi.core.module.Module;
 import com.github.achaaab.bragi.core.module.ModuleCreationException;
 import com.github.achaaab.bragi.gui.module.KeyboardView;
+import com.github.achaaab.bragi.mml.MmlPlayer;
 import com.github.achaaab.bragi.scale.ChromaticScale;
 import com.github.achaaab.bragi.scale.Note;
 import com.github.achaaab.bragi.scale.Scale;
@@ -13,7 +14,9 @@ import org.slf4j.Logger;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.github.achaaab.bragi.scale.ChromaticScale.BASE_FREQUENCY;
 import static com.github.achaaab.bragi.scale.ChromaticScale.sharp;
@@ -85,8 +88,10 @@ public class Keyboard extends Module {
 	private final Output output;
 	private final Output gate;
 
+	private final MmlPlayer mmlPlayer;
 	private final Scale scale;
 	private final List<Key> keys;
+	private final Map<Note, Key> noteKeys;
 
 	private int pressedKeyCount;
 	private int previousPressedKeyCount;
@@ -112,14 +117,18 @@ public class Keyboard extends Module {
 		output = addPrimaryOutput(name + "_output");
 		gate = addSecondaryOutput(name + "_gate");
 
+		mmlPlayer = new MmlPlayer(this);
 		scale = new ChromaticScale();
 		keys = new ArrayList<>();
+		noteKeys = new HashMap<>();
 
 		var note = new Note(3, 5);
 
 		for (int code : KEY_CODES) {
 
-			keys.add(createKey(note, code));
+			var key = createKey(note, code);
+			keys.add(key);
+			noteKeys.put(note, key);
 			note = scale.followingNote(note);
 		}
 
@@ -182,34 +191,75 @@ public class Keyboard extends Module {
 		var sharp = sharp(note);
 		var voltage = voltage(note);
 
-		return new Key(note, name, sharp, voltage, code);
+		return new Key(this, note, name, sharp, voltage, code);
 	}
 
 	/**
-	 * Presses the key associated to the given note.
+	 * Play a note. If the given note is associated to a key, set the key as pressed.
 	 *
-	 * @param note note of the key to press
+	 * @param note note to play
 	 */
-	public synchronized void press(Note note) {
+	public synchronized void play(Note note) {
 
-		voltage = voltage(note);
-		pressedKeyCount++;
+		var key = noteKeys.get(note);
+
+		if (key == null) {
+
+			voltage = voltage(note);
+			pressedKeyCount++;
+
+		} else {
+
+			press(key);
+		}
 	}
 
 	/**
-	 * @param key pressed key
+	 * Stop playing a note. If the given note is associated to a key, set the key as released.
+	 *
+	 * @param note note to stop playing
+	 */
+	public synchronized void stop(Note note) {
+
+		var key = noteKeys.get(note);
+
+		if (key == null) {
+			pressedKeyCount--;
+		} else {
+			release(key);
+		}
+	}
+
+	/**
+	 * Presses a key.
+	 *
+	 * @param key key to press
 	 */
 	public synchronized void press(Key key) {
 
 		voltage = key.voltage();
 		pressedKeyCount++;
+
+		key.setPressed(true);
 	}
 
 	/**
-	 * release a key
+	 * Releases a key.
+	 *
+	 * @param key key to release
 	 */
-	public synchronized void release() {
+	public synchronized void release(Key key) {
+
 		pressedKeyCount--;
+
+		key.setPressed(false);
+	}
+
+	/**
+	 * @return MML player
+	 */
+	public MmlPlayer mmlPlayer() {
+		return mmlPlayer;
 	}
 
 	/**

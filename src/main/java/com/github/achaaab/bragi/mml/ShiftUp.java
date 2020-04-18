@@ -6,17 +6,17 @@ package com.github.achaaab.bragi.mml;
  * @author Jonathan Guéhenneux
  * @since 0.1.8
  */
-public class ShiftUp implements Command {
+public class ShiftUp extends AbstractCommand {
 
 	/**
-	 * @see #SHIFT_UP
+	 * Creates a new command that raises the octave by 1.
 	 */
 	ShiftUp() {
 
 	}
 
 	@Override
-	public void execute(Player player) {
+	public void execute(MmlPlayer player) {
 		player.shiftUp();
 	}
 }

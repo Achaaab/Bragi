@@ -6,7 +6,7 @@ package com.github.achaaab.bragi.mml;
  * @author Jonathan Guéhenneux
  * @since 0.1.8
  */
-public class Octave implements Command {
+public class Octave extends AbstractCommand {
 
 	private final int value;
 
@@ -20,7 +20,7 @@ public class Octave implements Command {
 	}
 
 	@Override
-	public void execute(Player player) {
+	public void execute(MmlPlayer player) {
 		player.octave(value);
 	}
 }

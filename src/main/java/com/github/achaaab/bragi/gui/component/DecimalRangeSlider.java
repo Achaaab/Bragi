@@ -1,7 +1,5 @@
 package com.github.achaaab.bragi.gui.component;
 
-import com.github.achaaab.bragi.gui.common.ViewScale;
-
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import java.text.DecimalFormat;

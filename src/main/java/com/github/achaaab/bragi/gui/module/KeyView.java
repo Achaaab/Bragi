@@ -1,15 +1,16 @@
 package com.github.achaaab.bragi.gui.module;
 
 import com.github.achaaab.bragi.core.module.producer.Key;
-import com.github.achaaab.bragi.core.module.producer.Keyboard;
 
 import javax.swing.JButton;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
 import static java.awt.Color.BLACK;
+import static java.awt.Color.RED;
 import static java.awt.Color.WHITE;
 import static java.awt.event.InputEvent.BUTTON1_DOWN_MASK;
 
@@ -24,29 +25,28 @@ public class KeyView extends JButton implements MouseListener {
 	private static final Dimension SIZE = scale(new Dimension(40, 200));
 
 	private final Key model;
-	private final Keyboard keyboard;
-
-	private boolean pressed;
+	private final Color background;
 
 	/**
-	 * @param model    key model
-	 * @param keyboard keyboard model
+	 * @param model key model
 	 */
-	public KeyView(Key model, Keyboard keyboard) {
+	public KeyView(Key model) {
 
 		this.model = model;
-		this.keyboard = keyboard;
 
-		setPreferredSize(SIZE);
+		var note = model.note();
+		var tone = note.tone();
+		var octave = note.octave();
+		var sharp = model.sharp();
 
-		if (model.note().tone() == 0) {
-			setText(Integer.toString(model.note().octave()));
+		if (tone == 0) {
+			setText(Integer.toString(octave));
 		}
 
-		setBackground(model.sharp() ? BLACK : WHITE);
-		setForeground(model.sharp() ? WHITE : BLACK);
+		setPreferredSize(SIZE);
+		background = sharp ? BLACK : WHITE;
+		setBackground(background);
 
-		pressed = false;
 		setFocusTraversalKeysEnabled(false);
 		addMouseListener(this);
 	}
@@ -85,23 +85,20 @@ public class KeyView extends JButton implements MouseListener {
 	 * Presses this key.
 	 */
 	public void press() {
-
-		if (!pressed) {
-
-			pressed = true;
-			keyboard.press(model);
-		}
+		model.press();
 	}
 
 	/**
 	 * Releases this key.
 	 */
 	public void release() {
+		model.release();
+	}
 
-		if (pressed) {
-
-			pressed = false;
-			keyboard.release();
-		}
+	/**
+	 * @param pressed whether this key is pressed
+	 */
+	public void setPressed(boolean pressed) {
+		setBackground(pressed ? RED : background);
 	}
 }

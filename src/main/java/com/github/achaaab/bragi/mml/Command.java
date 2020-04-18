@@ -8,14 +8,40 @@ package com.github.achaaab.bragi.mml;
  */
 public interface Command {
 
-	Command END = new End();
-	Command SHIFT_UP = new ShiftUp();
-	Command SHIFT_DOWN = new ShiftDown();
-
 	/**
 	 * Executes this command.
 	 *
 	 * @param player player on which to execute this command
 	 */
-	void execute(Player player);
+	void execute(MmlPlayer player);
+
+	/**
+	 * @return start position (included) of this command
+	 */
+	int getStart();
+
+	/**
+	 * @param start start position (included) of this command
+	 */
+	void setStart(int start);
+
+	/**
+	 * @return end position (excluded) of this command
+	 */
+	int getEnd();
+
+	/**
+	 * @param end end position (excluded) of this command
+	 */
+	void setEnd(int end);
+
+	/**
+	 * @return string source of this command
+	 */
+	String getString();
+
+	/**
+	 * @param string string source of this command
+	 */
+	void setString(String string);
 }

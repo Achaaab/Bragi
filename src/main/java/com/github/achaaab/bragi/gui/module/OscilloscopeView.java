@@ -3,7 +3,6 @@ package com.github.achaaab.bragi.gui.module;
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.core.module.consumer.Oscilloscope;
 import com.github.achaaab.bragi.gui.common.PaintedView;
-import com.github.achaaab.bragi.gui.common.ViewScale;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

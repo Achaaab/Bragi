@@ -8,7 +8,7 @@ import java.util.List;
  * @author Jonathan Guéhenneux
  * @since 0.1.8
  */
-public class Rest implements Command {
+public class Rest extends AbstractCommand {
 
 	private final List<Length> lengths;
 
@@ -20,7 +20,7 @@ public class Rest implements Command {
 	}
 
 	@Override
-	public void execute(Player player) {
+	public void execute(MmlPlayer player) {
 		player.rest(lengths);
 	}
 }

@@ -10,6 +10,7 @@ import static com.github.achaaab.bragi.codec.flac.frame.ResidualCodingMethod.dec
 /**
  * FLAC subframe encoded with a linear predictor
  * <p>
+ *
  * @author Jonathan Guéhenneux
  * @since 0.1.8
  */
@@ -27,7 +28,7 @@ public abstract class SubframeLinearPredictor extends Subframe {
 	 * @param input       FLAC input stream from which to read this subframe
 	 * @param order       order of the linear predictor used to encode this subframe
 	 * @param extraBit    whether to add an extra bit (used for difference channel)
-	 * @throws IOException          I/O exception while reading from the given FLAC input stream
+	 * @throws IOException   I/O exception while reading from the given FLAC input stream
 	 * @throws FlacException if invalid subframe is decoded
 	 */
 	public SubframeLinearPredictor(FrameHeader frameHeader, SubframeHeader header, FlacInputStream input,
@@ -56,7 +57,7 @@ public abstract class SubframeLinearPredictor extends Subframe {
 	protected abstract void configure() throws IOException;
 
 	/**
-	 * @throws IOException          I/O exception while reading from the FLAC input stream
+	 * @throws IOException   I/O exception while reading from the FLAC input stream
 	 * @throws FlacException if invalid method or residuals are decoded
 	 */
 	protected void decodeResiduals() throws IOException, FlacException {

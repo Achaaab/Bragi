@@ -1,7 +1,6 @@
 package com.github.achaaab.bragi.gui.module;
 
 import com.github.achaaab.bragi.core.module.producer.ADSR;
-import com.github.achaaab.bragi.gui.common.ViewScale;
 import com.github.achaaab.bragi.gui.component.LinearSlider;
 import com.github.achaaab.bragi.gui.component.LogarithmicSlider;
 

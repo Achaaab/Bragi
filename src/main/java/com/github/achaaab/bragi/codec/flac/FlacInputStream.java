@@ -238,7 +238,7 @@ public class FlacInputStream implements AutoCloseable {
 	 * found length from the same input.
 	 *
 	 * @return read string
-	 * @throws IOException          I/O exception while reading a string
+	 * @throws IOException   I/O exception while reading a string
 	 * @throws FlacException if string length is not supported
 	 */
 	public String decodeAsciiString() throws FlacException, IOException {
@@ -259,7 +259,7 @@ public class FlacInputStream implements AutoCloseable {
 	 * found length from the same input.
 	 *
 	 * @return read string
-	 * @throws IOException          I/O exception while reading a string
+	 * @throws IOException   I/O exception while reading a string
 	 * @throws FlacException if string length is not supported
 	 */
 	public String decodeUtf8String() throws FlacException, IOException {
@@ -280,7 +280,7 @@ public class FlacInputStream implements AutoCloseable {
 	 * found length from the same input.
 	 *
 	 * @return read string
-	 * @throws IOException          I/O exception while reading a vorbis string
+	 * @throws IOException   I/O exception while reading a vorbis string
 	 * @throws FlacException if string length is not supported
 	 */
 	public String decodeVorbisString() throws FlacException, IOException {

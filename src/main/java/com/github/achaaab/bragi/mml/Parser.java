@@ -1,14 +1,10 @@
 package com.github.achaaab.bragi.mml;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.achaaab.bragi.mml.Command.END;
-import static com.github.achaaab.bragi.mml.Command.SHIFT_DOWN;
-import static com.github.achaaab.bragi.mml.Command.SHIFT_UP;
 import static java.lang.Character.toUpperCase;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -47,9 +43,11 @@ public class Parser {
 
 		skipWhiteSpaces();
 
+		var start = position;
+
 		if (end()) {
 
-			command = END;
+			command = new End();
 
 		} else {
 
@@ -59,8 +57,8 @@ public class Parser {
 
 				case 'A', 'B', 'C', 'D', 'E', 'F', 'G' -> readPlay(character);
 				case 'R' -> readRest();
-				case '<' -> SHIFT_DOWN;
-				case '>' -> SHIFT_UP;
+				case '<' -> new ShiftDown();
+				case '>' -> new ShiftUp();
 				case 'O' -> new Octave(readInteger());
 				case 'T' -> new Tempo(readInteger());
 				case 'L' -> new SetLength(readLength());
@@ -70,6 +68,12 @@ public class Parser {
 						" at position " + position + context(position - 1));
 			};
 		}
+
+		var end = position;
+
+		command.setStart(start);
+		command.setEnd(end);
+		command.setString(mml.substring(start, end));
 
 		return command;
 	}
