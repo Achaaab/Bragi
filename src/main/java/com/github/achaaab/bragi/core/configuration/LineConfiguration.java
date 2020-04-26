@@ -158,6 +158,25 @@ public class LineConfiguration {
 	}
 
 	/**
+	 * @return current audio format
+	 */
+	public AudioFormat format() {
+
+		var frameSize = channelCount * sampleSize / 8;
+		var bigEndian = byteOrder == BIG_ENDIAN;
+
+		return new AudioFormat(
+				encoding,
+				sampleRate,
+				sampleSize,
+				channelCount,
+				frameSize,
+				sampleRate,
+				bigEndian
+		);
+	}
+
+	/**
 	 * @return selected number of channels
 	 */
 	public int getChannelCount() {

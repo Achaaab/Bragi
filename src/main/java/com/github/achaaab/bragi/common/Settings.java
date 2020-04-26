@@ -39,7 +39,14 @@ public record Settings(
 	}
 
 	/**
-	 * @return number of frames per chunk
+	 * @return duration of chunks in seconds (s)
+	 */
+	public float chunkDuration() {
+		return chunkDuration;
+	}
+
+	/**
+	 * @return number of samples per chunk
 	 */
 	public int chunkSize() {
 		return round(frameRate * chunkDuration);

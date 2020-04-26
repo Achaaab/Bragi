@@ -22,7 +22,7 @@ public class CubicHermiteSpline implements Interpolator {
 		var targetSampleCount = round(sourceSampleCount * targetSampleRate / sourceSampleRate);
 		var targetSamples = new float[targetSampleCount];
 
-		var indexRatio = (sourceSampleCount - 1.0f) / (targetSampleCount - 1.0f);
+		var indexRatio = (float) (sourceSampleCount - 1) / targetSampleCount;
 
 		float i;
 		int i0;

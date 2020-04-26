@@ -108,9 +108,12 @@ public class WavFile implements AudioFile {
 
 			try {
 
-				var frameCount = Settings.INSTANCE.chunkSize();
+				var frameRate = header.frameRate();
+				var chunkDuration = Settings.INSTANCE.chunkDuration();
+				var frameCount = round(frameRate * chunkDuration);
+				var frameSize = header.frameSize();
 				var channelCount = header.channelCount();
-				var byteCount = min(frameCount * header.frameSize(), header.dataSize() - offset);
+				var byteCount = min(frameCount * frameSize, header.dataSize() - offset);
 
 				var bytes = new byte[byteCount];
 

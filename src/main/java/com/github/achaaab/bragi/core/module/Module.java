@@ -1,6 +1,7 @@
 package com.github.achaaab.bragi.core.module;
 
 import com.github.achaaab.bragi.common.AbstractNamedEntity;
+import com.github.achaaab.bragi.core.Synthesizer;
 import com.github.achaaab.bragi.core.connection.Input;
 import com.github.achaaab.bragi.core.connection.Output;
 import com.github.achaaab.bragi.core.connection.PrimaryInput;
@@ -33,6 +34,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	protected final List<Input> inputs;
 	protected final List<Output> outputs;
 
+	protected Synthesizer synthesizer;
 	protected boolean started;
 	protected double computingFrameRate;
 
@@ -48,8 +50,18 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 		inputs = new ArrayList<>();
 		outputs = new ArrayList<>();
 
+		synthesizer = null;
 		started = false;
 		computingFrameRate = 0.0;
+	}
+
+	/**
+	 * Binds this module to the given synthesizer.
+	 *
+	 * @param synthesizer synthesizer to which bind this module
+	 */
+	public void setSynthesizer(Synthesizer synthesizer) {
+		this.synthesizer = synthesizer;
 	}
 
 	/**
@@ -292,7 +304,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	public void start() {
 
 		started = true;
-
+		configure();
 		new Thread(this, name).start();
 
 		LOGGER.info("module \"" + name + "\" started");
@@ -303,6 +315,13 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	 */
 	public void stop() {
 		started = false;
+	}
+
+	/**
+	 * Configures this module.
+	 */
+	public void configure() {
+
 	}
 
 	@Override

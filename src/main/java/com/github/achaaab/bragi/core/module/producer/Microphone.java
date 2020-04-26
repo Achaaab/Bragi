@@ -1,19 +1,17 @@
 package com.github.achaaab.bragi.core.module.producer;
 
 import com.github.achaaab.bragi.common.Interpolator;
-import com.github.achaaab.bragi.core.module.ModuleCreationException;
 import com.github.achaaab.bragi.common.Normalizer;
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.core.module.Module;
+import com.github.achaaab.bragi.core.module.ModuleCreationException;
 import org.slf4j.Logger;
 
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 
 import static com.github.achaaab.bragi.common.Interpolator.CUBIC_HERMITE_SPLINE;
 import static java.lang.Math.round;
-import static javax.sound.sampled.AudioSystem.getTargetDataLine;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -28,8 +26,6 @@ public class Microphone extends Module {
 	private static final Logger LOGGER = getLogger(Microphone.class);
 
 	public static final String DEFAULT_NAME = "microphone";
-
-	public static final float LINE_BUFFER_DURATION = 0.01F;
 
 	private static final Interpolator INTERPOLATOR = CUBIC_HERMITE_SPLINE;
 
@@ -49,9 +45,11 @@ public class Microphone extends Module {
 			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
 	);
 
-	private final int sourceSampleRate;
 	private final int targetSampleRate;
-	private final TargetDataLine line;
+
+	private TargetDataLine line;
+	private TargetDataLine newLine;
+	private byte[] data;
 
 	/**
 	 * Creates a microphone with default name.
@@ -74,32 +72,55 @@ public class Microphone extends Module {
 
 		addPrimaryOutput(name + "_output_" + outputs.size());
 
-		while (outputs.size() < Settings.INSTANCE.channelCount()) {
+		while (outputs.size() < 8) {
 			addSecondaryOutput(name + "_output_" + outputs.size());
 		}
 
-		sourceSampleRate = Settings.INSTANCE.frameRate();
 		targetSampleRate = Settings.INSTANCE.frameRate();
 
-		var format = new AudioFormat(
-				Settings.INSTANCE.frameRate(),
-				Settings.INSTANCE.sampleSize() * 8,
-				Settings.INSTANCE.channelCount(),
-				true, true);
+		line = null;
+		newLine = null;
+		data = null;
+	}
 
-		var lineBufferLength = round(Settings.INSTANCE.byteRate() * LINE_BUFFER_DURATION);
+	@Override
+	public void configure() {
 
-		try {
+		var inputLine = synthesizer.configuration().inputLine();
 
-			line = getTargetDataLine(format);
-			line.open(format, lineBufferLength);
+		if (inputLine != line) {
+			newLine = inputLine;
+		}
+	}
 
-		} catch (LineUnavailableException cause) {
+	/**
+	 * Called when a new line is configured. Drains and stops the current line,
+	 * then switches to the new line and starts it.
+	 */
+	private void switchLine() {
 
-			throw new ModuleCreationException(cause);
+		LOGGER.info("switch line");
+
+		if (line != null) {
+
+			line.drain();
+			line.stop();
 		}
 
+		line = newLine;
+		newLine = null;
+
 		line.start();
+
+		var format = line.getFormat();
+
+		var frameRate = format.getSampleRate();
+		var chunkDuration = Settings.INSTANCE.chunkDuration();
+		var frameCount = round(frameRate * chunkDuration);
+		var frameSize = format.getFrameSize();
+		var dataLength = frameCount * frameSize;
+
+		data = new byte[dataLength];
 	}
 
 	/**
@@ -116,35 +137,40 @@ public class Microphone extends Module {
 	@Override
 	public int compute() throws InterruptedException {
 
-		var frameCount = Settings.INSTANCE.chunkSize();
-		var sampleSizeInBytes = Settings.INSTANCE.sampleSize();
-		var frameSizeInBytes = Settings.INSTANCE.frameSize();
-		var byteCount = frameCount * frameSizeInBytes;
-		var channelCount = Settings.INSTANCE.channelCount();
+		if (newLine != null) {
+			switchLine();
+		}
 
-		var input = new byte[byteCount];
+		var format = line.getFormat();
+		var sampleSize = format.getSampleSizeInBits();
+		var frameSize = format.getFrameSize();
+		var channelCount = format.getChannels();
+		var sampleRate = round(format.getSampleRate());
+
 		checkLineBufferHealth();
-		line.read(input, 0, byteCount);
+
+		var byteCount = line.read(data, 0, data.length);
+		var frameCount = byteCount / frameSize;
 
 		var chunk = new float[channelCount][frameCount];
+
+		var dataIndex = 0;
 
 		for (var frameIndex = 0; frameIndex < frameCount; frameIndex++) {
 
 			for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
 
-				var sampleIndex = frameIndex * frameSizeInBytes + channelIndex * sampleSizeInBytes;
 				var sample = 0.0f;
 
-				if (sampleSizeInBytes == 1) {
+				if (sampleSize == 8) {
 
-
-					var b0 = input[sampleIndex];
+					var b0 = data[dataIndex++];
 					sample = ONE_BYTE_NORMALIZER.normalize(b0);
 
-				} else if (sampleSizeInBytes == 2) {
+				} else if (sampleSize == 16) {
 
-					var b0 = input[sampleIndex];
-					var b1 = input[sampleIndex + 1];
+					var b0 = data[dataIndex++];
+					var b1 = data[dataIndex++];
 					sample = TWO_BYTES_NORMALIZER.normalize(b1 & 0xFF | b0 << 8);
 				}
 
@@ -154,9 +180,9 @@ public class Microphone extends Module {
 
 		for (var channelIndex = 0; channelIndex < channelCount; channelIndex++) {
 
-			outputs.get(channelIndex).write(sourceSampleRate == targetSampleRate ?
+			outputs.get(channelIndex).write(sampleRate == targetSampleRate ?
 					chunk[channelIndex] :
-					INTERPOLATOR.interpolate(chunk[channelIndex], sourceSampleRate, targetSampleRate));
+					INTERPOLATOR.interpolate(chunk[channelIndex], sampleRate, targetSampleRate));
 		}
 
 		return frameCount;
