@@ -26,16 +26,16 @@ user interface. Following modules are provided:
 These instructions will get you a copy of the project up and running on your local machine
 for development and testing purposes.
 ### Prerequisites
-* Java 14 (depending on your IDE, you may have to add the JVM option `--enable-preview`)
+* Java 17+
 * Maven 3.6.1
 * Git 2.17.1
 ### Installing
-* Clone the repository from github.com:
+* Clone the repository from GitHub:
 ```
 git clone git@github.com:Achaaab/Bragi.git
 ```
 * Import the project Bragi in your IDE.
-* Run the main class `com.github.achaaab.bragi.Test`.
+* Run the test class `com.github.achaaab.bragi.Test`.
 ## Examples
 ### MP3Player connected to Speaker
 ```java
@@ -111,9 +111,9 @@ filter.connect(oscilloscope, spectrum);
 * [git](https://git-scm.com/) - Version control system
 * [GitHub](https://github.com/) - Project management
 ## Contributing
-I am still developing Bragi but feel free to submit pull requests.
+I am not developing Bragi at this moment, but any contribution is welcome.
 ## Authors
-* **Jonathan Guéhenneux** - *Developer* - [Achaaab](https://github.com/Achaaab)
+* **Jonathan Guéhenneux** - *Programmer* - [Achaaab](https://github.com/Achaaab)
 ## License
 This project is licensed under the GNU General Public License (GPL) - see the [LICENSE.md](LICENSE.md) for the details.
 ## Acknowledgments
