@@ -19,6 +19,7 @@ public class Sine extends AbstractWaveform {
 
 	/**
 	 * @see #SINE
+	 * @since 0.2.0
 	 */
 	Sine() {
 
@@ -26,8 +27,7 @@ public class Sine extends AbstractWaveform {
 
 		normalizer = new Normalizer(
 				(float) sin(-PI / 2), (float) sin(PI / 2),
-				LOWER_PEAK, UPPER_PEAK
-		);
+				LOWER_PEAK, UPPER_PEAK);
 	}
 
 	@Override

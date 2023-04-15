@@ -23,8 +23,9 @@ public class Wave {
 	private float amplitude;
 
 	/**
-	 * @param waveform  waveform
+	 * @param waveform waveform
 	 * @param frequency frequency in hertz (number of oscillations per second)
+	 * @since 0.2.0
 	 */
 	public Wave(Waveform waveform, double frequency) {
 
@@ -41,6 +42,7 @@ public class Wave {
 
 	/**
 	 * @return wave frequency in hertz (number of oscillations per second)
+	 * @since 0.2.0
 	 */
 	public double getFrequency() {
 		return frequency;
@@ -48,6 +50,7 @@ public class Wave {
 
 	/**
 	 * @param frequency wave frequency in hertz (number of oscillations per second)
+	 * @since 0.2.0
 	 */
 	public void setFrequency(double frequency) {
 		this.frequency = frequency;
@@ -55,6 +58,7 @@ public class Wave {
 
 	/**
 	 * @return current waveform
+	 * @since 0.2.0
 	 */
 	public Waveform getWaveform() {
 		return waveform;
@@ -62,6 +66,7 @@ public class Wave {
 
 	/**
 	 * @param waveform waveform to set
+	 * @since 0.2.0
 	 */
 	public void setWaveform(Waveform waveform) {
 		this.waveform = waveform;
@@ -106,10 +111,11 @@ public class Wave {
 	}
 
 	/**
-	 * @param octave            octave adjustment
+	 * @param octave octave adjustment
 	 * @param modulationSamples modulation samples in volts
-	 * @param sampleCount       number of samples to generate
+	 * @param sampleCount number of samples to generate
 	 * @return generated samples in volts
+	 * @since 0.2.0
 	 */
 	public float[] getSamples(int octave, float[] modulationSamples, int sampleCount) {
 

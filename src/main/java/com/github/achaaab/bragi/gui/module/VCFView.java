@@ -25,6 +25,7 @@ public class VCFView extends JPanel {
 
 	/**
 	 * @param model VCF model
+	 * @since 0.2.0
 	 */
 	public VCFView(VCF model) {
 

@@ -20,6 +20,7 @@ public class RangeSlider extends JSlider {
 	 *
 	 * @param minimum minimum value of the slider to create
 	 * @param maximum maximum value of the slider to create
+	 * @since 0.2.0
 	 */
 	public RangeSlider(int minimum, int maximum) {
 		super(minimum, maximum);
@@ -34,6 +35,7 @@ public class RangeSlider extends JSlider {
 
 	/**
 	 * @return lower value
+	 * @since 0.2.0
 	 */
 	public int getLowerValue() {
 		return getValue();
@@ -41,6 +43,7 @@ public class RangeSlider extends JSlider {
 
 	/**
 	 * @param lowerValue lower value to set
+	 * @since 0.2.0
 	 */
 	public void setLowerValue(int lowerValue) {
 		setValue(lowerValue);
@@ -57,6 +60,7 @@ public class RangeSlider extends JSlider {
 
 	/**
 	 * @return upper value
+	 * @since 0.2.0
 	 */
 	public int getUpperValue() {
 		return getValue() + getExtent();
@@ -64,6 +68,7 @@ public class RangeSlider extends JSlider {
 
 	/**
 	 * @param upperValue upper value to set
+	 * @since 0.2.0
 	 */
 	public void setUpperValue(int upperValue) {
 

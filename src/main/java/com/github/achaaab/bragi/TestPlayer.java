@@ -20,6 +20,7 @@ public class TestPlayer extends Application {
 
 	/**
 	 * @param arguments none
+	 * @since 0.2.0
 	 */
 	public static void main(String... arguments) {
 		launch();

@@ -2,7 +2,6 @@ package com.github.achaaab.bragi.codec.flac.frame;
 
 /**
  * FLAC RESIDUAL_CODING_METHOD_PARTITIONED_RICE2
- * <p>
  * <a href="https://xiph.org/flac/format.html#partitioned_rice2">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -14,6 +13,8 @@ public class Rice2 extends Rice {
 
 	/**
 	 * Creates a Rice method for residual coding with Rice parameters coded with {@link #PARAMETER_SIZE} bits.
+	 *
+	 * @since 0.2.0
 	 */
 	Rice2() {
 		super(PARAMETER_SIZE);

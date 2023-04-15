@@ -22,6 +22,7 @@ public class DCGView extends JPanel {
 
 	/**
 	 * @param model DCG model
+	 * @since 0.2.0
 	 */
 	public DCGView(DCG model) {
 

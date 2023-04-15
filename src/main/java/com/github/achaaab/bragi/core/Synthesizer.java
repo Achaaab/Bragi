@@ -28,6 +28,8 @@ public class Synthesizer extends AbstractNamedEntity {
 
 	/**
 	 * Creates a synthesizer.
+	 *
+	 * @since 0.2.0
 	 */
 	public Synthesizer() {
 
@@ -45,6 +47,7 @@ public class Synthesizer extends AbstractNamedEntity {
 
 	/**
 	 * @return configuration of this synthesizer
+	 * @since 0.2.0
 	 */
 	public Configuration configuration() {
 		return configuration;
@@ -52,6 +55,8 @@ public class Synthesizer extends AbstractNamedEntity {
 
 	/**
 	 * Called when the configuration has changed.
+	 *
+	 * @since 0.2.0
 	 */
 	public void configure() {
 		modules.forEach(Module::configure);
@@ -61,6 +66,7 @@ public class Synthesizer extends AbstractNamedEntity {
 	 * Adds a module to this synthesizer.
 	 *
 	 * @param module module to add
+	 * @since 0.2.0
 	 */
 	public void addModule(Module module) {
 
@@ -76,6 +82,7 @@ public class Synthesizer extends AbstractNamedEntity {
 	 * Add the given module to this synthesizer and recursively add all its input modules and output modules.
 	 *
 	 * @param module module to add
+	 * @since 0.2.0
 	 */
 	public void addChain(Module module) {
 		addChain(module, new HashSet<>());
@@ -84,8 +91,9 @@ public class Synthesizer extends AbstractNamedEntity {
 	/**
 	 * Add the given module to this synthesizer and recursively add all its input modules and output modules.
 	 *
-	 * @param module       module to add
+	 * @param module module to add
 	 * @param addedModules modules already added, that will be ignored
+	 * @since 0.2.0
 	 */
 	public void addChain(Module module, Set<Module> addedModules) {
 

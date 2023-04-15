@@ -12,6 +12,7 @@ public class AbstractNamedEntity implements NamedEntity {
 	 * Creates an entity with the given name.
 	 *
 	 * @param name name of the entity to create
+	 * @since 0.2.0
 	 */
 	public AbstractNamedEntity(String name) {
 		this.name = name;

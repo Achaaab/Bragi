@@ -27,7 +27,6 @@ public class SpectrumAnalyzer extends Module {
 	private static final Logger LOGGER = getLogger(SpectrumAnalyzer.class);
 
 	public static final String DEFAULT_NAME = "spectrum_analyzer";
-
 	private static final int FOURIER_TRANSFORM_SIZE = 1 << 15;
 
 	private final Input input;
@@ -49,6 +48,7 @@ public class SpectrumAnalyzer extends Module {
 
 	/**
 	 * @param name name of the spectrum analyzer to create
+	 * @since 0.2.0
 	 */
 	public SpectrumAnalyzer(String name) {
 
@@ -84,6 +84,7 @@ public class SpectrumAnalyzer extends Module {
 
 	/**
 	 * @return spectrum averages
+	 * @since 0.2.0
 	 */
 	public float[] getAverages() {
 

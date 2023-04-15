@@ -40,6 +40,7 @@ public class Oscilloscope extends Module {
 
 	/**
 	 * @param name oscilloscope name
+	 * @since 0.2.0
 	 */
 	public Oscilloscope(String name) {
 
@@ -73,6 +74,7 @@ public class Oscilloscope extends Module {
 	 * Fills the given {@code array} with samples to display.
 	 *
 	 * @param readArray array where to store read samples
+	 * @since 0.2.0
 	 */
 	public void read(float[] readArray) {
 

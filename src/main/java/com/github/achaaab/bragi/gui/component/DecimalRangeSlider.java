@@ -21,9 +21,10 @@ public abstract class DecimalRangeSlider extends RangeSlider {
 	protected final double minimal;
 
 	/**
-	 * @param minimal   minimal value of this slider
-	 * @param maximal   maximal value of this slider
+	 * @param minimal minimal value of this slider
+	 * @param maximal maximal value of this slider
 	 * @param precision number of possible distinct values including {@code minimalValue} and {@code maximalValue}
+	 * @since 0.2.0
 	 */
 	public DecimalRangeSlider(double minimal, double maximal, int precision) {
 
@@ -52,6 +53,7 @@ public abstract class DecimalRangeSlider extends RangeSlider {
 	/**
 	 * @param value value from which to create a label
 	 * @return created label
+	 * @since 0.2.0
 	 */
 	private JComponent createStandardLabel(int value) {
 
@@ -66,17 +68,20 @@ public abstract class DecimalRangeSlider extends RangeSlider {
 	/**
 	 * @param value integer value of the slider
 	 * @return corresponding decimal value
+	 * @since 0.2.0
 	 */
 	protected abstract double getDecimalValue(int value);
 
 	/**
 	 * @param decimalValue decimal value
 	 * @return corresponding integer value
+	 * @since 0.2.0
 	 */
 	protected abstract int getValue(double decimalValue);
 
 	/**
 	 * @return lower value of the selected range
+	 * @since 0.2.0
 	 */
 	public double getDecimalLowerValue() {
 		return getDecimalValue(getLowerValue());
@@ -84,6 +89,7 @@ public abstract class DecimalRangeSlider extends RangeSlider {
 
 	/**
 	 * @param decimalLowerValue new lower value
+	 * @since 0.2.0
 	 */
 	public void setDecimalLowerValue(double decimalLowerValue) {
 		setLowerValue(getValue(decimalLowerValue));
@@ -91,6 +97,7 @@ public abstract class DecimalRangeSlider extends RangeSlider {
 
 	/**
 	 * @return upper value of the selected range
+	 * @since 0.2.0
 	 */
 	public double getDecimalUpperValue() {
 		return getDecimalValue(getUpperValue());
@@ -98,6 +105,7 @@ public abstract class DecimalRangeSlider extends RangeSlider {
 
 	/**
 	 * @param decimalUpperValue new upper value
+	 * @since 0.2.0
 	 */
 	public void setDecimalUpperValue(double decimalUpperValue) {
 		setUpperValue(getValue(decimalUpperValue));

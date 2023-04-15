@@ -43,23 +43,19 @@ public class Speaker extends Module {
 
 	private static final Normalizer ONE_BYTE_NORMALIZER = new Normalizer(
 			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage(),
-			ONE_BYTE_MIN_VALUE, ONE_BYTE_MAX_VALUE
-	);
+			ONE_BYTE_MIN_VALUE, ONE_BYTE_MAX_VALUE);
 
 	private static final Normalizer TWO_BYTES_NORMALIZER = new Normalizer(
 			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage(),
-			TWO_BYTES_MIN_VALUE, TWO_BYTES_MAX_VALUE
-	);
+			TWO_BYTES_MIN_VALUE, TWO_BYTES_MAX_VALUE);
 
 	private static final Normalizer THREE_BYTES_NORMALIZER = new Normalizer(
 			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage(),
-			THREE_BYTES_MIN_VALUE, THREE_BYTES_MAX_VALUE
-	);
+			THREE_BYTES_MIN_VALUE, THREE_BYTES_MAX_VALUE);
 
 	private static final Normalizer FOUR_BYTES_NORMALIZER = new Normalizer(
 			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage(),
-			FOUR_BYTES_MIN_VALUE, FOUR_BYTES_MAX_VALUE
-	);
+			FOUR_BYTES_MIN_VALUE, FOUR_BYTES_MAX_VALUE);
 
 	private final int sourceSampleRate;
 
@@ -82,6 +78,7 @@ public class Speaker extends Module {
 	/**
 	 * @param name name of the speaker to create
 	 * @throws ModuleCreationException if no source data line is available
+	 * @since 0.2.0
 	 */
 	public Speaker(String name) {
 
@@ -113,6 +110,8 @@ public class Speaker extends Module {
 	/**
 	 * Called when a new line is configured. Drains and stops the current line, then switch to the new line and starts
 	 * it.
+	 *
+	 * @since 0.2.0
 	 */
 	private void switchLine() {
 
@@ -143,6 +142,8 @@ public class Speaker extends Module {
 	/**
 	 * Check if the line buffer is not empty.
 	 * If it is empty, that means it is not written fast enough and sound will not be continuous.
+	 *
+	 * @since 0.2.0
 	 */
 	private void checkLineBufferHealth() {
 
@@ -188,6 +189,7 @@ public class Speaker extends Module {
 	/**
 	 * @param samples samples to mix
 	 * @return number of data bytes
+	 * @since 0.2.0
 	 */
 	private int mix(float[][] samples) {
 
@@ -218,21 +220,21 @@ public class Speaker extends Module {
 
 				switch (sampleSize) {
 
-					case 1:
+					case 1 -> {
 						normalizedSample = round(ONE_BYTE_NORMALIZER.normalize(sample));
 						b0 = (byte) normalizedSample;
 						data[dataIndex++] = b0;
-						break;
+					}
 
-					case 2:
+					case 2 -> {
 						normalizedSample = round(TWO_BYTES_NORMALIZER.normalize(sample));
 						b0 = (byte) (normalizedSample >> 8);
 						b1 = (byte) normalizedSample;
 						data[dataIndex++] = b0;
 						data[dataIndex++] = b1;
-						break;
+					}
 
-					case 3:
+					case 3 -> {
 						normalizedSample = round(THREE_BYTES_NORMALIZER.normalize(sample));
 						b0 = (byte) (normalizedSample >> 16);
 						b1 = (byte) ((normalizedSample >> 8) & 0xFF);
@@ -240,9 +242,9 @@ public class Speaker extends Module {
 						data[dataIndex++] = b0;
 						data[dataIndex++] = b1;
 						data[dataIndex++] = b2;
-						break;
+					}
 
-					case 4:
+					case 4 -> {
 						normalizedSample = round(FOUR_BYTES_NORMALIZER.normalize(sample));
 						b0 = (byte) (normalizedSample >> 24);
 						b1 = (byte) ((normalizedSample >> 16) & 0xFF);
@@ -252,10 +254,10 @@ public class Speaker extends Module {
 						data[dataIndex++] = b1;
 						data[dataIndex++] = b2;
 						data[dataIndex++] = b3;
-						break;
+					}
 
-					default:
-						break;
+					default -> {
+					}
 				}
 			}
 		}

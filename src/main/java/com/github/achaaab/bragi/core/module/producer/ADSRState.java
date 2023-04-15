@@ -5,5 +5,5 @@ package com.github.achaaab.bragi.core.module.producer;
  * @since 0.1.0
  */
 public enum ADSRState {
-  IDLE, ATTACK, DECAY, SUSTAIN, RELEASE
+	IDLE, ATTACK, DECAY, SUSTAIN, RELEASE
 }

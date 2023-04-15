@@ -4,7 +4,6 @@ import com.github.achaaab.bragi.codec.flac.FlacException;
 
 /**
  * FLAC BLOCK_TYPE
- * <p>
  * <a href="https://xiph.org/flac/format.html#metadata_block_header">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -21,13 +20,13 @@ public enum MetadataBlockType {
 			SEEKTABLE,
 			VORBIS_COMMENT,
 			CUESHEET,
-			PICTURE
-	};
+			PICTURE };
 
 	/**
 	 * @param code metadata block type code
 	 * @return metadata block type corresponding to the given code,
 	 * @throws FlacException if the block type code is unsupported
+	 * @since 0.2.0
 	 */
 	static MetadataBlockType decode(int code) throws FlacException {
 

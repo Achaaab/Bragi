@@ -14,7 +14,8 @@ public class FrequencySlider extends LogarithmicSlider {
 
 	/**
 	 * @param minimalFrequency minimal frequency in hertz
-	 * @param octaveCount      number of octave from the minimal frequency
+	 * @param octaveCount number of octave from the minimal frequency
+	 * @since 0.2.0
 	 */
 	public FrequencySlider(double minimalFrequency, int octaveCount) {
 

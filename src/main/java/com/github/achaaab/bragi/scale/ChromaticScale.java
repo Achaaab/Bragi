@@ -24,6 +24,7 @@ public class ChromaticScale implements Scale {
 	/**
 	 * @param note note
 	 * @return whether the note is a sharp note in chromatic scale
+	 * @since 0.2.0
 	 */
 	public static boolean sharp(Note note) {
 		return SHARP_TONES[note.tone()];

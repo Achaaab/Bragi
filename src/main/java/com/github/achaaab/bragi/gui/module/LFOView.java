@@ -24,6 +24,7 @@ public class LFOView extends JPanel {
 
 	/**
 	 * @param model LFO model
+	 * @since 0.2.0
 	 */
 	public LFOView(LFO model) {
 

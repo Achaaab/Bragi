@@ -8,7 +8,6 @@ import java.util.List;
 
 /**
  * FLAC METADATA_BLOCK_CUESHEET
- * <p>
  * <a href="https://xiph.org/flac/format.html#metadata_block_cuesheet">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -26,6 +25,7 @@ public class CueSheet implements MetadataBlockData {
 	 *
 	 * @param input FLAC input stream to decode
 	 * @throws IOException I/O exception while decoding a CUE sheet
+	 * @since 0.2.0
 	 */
 	public CueSheet(FlacInputStream input) throws IOException {
 
@@ -46,9 +46,10 @@ public class CueSheet implements MetadataBlockData {
 	}
 
 	/**
-	 * For CD-DA, this is a thirteen digit number.
+	 * For CD-DA, this is a thirteen-digit number.
 	 *
 	 * @return media catalog number
+	 * @since 0.2.0
 	 */
 	public String catalogNumber() {
 		return catalogNumber;
@@ -67,6 +68,7 @@ public class CueSheet implements MetadataBlockData {
 	 * not necessarily to INDEX 01 of the first track; even the first track may have INDEX 00 data.
 	 *
 	 * @return number of lead-in samples
+	 * @since 0.2.0
 	 */
 	public long leadInSampleCount() {
 		return leadInSampleCount;
@@ -74,6 +76,7 @@ public class CueSheet implements MetadataBlockData {
 
 	/**
 	 * @return whether this CUE sheet corresponds to a Compact Disc
+	 * @since 0.2.0
 	 */
 	public boolean compactDisc() {
 		return compactDisc;
@@ -85,6 +88,7 @@ public class CueSheet implements MetadataBlockData {
 	 * For CD-DA, the lead-out track number must be 170 as specified by the Red Book, otherwise is must be 255.
 	 *
 	 * @return tracks
+	 * @since 0.2.0
 	 */
 	public List<CueSheetTrack> tracks() {
 		return tracks;

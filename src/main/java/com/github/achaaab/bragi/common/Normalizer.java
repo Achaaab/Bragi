@@ -25,10 +25,11 @@ public class Normalizer {
 	private final float inverseAmplification;
 
 	/**
-	 * @param input0  input sample 0
-	 * @param input1  input sample 1
+	 * @param input0 input sample 0
+	 * @param input1 input sample 1
 	 * @param output0 output sample 0
 	 * @param output1 output sample 1
+	 * @since 0.2.0
 	 */
 	public Normalizer(float input0, float input1, float output0, float output1) {
 
@@ -51,6 +52,7 @@ public class Normalizer {
 	/**
 	 * @param input input sample with double precision
 	 * @return normalized sample
+	 * @since 0.2.0
 	 */
 	public float normalize(double input) {
 		return normalize((float) input);
@@ -68,6 +70,7 @@ public class Normalizer {
 	/**
 	 * @param input sample to normalize
 	 * @return normalized sample
+	 * @since 0.2.0
 	 */
 	public float normalize(float input) {
 

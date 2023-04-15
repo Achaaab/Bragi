@@ -15,6 +15,7 @@ public class ResourceUtils {
 	/**
 	 * @param name name of the resource
 	 * @return path to the named resource
+	 * @since 0.2.0
 	 */
 	public static Path getPath(String name) {
 

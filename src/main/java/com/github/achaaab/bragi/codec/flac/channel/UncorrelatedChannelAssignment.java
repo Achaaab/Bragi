@@ -14,6 +14,7 @@ public class UncorrelatedChannelAssignment extends AbstractChannelAssignment {
 	 * The number of descriptions defines the number of channels.
 	 *
 	 * @param descriptions description of each channel
+	 * @since 0.2.0
 	 */
 	UncorrelatedChannelAssignment(String... descriptions) {
 		super(descriptions);

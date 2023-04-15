@@ -2,8 +2,20 @@ package com.github.achaaab.bragi.file;
 
 /**
  * WAV file header
- * TODO add javadoc about this record components
  *
+ * @param fileType
+ * @param fileSize
+ * @param fileFormat
+ * @param formatChunkTitle
+ * @param formatChunkSize
+ * @param audioFormat
+ * @param channelCount
+ * @param frameRate
+ * @param byteRate
+ * @param frameSize
+ * @param sampleSize
+ * @param dataChunkTitle
+ * @param dataSize
  * @author Jonathan Guéhenneux
  * @since 0.1.0
  */

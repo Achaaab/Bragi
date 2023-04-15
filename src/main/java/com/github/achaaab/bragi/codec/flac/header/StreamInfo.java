@@ -8,7 +8,6 @@ import java.io.IOException;
 /**
  * FLAC METADATA_BLOCK_STREAMINFO
  * It must be the first metadata block data of a FLAC stream.
- * <p>
  * <a href="https://xiph.org/flac/format.html#metadata_block_streaminfo">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -32,8 +31,9 @@ public class StreamInfo implements MetadataBlockData {
 	 * Decodes a STREAMINFO metadata block from the given FLAC input stream.
 	 *
 	 * @param input FLAC input stream to decode
-	 * @throws IOException   I/O exception while decoding a STREAMINFO metadata block
+	 * @throws IOException I/O exception while decoding a STREAMINFO metadata block
 	 * @throws FlacException if STREAMINFO metadata block is invalid or not supported
+	 * @since 0.2.0
 	 */
 	public StreamInfo(FlacInputStream input) throws IOException, FlacException {
 
@@ -56,6 +56,7 @@ public class StreamInfo implements MetadataBlockData {
 
 	/**
 	 * @return minimum block size in samples
+	 * @since 0.2.0
 	 */
 	public int minimumBlockSize() {
 		return minimumBlockSize;
@@ -63,6 +64,7 @@ public class StreamInfo implements MetadataBlockData {
 
 	/**
 	 * @return maximum block size in samples
+	 * @since 0.2.0
 	 */
 	public int maximumBlockSize() {
 		return maximumBlockSize;
@@ -70,6 +72,7 @@ public class StreamInfo implements MetadataBlockData {
 
 	/**
 	 * @return minimum frame size in bytes (B)
+	 * @since 0.2.0
 	 */
 	public int minimumFrameSize() {
 		return minimumFrameSize;
@@ -77,6 +80,7 @@ public class StreamInfo implements MetadataBlockData {
 
 	/**
 	 * @return maximum frame size in bytes (B)
+	 * @since 0.2.0
 	 */
 	public int maximumFrameSize() {
 		return maximumFrameSize;
@@ -84,6 +88,7 @@ public class StreamInfo implements MetadataBlockData {
 
 	/**
 	 * @return number of samples per second per channel
+	 * @since 0.2.0
 	 */
 	public int sampleRate() {
 		return sampleRate;
@@ -91,6 +96,7 @@ public class StreamInfo implements MetadataBlockData {
 
 	/**
 	 * @return number of channels
+	 * @since 0.2.0
 	 */
 	public int channelCount() {
 		return channelCount;
@@ -98,6 +104,7 @@ public class StreamInfo implements MetadataBlockData {
 
 	/**
 	 * @return size of each sample in bits
+	 * @since 0.2.0
 	 */
 	public int sampleSize() {
 		return sampleSize;
@@ -105,6 +112,7 @@ public class StreamInfo implements MetadataBlockData {
 
 	/**
 	 * @return number of inter-channel sample
+	 * @since 0.2.0
 	 */
 	public long sampleCount() {
 		return sampleCount;
@@ -112,6 +120,7 @@ public class StreamInfo implements MetadataBlockData {
 
 	/**
 	 * @return MD5 signature
+	 * @since 0.2.0
 	 */
 	public byte[] md5Signature() {
 		return md5Signature;
@@ -119,6 +128,7 @@ public class StreamInfo implements MetadataBlockData {
 
 	/**
 	 * @return stream duration in seconds (s)
+	 * @since 0.2.0
 	 */
 	public float duration() {
 		return duration;

@@ -8,6 +8,7 @@ public class Sawtooth extends AbstractWaveform {
 
 	/**
 	 * @see #SAWTOOTH
+	 * @since 0.2.0
 	 */
 	Sawtooth() {
 		super("Sawtooth");

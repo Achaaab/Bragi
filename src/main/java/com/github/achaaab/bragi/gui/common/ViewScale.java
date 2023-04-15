@@ -23,6 +23,7 @@ public class ViewScale {
 	 * Scales the given component.
 	 *
 	 * @param component component to scale
+	 * @since 0.2.0
 	 */
 	public static void scale(Component component) {
 
@@ -67,6 +68,7 @@ public class ViewScale {
 	/**
 	 * @param font font to scale
 	 * @return scaled font
+	 * @since 0.2.0
 	 */
 	public static Font scale(Font font) {
 		return scale(font, SCALE_FACTOR);
@@ -76,6 +78,7 @@ public class ViewScale {
 	 * @param font   font to scale
 	 * @param factor scale factor
 	 * @return scaled font
+	 * @since 0.2.0
 	 */
 	public static Font scale(Font font, float factor) {
 
@@ -88,6 +91,7 @@ public class ViewScale {
 	/**
 	 * @param size size to scale
 	 * @return scaled size
+	 * @since 0.2.0
 	 */
 	public static int scale(int size) {
 		return round(SCALE_FACTOR * size);
@@ -96,6 +100,7 @@ public class ViewScale {
 	/**
 	 * @param size size to scale
 	 * @return scaled size
+	 * @since 0.2.0
 	 */
 	public static float scale(float size) {
 		return SCALE_FACTOR * size;
@@ -104,6 +109,7 @@ public class ViewScale {
 	/**
 	 * @param dimension dimension to scale, in place
 	 * @return scaled dimension
+	 * @since 0.2.0
 	 */
 	public static Dimension scale(Dimension dimension) {
 
@@ -118,6 +124,7 @@ public class ViewScale {
 	 *
 	 * @param point point to scale, in place
 	 * @return scaled point
+	 * @since 0.2.0
 	 */
 	public static Point scale(Point point) {
 

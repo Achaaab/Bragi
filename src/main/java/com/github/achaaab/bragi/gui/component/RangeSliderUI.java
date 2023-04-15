@@ -54,6 +54,7 @@ class RangeSliderUI extends BasicSliderUI {
 	 * Creates a range slider UI.
 	 *
 	 * @param rangeSlider range slider to display
+	 * @since 0.2.0
 	 */
 	protected RangeSliderUI(RangeSlider rangeSlider) {
 
@@ -66,9 +67,7 @@ class RangeSliderUI extends BasicSliderUI {
 	public void installUI(JComponent component) {
 
 		upperThumbRect = new Rectangle();
-
 		super.installUI(component);
-
 		lowerThumbRect = thumbRect;
 	}
 
@@ -82,9 +81,6 @@ class RangeSliderUI extends BasicSliderUI {
 		return new ChangeHandler();
 	}
 
-	/**
-	 * Updates the dimensions for both thumbs.
-	 */
 	@Override
 	protected void calculateThumbSize() {
 
@@ -95,9 +91,6 @@ class RangeSliderUI extends BasicSliderUI {
 		upperThumbRect.setSize(thumbRect.width, thumbRect.height);
 	}
 
-	/**
-	 * Updates the locations for both thumbs.
-	 */
 	@Override
 	protected void calculateThumbLocation() {
 
@@ -228,7 +221,8 @@ class RangeSliderUI extends BasicSliderUI {
 	 * Paints a thumb in the specified bounds, using the specified graphics context.
 	 *
 	 * @param graphics graphics context in which to paint
-	 * @param bounds   bounds of the thumb to paint
+	 * @param bounds bounds of the thumb to paint
+	 * @since 0.2.0
 	 */
 	private void paintThumb(Graphics graphics, Rectangle bounds) {
 
@@ -250,6 +244,7 @@ class RangeSliderUI extends BasicSliderUI {
 	 *
 	 * @param x x coordinate of the lower thumb location
 	 * @param y y coordinate of the lower thumb location
+	 * @since 0.2.0
 	 */
 	private void setLowerThumbLocation(int x, int y) {
 		setThumbLocation(x, y);
@@ -261,6 +256,7 @@ class RangeSliderUI extends BasicSliderUI {
 	 *
 	 * @param x x coordinate of the upper thumb location
 	 * @param y y coordinate of the upper thumb location
+	 * @since 0.2.0
 	 */
 	private void setUpperThumbLocation(int x, int y) {
 
@@ -275,6 +271,8 @@ class RangeSliderUI extends BasicSliderUI {
 	/**
 	 * Moves the selected thumb in the specified direction by a block increment.
 	 * This method is called when the user presses the Page Up or Down keys.
+	 *
+	 * @since 0.2.0
 	 */
 	public void scrollByBlock(int direction) {
 
@@ -320,6 +318,8 @@ class RangeSliderUI extends BasicSliderUI {
 	/**
 	 * Listener to handle model change events. This calculates the thumb locations and repaints the slider
 	 * if the value change is not caused by dragging a thumb.
+	 *
+	 * @since 0.2.0
 	 */
 	public class ChangeHandler implements ChangeListener {
 
@@ -336,6 +336,8 @@ class RangeSliderUI extends BasicSliderUI {
 
 	/**
 	 * Listener to handle mouse movements in the slider track.
+	 *
+	 * @since 0.2.0
 	 */
 	public class RangeTrackListener extends TrackListener {
 
@@ -439,6 +441,8 @@ class RangeSliderUI extends BasicSliderUI {
 
 		/**
 		 * Moves the location of the lower thumb, and sets its corresponding value in the slider.
+		 *
+		 * @since 0.2.0
 		 */
 		private void moveLowerThumb() {
 
@@ -493,6 +497,8 @@ class RangeSliderUI extends BasicSliderUI {
 
 		/**
 		 * Moves the location of the upper thumb, and sets its corresponding value in the slider.
+		 *
+		 * @since 0.2.0
 		 */
 		private void moveUpperThumb() {
 

@@ -10,18 +10,21 @@ public interface Scale {
 
 	/**
 	 * @return number of tones in this scale
+	 * @since 0.2.0
 	 */
 	int toneCount();
 
 	/**
 	 * @param note musical note
 	 * @return unique name of the given note
+	 * @since 0.2.0
 	 */
 	String name(Note note);
 
 	/**
 	 * @param note musical note
 	 * @return frequency of the given note in hertz (Hz)
+	 * @since 0.2.0
 	 */
 	double frequency(Note note);
 
@@ -31,6 +34,7 @@ public interface Scale {
 	 *
 	 * @param note note
 	 * @return note that follows the given note in this scale
+	 * @since 0.2.0
 	 */
 	default Note followingNote(Note note) {
 

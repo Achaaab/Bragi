@@ -24,8 +24,7 @@ public abstract class VCF extends Module {
 
 	protected static final Normalizer NORMALIZER = new Normalizer(
 			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage(),
-			-1.0f, 1.0f
-	);
+			-1.0f, 1.0f);
 
 	protected final Input modulation;
 	protected final Input input;
@@ -95,11 +94,14 @@ public abstract class VCF extends Module {
 
 	/**
 	 * filter samples
+	 *
+	 * @since 0.2.0
 	 */
 	protected abstract void filterSamples();
 
 	/**
 	 * @return modulation input
+	 * @since 0.2.0
 	 */
 	public Input modulation() {
 		return modulation;
@@ -107,6 +109,7 @@ public abstract class VCF extends Module {
 
 	/**
 	 * @return how much emphasis around cutoff frequency in {@code [0.0f, 1.0f]}
+	 * @since 0.2.0
 	 */
 	public float getEmphasis() {
 		return emphasis;
@@ -114,6 +117,7 @@ public abstract class VCF extends Module {
 
 	/**
 	 * @param emphasis how much emphasis around cutoff frequency in {@code [0.0f, 1.0f]}
+	 * @since 0.2.0
 	 */
 	public void setEmphasis(float emphasis) {
 		this.emphasis = emphasis;
@@ -121,6 +125,7 @@ public abstract class VCF extends Module {
 
 	/**
 	 * @return base frequency (without modulation) from which this VCF starts to filter
+	 * @since 0.2.0
 	 */
 	public float getCutoffFrequency() {
 		return cutoffFrequency;
@@ -128,6 +133,7 @@ public abstract class VCF extends Module {
 
 	/**
 	 * @param cutoffFrequency base frequency (without modulation) from which this VCF starts to filter
+	 * @since 0.2.0
 	 */
 	public void setCutoffFrequency(float cutoffFrequency) {
 		this.cutoffFrequency = cutoffFrequency;

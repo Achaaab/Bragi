@@ -57,9 +57,10 @@ public class MmlPlayerView extends JPanel {
 	private Command previousCommand;
 
 	/**
-	 * Creates a MML player view.
+	 * Creates an MML player view.
 	 *
 	 * @param model MML player
+	 * @since 0.2.0
 	 */
 	public MmlPlayerView(MmlPlayer model) {
 
@@ -99,6 +100,7 @@ public class MmlPlayerView extends JPanel {
 
 	/**
 	 * @param currentCommand command currently being executed
+	 * @since 0.2.0
 	 */
 	public void showCurrentCommand(Command currentCommand) {
 
@@ -138,6 +140,7 @@ public class MmlPlayerView extends JPanel {
 
 	/**
 	 * @param event play button event
+	 * @since 0.2.0
 	 */
 	private void play(ActionEvent event) {
 		new Thread(() -> model.play(mml())).start();
@@ -145,6 +148,7 @@ public class MmlPlayerView extends JPanel {
 
 	/**
 	 * @return MML text
+	 * @since 0.2.0
 	 */
 	private String mml() {
 

@@ -18,6 +18,7 @@ public class FourChannels extends UncorrelatedChannelAssignment {
 
 	/**
 	 * @see #FOUR_CHANNELS
+	 * @since 0.2.0
 	 */
 	FourChannels() {
 		super(FRONT_LEFT, FRONT_RIGHT, BACK_LEFT, BACK_RIGHT);

@@ -17,9 +17,10 @@ public class LogarithmicSlider extends DecimalSlider {
 	private final double base;
 
 	/**
-	 * @param minimal   minimal value of this slider
-	 * @param maximal   maximal value of this slider
+	 * @param minimal minimal value of this slider
+	 * @param maximal maximal value of this slider
 	 * @param precision number of possible distinct values including {@code minimalValue} and {@code maximalValue}
+	 * @since 0.2.0
 	 */
 	public LogarithmicSlider(double minimal, double maximal, int precision) {
 

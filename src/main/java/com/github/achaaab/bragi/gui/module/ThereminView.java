@@ -34,6 +34,7 @@ public class ThereminView extends JPanel {
 
 	/**
 	 * @param model model
+	 * @since 0.2.0
 	 */
 	public ThereminView(Theremin model) {
 
@@ -68,6 +69,7 @@ public class ThereminView extends JPanel {
 	 * Set pitch and volume according to mouse cursor position.
 	 *
 	 * @param mouseEvent mouse event
+	 * @since 0.2.0
 	 */
 	private void setPitchAndVolume(MouseEvent mouseEvent) {
 
@@ -81,6 +83,7 @@ public class ThereminView extends JPanel {
 	/**
 	 * @param x horizontal position of the mouse cursor on the theremin view
 	 * @return corresponding pitch in volts
+	 * @since 0.2.0
 	 */
 	private float getPitch(float x) {
 		return MINIMAL_PITCH + PITCH_AMPLITUDE * (x / getWidth());
@@ -89,6 +92,7 @@ public class ThereminView extends JPanel {
 	/**
 	 * @param y vertical position of the mouse cursor on the theremin view
 	 * @return corresponding volume in volts
+	 * @since 0.2.0
 	 */
 	private float getVolume(float y) {
 		return MAXIMAL_VOLUME - VOLUME_AMPLITUDE * (y / getHeight());

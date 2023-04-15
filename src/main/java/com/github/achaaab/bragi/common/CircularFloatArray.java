@@ -18,6 +18,7 @@ public class CircularFloatArray {
 
 	/**
 	 * @param length array length, must be strictly positive
+	 * @since 0.2.0
 	 */
 	public CircularFloatArray(int length) {
 
@@ -36,6 +37,7 @@ public class CircularFloatArray {
 	 * Reads elements from this circular array and write them to the given {@code target}.
 	 *
 	 * @param target array to write to
+	 * @since 0.2.0
 	 */
 	public void read(float[] target) {
 
@@ -54,6 +56,7 @@ public class CircularFloatArray {
 	 * Reads the last element that was written to this circular array.
 	 *
 	 * @return read element
+	 * @since 0.2.0
 	 */
 	public float readLast() {
 		return array[writeIndex == 0 ? length - 1 : writeIndex];
@@ -64,6 +67,7 @@ public class CircularFloatArray {
 	 * and write them to the given {@code target}.
 	 *
 	 * @param target array to write to
+	 * @since 0.2.0
 	 */
 	public void readLast(float[] target) {
 
@@ -84,6 +88,7 @@ public class CircularFloatArray {
 	 * Writes 1 element to this circular array.
 	 *
 	 * @param element element to write
+	 * @since 0.2.0
 	 */
 	public void write(float element) {
 
@@ -95,6 +100,7 @@ public class CircularFloatArray {
 	 * Reads elements from the given {@code source} and writes them to this circular array.
 	 *
 	 * @param source array to read from
+	 * @since 0.2.0
 	 */
 	public void write(float[] source) {
 

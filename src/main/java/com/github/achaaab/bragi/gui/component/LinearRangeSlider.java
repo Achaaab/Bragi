@@ -12,9 +12,10 @@ import static java.lang.Math.round;
 public class LinearRangeSlider extends DecimalRangeSlider {
 
 	/**
-	 * @param minimal   minimal value of this slider
-	 * @param maximal   maximal value of this slider
+	 * @param minimal minimal value of this slider
+	 * @param maximal maximal value of this slider
 	 * @param precision number of possible distinct values including {@code minimalValue} and {@code maximalValue}
+	 * @since 0.2.0
 	 */
 	public LinearRangeSlider(double minimal, double maximal, int precision) {
 		super(minimal, maximal, precision);

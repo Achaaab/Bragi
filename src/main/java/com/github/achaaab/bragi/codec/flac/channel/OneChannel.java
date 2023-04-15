@@ -15,6 +15,7 @@ public class OneChannel extends UncorrelatedChannelAssignment {
 
 	/**
 	 * @see #ONE_CHANNEL
+	 * @since 0.2.0
 	 */
 	OneChannel() {
 		super(MONO);

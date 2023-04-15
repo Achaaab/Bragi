@@ -27,6 +27,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author Jonathan Guéhenneux
+ * @since 0.2.0
  */
 public class SynthesizerView extends JPanel {
 
@@ -47,6 +48,7 @@ public class SynthesizerView extends JPanel {
 
 	/**
 	 * @param model synthesizer model
+	 * @since 0.2.0
 	 */
 	public SynthesizerView(Synthesizer model) {
 
@@ -113,6 +115,7 @@ public class SynthesizerView extends JPanel {
 	 * Displays the module view, if it is not {@code null}.
 	 *
 	 * @param module module to display
+	 * @since 0.2.0
 	 */
 	public void display(Module module) {
 
@@ -139,6 +142,7 @@ public class SynthesizerView extends JPanel {
 	 * Called when the user defined a new configuration for the input line.
 	 *
 	 * @param inputConfiguration new configuration of the input line
+	 * @since 0.2.0
 	 */
 	private void inputConfigurationChanged(LineConfiguration inputConfiguration) {
 
@@ -150,6 +154,7 @@ public class SynthesizerView extends JPanel {
 	 * Called when the user defined a new configuration for the output line.
 	 *
 	 * @param outputConfiguration new configuration of the output line
+	 * @since 0.2.0
 	 */
 	private void outputConfigurationChanged(LineConfiguration outputConfiguration) {
 
@@ -159,6 +164,7 @@ public class SynthesizerView extends JPanel {
 
 	/**
 	 * @param event input configuration selection event
+	 * @since 0.2.0
 	 */
 	private void inputConfigurationSelected(ActionEvent event) {
 
@@ -169,6 +175,7 @@ public class SynthesizerView extends JPanel {
 
 	/**
 	 * @param event output configuration selection event
+	 * @since 0.2.0
 	 */
 	private void outputConfigurationSelected(ActionEvent event) {
 

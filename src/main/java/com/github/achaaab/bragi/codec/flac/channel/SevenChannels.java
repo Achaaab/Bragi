@@ -21,6 +21,7 @@ public class SevenChannels extends UncorrelatedChannelAssignment {
 
 	/**
 	 * @see #SEVEN_CHANNELS
+	 * @since 0.2.0
 	 */
 	SevenChannels() {
 		super(FRONT_LEFT, FRONT_RIGHT, FRONT_CENTER, LFE, BACK_CENTER, SIDE_LEFT, SIDE_RIGHT);

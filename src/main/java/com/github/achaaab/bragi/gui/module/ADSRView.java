@@ -23,6 +23,7 @@ public class ADSRView extends JPanel {
 
 	/**
 	 * @param model ADSR model
+	 * @since 0.2.0
 	 */
 	public ADSRView(ADSR model) {
 

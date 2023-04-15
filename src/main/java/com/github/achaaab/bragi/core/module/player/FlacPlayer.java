@@ -21,6 +21,7 @@ public class FlacPlayer extends Player {
 	 * @param path path to the FLAC file to play
 	 * @throws ModuleCreationException if the FLAC file cannot be played
 	 * @see #DEFAULT_NAME
+	 * @since 0.2.0
 	 */
 	public FlacPlayer(Path path) {
 		this(DEFAULT_NAME, path);
@@ -30,6 +31,7 @@ public class FlacPlayer extends Player {
 	 * @param name name of the FLAC file player
 	 * @param path path to the FLAC file to play
 	 * @throws ModuleCreationException if the FLAC file cannot be played
+	 * @since 0.2.0
 	 */
 	public FlacPlayer(String name, Path path) {
 		super(name, new FlacFile(path));

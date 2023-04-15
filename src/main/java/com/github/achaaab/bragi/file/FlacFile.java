@@ -30,6 +30,7 @@ public class FlacFile implements AudioFile {
 
 	/**
 	 * @param path path to a FLAC file
+	 * @since 0.2.0
 	 */
 	public FlacFile(Path path) {
 		this.path = path;

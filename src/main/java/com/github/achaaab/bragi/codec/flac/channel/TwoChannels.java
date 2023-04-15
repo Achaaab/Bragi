@@ -16,6 +16,7 @@ public class TwoChannels extends UncorrelatedChannelAssignment {
 
 	/**
 	 * @see #TWO_CHANNELS
+	 * @since 0.2.0
 	 */
 	TwoChannels() {
 		super(LEFT, RIGHT);

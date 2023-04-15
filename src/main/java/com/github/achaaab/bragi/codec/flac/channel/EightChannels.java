@@ -22,6 +22,7 @@ public class EightChannels extends UncorrelatedChannelAssignment {
 
 	/**
 	 * @see #EIGHT_CHANNELS
+	 * @since 0.2.0
 	 */
 	EightChannels() {
 		super(FRONT_LEFT, FRONT_RIGHT, FRONT_CENTER, LFE, BACK_LEFT, BACK_RIGHT, SIDE_LEFT, SIDE_RIGHT);

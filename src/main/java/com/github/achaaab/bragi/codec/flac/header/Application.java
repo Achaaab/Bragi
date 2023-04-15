@@ -8,7 +8,6 @@ import java.util.Map;
 
 /**
  * FLAC METADATA_BLOCK_APPLICATION
- * <p>
  * <a href="https://xiph.org/flac/format.html#metadata_block_application">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -57,9 +56,10 @@ public class Application implements MetadataBlockData {
 	/**
 	 * Decodes an APPLICATION metadata block from the given FLAC input stream.
 	 *
-	 * @param input  FLAC input stream to decode
+	 * @param input FLAC input stream to decode
 	 * @param length length of this metadata block data
 	 * @throws IOException I/O exception while decoding a APPLICATION metadata block
+	 * @since 0.2.0
 	 */
 	Application(FlacInputStream input, int length) throws IOException {
 
@@ -71,6 +71,7 @@ public class Application implements MetadataBlockData {
 
 	/**
 	 * @return registered id of the application
+	 * @since 0.2.0
 	 */
 	public int registeredId() {
 		return registeredId;
@@ -78,6 +79,7 @@ public class Application implements MetadataBlockData {
 
 	/**
 	 * @return application data
+	 * @since 0.2.0
 	 */
 	public byte[] data() {
 		return data;
@@ -85,6 +87,7 @@ public class Application implements MetadataBlockData {
 
 	/**
 	 * @return name of the application, {@code null} if the registered id is unknown
+	 * @since 0.2.0
 	 */
 	public String name() {
 		return name;

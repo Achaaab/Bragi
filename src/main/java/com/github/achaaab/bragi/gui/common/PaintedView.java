@@ -25,6 +25,7 @@ public abstract class PaintedView extends JComponent {
 	 * Creates a buffered view with the default target frame rate.
 	 *
 	 * @see #DEFAULT_TARGET_FRAME_RATE
+	 * @since 0.2.0
 	 */
 	protected PaintedView() {
 		this(DEFAULT_TARGET_FRAME_RATE);
@@ -34,6 +35,7 @@ public abstract class PaintedView extends JComponent {
 	 * Creates a buffered view with the specified target frame rate.
 	 *
 	 * @param targetFrameRate required number of frames to display per second
+	 * @since 0.2.0
 	 */
 	protected PaintedView(double targetFrameRate) {
 
@@ -45,6 +47,7 @@ public abstract class PaintedView extends JComponent {
 	 * Draws a message indicating the average frame rate.
 	 *
 	 * @param graphics graphics context in which to draw the frame rate message
+	 * @since 0.2.0
 	 */
 	protected void drawFrameRate(Graphics2D graphics) {
 

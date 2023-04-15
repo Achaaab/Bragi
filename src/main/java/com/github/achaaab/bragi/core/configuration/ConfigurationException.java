@@ -12,6 +12,7 @@ public class ConfigurationException extends RuntimeException {
 
 	/**
 	 * @param message message that explains the configuration failure
+	 * @since 0.2.0
 	 */
 	public ConfigurationException(String message) {
 		super(message);
@@ -19,6 +20,7 @@ public class ConfigurationException extends RuntimeException {
 
 	/**
 	 * @param cause cause of configuration failure
+	 * @since 0.2.0
 	 */
 	public ConfigurationException(Exception cause) {
 		super(DEFAULT_MESSAGE, cause);

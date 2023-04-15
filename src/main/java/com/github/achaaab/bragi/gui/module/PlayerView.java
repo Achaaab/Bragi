@@ -42,6 +42,7 @@ public class PlayerView extends JPanel {
 	/**
 	 * @param time time in seconds (s)
 	 * @return formatted time
+	 * @since 0.2.0
 	 */
 	private static String formatTime(double time) {
 
@@ -64,6 +65,7 @@ public class PlayerView extends JPanel {
 
 	/**
 	 * @param model player model
+	 * @since 0.2.0
 	 */
 	public PlayerView(Player model) {
 
@@ -98,7 +100,7 @@ public class PlayerView extends JPanel {
 	/**
 	 * This method is designed to be registered as the listener callback for the time slider.
 	 * It the {@link #modelChange} flag is set, does nothing.
-	 * If the the value of {@link #timeSlider} is adjusting, does nothing.
+	 * If the value of {@link #timeSlider} is adjusting, does nothing.
 	 * Otherwise, calls the model to seek the new time position.
 	 *
 	 * @param event time changed event
@@ -125,8 +127,9 @@ public class PlayerView extends JPanel {
 	/**
 	 * Updates the time label with new time and duration.
 	 *
-	 * @param time     time in seconds (s)
+	 * @param time time in seconds (s)
 	 * @param duration duration in seconds (s)
+	 * @since 0.2.0
 	 */
 	private void updateTimeLabel(double time, double duration) {
 
@@ -138,8 +141,8 @@ public class PlayerView extends JPanel {
 
 	/**
 	 * This method is designed to be called by the model. To avoid infinite event loop, we set
-	 * a flag to indicate that this update comes from the model, which is already up to date.
-	 * Does nothing if the value if the time slider is adjusting (to let the user seek a time position).
+	 * a flag to indicate that this update comes from the model, which is already up-to-date.
+	 * Does nothing if the value of the time slider is adjusting (to let the user seek a time position).
 	 *
 	 * @since 0.1.6
 	 */

@@ -40,6 +40,7 @@ public class LFO extends Oscillator {
 
 	/**
 	 * @param name name of the LFO
+	 * @since 0.2.0
 	 */
 	public LFO(String name) {
 
@@ -59,9 +60,7 @@ public class LFO extends Oscillator {
 	public int compute() throws InterruptedException {
 
 		var sampleCount = Settings.INSTANCE.chunkSize();
-
 		var samples = wave.getSamples(0, null, sampleCount);
-
 		output.write(samples);
 
 		return sampleCount;

@@ -11,7 +11,6 @@ import com.github.achaaab.bragi.scale.Note;
 import com.github.achaaab.bragi.scale.Scale;
 import org.slf4j.Logger;
 
-import java.awt.event.KeyEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,8 +19,37 @@ import java.util.Map;
 
 import static com.github.achaaab.bragi.scale.ChromaticScale.BASE_FREQUENCY;
 import static com.github.achaaab.bragi.scale.ChromaticScale.sharp;
+import static java.awt.event.KeyEvent.VK_A;
+import static java.awt.event.KeyEvent.VK_B;
+import static java.awt.event.KeyEvent.VK_C;
+import static java.awt.event.KeyEvent.VK_COLON;
+import static java.awt.event.KeyEvent.VK_COMMA;
+import static java.awt.event.KeyEvent.VK_E;
+import static java.awt.event.KeyEvent.VK_F;
+import static java.awt.event.KeyEvent.VK_G;
+import static java.awt.event.KeyEvent.VK_H;
+import static java.awt.event.KeyEvent.VK_I;
+import static java.awt.event.KeyEvent.VK_K;
+import static java.awt.event.KeyEvent.VK_L;
+import static java.awt.event.KeyEvent.VK_LESS;
+import static java.awt.event.KeyEvent.VK_N;
+import static java.awt.event.KeyEvent.VK_O;
+import static java.awt.event.KeyEvent.VK_P;
+import static java.awt.event.KeyEvent.VK_Q;
+import static java.awt.event.KeyEvent.VK_R;
+import static java.awt.event.KeyEvent.VK_S;
+import static java.awt.event.KeyEvent.VK_SEMICOLON;
+import static java.awt.event.KeyEvent.VK_T;
+import static java.awt.event.KeyEvent.VK_TAB;
+import static java.awt.event.KeyEvent.VK_U;
+import static java.awt.event.KeyEvent.VK_V;
+import static java.awt.event.KeyEvent.VK_W;
+import static java.awt.event.KeyEvent.VK_X;
+import static java.awt.event.KeyEvent.VK_Y;
+import static java.awt.event.KeyEvent.VK_Z;
 import static java.awt.event.KeyEvent.getExtendedKeyCodeForChar;
 import static java.lang.Math.log;
+import static java.util.Arrays.fill;
 import static javax.swing.SwingUtilities.invokeAndWait;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -41,49 +69,33 @@ public class Keyboard extends Module {
 	private static final int[] KEY_CODES = {
 
 			// third octave (from F3 to B3)
-			KeyEvent.VK_TAB,
+			VK_TAB,
 			getExtendedKeyCodeForChar('&'),
-			KeyEvent.VK_A,
+			VK_A,
 			getExtendedKeyCodeForChar('é'),
-			KeyEvent.VK_Z,
+			VK_Z,
 			getExtendedKeyCodeForChar('"'),
-			KeyEvent.VK_E,
+			VK_E,
 
 			// fourth octave (from C4 to B4)
-			KeyEvent.VK_R,
+			VK_R,
 			getExtendedKeyCodeForChar('('),
-			KeyEvent.VK_T,
+			VK_T,
 			getExtendedKeyCodeForChar('-'),
-			KeyEvent.VK_Y,
-			KeyEvent.VK_U,
+			VK_Y,
+			VK_U,
 			getExtendedKeyCodeForChar('_'),
-			KeyEvent.VK_I,
+			VK_I,
 			getExtendedKeyCodeForChar('ç'),
-			KeyEvent.VK_O,
+			VK_O,
 			getExtendedKeyCodeForChar('à'),
-			KeyEvent.VK_P,
+			VK_P,
 
 			// fifth octave (from C5 to B5)
-			KeyEvent.VK_LESS,
-			KeyEvent.VK_Q,
-			KeyEvent.VK_W,
-			KeyEvent.VK_S,
-			KeyEvent.VK_X,
-			KeyEvent.VK_C,
-			KeyEvent.VK_F,
-			KeyEvent.VK_V,
-			KeyEvent.VK_G,
-			KeyEvent.VK_B,
-			KeyEvent.VK_H,
-			KeyEvent.VK_N,
+			VK_LESS, VK_Q, VK_W, VK_S, VK_X, VK_C, VK_F, VK_V, VK_G, VK_B, VK_H, VK_N,
 
 			// sixth octave (from C6 to E6)
-			KeyEvent.VK_COMMA,
-			KeyEvent.VK_K,
-			KeyEvent.VK_SEMICOLON,
-			KeyEvent.VK_L,
-			KeyEvent.VK_COLON
-	};
+			VK_COMMA, VK_K, VK_SEMICOLON, VK_L, VK_COLON };
 
 	private final Output output;
 	private final Output gate;
@@ -109,6 +121,7 @@ public class Keyboard extends Module {
 
 	/**
 	 * @param name keyboard name
+	 * @since 0.2.0
 	 */
 	public Keyboard(String name) {
 
@@ -148,10 +161,7 @@ public class Keyboard extends Module {
 		var sampleCount = Settings.INSTANCE.chunkSize();
 
 		var samples = new float[sampleCount];
-
-		for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
-			samples[sampleIndex] = voltage;
-		}
+		fill(samples, voltage);
 
 		output.write(samples);
 
@@ -173,6 +183,7 @@ public class Keyboard extends Module {
 	/**
 	 * @param note note
 	 * @return corresponding voltage
+	 * @since 0.2.0
 	 */
 	private float voltage(Note note) {
 
@@ -184,6 +195,7 @@ public class Keyboard extends Module {
 	 * @param note key note
 	 * @param code key code
 	 * @return created key
+	 * @since 0.2.0
 	 */
 	private Key createKey(Note note, int code) {
 
@@ -195,9 +207,10 @@ public class Keyboard extends Module {
 	}
 
 	/**
-	 * Play a note. If the given note is associated to a key, set the key as pressed.
+	 * Plays a note. If the given note is associated to a key, set the key as pressed.
 	 *
 	 * @param note note to play
+	 * @since 0.2.0
 	 */
 	public synchronized void play(Note note) {
 
@@ -215,9 +228,10 @@ public class Keyboard extends Module {
 	}
 
 	/**
-	 * Stop playing a note. If the given note is associated to a key, set the key as released.
+	 * Stops playing a note. If the given note is associated to a key, set the key as released.
 	 *
 	 * @param note note to stop playing
+	 * @since 0.2.0
 	 */
 	public synchronized void stop(Note note) {
 
@@ -234,6 +248,7 @@ public class Keyboard extends Module {
 	 * Presses a key.
 	 *
 	 * @param key key to press
+	 * @since 0.2.0
 	 */
 	public synchronized void press(Key key) {
 
@@ -247,6 +262,7 @@ public class Keyboard extends Module {
 	 * Releases a key.
 	 *
 	 * @param key key to release
+	 * @since 0.2.0
 	 */
 	public synchronized void release(Key key) {
 
@@ -257,13 +273,15 @@ public class Keyboard extends Module {
 
 	/**
 	 * @return MML player
+	 * @since 0.2.0
 	 */
 	public MmlPlayer mmlPlayer() {
 		return mmlPlayer;
 	}
 
 	/**
-	 * @return keys keys
+	 * @return keys
+	 * @since 0.2.0
 	 */
 	public List<Key> keys() {
 		return keys;
@@ -271,6 +289,7 @@ public class Keyboard extends Module {
 
 	/**
 	 * @return keyboard gate
+	 * @since 0.2.0
 	 */
 	public Output gate() {
 		return gate;

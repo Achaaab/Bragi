@@ -43,6 +43,7 @@ public class VCO extends Oscillator {
 
 	/**
 	 * @param name name of the VCO
+	 * @since 0.2.0
 	 */
 	public VCO(String name) {
 
@@ -63,11 +64,8 @@ public class VCO extends Oscillator {
 	public int compute() throws InterruptedException {
 
 		var sampleCount = Settings.INSTANCE.chunkSize();
-
 		var modulationSamples = modulation.read();
-
 		var samples = wave.getSamples(octave, modulationSamples, sampleCount);
-
 		output.write(samples);
 
 		return sampleCount;
@@ -75,6 +73,7 @@ public class VCO extends Oscillator {
 
 	/**
 	 * @return modulation input
+	 * @since 0.2.0
 	 */
 	public Input modulation() {
 		return modulation;
@@ -82,6 +81,7 @@ public class VCO extends Oscillator {
 
 	/**
 	 * @return octave adjustment
+	 * @since 0.2.0
 	 */
 	public int getOctave() {
 		return octave;
@@ -89,6 +89,7 @@ public class VCO extends Oscillator {
 
 	/**
 	 * @param octave octave adjustment
+	 * @since 0.2.0
 	 */
 	public void setOctave(int octave) {
 		this.octave = octave;

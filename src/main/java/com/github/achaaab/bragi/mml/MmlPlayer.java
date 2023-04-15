@@ -37,6 +37,7 @@ public class MmlPlayer {
 
 	/**
 	 * @param keyboard keyboard on which to play
+	 * @since 0.2.0
 	 */
 	public MmlPlayer(Keyboard keyboard) {
 
@@ -51,6 +52,7 @@ public class MmlPlayer {
 
 	/**
 	 * @return view of this MML player
+	 * @since 0.2.0
 	 */
 	public MmlPlayerView view() {
 		return view;
@@ -58,6 +60,7 @@ public class MmlPlayer {
 
 	/**
 	 * @param mml MML partition
+	 * @since 0.2.0
 	 */
 	public void play(String mml) {
 
@@ -75,8 +78,9 @@ public class MmlPlayer {
 	/**
 	 * Plays a note.
 	 *
-	 * @param tone    tone of the note to play
+	 * @param tone tone of the note to play
 	 * @param lengths fractions of a whole note to play
+	 * @since 0.2.0
 	 */
 	void play(int tone, List<Length> lengths) {
 
@@ -105,6 +109,7 @@ public class MmlPlayer {
 	 * Rests.
 	 *
 	 * @param lengths fractions of a whole note to rest
+	 * @since 0.2.0
 	 */
 	void rest(List<Length> lengths) {
 		wait(lengths);
@@ -112,6 +117,8 @@ public class MmlPlayer {
 
 	/**
 	 * Sets default tempo, default fraction and default octave.
+	 *
+	 * @since 0.2.0
 	 */
 	void start() {
 
@@ -124,6 +131,8 @@ public class MmlPlayer {
 
 	/**
 	 * Ends this MML.
+	 *
+	 * @since 0.2.0
 	 */
 	void end() {
 		end = true;
@@ -131,6 +140,7 @@ public class MmlPlayer {
 
 	/**
 	 * @param tempo tempo to set in beats per minute
+	 * @since 0.2.0
 	 */
 	void tempo(int tempo) {
 		this.tempo = tempo;
@@ -138,6 +148,7 @@ public class MmlPlayer {
 
 	/**
 	 * @param octave new octave to set
+	 * @since 0.2.0
 	 */
 	void octave(int octave) {
 		this.octave = octave;
@@ -145,7 +156,8 @@ public class MmlPlayer {
 
 	/**
 	 * @param length fraction as a fraction of a whole note (1 for a whole note, 2 for a half note,
-	 *               4 for a quarter note...)
+	 * 4 for a quarter note...)
+	 * @since 0.2.0
 	 */
 	void length(Length length) {
 		this.length = length;
@@ -153,6 +165,8 @@ public class MmlPlayer {
 
 	/**
 	 * Lowers the current octave by 1.
+	 *
+	 * @since 0.2.0
 	 */
 	void shiftUp() {
 		octave++;
@@ -160,6 +174,8 @@ public class MmlPlayer {
 
 	/**
 	 * Raises the current octave by 1.
+	 *
+	 * @since 0.2.0
 	 */
 	void shiftDown() {
 		octave--;
@@ -169,6 +185,7 @@ public class MmlPlayer {
 	 * Sets the player volume.
 	 *
 	 * @param volume volume to set
+	 * @since 0.2.0
 	 */
 	void volume(int volume) {
 
@@ -178,6 +195,7 @@ public class MmlPlayer {
 	 * Waits the end of the current note or rest.
 	 *
 	 * @param lengths fractions of a whole note to wait
+	 * @since 0.2.0
 	 */
 	private void wait(List<Length> lengths) {
 
@@ -193,6 +211,7 @@ public class MmlPlayer {
 	/**
 	 * @param length fraction of a whole note
 	 * @return duration corresponding duration in milliseconds (ms)
+	 * @since 0.2.0
 	 */
 	private int duration(Length length) {
 

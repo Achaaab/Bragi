@@ -11,11 +11,12 @@ public class Pulse extends AbstractWaveform {
 	private final double dutyCycle;
 
 	/**
-	 * @param name      naive pulse wave name
+	 * @param name naive pulse wave name
 	 * @param dutyCycle fraction of one period where the signal is up, in range ]0.0, 1.0[
 	 * @see #SQUARE
 	 * @see #PULSE_4
 	 * @see #PULSE_8
+	 * @since 0.2.0
 	 */
 	public Pulse(String name, double dutyCycle) {
 

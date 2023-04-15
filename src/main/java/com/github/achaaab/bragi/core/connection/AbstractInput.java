@@ -19,7 +19,7 @@ public abstract class AbstractInput extends AbstractNamedEntity implements Input
 	 * Create an input, initially not connected.
 	 *
 	 * @param module module that will contain the created input
-	 * @param name   name of the input to create
+	 * @param name name of the input to create
 	 * @since 0.1.8
 	 */
 	public AbstractInput(Module module, String name) {

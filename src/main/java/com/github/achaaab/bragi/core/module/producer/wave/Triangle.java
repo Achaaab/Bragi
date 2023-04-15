@@ -12,6 +12,7 @@ public class Triangle extends AbstractWaveform {
 
 	/**
 	 * @see #TRIANGLE
+	 * @since 0.2.0
 	 */
 	Triangle() {
 		super("Triangle");

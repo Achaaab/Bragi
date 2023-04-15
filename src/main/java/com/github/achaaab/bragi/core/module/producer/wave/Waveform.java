@@ -25,8 +25,7 @@ public interface Waveform {
 			SQUARE,
 			PULSE_4,
 			PULSE_8,
-			ANALOG_SQUARE
-	};
+			ANALOG_SQUARE };
 
 	float LOWER_PEAK = 0.0f;
 	float UPPER_PEAK = 1.0f;
@@ -38,6 +37,7 @@ public interface Waveform {
 	 *
 	 * @param periodFraction {@code periodFraction ∈ [0.0, 1.0[}
 	 * @return sample at given fraction of waveform period
+	 * @since 0.2.0
 	 */
 	float getSample(double periodFraction);
 }

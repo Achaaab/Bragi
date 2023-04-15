@@ -37,8 +37,9 @@ public class LineConfigurationView extends JPanel {
 
 	/**
 	 * @param comboBox non-editable combo box
-	 * @param <E>      combo box item type
+	 * @param <E> combo box item type
 	 * @return selected item
+	 * @since 0.2.0
 	 */
 	private static <E> E getSelectedItem(JComboBox<E> comboBox) {
 		return comboBox.getItemAt(comboBox.getSelectedIndex());
@@ -59,6 +60,8 @@ public class LineConfigurationView extends JPanel {
 
 	/**
 	 * Creates a new view for line configuration.
+	 *
+	 * @since 0.2.0
 	 */
 	public LineConfigurationView() {
 
@@ -153,13 +156,13 @@ public class LineConfigurationView extends JPanel {
 
 	/**
 	 * @param model model to display
+	 * @since 0.2.0
 	 */
 	public void display(LineConfiguration model) {
 
 		this.model = model;
 
 		updateFlag = true;
-
 		mixerComboBox.removeAllItems();
 
 		for (var mixer : model.mixers()) {
@@ -167,14 +170,13 @@ public class LineConfigurationView extends JPanel {
 		}
 
 		mixerComboBox.setSelectedItem(model.getMixer());
-
 		updateProperties();
-
 		updateFlag = false;
 	}
 
 	/**
 	 * @param onOk consumer that consumes the line configuration when the OK button is pressed
+	 * @since 0.2.0
 	 */
 	public void onOk(Consumer<LineConfiguration> onOk) {
 		this.onOk = onOk;
@@ -182,6 +184,7 @@ public class LineConfigurationView extends JPanel {
 
 	/**
 	 * @param onCancel task to run when the Cancel button is pressed
+	 * @since 0.2.0
 	 */
 	public void onCancel(Runnable onCancel) {
 		this.onCancel = onCancel;
@@ -189,6 +192,7 @@ public class LineConfigurationView extends JPanel {
 
 	/**
 	 * @param event OK button pressed event
+	 * @since 0.2.0
 	 */
 	private void okPressed(ActionEvent event) {
 
@@ -199,6 +203,7 @@ public class LineConfigurationView extends JPanel {
 
 	/**
 	 * @param event Cancel button pressed event
+	 * @since 0.2.0
 	 */
 	private void cancelPressed(ActionEvent event) {
 
@@ -209,6 +214,7 @@ public class LineConfigurationView extends JPanel {
 
 	/**
 	 * @param event mixer selection event
+	 * @since 0.2.0
 	 */
 	private void mixerSelected(ItemEvent event) {
 
@@ -221,6 +227,7 @@ public class LineConfigurationView extends JPanel {
 
 	/**
 	 * @param event sample rate selection event
+	 * @since 0.2.0
 	 */
 	private void sampleRateSelected(ItemEvent event) {
 
@@ -231,6 +238,7 @@ public class LineConfigurationView extends JPanel {
 
 	/**
 	 * @param event channel count selection event
+	 * @since 0.2.0
 	 */
 	private void channelCountSelected(ItemEvent event) {
 
@@ -241,6 +249,7 @@ public class LineConfigurationView extends JPanel {
 
 	/**
 	 * @param event sample size selection event
+	 * @since 0.2.0
 	 */
 	private void sampleSizeSelected(ItemEvent event) {
 
@@ -251,6 +260,7 @@ public class LineConfigurationView extends JPanel {
 
 	/**
 	 * @param event encoding selection event
+	 * @since 0.2.0
 	 */
 	private void encodingSelected(ItemEvent event) {
 
@@ -261,6 +271,7 @@ public class LineConfigurationView extends JPanel {
 
 	/**
 	 * @param event byte order selection event
+	 * @since 0.2.0
 	 */
 	private void byteOrderSelected(ItemEvent event) {
 
@@ -271,6 +282,8 @@ public class LineConfigurationView extends JPanel {
 
 	/**
 	 * Reloads available and selected properties, after a mixer selection.
+	 *
+	 * @since 0.2.0
 	 */
 	private void updateProperties() {
 

@@ -22,10 +22,11 @@ public class SawtoothTriangular extends AbstractWaveform {
 	private final Normalizer decreaseNormalizer;
 
 	/**
-	 * @param name         name of the custom sawtooth waveform
+	 * @param name name of the custom sawtooth waveform
 	 * @param peakFraction percentage of the period where the signal reach the maximum voltage
 	 * @param dropFraction percentage of amplitude to which the signal drops after the peak
 	 * @see #SAWTOOTH_TRIANGULAR
+	 * @since 0.2.0
 	 */
 	public SawtoothTriangular(String name, float peakFraction, float dropFraction) {
 

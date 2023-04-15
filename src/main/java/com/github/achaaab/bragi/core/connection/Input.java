@@ -26,11 +26,13 @@ public interface Input extends NamedEntity {
 
 	/**
 	 * @param buffer buffer to read from
+	 * @since 0.2.0
 	 */
 	void setBuffer(Buffer buffer);
 
 	/**
 	 * @return whether an output port is connected to this input port
+	 * @since 0.2.0
 	 */
 	boolean isConnected();
 
@@ -39,11 +41,14 @@ public interface Input extends NamedEntity {
 	 *
 	 * @return read chunk, {@code null} if no chunk was read
 	 * @throws InterruptedException if interrupted while waiting for an available chunk
+	 * @since 0.2.0
 	 */
 	float[] read() throws InterruptedException;
 
 	/**
 	 * Disconnects this input from the output.
+	 *
+	 * @since 0.2.0
 	 */
 	void disconnect();
 }

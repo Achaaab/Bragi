@@ -22,23 +22,21 @@ public interface AudioFile {
 
 	Normalizer ONE_BYTE_NORMALIZER = new Normalizer(
 			ONE_BYTE_MIN_VALUE, ONE_BYTE_MAX_VALUE,
-			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
-	);
+			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage());
 
 	Normalizer TWO_BYTES_NORMALIZER = new Normalizer(
 			TWO_BYTES_MIN_VALUE, TWO_BYTES_MAX_VALUE,
-			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
-	);
+			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage());
 
 	Normalizer THREE_BYTES_NORMALIZER = new Normalizer(
 			THREE_BYTES_MIN_VALUE, THREE_BYTES_MAX_VALUE,
-			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
-	);
+			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage());
 
 	/**
 	 * Opens the audio file.
 	 *
 	 * @throws AudioFileException exception while opening the audio file
+	 * @since 0.2.0
 	 */
 	void open() throws AudioFileException;
 
@@ -46,16 +44,19 @@ public interface AudioFile {
 	 * Closes the audio file.
 	 *
 	 * @throws AudioFileException exception while opening the audio file
+	 * @since 0.2.0
 	 */
 	void close() throws AudioFileException;
 
 	/**
 	 * @return current playback time in seconds (s)
+	 * @since 0.2.0
 	 */
 	float time();
 
 	/**
 	 * @return file duration in seconds (s)
+	 * @since 0.2.0
 	 */
 	float duration();
 
@@ -64,27 +65,31 @@ public interface AudioFile {
 	 *
 	 * @param targetTime time to seek in seconds (s)
 	 * @throws AudioFileException exception while seeking the target time
+	 * @since 0.2.0
 	 */
 	void seekTime(double targetTime) throws AudioFileException;
 
 	/**
 	 * @return read chunk, {@code null} if the audio file is ended
 	 * @throws AudioFileException exception while reading a chunk from this file
+	 * @since 0.2.0
 	 */
 	float[][] readChunk() throws AudioFileException;
 
 	/**
 	 * @return sample rate of this file
+	 * @since 0.2.0
 	 */
 	float sampleRate();
 
 	/**
-	 * Normalize an integer sample.
+	 * Normalizes an integer sample.
 	 *
-	 * @param sample     an integer sample
+	 * @param sample an integer sample
 	 * @param sampleSize size of the sample in bits (b)
 	 * @return normalized float sample between minimal voltage and maximal voltage
 	 * @throws AudioFileException if sample size is not supported
+	 * @since 0.2.0
 	 */
 	default float normalize(int sample, int sampleSize) throws AudioFileException {
 

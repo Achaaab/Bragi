@@ -42,6 +42,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 
 	/**
 	 * @param name name of the module
+	 * @since 0.2.0
 	 */
 	public Module(String name) {
 
@@ -59,6 +60,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	 * Binds this module to the given synthesizer.
 	 *
 	 * @param synthesizer synthesizer to which bind this module
+	 * @since 0.2.0
 	 */
 	public void setSynthesizer(Synthesizer synthesizer) {
 		this.synthesizer = synthesizer;
@@ -66,6 +68,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 
 	/**
 	 * @return view of this module
+	 * @since 0.2.0
 	 */
 	public Component view() {
 		return view;
@@ -73,6 +76,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 
 	/**
 	 * @return inputs of this module
+	 * @since 0.2.0
 	 */
 	public List<Input> inputs() {
 		return inputs;
@@ -80,6 +84,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 
 	/**
 	 * @return outputs of this module
+	 * @since 0.2.0
 	 */
 	public List<Output> outputs() {
 		return outputs;
@@ -87,6 +92,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 
 	/**
 	 * @return first input (by convention it is the main input), {@code null} if there is no input
+	 * @since 0.2.0
 	 */
 	public Input input() {
 		return inputs.isEmpty() ? null : inputs.get(0);
@@ -94,6 +100,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 
 	/**
 	 * @return first output (by convention it is the main output), {@code null} if there is no output
+	 * @since 0.2.0
 	 */
 	public Output output() {
 		return outputs.isEmpty() ? null : outputs.get(0);
@@ -156,6 +163,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	 * Connects the main output of this module to the main input of given module.
 	 *
 	 * @param module module to connect to
+	 * @since 0.2.0
 	 */
 	public void connect(Module module) {
 
@@ -217,6 +225,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	 *
 	 * @param name input name
 	 * @return created input
+	 * @since 0.2.0
 	 */
 	protected PrimaryInput addPrimaryInput(String name) {
 
@@ -230,6 +239,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	 *
 	 * @param name name of the secondary input to create.
 	 * @return created and added secondary input
+	 * @since 0.2.0
 	 */
 	protected SecondaryInput addSecondaryInput(String name) {
 
@@ -243,6 +253,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	 *
 	 * @param name name of the primary output
 	 * @return created and added primary output
+	 * @since 0.2.0
 	 */
 	protected Output addPrimaryOutput(String name) {
 
@@ -256,6 +267,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	 *
 	 * @param name name of the secondary output
 	 * @return created and added secondary output
+	 * @since 0.2.0
 	 */
 	protected Output addSecondaryOutput(String name) {
 
@@ -266,6 +278,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 
 	/**
 	 * @return modules connected to one of the inputs of this module
+	 * @since 0.2.0
 	 */
 	public List<Module> inputModules() {
 
@@ -283,6 +296,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 
 	/**
 	 * @return modules connected to one of the outputs of this module
+	 * @since 0.2.0
 	 */
 	public List<Module> outputModules() {
 
@@ -299,7 +313,9 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	}
 
 	/**
-	 * Start the module in a new thread.
+	 * Starts the module in a new thread.
+	 *
+	 * @since 0.2.0
 	 */
 	public void start() {
 
@@ -311,7 +327,9 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	}
 
 	/**
-	 * Stop the module.
+	 * Stops the module.
+	 *
+	 * @since 0.2.0
 	 */
 	public void stop() {
 		started = false;
@@ -353,9 +371,10 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	/**
 	 * Sleeps if necessary until the configured compute time is elapsed.
 	 *
-	 * @param startTime          compute start nano-time
+	 * @param startTime compute start nano-time
 	 * @param computedFrameCount number of computed frames
 	 * @throws InterruptedException if the current thread is interrupted while waiting for compute time
+	 * @since 0.2.0
 	 */
 	private void waitComputeTime(long startTime, int computedFrameCount) throws InterruptedException {
 
@@ -376,6 +395,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 
 	/**
 	 * @param computingSampleRate number of frames to compute per second, {@code 0.0} for maximal speed computing
+	 * @since 0.2.0
 	 */
 	public void setComputingFrameRate(double computingSampleRate) {
 		this.computingFrameRate = computingSampleRate;
@@ -392,6 +412,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	 *
 	 * @return number of computed frames
 	 * @throws InterruptedException if computing was interrupted
+	 * @since 0.2.0
 	 */
 	protected abstract int compute() throws InterruptedException;
 }

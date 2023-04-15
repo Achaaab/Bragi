@@ -22,6 +22,7 @@ public class VCAView extends JPanel {
 
 	/**
 	 * @param model VCA model
+	 * @since 0.2.0
 	 */
 	public VCAView(VCA model) {
 

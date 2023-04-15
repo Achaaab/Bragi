@@ -11,7 +11,6 @@ import static java.lang.Integer.numberOfLeadingZeros;
 
 /**
  * FLAC FRAME_HEADER
- * <p>
  * <a href="https://xiph.org/flac/format.html#frame_header">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -24,11 +23,12 @@ public class FrameHeader {
 	/**
 	 * Decodes a block size from the given code and if necessary from the given FLAC input stream.
 	 *
-	 * @param code  code of the block size
+	 * @param code code of the block size
 	 * @param input FLAC input stream to decode
 	 * @return block size in inter-channel samples
-	 * @throws IOException   I/O exception while decoding the block size
+	 * @throws IOException I/O exception while decoding the block size
 	 * @throws FlacException if invalid code is provided
+	 * @since 0.2.0
 	 */
 	private static int decodeBlockSize(int code, FlacInputStream input)
 			throws IOException, FlacException {
@@ -58,12 +58,13 @@ public class FrameHeader {
 	 * Decodes a sample rate from the given code and if necessary from the stream info metadata or the FLAC
 	 * input stream.
 	 *
-	 * @param code       code of the sample rate
+	 * @param code code of the sample rate
 	 * @param streamInfo stream info metadata
-	 * @param input      FLAC input stream to decode
+	 * @param input FLAC input stream to decode
 	 * @return decoded sample rate in inter-channel sample per second
-	 * @throws IOException   I/O exception while decoding the sample rate
+	 * @throws IOException I/O exception while decoding the sample rate
 	 * @throws FlacException if invalid sample rate code is provided
+	 * @since 0.2.0
 	 */
 	private static int decodeSampleRate(int code, StreamInfo streamInfo, FlacInputStream input)
 			throws IOException, FlacException {
@@ -92,10 +93,11 @@ public class FrameHeader {
 	/**
 	 * Decodes a sample size from the given code and if necessary from the stream info metadata.
 	 *
-	 * @param code       code of the sample size
+	 * @param code code of the sample size
 	 * @param streamInfo stream info metadata
 	 * @return decoded sample rate
 	 * @throws FlacException if invalid sample size code is provided
+	 * @since 0.2.0
 	 */
 	private static int decodeSampleSize(int code, StreamInfo streamInfo) throws FlacException {
 
@@ -122,10 +124,11 @@ public class FrameHeader {
 	/**
 	 * Decodes a frame header from the given FLAC input stream.
 	 *
-	 * @param input      FLAC input stream
+	 * @param input FLAC input stream
 	 * @param streamInfo global stream information
-	 * @throws IOException   I/O exception while decoding the frame header
+	 * @throws IOException I/O exception while decoding the frame header
 	 * @throws FlacException if invalid or unsupported frame header is decoded
+	 * @since 0.2.0
 	 */
 	public FrameHeader(FlacInputStream input, StreamInfo streamInfo) throws IOException, FlacException {
 
@@ -174,6 +177,7 @@ public class FrameHeader {
 	/**
 	 * @return read sync code, must be equals to expected sync code
 	 * @see #EXPECTED_SYNC_CODE
+	 * @since 0.2.0
 	 */
 	public int syncCode() {
 		return syncCode;
@@ -181,6 +185,7 @@ public class FrameHeader {
 
 	/**
 	 * @return blocking strategy
+	 * @since 0.2.0
 	 */
 	public BlockingStrategy blockingStrategy() {
 		return blockingStrategy;
@@ -188,6 +193,7 @@ public class FrameHeader {
 
 	/**
 	 * @return block size in inter-channel samples
+	 * @since 0.2.0
 	 */
 	public int blockSize() {
 		return blockSize;
@@ -195,6 +201,7 @@ public class FrameHeader {
 
 	/**
 	 * @return sample rate in inter-channel samples per second
+	 * @since 0.2.0
 	 */
 	public int sampleRate() {
 		return sampleRate;
@@ -202,6 +209,7 @@ public class FrameHeader {
 
 	/**
 	 * @return channel assignment
+	 * @since 0.2.0
 	 */
 	public ChannelAssignment channelAssignment() {
 		return channelAssignment;
@@ -209,6 +217,7 @@ public class FrameHeader {
 
 	/**
 	 * @return sample size in bits
+	 * @since 0.2.0
 	 */
 	public int sampleSize() {
 		return sampleSize;
@@ -216,6 +225,7 @@ public class FrameHeader {
 
 	/**
 	 * @return Cyclic Redundancy Check (8 bits)
+	 * @since 0.2.0
 	 */
 	public int crc8() {
 		return crc8;

@@ -12,6 +12,8 @@ public class NoWindow implements Window {
 
 	/**
 	 * use singleton
+	 *
+	 * @since 0.2.0
 	 */
 	private NoWindow() {
 

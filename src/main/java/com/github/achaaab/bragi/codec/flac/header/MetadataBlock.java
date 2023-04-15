@@ -7,20 +7,21 @@ import java.io.IOException;
 
 /**
  * FLAC METADATA_BLOCK
- * <p>
  * <a href="https://xiph.org/flac/format.html#metadata_block">FLAC specifications</a>
  *
+ * @param header header of this metadata block
+ * @param data data of this metadata block
  * @author Jonathan Guéhenneux
- * @since 0.1.7
+ * @since 0.2.0
  */
-public class MetadataBlock {
+public record MetadataBlock(MetadataBlockHeader header, MetadataBlockData data) {
 
 	/**
 	 * Decodes a metadata block from the given FLAC input stream.
 	 *
 	 * @param input FLAC input stream to decode
 	 * @return decoded metadata block
-	 * @throws IOException   I/O exception white decoding metadata block
+	 * @throws IOException I/O exception white decoding metadata block
 	 * @throws FlacException if stream info metadata block is invalid
 	 */
 	public static MetadataBlock decode(FlacInputStream input) throws IOException, FlacException {
@@ -40,32 +41,5 @@ public class MetadataBlock {
 		};
 
 		return new MetadataBlock(header, data);
-	}
-
-	private final MetadataBlockHeader header;
-	private final MetadataBlockData data;
-
-	/**
-	 * @param header header of this metadata block
-	 * @param data   data of this metadata block
-	 */
-	public MetadataBlock(MetadataBlockHeader header, MetadataBlockData data) {
-
-		this.header = header;
-		this.data = data;
-	}
-
-	/**
-	 * @return header of this metadata block
-	 */
-	public MetadataBlockHeader header() {
-		return header;
-	}
-
-	/**
-	 * @return data of this metadata block
-	 */
-	public MetadataBlockData data() {
-		return data;
 	}
 }

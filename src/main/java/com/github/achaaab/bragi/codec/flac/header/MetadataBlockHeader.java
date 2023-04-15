@@ -9,7 +9,6 @@ import static com.github.achaaab.bragi.codec.flac.header.MetadataBlockType.decod
 
 /**
  * FLAC METADATA_BLOCK_HEADER
- * <p>
  * <a href="https://xiph.org/flac/format.html#metadata_block_header">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -25,8 +24,9 @@ public class MetadataBlockHeader {
 	 * Decodes a metadata block header from the given FLAC input stream.
 	 *
 	 * @param input FLAC input stream to decode
-	 * @throws IOException   I/O exception white decoding metadata block header
+	 * @throws IOException I/O exception white decoding metadata block header
 	 * @throws FlacException if stream info metadata block header is invalid
+	 * @since 0.2.0
 	 */
 	public MetadataBlockHeader(FlacInputStream input) throws IOException, FlacException {
 
@@ -38,6 +38,7 @@ public class MetadataBlockHeader {
 
 	/**
 	 * @return whether this metadata block is the last
+	 * @since 0.2.0
 	 */
 	public boolean last() {
 		return last;
@@ -45,6 +46,7 @@ public class MetadataBlockHeader {
 
 	/**
 	 * @return type of this metadata block
+	 * @since 0.2.0
 	 */
 	public MetadataBlockType type() {
 		return type;
@@ -52,6 +54,7 @@ public class MetadataBlockHeader {
 
 	/**
 	 * @return length of this metadata block data (in bytes)
+	 * @since 0.2.0
 	 */
 	public int length() {
 		return length;

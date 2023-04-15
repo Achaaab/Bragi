@@ -31,6 +31,7 @@ public class WavPlayer extends Player {
 	 * @param name name of the WAV player to create
 	 * @param path path to the WAV file to play
 	 * @throws ModuleCreationException if the WAV file cannot be played
+	 * @since 0.2.0
 	 */
 	public WavPlayer(String name, Path path) {
 		super(name, new WavFile(path));

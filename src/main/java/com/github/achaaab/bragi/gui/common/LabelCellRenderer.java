@@ -18,6 +18,7 @@ public class LabelCellRenderer<E> extends BasicComboBoxRenderer {
 
 	/**
 	 * @param textFunction function which takes an object of the combo box and returns a string
+	 * @since 0.2.0
 	 */
 	public LabelCellRenderer(Function<? super E, String> textFunction) {
 		this.textFunction = textFunction;

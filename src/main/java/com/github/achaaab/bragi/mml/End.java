@@ -10,6 +10,8 @@ public class End extends AbstractCommand {
 
 	/**
 	 * Creates a new command that ends MML playing.
+	 *
+	 * @since 0.2.0
 	 */
 	End() {
 

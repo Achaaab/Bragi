@@ -8,6 +8,7 @@ import com.github.achaaab.bragi.gui.module.DCGView;
 
 import java.lang.reflect.InvocationTargetException;
 
+import static java.util.Arrays.fill;
 import static javax.swing.SwingUtilities.invokeAndWait;
 
 /**
@@ -31,6 +32,7 @@ public class DCG extends Module {
 	 * Creates a DCG with default name.
 	 *
 	 * @see #DEFAULT_NAME
+	 * @since 0.2.0
 	 */
 	public DCG() {
 		this(DEFAULT_NAME);
@@ -40,6 +42,7 @@ public class DCG extends Module {
 	 * Creates a DCG with specified name and initial voltage between minimal voltage and maximal voltage.
 	 *
 	 * @param name name of the DCG to create
+	 * @since 0.2.0
 	 */
 	public DCG(String name) {
 
@@ -65,10 +68,7 @@ public class DCG extends Module {
 		var sampleCount = Settings.INSTANCE.chunkSize();
 
 		var samples = new float[sampleCount];
-
-		for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
-			samples[sampleIndex] = voltage;
-		}
+		fill(samples, voltage);
 
 		output.write(samples);
 		return sampleCount;
@@ -76,6 +76,7 @@ public class DCG extends Module {
 
 	/**
 	 * @return minimal voltage of this DCG in volts (V)
+	 * @since 0.2.0
 	 */
 	public float getMinimalVoltage() {
 		return minimalVoltage;
@@ -83,6 +84,7 @@ public class DCG extends Module {
 
 	/**
 	 * @return maximal voltage of this DCG in volts (V)
+	 * @since 0.2.0
 	 */
 	public float getMaximalVoltage() {
 		return maximalVoltage;
@@ -90,6 +92,7 @@ public class DCG extends Module {
 
 	/**
 	 * @return voltage of this DCG in volts (V)
+	 * @since 0.2.0
 	 */
 	public float getVoltage() {
 		return voltage;
@@ -97,6 +100,7 @@ public class DCG extends Module {
 
 	/**
 	 * @param voltage new voltage to set in volts (V)
+	 * @since 0.2.0
 	 */
 	public void setVoltage(float voltage) {
 		this.voltage = voltage;

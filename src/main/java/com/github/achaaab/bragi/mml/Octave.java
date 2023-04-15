@@ -14,6 +14,7 @@ public class Octave extends AbstractCommand {
 	 * Creates a command that set the current octave to {@code value}.
 	 *
 	 * @param value octave to set
+	 * @since 0.2.0
 	 */
 	public Octave(int value) {
 		this.value = value;

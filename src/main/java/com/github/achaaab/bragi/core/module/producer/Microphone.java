@@ -37,13 +37,11 @@ public class Microphone extends Module {
 
 	private static final Normalizer ONE_BYTE_NORMALIZER = new Normalizer(
 			ONE_BYTE_MIN_VALUE, ONE_BYTE_MAX_VALUE,
-			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
-	);
+			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage());
 
 	private static final Normalizer TWO_BYTES_NORMALIZER = new Normalizer(
 			TWO_BYTES_MIN_VALUE, TWO_BYTES_MAX_VALUE,
-			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
-	);
+			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage());
 
 	private final int targetSampleRate;
 
@@ -65,6 +63,7 @@ public class Microphone extends Module {
 	/**
 	 * @param name name of the microphone
 	 * @throws ModuleCreationException if no target data line is available
+	 * @since 0.2.0
 	 */
 	public Microphone(String name) {
 
@@ -96,6 +95,8 @@ public class Microphone extends Module {
 	/**
 	 * Called when a new line is configured. Drains and stops the current line,
 	 * then switches to the new line and starts it.
+	 *
+	 * @since 0.2.0
 	 */
 	private void switchLine() {
 
@@ -126,6 +127,8 @@ public class Microphone extends Module {
 	/**
 	 * Check if the line buffer is not full.
 	 * If it is full, that means it is not read fast enough and data are being lost.
+	 *
+	 * @since 0.2.0
 	 */
 	private void checkLineBufferHealth() {
 

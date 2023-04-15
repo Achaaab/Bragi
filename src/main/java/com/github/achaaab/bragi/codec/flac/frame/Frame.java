@@ -8,7 +8,6 @@ import java.io.IOException;
 
 /**
  * FLAC FRAME
- * <p>
  * <a href="https://xiph.org/flac/format.html#frame">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -24,10 +23,11 @@ public class Frame {
 	private final int[][] samples;
 
 	/**
-	 * @param input      FLAC input stream from which to read the frame
+	 * @param input FLAC input stream from which to read the frame
 	 * @param streamInfo FLAC global stream information
-	 * @throws IOException   I/O exception while reading the frame
+	 * @throws IOException I/O exception while reading the frame
 	 * @throws FlacException if invalid or unsupported frame is decoded
+	 * @since 0.2.0
 	 */
 	public Frame(FlacInputStream input, StreamInfo streamInfo) throws IOException, FlacException {
 
@@ -55,8 +55,9 @@ public class Frame {
 	 * Decodes a subframe from the FLAC input stream.
 	 *
 	 * @return decoded subframe
-	 * @throws IOException   I/O exception while reading from the FLAC input stream
+	 * @throws IOException I/O exception while reading from the FLAC input stream
 	 * @throws FlacException if invalid subframe is decoded
+	 * @since 0.2.0
 	 */
 	private Subframe decodeSubframe(boolean extraBit) throws IOException, FlacException {
 
@@ -82,6 +83,7 @@ public class Frame {
 
 	/**
 	 * @return header of this frame
+	 * @since 0.2.0
 	 */
 	public FrameHeader header() {
 		return header;
@@ -89,6 +91,7 @@ public class Frame {
 
 	/**
 	 * @return subframes (1 subframe per channel)
+	 * @since 0.2.0
 	 */
 	public Subframe[] subframes() {
 		return subframes;
@@ -96,6 +99,7 @@ public class Frame {
 
 	/**
 	 * @return footer of this frame
+	 * @since 0.2.0
 	 */
 	public FrameFooter footer() {
 		return footer;
@@ -103,6 +107,7 @@ public class Frame {
 
 	/**
 	 * @return decoded samples of this frame
+	 * @since 0.2.0
 	 */
 	public int[][] samples() {
 		return samples;

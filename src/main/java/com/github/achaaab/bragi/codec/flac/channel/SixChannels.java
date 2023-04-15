@@ -20,6 +20,7 @@ public class SixChannels extends UncorrelatedChannelAssignment {
 
 	/**
 	 * @see #SIX_CHANNELS
+	 * @since 0.2.0
 	 */
 	SixChannels() {
 		super(FRONT_LEFT, FRONT_RIGHT, FRONT_CENTER, LFE, BACK_SURROUND_LEFT, BACK_SURROUND_RIGHT);

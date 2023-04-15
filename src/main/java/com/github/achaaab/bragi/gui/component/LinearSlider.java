@@ -12,9 +12,10 @@ import static java.lang.Math.round;
 public class LinearSlider extends DecimalSlider {
 
 	/**
-	 * @param minimal   minimal value of this slider
-	 * @param maximal   maximal value of this slider
+	 * @param minimal minimal value of this slider
+	 * @param maximal maximal value of this slider
 	 * @param precision number of possible distinct values including {@code minimalValue} and {@code maximalValue}
+	 * @since 0.2.0
 	 */
 	public LinearSlider(double minimal, double maximal, int precision) {
 		super(minimal, maximal, precision);
@@ -28,7 +29,7 @@ public class LinearSlider extends DecimalSlider {
 	@Override
 	protected int getValue(double decimalValue) {
 
-		double value = getMaximum() * (decimalValue - minimal) / amplitude;
+		var value = getMaximum() * (decimalValue - minimal) / amplitude;
 		return (int) round(value);
 	}
 }

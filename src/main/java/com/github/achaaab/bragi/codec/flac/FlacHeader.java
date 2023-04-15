@@ -32,6 +32,7 @@ public class FlacHeader {
 	 * Decodes a FLAC header from the given FLAC input stream.
 	 *
 	 * @param input FLAC input stream to decode
+	 * @since 0.2.0
 	 */
 	public FlacHeader(FlacInputStream input) throws IOException, FlacException {
 
@@ -68,6 +69,7 @@ public class FlacHeader {
 	/**
 	 * @return FLAC marker
 	 * @see #FLAC_MARKER
+	 * @since 0.2.0
 	 */
 	public int marker() {
 		return marker;
@@ -75,6 +77,7 @@ public class FlacHeader {
 
 	/**
 	 * @return first metadata block data which contain stream information
+	 * @since 0.2.0
 	 */
 	public StreamInfo streamInfo() {
 		return streamInfo;
@@ -82,6 +85,7 @@ public class FlacHeader {
 
 	/**
 	 * @return metadata blocks
+	 * @since 0.2.0
 	 */
 	public List<MetadataBlock> metadataBlocks() {
 		return metadataBlocks;

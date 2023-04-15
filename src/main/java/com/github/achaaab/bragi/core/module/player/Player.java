@@ -77,6 +77,7 @@ public abstract class Player extends Module {
 	/**
 	 * @return number of played frames
 	 * @throws InterruptedException if interrupted while writing on outputs
+	 * @since 0.2.0
 	 */
 	private int playChunk() throws InterruptedException {
 
@@ -119,6 +120,8 @@ public abstract class Player extends Module {
 
 	/**
 	 * Starts or resumes playback.
+	 *
+	 * @since 0.2.0
 	 */
 	public synchronized void play() {
 
@@ -128,6 +131,8 @@ public abstract class Player extends Module {
 
 	/**
 	 * Pauses playback.
+	 *
+	 * @since 0.2.0
 	 */
 	public void pause() {
 		playing = false;
@@ -135,6 +140,8 @@ public abstract class Player extends Module {
 
 	/**
 	 * Stops playback and set time to {@code 0.0}.
+	 *
+	 * @since 0.2.0
 	 */
 	public void stop() {
 
@@ -158,6 +165,7 @@ public abstract class Player extends Module {
 
 	/**
 	 * @return current playback time in seconds
+	 * @since 0.2.0
 	 */
 	public double getTime() {
 		return file.time();
@@ -165,6 +173,7 @@ public abstract class Player extends Module {
 
 	/**
 	 * @return track duration in seconds
+	 * @since 0.2.0
 	 */
 	public double getDuration() {
 		return file.duration();
@@ -175,6 +184,7 @@ public abstract class Player extends Module {
 	 * Seek the position corresponding to specified time.
 	 *
 	 * @param time time to seek in seconds
+	 * @since 0.2.0
 	 */
 	public synchronized void seek(double time) {
 
@@ -187,6 +197,8 @@ public abstract class Player extends Module {
 
 	/**
 	 * Updates the view, if there is one.
+	 *
+	 * @since 0.2.0
 	 */
 	protected void updateView() {
 

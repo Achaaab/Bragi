@@ -4,7 +4,6 @@ import com.github.achaaab.bragi.codec.flac.FlacInputStream;
 
 /**
  * FLAC SUBFRAME
- * <p>
  * <a href="https://xiph.org/flac/format.html#subframe">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -24,9 +23,10 @@ public abstract class Subframe {
 	 * Creates an abstract FLAC subframe with its header.
 	 *
 	 * @param frameHeader header of the enclosing frame
-	 * @param header      header of this subframe
-	 * @param input       FLAC input stream from which to read this subframe
-	 * @param extraBit    whether samples have an extra bit (used in difference channel)
+	 * @param header header of this subframe
+	 * @param input FLAC input stream from which to read this subframe
+	 * @param extraBit whether samples have an extra bit (used in difference channel)
+	 * @since 0.2.0
 	 */
 	public Subframe(FrameHeader frameHeader, SubframeHeader header, FlacInputStream input, boolean extraBit) {
 
@@ -42,6 +42,7 @@ public abstract class Subframe {
 
 	/**
 	 * @return samples of this subframe
+	 * @since 0.2.0
 	 */
 	public long[] samples() {
 		return samples;
@@ -49,6 +50,8 @@ public abstract class Subframe {
 
 	/**
 	 * Shifts samples to the left, inserting zeros to the right.
+	 *
+	 * @since 0.2.0
 	 */
 	protected void insertWastedBits() {
 

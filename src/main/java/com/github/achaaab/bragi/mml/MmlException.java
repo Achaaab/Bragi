@@ -12,6 +12,7 @@ public class MmlException extends RuntimeException {
 
 	/**
 	 * @param cause cause of MML playing failure
+	 * @since 0.2.0
 	 */
 	public MmlException(Exception cause) {
 		super(DEFAULT_MESSAGE, cause);
@@ -19,6 +20,7 @@ public class MmlException extends RuntimeException {
 
 	/**
 	 * @param message message explaining the MML exception to create
+	 * @since 0.2.0
 	 */
 	public MmlException(String message) {
 		super(message);

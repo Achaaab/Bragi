@@ -14,6 +14,7 @@ public class SetLength extends AbstractCommand {
 	 * Creates a command that changes the note fraction to {@code value}.
 	 *
 	 * @param length note fraction to set
+	 * @since 0.2.0
 	 */
 	SetLength(Length length) {
 		this.length = length;

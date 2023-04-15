@@ -10,6 +10,7 @@ public abstract class AbstractWaveform extends AbstractNamedEntity implements Wa
 
 	/**
 	 * @param name name of the waveform to create
+	 * @since 0.2.0
 	 */
 	public AbstractWaveform(String name) {
 		super(name);

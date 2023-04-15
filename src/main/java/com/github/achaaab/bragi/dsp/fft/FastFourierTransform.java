@@ -25,8 +25,9 @@ public class FastFourierTransform extends FourierTransform {
 	 * Constructs an FFT that will accept sample buffers that are <code>timeSize</code> long and have been recorded with a sample
 	 * rate of <code>sampleRate</code>. <code>timeSize</code> <em>must</em> be a power of two.
 	 *
-	 * @param timeSize   the length of the sample buffers you will be analyzing
+	 * @param timeSize the length of the sample buffers you will be analyzing
 	 * @param sampleRate the sample rate of the audio you will be analyzing
+	 * @since 0.2.0
 	 */
 	public FastFourierTransform(int timeSize, float sampleRate) {
 
@@ -88,6 +89,8 @@ public class FastFourierTransform extends FourierTransform {
 	/**
 	 * Performs an in-place FFT on the data in the real and imaginary arrays.
 	 * Bit reversing is not necessary as the data will already be bit reversed.
+	 *
+	 * @since 0.2.0
 	 */
 	private void fft() {
 
@@ -106,7 +109,7 @@ public class FastFourierTransform extends FourierTransform {
 				for (var i = fftStep; i < real.length; i += 2 * halfSize) {
 
 					var off = i + halfSize;
-					var tr = fma(currentPhaseShiftR, real[off], - currentPhaseShiftI * imaginary[off]);
+					var tr = fma(currentPhaseShiftR, real[off], -currentPhaseShiftI * imaginary[off]);
 					var ti = fma(currentPhaseShiftR, imaginary[off], currentPhaseShiftI * real[off]);
 
 					real[off] = real[i] - tr;
@@ -143,6 +146,7 @@ public class FastFourierTransform extends FourierTransform {
 	 *
 	 * @param real the real part of the time domain signal to transform
 	 * @param imaginary the imaginary part of the time domain signal to transform
+	 * @since 0.2.0
 	 */
 	public void forward(float[] real, float[] imaginary) {
 
@@ -171,6 +175,8 @@ public class FastFourierTransform extends FourierTransform {
 
 	/**
 	 * Set up the bit reversing table.
+	 *
+	 * @since 0.2.0
 	 */
 	private void buildReverseTable() {
 
@@ -195,6 +201,7 @@ public class FastFourierTransform extends FourierTransform {
 	 * The imaginary array is filled with zeros.
 	 *
 	 * @param samples samples to copy
+	 * @since 0.2.0
 	 */
 	private void bitReverseSamples(float[] samples) {
 
@@ -207,6 +214,8 @@ public class FastFourierTransform extends FourierTransform {
 
 	/**
 	 * Bit reverse real and imaginary.
+	 *
+	 * @since 0.2.0
 	 */
 	private void bitReverseComplex() {
 
@@ -225,6 +234,8 @@ public class FastFourierTransform extends FourierTransform {
 
 	/**
 	 * Memoize {@code sin(-π/t)} and {@code cos(-π/t)}.
+	 *
+	 * @since 0.2.0
 	 */
 	private void memoizeSineAndCosine() {
 

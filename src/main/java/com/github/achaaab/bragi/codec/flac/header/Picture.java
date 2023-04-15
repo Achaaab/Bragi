@@ -7,7 +7,6 @@ import java.io.IOException;
 
 /**
  * FLAC METADATA_BLOCK_PICTURE
- * <p>
  * <a href="https://xiph.org/flac/format.html#metadata_block_picture">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -28,8 +27,9 @@ public class Picture implements MetadataBlockData {
 	 * Decodes a picture from the given FLAC input stream.
 	 *
 	 * @param input FLAC input stream to decode
-	 * @throws IOException   I/O exception while decoding a picture
+	 * @throws IOException I/O exception while decoding a picture
 	 * @throws FlacException if invalid or unsupported picture is decoded
+	 * @since 0.2.0
 	 */
 	public Picture(FlacInputStream input) throws IOException, FlacException {
 
@@ -53,6 +53,7 @@ public class Picture implements MetadataBlockData {
 
 	/**
 	 * @return picture type according to the ID3v2 APIC frame
+	 * @since 0.2.0
 	 */
 	public PictureType type() {
 		return type;
@@ -63,6 +64,7 @@ public class Picture implements MetadataBlockData {
 	 * instead of the picture data itself.
 	 *
 	 * @return MIME type
+	 * @since 0.2.0
 	 */
 	public String mimeType() {
 		return mimeType;
@@ -70,6 +72,7 @@ public class Picture implements MetadataBlockData {
 
 	/**
 	 * @return description of the picture
+	 * @since 0.2.0
 	 */
 	public String description() {
 		return description;
@@ -77,6 +80,7 @@ public class Picture implements MetadataBlockData {
 
 	/**
 	 * @return width of the picture in pixels
+	 * @since 0.2.0
 	 */
 	public long width() {
 		return width;
@@ -84,6 +88,7 @@ public class Picture implements MetadataBlockData {
 
 	/**
 	 * @return height of the picture in pixels
+	 * @since 0.2.0
 	 */
 	public long height() {
 		return height;
@@ -91,6 +96,7 @@ public class Picture implements MetadataBlockData {
 
 	/**
 	 * @return color depth of the picture in bits per pixel
+	 * @since 0.2.0
 	 */
 	public long colorDepth() {
 		return colorDepth;
@@ -101,6 +107,7 @@ public class Picture implements MetadataBlockData {
 	 * 0 for non-indexed-color pictures.
 	 *
 	 * @return number of colors used
+	 * @since 0.2.0
 	 */
 	public long colorCount() {
 		return colorCount;
@@ -108,6 +115,7 @@ public class Picture implements MetadataBlockData {
 
 	/**
 	 * @return binary picture data
+	 * @since 0.2.0
 	 */
 	public byte[] data() {
 		return data;

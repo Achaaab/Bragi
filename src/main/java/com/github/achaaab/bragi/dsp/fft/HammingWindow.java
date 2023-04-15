@@ -21,6 +21,7 @@ public class HammingWindow extends MemoizedWindow {
 	 * Create a default Hamming window with default {@code a0}.
 	 *
 	 * @see #DEFAULT_A0
+	 * @since 0.2.0
 	 */
 	public HammingWindow() {
 		this(DEFAULT_A0);
@@ -28,6 +29,7 @@ public class HammingWindow extends MemoizedWindow {
 
 	/**
 	 * @param a0 a0 constant of Hamming window
+	 * @since 0.2.0
 	 */
 	public HammingWindow(double a0) {
 
@@ -37,7 +39,7 @@ public class HammingWindow extends MemoizedWindow {
 	}
 
 	@Override
-	protected double getCoefficient(int n , int size) {
+	protected double getCoefficient(int n, int size) {
 		return a0 - a1 * cos(TWO_PI * n / size);
 	}
 }

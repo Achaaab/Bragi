@@ -21,7 +21,7 @@ public class PrimaryOutput extends AbstractOutput {
 	 * Create a primary output, initially not connected.
 	 *
 	 * @param module module that will contain the created output
-	 * @param name   name of the primary output to create
+	 * @param name name of the primary output to create
 	 * @since 0.1.8
 	 */
 	public PrimaryOutput(Module module, String name) {

@@ -7,7 +7,6 @@ import java.io.IOException;
 
 /**
  * FLAC SUBFRAME_HEADER
- * <p>
  * <a href="https://xiph.org/flac/format.html#subframe_header">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -25,6 +24,7 @@ public class SubframeHeader {
 	 * @param input FLAC input stream
 	 * @throws IOException   I/O exception while reading the FLAC input stream
 	 * @throws FlacException if invalid or unsupported subframe header is decoded
+	 * @since 0.2.0
 	 */
 	public SubframeHeader(FlacInputStream input) throws IOException, FlacException {
 
@@ -44,6 +44,7 @@ public class SubframeHeader {
 	 * zero bit padding, to prevent sync-fooling string of 1s
 	 *
 	 * @return {@code 0} bit padding
+	 * @since 0.2.0
 	 */
 	public int padding() {
 		return padding;
@@ -51,6 +52,7 @@ public class SubframeHeader {
 
 	/**
 	 * @return type of the subframe
+	 * @since 0.2.0
 	 */
 	public int subframeType() {
 		return subframeType;
@@ -58,6 +60,7 @@ public class SubframeHeader {
 
 	/**
 	 * @return number of wasted bits per samples
+	 * @since 0.2.0
 	 */
 	public int wastedBitCount() {
 		return wastedBitCount;

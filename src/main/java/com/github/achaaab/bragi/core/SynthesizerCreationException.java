@@ -10,6 +10,7 @@ public class SynthesizerCreationException extends RuntimeException {
 
 	/**
 	 * @param cause cause of synthesizer creation failure
+	 * @since 0.2.0
 	 */
 	public SynthesizerCreationException(Exception cause) {
 		super(DEFAULT_MESSAGE, cause);

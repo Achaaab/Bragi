@@ -4,17 +4,41 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
+	<name>Bragi</name>
+	<description>modular sound synthesizer</description>
+
 	<groupId>com.github.achaaab</groupId>
 	<artifactId>bragi</artifactId>
-	<version>0.1.8</version>
+	<version>0.2.0</version>
 	<packaging>jar</packaging>
+
+	<properties>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<plugins>
+
+			<plugin>
+				<groupId>org.openjfx</groupId>
+				<artifactId>javafx-maven-plugin</artifactId>
+				<version>0.0.8</version>
+				<configuration>
+					<mainClass>com.github.achaaab.bragi.TestPlayer</mainClass>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
 
 	<dependencies>
 
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>2.13.1</version>
+			<artifactId>log4j-slf4j2-impl</artifactId>
+			<version>2.20.0</version>
 		</dependency>
 
 		<dependency>
@@ -26,58 +50,16 @@
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-graphics</artifactId>
-			<version>14</version>
+			<version>17</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-media</artifactId>
-			<version>14</version>
+			<version>17</version>
 		</dependency>
 
 	</dependencies>
-
-	<build>
-		<plugins>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
-				<configuration>
-					<encoding>UTF-8</encoding>
-					<release>14</release>
-					<compilerArgs>--enable-preview</compilerArgs>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.1.0</version>
-				<configuration>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.openjfx</groupId>
-				<artifactId>javafx-maven-plugin</artifactId>
-				<version>0.0.4</version>
-				<configuration>
-					<mainClass>com.github.achaaab.bragi.TestPlayer</mainClass>
-					<options>
-						<option>--enable-preview</option>
-					</options>
-				</configuration>
-			</plugin>
-
-		</plugins>
-	</build>
-
-	<name>Bragi</name>
-
-	<description>modular sound synthesizer</description>
 
 	<licenses>
 		<license>

@@ -23,9 +23,10 @@ public abstract class DecimalSlider extends JSlider {
 	protected double maximal;
 
 	/**
-	 * @param minimal   minimal value of this slider
-	 * @param maximal   maximal value of this slider
+	 * @param minimal minimal value of this slider
+	 * @param maximal maximal value of this slider
 	 * @param precision number of possible distinct values including {@code minimalValue} and {@code maximalValue}
+	 * @since 0.2.0
 	 */
 	public DecimalSlider(double minimal, double maximal, int precision) {
 
@@ -55,6 +56,7 @@ public abstract class DecimalSlider extends JSlider {
 	/**
 	 * @param value value from which to create a label
 	 * @return created label
+	 * @since 0.2.0
 	 */
 	protected JComponent createStandardLabel(int value) {
 
@@ -69,17 +71,20 @@ public abstract class DecimalSlider extends JSlider {
 	/**
 	 * @param value integer value of the slider
 	 * @return corresponding decimal value
+	 * @since 0.2.0
 	 */
 	protected abstract double getDecimalValue(int value);
 
 	/**
 	 * @param decimalValue decimal value
 	 * @return corresponding integer value
+	 * @since 0.2.0
 	 */
 	protected abstract int getValue(double decimalValue);
 
 	/**
 	 * @return slider's current decimal value
+	 * @since 0.2.0
 	 */
 	public double getDecimalValue() {
 		return getDecimalValue(getValue());
@@ -89,6 +94,7 @@ public abstract class DecimalSlider extends JSlider {
 	 * Sets the slider current value to {@code decimalValue}.
 	 *
 	 * @param decimalValue new decimal value
+	 * @since 0.2.0
 	 */
 	public void setDecimalValue(double decimalValue) {
 		setValue(getValue(decimalValue));

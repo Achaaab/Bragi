@@ -7,7 +7,7 @@ import java.io.IOException;
 
 /**
  * FLAC Rice method for residuals coding
- * <p>
+ *
  * @author Jonathan Guéhenneux
  * @since 0.1.8
  */
@@ -18,6 +18,7 @@ public abstract class Rice implements ResidualCodingMethod {
 
 	/**
 	 * @param parameterSize number of bits of the Rice parameter
+	 * @since 0.2.0
 	 */
 	Rice(int parameterSize) {
 
@@ -51,15 +52,16 @@ public abstract class Rice implements ResidualCodingMethod {
 	/**
 	 * Decodes a Rice partition from the given FLAC input stream.
 	 *
-	 * @param input             FLAC input stream from which to decode a Rice partition
-	 * @param samples           array in which to store decoded samples
-	 * @param partitionIndex    index of the partition
-	 * @param partitionSize     size of the partition (in samples)
+	 * @param input FLAC input stream from which to decode a Rice partition
+	 * @param samples array in which to store decoded samples
+	 * @param partitionIndex index of the partition
+	 * @param partitionSize size of the partition (in samples)
 	 * @param warmUpSampleCount number of warm-up samples already decoded
 	 * @throws IOException I/O exception while reading from the given FLAC input stream
+	 * @since 0.2.0
 	 */
 	private void decodePartition(FlacInputStream input, long[] samples,
-	                             int partitionIndex, int partitionSize, int warmUpSampleCount) throws IOException {
+			int partitionIndex, int partitionSize, int warmUpSampleCount) throws IOException {
 
 		var start = partitionIndex * partitionSize;
 		var end = start + partitionSize;

@@ -14,6 +14,7 @@ public class Tempo extends AbstractCommand {
 	 * Creates a command that sets the tempo to {@code value}.
 	 *
 	 * @param value tempo to set in beats per minute
+	 * @since 0.2.0
 	 */
 	public Tempo(int value) {
 		this.value = value;

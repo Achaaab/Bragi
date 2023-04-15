@@ -22,6 +22,7 @@ public class MixerView extends JPanel {
 
 	/**
 	 * @param model mixer model
+	 * @since 0.2.0
 	 */
 	public MixerView(Mixer model) {
 

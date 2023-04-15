@@ -52,7 +52,7 @@ public class Test {
 	 * @since 0.0.9
 	 */
 	public static void main(String... arguments) {
-		testPiano();
+		testFlacPlayer();
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class Test {
 	 * Tests filter "self" oscillation.
 	 * <p>
 	 * Due to the architecture of Bragi, the filter needs an input to produce an output.
-	 * We could use a DCG with 0 volt but it would not trigger the oscillation.
+	 * We could use a DCG with 0 volt, but it would not trigger the oscillation.
 	 * Like in an analog synthesizer, we need a tiny noise to trigger the oscillation.
 	 *
 	 * @since 0.1.6
@@ -272,7 +272,6 @@ public class Test {
 
 	/**
 	 * Tests the {@link WavPlayer} module.
-	 * <p>
 	 * TODO Add a module to change the sample rate.
 	 *
 	 * @since 0.1.0

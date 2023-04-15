@@ -6,7 +6,6 @@ import java.io.IOException;
 
 /**
  * FLAC CUESHEET_TRACK_INDEX
- * <p>
  * <a href="https://xiph.org/flac/format.html#cuesheet_track_index">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -21,6 +20,7 @@ public class CueSheetTrackIndex {
 	 * Decodes a CUE sheet track index from the given FLAC input stream.
 	 *
 	 * @param input FLAC input stream to decode
+	 * @since 0.2.0
 	 */
 	public CueSheetTrackIndex(FlacInputStream input) throws IOException {
 
@@ -37,6 +37,7 @@ public class CueSheetTrackIndex {
 	 * Note that the offset is from the beginning of the track, not the beginning of the audio data.
 	 *
 	 * @return offset in samples, relative to the track offset
+	 * @since 0.2.0
 	 */
 	public long offset() {
 		return offset;
@@ -48,6 +49,7 @@ public class CueSheetTrackIndex {
 	 * Index numbers must be unique within a track.
 	 *
 	 * @return index point number
+	 * @since 0.2.0
 	 */
 	public int number() {
 		return number;

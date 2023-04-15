@@ -6,7 +6,6 @@ import java.io.IOException;
 
 /**
  * FLAC SUBFRAME_VERBATIM
- * <p>
  * <a href="https://xiph.org/flac/format.html#subframe_verbatim">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -18,10 +17,11 @@ public class SubframeVerbatim extends Subframe {
 	 * Creates a FLAC verbatim subframe.
 	 *
 	 * @param frameHeader header of the enclosing frame
-	 * @param header      header of this subframe
-	 * @param input       FLAC input stream from which to read the verbatim subframe
-	 * @param extraBit    whether to add an extra bit (used for difference channel)
+	 * @param header header of this subframe
+	 * @param input FLAC input stream from which to read the verbatim subframe
+	 * @param extraBit whether to add an extra bit (used for difference channel)
 	 * @throws IOException I/O exception while reading from the given FLAC input stream
+	 * @since 0.2.0
 	 */
 	public SubframeVerbatim(FrameHeader frameHeader, SubframeHeader header, FlacInputStream input, boolean extraBit)
 			throws IOException {

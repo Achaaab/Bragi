@@ -14,6 +14,7 @@ public class Rest extends AbstractCommand {
 
 	/**
 	 * @param lengths fractions of a whole note to rest
+	 * @since 0.2.0
 	 */
 	Rest(List<Length> lengths) {
 		this.lengths = lengths;

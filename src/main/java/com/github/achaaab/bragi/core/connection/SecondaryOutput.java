@@ -21,7 +21,7 @@ public class SecondaryOutput extends AbstractOutput {
 	 * Create a secondary output, initially not connected.
 	 *
 	 * @param module module that will contain the created output
-	 * @param name   name of the secondary output to create
+	 * @param name name of the secondary output to create
 	 * @since 0.1.8
 	 */
 	public SecondaryOutput(Module module, String name) {

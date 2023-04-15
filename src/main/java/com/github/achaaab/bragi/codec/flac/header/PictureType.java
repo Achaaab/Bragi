@@ -8,7 +8,6 @@ import java.util.Map;
 
 /**
  * FLAC METADATA_BLOCK_PICTURE_TYPE
- * <p>
  * <a href="https://xiph.org/flac/format.html#metadata_block_picture">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -56,6 +55,7 @@ public enum PictureType {
 	 * @param input FLAC input stream from which to decode a picture type
 	 * @return decoded picture type
 	 * @throws IOException I/O exception while reading from the given FLAC input stream
+	 * @since 0.2.0
 	 */
 	static PictureType decode(FlacInputStream input) throws IOException {
 

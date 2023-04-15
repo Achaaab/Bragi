@@ -59,8 +59,9 @@ public class Play extends AbstractCommand {
 	private final List<Length> lengths;
 
 	/**
-	 * @param note      note to play
+	 * @param note note to play
 	 * @param lengths fractions of a whole note to play
+	 * @since 0.2.0
 	 */
 	public Play(String note, List<Length> lengths) {
 

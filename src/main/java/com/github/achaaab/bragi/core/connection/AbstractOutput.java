@@ -26,7 +26,7 @@ public abstract class AbstractOutput extends AbstractNamedEntity implements Outp
 	 * Create an output, initially not connected.
 	 *
 	 * @param module module that will contain the created output
-	 * @param name   name of the output to create
+	 * @param name name of the output to create
 	 * @since 0.1.8
 	 */
 	public AbstractOutput(Module module, String name) {

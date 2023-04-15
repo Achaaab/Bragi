@@ -8,7 +8,6 @@ import java.util.List;
 
 /**
  * FLAC CUESHEET_TACK
- * <p>
  * <a href="https://xiph.org/flac/format.html#cuesheet_track">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -28,6 +27,7 @@ public class CueSheetTrack {
 	 *
 	 * @param input FLAC input stream to decode
 	 * @throws IOException I/O exception while decoding a CUE sheet track
+	 * @since 0.2.0
 	 */
 	public CueSheetTrack(FlacInputStream input) throws IOException {
 
@@ -57,6 +57,7 @@ public class CueSheetTrack {
 	 * (588 samples = 44100 samples/sec * 1/75th of a sec).
 	 *
 	 * @return track offset in samples, relative to the beginning of the FLAC audio stream
+	 * @since 0.2.0
 	 */
 	public long offset() {
 		return offset;
@@ -71,6 +72,7 @@ public class CueSheetTrack {
 	 * Track numbers must be unique within a CUESHEET.
 	 *
 	 * @return track number
+	 * @since 0.2.0
 	 */
 	public int number() {
 		return number;
@@ -78,6 +80,7 @@ public class CueSheetTrack {
 
 	/**
 	 * @return track ISRC
+	 * @since 0.2.0
 	 */
 	public String isrc() {
 		return isrc;
@@ -87,6 +90,7 @@ public class CueSheetTrack {
 	 * This corresponds to the CD-DA Q-channel control bit 3.
 	 *
 	 * @return whether this track is an audio track
+	 * @since 0.2.0
 	 */
 	public boolean audio() {
 		return audio;
@@ -96,6 +100,7 @@ public class CueSheetTrack {
 	 * This corresponds to the CD-DA Q-channel control bit 5.
 	 *
 	 * @return pre-emphasis flag
+	 * @since 0.2.0
 	 */
 	public boolean preEmphasis() {
 		return preEmphasis;
@@ -105,6 +110,7 @@ public class CueSheetTrack {
 	 * For all tracks except the lead-out track, one or more track index points.
 	 *
 	 * @return track index points
+	 * @since 0.2.0
 	 */
 	public List<CueSheetTrackIndex> index() {
 		return index;

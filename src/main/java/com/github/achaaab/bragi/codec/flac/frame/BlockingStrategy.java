@@ -7,7 +7,6 @@ import java.io.IOException;
 
 /**
  * FLAC blocking strategy
- * <p>
  * <a href="https://xiph.org/flac/format.html#frame_header">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -19,14 +18,14 @@ public enum BlockingStrategy {
 
 	private static final BlockingStrategy[] DECODING_TABLE = {
 			FIXED_BLOCK_SIZE,
-			VARIABLE_BLOCK_SIZE
-	};
+			VARIABLE_BLOCK_SIZE };
 
 	/**
 	 * @param input FLAC input stream from which to read a method for residual coding
 	 * @return decoded blocking strategy
-	 * @throws IOException   I/O exception while reading from the given FLAC input stream
+	 * @throws IOException I/O exception while reading from the given FLAC input stream
 	 * @throws FlacException if the read code is unknown
+	 * @since 0.2.0
 	 */
 	public static BlockingStrategy decode(FlacInputStream input) throws IOException, FlacException {
 

@@ -16,6 +16,7 @@ public class BandLimitedSquare extends AbstractWaveform {
 
 	/**
 	 * @see #ANALOG_SQUARE
+	 * @since 0.2.0
 	 */
 	BandLimitedSquare() {
 		super("Analog Square");

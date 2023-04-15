@@ -18,6 +18,7 @@ public class LeftSideStereo extends AbstractChannelAssignment {
 
 	/**
 	 * @see #LEFT_SIDE_STEREO
+	 * @since 0.2.0
 	 */
 	LeftSideStereo() {
 		super(LEFT, SIDE);

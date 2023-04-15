@@ -42,6 +42,7 @@ public class Mp3File implements AudioFile {
 
 	/**
 	 * @param path path to MP3 file
+	 * @since 0.2.0
 	 */
 	public Mp3File(Path path) {
 		this.path = path;
@@ -49,6 +50,7 @@ public class Mp3File implements AudioFile {
 
 	/**
 	 * @return time of the current MP3 frame in seconds
+	 * @since 0.2.0
 	 */
 	public float time() {
 		return time;
@@ -56,6 +58,7 @@ public class Mp3File implements AudioFile {
 
 	/**
 	 * @return estimated duration of this MP3 file in seconds
+	 * @since 0.2.0
 	 */
 	public float duration() {
 		return duration;
@@ -66,6 +69,7 @@ public class Mp3File implements AudioFile {
 	 *
 	 * @param targetTime target time in seconds
 	 * @throws AudioFileException exception while seeking the target frame
+	 * @since 0.2.0
 	 */
 	public void seekTime(double targetTime) throws AudioFileException {
 
@@ -85,6 +89,7 @@ public class Mp3File implements AudioFile {
 	 * Opens the MP3 file.
 	 *
 	 * @throws AudioFileException exception while opening the MP3 file
+	 * @since 0.2.0
 	 */
 	public void open() throws AudioFileException {
 
@@ -111,6 +116,7 @@ public class Mp3File implements AudioFile {
 	 * Closes the MP3 file.
 	 *
 	 * @throws AudioFileException exception while closing the MP3 file
+	 * @since 0.2.0
 	 */
 	public void close() throws AudioFileException {
 
@@ -166,6 +172,7 @@ public class Mp3File implements AudioFile {
 	 *
 	 * @return read MP3 frame, or {@code null} if this MP3 file ended
 	 * @throws AudioFileException exception while reading the next frame
+	 * @since 0.2.0
 	 */
 	private SampleBuffer readFrame() throws AudioFileException {
 
@@ -200,6 +207,7 @@ public class Mp3File implements AudioFile {
 	 * Skips the current frame.
 	 *
 	 * @throws AudioFileException exception while skipping the frame
+	 * @since 0.2.0
 	 */
 	private void skipFrame() throws AudioFileException {
 
@@ -228,7 +236,8 @@ public class Mp3File implements AudioFile {
 	 * of this MP3 file.
 	 *
 	 * @param header header of the frame
-	 * @throws IOException I/O exception while estimating the tot
+	 * @throws IOException I/O exception while estimating the total file size
+	 * @since 0.2.0
 	 */
 	private void addFrameDuration(Header header) throws IOException {
 

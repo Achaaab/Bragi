@@ -22,6 +22,7 @@ public class FlacInputStream implements AutoCloseable {
 
 	/**
 	 * @param inputStream underlying input stream to read from
+	 * @since 0.2.0
 	 */
 	public FlacInputStream(InputStream inputStream) {
 		this.inputStream = inputStream;
@@ -29,6 +30,8 @@ public class FlacInputStream implements AutoCloseable {
 
 	/**
 	 * Skips the last bits of the current byte.
+	 *
+	 * @since 0.2.0
 	 */
 	public void alignToByte() {
 		bufferLength -= bufferLength % 8;
@@ -39,6 +42,7 @@ public class FlacInputStream implements AutoCloseable {
 	 *
 	 * @return read byte
 	 * @throws IOException I/O exception while reading a byte
+	 * @since 0.2.0
 	 */
 	public int readByte() throws IOException {
 
@@ -55,6 +59,7 @@ public class FlacInputStream implements AutoCloseable {
 	 * @param length number of bytes to read
 	 * @return read bytes
 	 * @throws IOException I/O exception while reading
+	 * @since 0.2.0
 	 */
 	public byte[] readBytes(int length) throws IOException {
 		return inputStream.readNBytes(length);
@@ -65,6 +70,7 @@ public class FlacInputStream implements AutoCloseable {
 	 *
 	 * @param length number of bytes to skip
 	 * @throws IOException I/O exception while skipping bytes
+	 * @since 0.2.0
 	 */
 	public void skip(int length) throws IOException {
 
@@ -81,6 +87,7 @@ public class FlacInputStream implements AutoCloseable {
 	 * @param length number of bits of the unsigned integer to read
 	 * @return read unsigned integer of specified length
 	 * @throws IOException I/O exception while reading an unsigned integer
+	 * @since 0.2.0
 	 */
 	public int readUnsignedInteger(int length) throws IOException {
 
@@ -113,6 +120,7 @@ public class FlacInputStream implements AutoCloseable {
 	 * @param length number of bits of the signed integer to read
 	 * @return read signed integer
 	 * @throws IOException I/O exception while reading a signed integer
+	 * @since 0.2.0
 	 */
 	public int readSignedInt(int length) throws IOException {
 		return (readUnsignedInteger(length) << (32 - length)) >> (32 - length);
@@ -125,6 +133,7 @@ public class FlacInputStream implements AutoCloseable {
 	 * @param k Rice code parameter
 	 * @return read integer
 	 * @throws IOException I/O exception while reading an integer
+	 * @since 0.2.0
 	 */
 	public long readRiceSignedInteger(int k) throws IOException {
 
@@ -144,6 +153,7 @@ public class FlacInputStream implements AutoCloseable {
 	 *
 	 * @return read integer
 	 * @throws IOException I/O exception while reading an integer
+	 * @since 0.2.0
 	 */
 	public long readLittleEndianUnsignedInteger() throws IOException {
 
@@ -165,6 +175,7 @@ public class FlacInputStream implements AutoCloseable {
 	 * @param bit expected unary bit value
 	 * @return number of bits read equals to the given bit
 	 * @throws IOException I/O exception while reading a unary integer
+	 * @since 0.2.0
 	 */
 	public int readUnary(int bit) throws IOException {
 
@@ -182,6 +193,7 @@ public class FlacInputStream implements AutoCloseable {
 	 *
 	 * @return read integer
 	 * @throws IOException I/O exception while reading an integer
+	 * @since 0.2.0
 	 */
 	public long readBigEndianUnsignedInteger() throws IOException {
 
@@ -199,12 +211,13 @@ public class FlacInputStream implements AutoCloseable {
 
 	/**
 	 * Reads a string encoded with US-ASCII charset.
-	 * Reads but does not returns last NUL characters.
+	 * Reads but does not return last NUL characters.
 	 *
-	 * @param length           number of bytes to read
+	 * @param length number of bytes to read
 	 * @param stripTrailingNul whether to strip trailing NUL characters
 	 * @return read string
 	 * @throws IOException I/O exception while reading a string
+	 * @since 0.2.0
 	 */
 	public String readAsciiString(int length, boolean stripTrailingNul) throws IOException {
 
@@ -226,6 +239,7 @@ public class FlacInputStream implements AutoCloseable {
 	 * @param length number of bytes to read
 	 * @return read string
 	 * @throws IOException I/O exception while reading a string
+	 * @since 0.2.0
 	 */
 	public String readUtf8String(int length) throws IOException {
 
@@ -238,8 +252,9 @@ public class FlacInputStream implements AutoCloseable {
 	 * found length from the same input.
 	 *
 	 * @return read string
-	 * @throws IOException   I/O exception while reading a string
+	 * @throws IOException I/O exception while reading a string
 	 * @throws FlacException if string length is not supported
+	 * @since 0.2.0
 	 */
 	public String decodeAsciiString() throws FlacException, IOException {
 
@@ -255,12 +270,13 @@ public class FlacInputStream implements AutoCloseable {
 	}
 
 	/**
-	 * Reads an unsigned, big-endian, 32-bits integer from the given input and then decode an US-ASCII string of
+	 * Reads an unsigned, big-endian, 32-bits integer from the given input and then decode a US-ASCII string of
 	 * found length from the same input.
 	 *
 	 * @return read string
-	 * @throws IOException   I/O exception while reading a string
+	 * @throws IOException I/O exception while reading a string
 	 * @throws FlacException if string length is not supported
+	 * @since 0.2.0
 	 */
 	public String decodeUtf8String() throws FlacException, IOException {
 
@@ -276,12 +292,13 @@ public class FlacInputStream implements AutoCloseable {
 	}
 
 	/**
-	 * Reads an unsigned, little-endian, 32-bits integer from the given input and then decode an UTF-8 string of
+	 * Reads an unsigned, little-endian, 32-bits integer from the given input and then decode a UTF-8 string of
 	 * found length from the same input.
 	 *
 	 * @return read string
-	 * @throws IOException   I/O exception while reading a vorbis string
+	 * @throws IOException I/O exception while reading a vorbis string
 	 * @throws FlacException if string length is not supported
+	 * @since 0.2.0
 	 */
 	public String decodeVorbisString() throws FlacException, IOException {
 
@@ -298,6 +315,7 @@ public class FlacInputStream implements AutoCloseable {
 
 	/**
 	 * @throws IOException I/O exception while closing this bit stream
+	 * @since 0.2.0
 	 */
 	public void close() throws IOException {
 		inputStream.close();

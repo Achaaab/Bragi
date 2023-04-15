@@ -38,6 +38,7 @@ public class WavFile implements AudioFile {
 
 	/**
 	 * @param path path to a WAV file
+	 * @since 0.2.0
 	 */
 	public WavFile(Path path) {
 		this.path = path;
@@ -164,6 +165,7 @@ public class WavFile implements AudioFile {
 	 * Reads the header of this WAV file.
 	 *
 	 * @throws AudioFileException exception while reading the header of this WAV file
+	 * @since 0.2.0
 	 */
 	private void readHeader() throws AudioFileException {
 

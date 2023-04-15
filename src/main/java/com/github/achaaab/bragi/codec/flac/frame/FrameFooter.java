@@ -6,7 +6,6 @@ import java.io.IOException;
 
 /**
  * FLAC FRAME_FOOTER
- * <p>
  * <a href="https://xiph.org/flac/format.html#frame_footer">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -20,6 +19,7 @@ public class FrameFooter {
 	 * Creates a FLAC frame footer reading from the given FLAC input stream.
 	 *
 	 * @param input FLAC input stream from which to read the frame
+	 * @since 0.2.0
 	 */
 	public FrameFooter(FlacInputStream input) throws IOException {
 		crc16 = input.readUnsignedInteger(16);
@@ -27,6 +27,7 @@ public class FrameFooter {
 
 	/**
 	 * @return Cyclic Redundancy Check (16 bits)
+	 * @since 0.2.0
 	 */
 	public int crc16() {
 		return crc16;

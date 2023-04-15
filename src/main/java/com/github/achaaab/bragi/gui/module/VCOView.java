@@ -25,6 +25,7 @@ public class VCOView extends JPanel {
 
 	/**
 	 * @param model VCO model
+	 * @since 0.2.0
 	 */
 	public VCOView(VCO model) {
 

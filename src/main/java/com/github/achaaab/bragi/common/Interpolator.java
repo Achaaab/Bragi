@@ -13,6 +13,7 @@ public interface Interpolator {
 	 * @param sourceSampleRate source sampling rate
 	 * @param targetSampleRate target sampling rate
 	 * @return interpolated samples
+	 * @since 0.2.0
 	 */
 	float[] interpolate(float[] samples, float sourceSampleRate, float targetSampleRate);
 }

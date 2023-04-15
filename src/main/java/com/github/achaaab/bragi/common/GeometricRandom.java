@@ -38,7 +38,6 @@ public class GeometricRandom {
 	 * Creates a pseudorandom number generator with geometric distribution.
 	 * The created {@code GeometricRandom} is based on a {@link ThreadLocalRandom},
 	 * thus isolated to the current thread.
-	 * <p>
 	 * If you want to use a threadsafe {@code Random}, use the constructor {@link #GeometricRandom(Random)}.
 	 *
 	 * @see ThreadLocalRandom
@@ -59,6 +58,7 @@ public class GeometricRandom {
 	/**
 	 * @param successProbability success probability in {@code ]0.0, 1.0[}
 	 * @return number of trials before getting a success
+	 * @since 0.2.0
 	 */
 	public long getRandomGeometric(double successProbability) {
 
@@ -78,6 +78,7 @@ public class GeometricRandom {
 	/**
 	 * @param successProbability success probability in {@code ]0.0, 1.0[}
 	 * @return number of trials before getting a success
+	 * @since 0.2.0
 	 */
 	public long computeRandomGeometric(double successProbability) {
 
@@ -88,6 +89,7 @@ public class GeometricRandom {
 	/**
 	 * @param successProbability success probability in {@code ]0.0, 1.0]}
 	 * @return number of trials before getting a success
+	 * @since 0.2.0
 	 */
 	public long searchRandomGeometric(double successProbability) {
 
@@ -110,6 +112,7 @@ public class GeometricRandom {
 
 	/**
 	 * @return number of trials to win a coin flip (with 1/2 of success probability)
+	 * @since 0.2.0
 	 */
 	public long searchRandomGeometricCoinFlip() {
 

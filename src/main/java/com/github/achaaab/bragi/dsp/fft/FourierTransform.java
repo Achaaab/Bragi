@@ -38,8 +38,9 @@ public abstract class FourierTransform {
 	 * Construct a FourierTransform that will analyze sample buffers that are {@code size} samples long
 	 * and contain samples with a {@code sampleRate} sample rate.
 	 *
-	 * @param size       length of the buffers that will be analyzed
+	 * @param size length of the buffers that will be analyzed
 	 * @param sampleRate sample rate of the samples that will be analyzed
+	 * @since 0.2.0
 	 */
 	FourierTransform(int size, float sampleRate) {
 
@@ -58,14 +59,17 @@ public abstract class FourierTransform {
 	 * Allocating real, imaginary, and spectrum are the responsibility of derived classes
 	 * because the size of the arrays will depend on the implementation being used.
 	 * This method enforces that responsibility.
+	 *
+	 * @since 0.2.0
 	 */
 	protected abstract void allocateArrays();
 
 	/**
 	 * Sets new complex values.
 	 *
-	 * @param real      new real part
+	 * @param real new real part
 	 * @param imaginary new imaginary part
+	 * @since 0.2.0
 	 */
 	protected void setComplex(float[] real, float[] imaginary) {
 
@@ -76,6 +80,8 @@ public abstract class FourierTransform {
 	/**
 	 * Fill the spectrum array with the amplitudes of the data in real and imaginary.
 	 * Used so that this class can handle creating the average array and also do spectrum shaping if necessary.
+	 *
+	 * @since 0.2.0
 	 */
 	protected void fillSpectrum() {
 
@@ -138,6 +144,8 @@ public abstract class FourierTransform {
 
 	/**
 	 * Sets the object to not compute averages.
+	 *
+	 * @since 0.2.0
 	 */
 	public void noAverages() {
 		whichAverage = NO_AVERAGE;
@@ -148,6 +156,7 @@ public abstract class FourierTransform {
 	 * In other words, each average band will be {@code specSize() / numAvg} bands wide.
 	 *
 	 * @param averageCount how many averages to compute
+	 * @since 0.2.0
 	 */
 	public void linearAverage(int averageCount) {
 
@@ -158,18 +167,16 @@ public abstract class FourierTransform {
 	/**
 	 * Sets the number of averages used when computing the spectrum based on the minimum bandwidth
 	 * for an octave and the number of bands per octave.
-	 * <p>
 	 * For example, with audio that has a sample rate of 44100 Hz,
 	 * <code>logarithmicAverages(11, 1)</code> will result in 12 averages,
 	 * each corresponding to an octave, the first spanning 0 to 11 Hz.
-	 * <p>
 	 * To ensure that each octave band is a full octave, the number of octaves is computed
 	 * by dividing the Nyquist frequency by two, and then the result of that by two, and so on.
-	 * <p>
 	 * This means that the actual bandwidth of the lowest octave may not be exactly the value specified.
 	 *
 	 * @param minimumBandwidth minimum bandwidth used for an octave
-	 * @param bandsPerOctave   how many bands to split each octave into
+	 * @param bandsPerOctave how many bands to split each octave into
+	 * @since 0.2.0
 	 */
 	public void logarithmicAverages(double minimumBandwidth, int bandsPerOctave) {
 
@@ -187,6 +194,7 @@ public abstract class FourierTransform {
 
 	/**
 	 * @param window window to use on the samples before taking the forward transform
+	 * @since 0.2.0
 	 */
 	public void setWindow(Window window) {
 		this.window = window;
@@ -195,17 +203,20 @@ public abstract class FourierTransform {
 	/**
 	 * Returns the length of the time domain signal expected by this transform.
 	 *
-	 * @return the length of the time domain signal expected by this transform
+	 * @return length of the time domain signal expected by this transform
+	 * @since 0.2.0
 	 */
 	public int getSize() {
 		return size;
 	}
 
 	/**
-	 * Returns the size of the spectrum created by this transform. In other words, the number of frequency bands produced by this
-	 * transform. This is typically equal to <code>timeSize()/2 + 1</code>, see above for an explanation.
+	 * Returns the size of the spectrum created by this transform.
+	 * In other words, the number of frequency bands produced by this transform.
+	 * This is typically equal to <code>timeSize()/2 + 1</code>, see above for an explanation.
 	 *
-	 * @return the size of the spectrum
+	 * @return size of the spectrum
+	 * @since 0.2.0
 	 */
 	public int getSpectrumSize() {
 		return spectrum.length;
@@ -216,6 +227,7 @@ public abstract class FourierTransform {
 	 *
 	 * @param band index of a frequency band
 	 * @return amplitude of the requested frequency band
+	 * @since 0.2.0
 	 */
 	public float getAmplitude(int band) {
 
@@ -229,26 +241,29 @@ public abstract class FourierTransform {
 	 * last frequency bands is half as large as the value returned by this function.
 	 *
 	 * @return width of each frequency band in Hz.
+	 * @since 0.2.0
 	 */
 	public float getBandWidth() {
 		return bandWidth;
 	}
 
 	/**
-	 * Sets the amplitude of the <code>i<sup>th</sup></code> frequency band to <code>a</code>. You can use this to shape the
-	 * spectrum before using <code>inverse()</code>.
+	 * Sets the amplitude of the <code>i<sup>th</sup></code> frequency band to <code>a</code>.
+	 * You can use this to shape the spectrum before using <code>inverse()</code>.
 	 *
-	 * @param band      the frequency band to modify
+	 * @param band the frequency band to modify
 	 * @param amplitude the new amplitude
+	 * @since 0.2.0
 	 */
 	public abstract void setAmplitude(int band, float amplitude);
 
 	/**
-	 * Scales the amplitude of the <code>i<sup>th</sup></code> frequency band by <code>s</code>. You can use this to shape the
-	 * spectrum before using <code>inverse()</code>.
+	 * Scales the amplitude of the <code>i<sup>th</sup></code> frequency band by <code>s</code>.
+	 * You can use this to shape the spectrum before using <code>inverse()</code>.
 	 *
-	 * @param band   the frequency band to modify
+	 * @param band the frequency band to modify
 	 * @param factor the scaling factor
+	 * @since 0.2.0
 	 */
 	public abstract void scaleBand(int band, float factor);
 
@@ -257,6 +272,7 @@ public abstract class FourierTransform {
 	 *
 	 * @param frequency the frequency you want the index for (in Hz)
 	 * @return the index of the frequency band that contains freq
+	 * @since 0.2.0
 	 */
 	public int getBandIndex(float frequency) {
 
@@ -271,25 +287,30 @@ public abstract class FourierTransform {
 		}
 
 		// all other cases
-		float fraction = frequency / sampleRate;
+		var fraction = frequency / sampleRate;
 		return round(size * fraction);
 	}
 
 	/**
 	 * @param band the index of the band you want to middle frequency of
 	 * @return middle frequency of the i<sup>th</sup> band
+	 * @since 0.2.0
 	 */
 	public float getFrequency(int band) {
 
 		var bandWidth = getBandWidth();
 
-		// special case: the width of the first bin is half that of the others.
-		// so the center frequency is a quarter of the way.
+		/*
+		Special case: the width of the first bin is half that of the others.
+		So the center frequency is a quarter of the way.
+		*/
+
 		if (band == 0) {
 			return bandWidth * 0.25f;
 		}
 
-		// special case: the width of the last bin is half that of the others.
+		// Special case: the width of the last bin is half that of the others.
+
 		if (band == spectrum.length - 1) {
 
 			var lastBinBeginFreq = (sampleRate / 2.0f) - (bandWidth / 2);
@@ -297,16 +318,18 @@ public abstract class FourierTransform {
 			return lastBinBeginFreq + binHalfWidth;
 		}
 
-		// the center frequency of the ith band is simply i*bw
-		// because the first band is half the width of all others.
-		// treating it as if it wasn't offsets us to the middle
-		// of the band.
+		/*
+		The center frequency of the ith band is simply i*bw because the first band is half the width of all others.
+		Treating it as if it wasn't offsets us to the middle of the band.
+		 */
+
 		return band * bandWidth;
 	}
 
 	/**
 	 * @param i which average band you want the center frequency of
 	 * @return center frequency of the i<sup>th</sup> average band
+	 * @since 0.2.0
 	 */
 	public float getAverageCenterFrequency(int i) {
 
@@ -354,6 +377,7 @@ public abstract class FourierTransform {
 	/**
 	 * @param frequency frequency in Hz
 	 * @return amplitude the spectrum band containing the given frequency
+	 * @since 0.2.0
 	 */
 	public float getAmplitude(float frequency) {
 		return getAmplitude(getBandIndex(frequency));
@@ -364,6 +388,7 @@ public abstract class FourierTransform {
 	 *
 	 * @param frequency frequency in Hz
 	 * @param amplitude new amplitude
+	 * @since 0.2.0
 	 */
 	public void setAmplitude(float frequency, float amplitude) {
 		setAmplitude(getBandIndex(frequency), amplitude);
@@ -373,7 +398,8 @@ public abstract class FourierTransform {
 	 * Scales the amplitude of the requested frequency by {@code factor}.
 	 *
 	 * @param frequency frequency in Hz
-	 * @param factor    scaling factor
+	 * @param factor scaling factor
+	 * @since 0.2.0
 	 */
 	public void scale(float frequency, float factor) {
 		scaleBand(getBandIndex(frequency), factor);
@@ -381,6 +407,7 @@ public abstract class FourierTransform {
 
 	/**
 	 * @return number of averages currently being calculated
+	 * @since 0.2.0
 	 */
 	public int averageSize() {
 		return averages.length;
@@ -388,6 +415,7 @@ public abstract class FourierTransform {
 
 	/**
 	 * @return average magnitudes per band
+	 * @since 0.2.0
 	 */
 	public float[] getAverages() {
 		return averages;
@@ -396,18 +424,20 @@ public abstract class FourierTransform {
 	/**
 	 * @param index index of the average band
 	 * @return value of the requested average band
+	 * @since 0.2.0
 	 */
 	public float getAverage(int index) {
 		return averages.length > 0 ? averages[index] : 0.0f;
 	}
 
 	/**
-	 * Calculate the average amplitude of the frequency band
+	 * Calculates the average amplitude of the frequency band
 	 * bounded by {@code lowFrequency} and {@code highFrequency}, inclusive.
 	 *
-	 * @param lowFrequency  lower bound of the band
+	 * @param lowFrequency lower bound of the band
 	 * @param highFrequency upper bound of the band
 	 * @return average amplitude of all spectrum amplitude within the bounds
+	 * @since 0.2.0
 	 */
 	public float getAverageAmplitude(float lowFrequency, float highFrequency) {
 
@@ -428,6 +458,7 @@ public abstract class FourierTransform {
 	 * Performs a forward transform on {@code buffer}.
 	 *
 	 * @param buffer buffer to analyze
+	 * @since 0.2.0
 	 */
 	public abstract void forward(float[] buffer);
 
@@ -435,6 +466,7 @@ public abstract class FourierTransform {
 	 * Performs an inverse transform of the frequency spectrum and places the result in {@code buffer}.
 	 *
 	 * @param buffer buffer to place the result of the inverse transform in
+	 * @since 0.2.0
 	 */
 	public abstract void inverse(float[] buffer);
 
@@ -443,9 +475,10 @@ public abstract class FourierTransform {
 	 * represented by {@code spectrumReal} and {@code spectrumImaginary}
 	 * and places the result in {@code buffer}.
 	 *
-	 * @param spectrumReal      real part of the frequency spectrum
+	 * @param spectrumReal real part of the frequency spectrum
 	 * @param spectrumImaginary imaginary part the frequency spectrum
-	 * @param buffer            buffer to place the inverse transform in
+	 * @param buffer buffer to place the inverse transform in
+	 * @since 0.2.0
 	 */
 	public void inverse(float[] spectrumReal, float[] spectrumImaginary, float[] buffer) {
 
@@ -455,6 +488,7 @@ public abstract class FourierTransform {
 
 	/**
 	 * @return spectrum of the last {@link #forward(float[])} call
+	 * @since 0.2.0
 	 */
 	public float[] getSpectrum() {
 		return spectrum;
@@ -462,6 +496,7 @@ public abstract class FourierTransform {
 
 	/**
 	 * @return real part of the last {@link #forward(float[])} call
+	 * @since 0.2.0
 	 */
 	public float[] getRealPart() {
 		return real;
@@ -469,6 +504,7 @@ public abstract class FourierTransform {
 
 	/**
 	 * @return imaginary part of the last {@link #forward(float[])} call
+	 * @since 0.2.0
 	 */
 	public float[] getImaginaryPart() {
 		return imaginary;

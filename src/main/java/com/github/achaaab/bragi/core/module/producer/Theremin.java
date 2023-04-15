@@ -42,6 +42,7 @@ public class Theremin extends Module {
 
 	/**
 	 * @param name name of the theremin
+	 * @since 0.2.0
 	 */
 	public Theremin(String name) {
 
@@ -82,6 +83,7 @@ public class Theremin extends Module {
 
 	/**
 	 * @return pitch output of this theremin
+	 * @since 0.2.0
 	 */
 	public Output pitch() {
 		return pitch;
@@ -89,6 +91,7 @@ public class Theremin extends Module {
 
 	/**
 	 * @return volume output of this theremin
+	 * @since 0.2.0
 	 */
 	public Output volume() {
 		return volume;
@@ -96,6 +99,7 @@ public class Theremin extends Module {
 
 	/**
 	 * @param pitch pitch in volts
+	 * @since 0.2.0
 	 */
 	public void setPitch(float pitch) {
 		this.pitchSample = pitch;
@@ -103,6 +107,7 @@ public class Theremin extends Module {
 
 	/**
 	 * @param volumeSample volume in volts
+	 * @since 0.2.0
 	 */
 	public void setVolumeSample(float volumeSample) {
 		this.volumeSample = volumeSample;

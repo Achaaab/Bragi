@@ -31,6 +31,7 @@ public class Mp3Player extends Player {
 	 * @param name name of the MP3 file player
 	 * @param path path to the MP3 file to play
 	 * @throws ModuleCreationException if the MP3 file cannot be played
+	 * @since 0.2.0
 	 */
 	public Mp3Player(String name, Path path) {
 		super(name, new Mp3File(path));

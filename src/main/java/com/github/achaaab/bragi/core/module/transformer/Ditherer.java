@@ -34,6 +34,7 @@ public class Ditherer extends Module {
 
 	/**
 	 * @param name ditherer name
+	 * @since 0.2.0
 	 */
 	public Ditherer(String name) {
 

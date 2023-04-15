@@ -12,6 +12,7 @@ public abstract class MemoizedWindow implements Window {
 
 	/**
 	 * @param size number of coefficients to memoize
+	 * @since 0.2.0
 	 */
 	private void memoizeCoefficients(int size) {
 
@@ -26,6 +27,7 @@ public abstract class MemoizedWindow implements Window {
 	 * @param n sample index
 	 * @param size number of samples
 	 * @return coefficient to apply to sample at given index
+	 * @since 0.2.0
 	 */
 	protected abstract double getCoefficient(int n, int size);
 

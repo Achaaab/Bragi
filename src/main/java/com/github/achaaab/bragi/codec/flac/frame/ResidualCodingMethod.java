@@ -7,7 +7,6 @@ import java.io.IOException;
 
 /**
  * FLAC method for residual coding
- * <p>
  * <a href="https://xiph.org/flac/format.html#residual">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -20,14 +19,14 @@ public interface ResidualCodingMethod {
 
 	ResidualCodingMethod[] DECODING_TABLE = {
 			RICE_1,
-			RICE_2
-	};
+			RICE_2 };
 
 	/**
 	 * @param input FLAC input stream from which to read a method for residual coding
 	 * @return decoded method for residual coding
-	 * @throws IOException   I/O exception while reading from the given FLAC input stream
+	 * @throws IOException I/O exception while reading from the given FLAC input stream
 	 * @throws FlacException if the read code is unknown
+	 * @since 0.2.0
 	 */
 	static ResidualCodingMethod decode(FlacInputStream input) throws IOException, FlacException {
 
@@ -43,11 +42,12 @@ public interface ResidualCodingMethod {
 	/**
 	 * Decodes residuals from the given FLAC input stream into the given samples.
 	 *
-	 * @param input             FLAC input stream from which to decode residuals
-	 * @param samples           array in which to store decoded residuals
+	 * @param input FLAC input stream from which to decode residuals
+	 * @param samples array in which to store decoded residuals
 	 * @param warmUpSampleCount number of warm-up samples already decoded
-	 * @throws IOException   I/O exception while reading from the given FLAC input stream
+	 * @throws IOException I/O exception while reading from the given FLAC input stream
 	 * @throws FlacException if invalid Rice partition is read
+	 * @since 0.2.0
 	 */
 	void decode(FlacInputStream input, long[] samples, int warmUpSampleCount) throws IOException, FlacException;
 }

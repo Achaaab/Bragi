@@ -12,6 +12,7 @@ public class Volume extends AbstractCommand {
 
 	/**
 	 * @param value volume value
+	 * @since 0.2.0
 	 */
 	public Volume(int value) {
 		this.value = value;

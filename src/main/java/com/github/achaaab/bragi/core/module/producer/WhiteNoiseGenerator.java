@@ -41,6 +41,7 @@ public class WhiteNoiseGenerator extends Module {
 
 	/**
 	 * @param name white noise generator name
+	 * @since 0.2.0
 	 */
 	public WhiteNoiseGenerator(String name) {
 

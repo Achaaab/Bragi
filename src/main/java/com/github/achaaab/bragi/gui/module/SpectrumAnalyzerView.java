@@ -70,6 +70,7 @@ public class SpectrumAnalyzerView extends PaintedView {
 
 	/**
 	 * @param model spectrum analyzer model
+	 * @since 0.2.0
 	 */
 	public SpectrumAnalyzerView(SpectrumAnalyzer model) {
 

@@ -18,6 +18,7 @@ public class MidSideStereo extends AbstractChannelAssignment {
 
 	/**
 	 * @see #MID_SIDE_STEREO
+	 * @since 0.2.0
 	 */
 	MidSideStereo() {
 		super(MID, SIDE);

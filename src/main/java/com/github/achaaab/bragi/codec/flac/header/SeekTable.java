@@ -9,7 +9,6 @@ import java.util.List;
 
 /**
  * FLAC METADATA_BLOCK_SEEKTABLE
- * <p>
  * <a href="https://xiph.org/flac/format.html#metadata_block_seektable">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -22,9 +21,10 @@ public class SeekTable implements MetadataBlockData {
 	/**
 	 * Decodes an SEEKTABLE metadata block from the given FLAC input stream.
 	 *
-	 * @param input  FLAC input stream to decode
+	 * @param input FLAC input stream to decode
 	 * @param length length of this metadata block data
 	 * @throws IOException I/O exception while decoding a SEEKTABLE metadata block
+	 * @since 0.2.0
 	 */
 	SeekTable(FlacInputStream input, int length) throws IOException, FlacException {
 
@@ -44,6 +44,7 @@ public class SeekTable implements MetadataBlockData {
 
 	/**
 	 * @return seek points
+	 * @since 0.2.0
 	 */
 	public List<SeekPoint> seekPoints() {
 		return seekPoints;

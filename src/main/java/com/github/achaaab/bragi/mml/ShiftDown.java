@@ -10,6 +10,8 @@ public class ShiftDown extends AbstractCommand {
 
 	/**
 	 * Creates a new command that lowers the octave by 1.
+	 *
+	 * @since 0.2.0
 	 */
 	ShiftDown() {
 

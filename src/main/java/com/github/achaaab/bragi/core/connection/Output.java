@@ -27,11 +27,13 @@ public interface Output extends NamedEntity {
 	 * Connect this output to the specified input.
 	 *
 	 * @param input input to connect to
+	 * @since 0.2.0
 	 */
 	void connect(Input input);
 
 	/**
 	 * @return whether this output is connected to at least 1 input
+	 * @since 0.2.0
 	 */
 	boolean isConnected();
 
@@ -41,6 +43,7 @@ public interface Output extends NamedEntity {
 	 *
 	 * @param chunk chunk to write
 	 * @throws InterruptedException if interrupted while writing chunk
+	 * @since 0.2.0
 	 */
 	void write(float[] chunk) throws InterruptedException;
 
@@ -48,6 +51,7 @@ public interface Output extends NamedEntity {
 	 * Disconnects this output from the input connected through the given buffer.
 	 *
 	 * @param buffer buffer connecting this output to an input
+	 * @since 0.2.0
 	 */
 	void disconnect(Buffer buffer);
 }

@@ -10,6 +10,7 @@ public class AudioFileException extends Exception {
 
 	/**
 	 * @param message exception message
+	 * @since 0.2.0
 	 */
 	public AudioFileException(String message) {
 		super(message);
@@ -17,6 +18,7 @@ public class AudioFileException extends Exception {
 
 	/**
 	 * @param cause cause of this exception
+	 * @since 0.2.0
 	 */
 	public AudioFileException(Exception cause) {
 		super(cause);

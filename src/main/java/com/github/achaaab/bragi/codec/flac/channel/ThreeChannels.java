@@ -17,6 +17,7 @@ public class ThreeChannels extends UncorrelatedChannelAssignment {
 
 	/**
 	 * @see #THREE_CHANNELS
+	 * @since 0.2.0
 	 */
 	ThreeChannels() {
 		super(LEFT, RIGHT, CENTER);

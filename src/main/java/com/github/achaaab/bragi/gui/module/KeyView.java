@@ -29,6 +29,7 @@ public class KeyView extends JButton implements MouseListener {
 
 	/**
 	 * @param model key model
+	 * @since 0.2.0
 	 */
 	public KeyView(Key model) {
 
@@ -83,6 +84,8 @@ public class KeyView extends JButton implements MouseListener {
 
 	/**
 	 * Presses this key.
+	 *
+	 * @since 0.2.0
 	 */
 	public void press() {
 		model.press();
@@ -90,6 +93,8 @@ public class KeyView extends JButton implements MouseListener {
 
 	/**
 	 * Releases this key.
+	 *
+	 * @since 0.2.0
 	 */
 	public void release() {
 		model.release();
@@ -97,6 +102,7 @@ public class KeyView extends JButton implements MouseListener {
 
 	/**
 	 * @param pressed whether this key is pressed
+	 * @since 0.2.0
 	 */
 	public void setPressed(boolean pressed) {
 		setBackground(pressed ? RED : background);

@@ -10,6 +10,8 @@ public class ShiftUp extends AbstractCommand {
 
 	/**
 	 * Creates a new command that raises the octave by 1.
+	 *
+	 * @since 0.2.0
 	 */
 	ShiftUp() {
 

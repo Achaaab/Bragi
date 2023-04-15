@@ -22,7 +22,7 @@ public class SecondaryInput extends AbstractInput {
 	 * Create a secondary input, initially not connected.
 	 *
 	 * @param module module that will contain the created input
-	 * @param name   name of the secondary input to create
+	 * @param name name of the secondary input to create
 	 * @since 0.1.8
 	 */
 	public SecondaryInput(Module module, String name) {
@@ -31,6 +31,7 @@ public class SecondaryInput extends AbstractInput {
 
 	/**
 	 * @param buffer buffer to read from
+	 * @since 0.2.0
 	 */
 	public void setBuffer(Buffer buffer) {
 
@@ -44,6 +45,7 @@ public class SecondaryInput extends AbstractInput {
 	 *
 	 * @return next chunk, or {@code null} if this input is not connected
 	 * @throws InterruptedException if interrupted while waiting for a chunk
+	 * @since 0.2.0
 	 */
 	public float[] read() throws InterruptedException {
 

@@ -46,8 +46,9 @@ public class PaintingLoop implements Runnable {
 	private double frameRate;
 
 	/**
-	 * @param component       component to paint
+	 * @param component component to paint
 	 * @param targetFrameRate required number of frames per second
+	 * @since 0.2.0
 	 */
 	public PaintingLoop(JComponent component, double targetFrameRate) {
 
@@ -100,6 +101,7 @@ public class PaintingLoop implements Runnable {
 	/**
 	 * @param start paint start time
 	 * @return loop end time
+	 * @since 0.2.0
 	 */
 	private long waitTargetFrameTime(long start) throws InterruptedException {
 
@@ -120,13 +122,15 @@ public class PaintingLoop implements Runnable {
 
 	/**
 	 * Paints the component synchronously.
+	 *
+	 * @since 0.2.0
 	 */
 	private void paint() {
 
 		component.paintImmediately(component.getBounds());
 
 		/*
-		When painting is very fast (observed with an nearly empty spectrum analyzer
+		When painting is very fast (observed with a nearly empty spectrum analyzer
 		which takes less than 1 millisecond to paint). X11 server seems to drop nearly all the frames, it only
 		shows 1 frame every 30 rendered frames (estimation). Using this sync() method seems to solve the problem
 		at the cost of a significantly increased frame render time.

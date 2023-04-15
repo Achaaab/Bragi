@@ -23,6 +23,7 @@ public class KeyboardView extends JSplitPane {
 
 	/**
 	 * @param model keyboard model
+	 * @since 0.2.0
 	 */
 	public KeyboardView(Keyboard model) {
 

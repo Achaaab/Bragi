@@ -37,6 +37,7 @@ public class Mixer extends Module {
 	 * Creates a mixer with default name.
 	 *
 	 * @see #DEFAULT_NAME
+	 * @since 0.2.0
 	 */
 	public Mixer() {
 		this(DEFAULT_NAME);
@@ -46,6 +47,7 @@ public class Mixer extends Module {
 	 * Creates a mixer with the given name.
 	 *
 	 * @param name name of the mixer to create
+	 * @since 0.2.0
 	 */
 	public Mixer(String name) {
 
@@ -89,6 +91,7 @@ public class Mixer extends Module {
 
 	/**
 	 * @return gain to apply to samples read from input 0 in decibels (dB)
+	 * @since 0.2.0
 	 */
 	public int getGain0() {
 		return gain0;
@@ -96,6 +99,7 @@ public class Mixer extends Module {
 
 	/**
 	 * @param gain0 to apply to samples read from input 0 in decibels (dB)
+	 * @since 0.2.0
 	 */
 	public void setGain0(int gain0) {
 
@@ -106,6 +110,7 @@ public class Mixer extends Module {
 
 	/**
 	 * @return gain to apply to samples read from input 1 in decibels (dB)
+	 * @since 0.2.0
 	 */
 	public int getGain1() {
 		return gain1;
@@ -113,6 +118,7 @@ public class Mixer extends Module {
 
 	/**
 	 * @param gain1 to apply to samples read from input 1 in decibels (dB)
+	 * @since 0.2.0
 	 */
 	public void setGain1(int gain1) {
 

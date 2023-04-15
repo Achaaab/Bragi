@@ -10,7 +10,6 @@ import java.util.Map;
 /**
  * FLAC METADATA_BLOCK_VORBIS_COMMENT
  * It is also known as FLAC tags.
- * <p>
  * <a href="https://xiph.org/flac/format.html#metadata_block_vorbis_comment">FLAC specifications</a>
  * <a href="https://www.xiph.org/vorbis/doc/v-comment.html">Vorbis specifications</a>
  *
@@ -35,7 +34,6 @@ public class VorbisComment implements MetadataBlockData {
 	public static final String FIELD_CONTACT = "CONTACT";
 	public static final String FIELD_ISRC = "ISRC";
 
-
 	private final String vendor;
 	private final Map<String, String> userComments;
 
@@ -43,8 +41,9 @@ public class VorbisComment implements MetadataBlockData {
 	 * Decodes a vorbis comment from the given input stream.
 	 *
 	 * @param input FLAC input stream to decode
-	 * @throws IOException   I/O exception while decoding a vorbis comment
+	 * @throws IOException I/O exception while decoding a vorbis comment
 	 * @throws FlacException if invalid or unsupported vorbis comment is decoded
+	 * @since 0.2.0
 	 */
 	public VorbisComment(FlacInputStream input) throws IOException, FlacException {
 
@@ -67,6 +66,7 @@ public class VorbisComment implements MetadataBlockData {
 
 	/**
 	 * @return vendor name
+	 * @since 0.2.0
 	 */
 	public String vendor() {
 		return vendor;
@@ -74,6 +74,7 @@ public class VorbisComment implements MetadataBlockData {
 
 	/**
 	 * @return vorbis user comments
+	 * @since 0.2.0
 	 */
 	public Map<String, String> userComments() {
 		return userComments;
@@ -83,8 +84,9 @@ public class VorbisComment implements MetadataBlockData {
 	 * Decodes a vorbis user comment from the given FLAC input stream.
 	 *
 	 * @param input FLAC input stream to decode
-	 * @throws IOException   I/O exception while decoding a user comment
+	 * @throws IOException I/O exception while decoding a user comment
 	 * @throws FlacException if user comment is invalid or unsupported
+	 * @since 0.2.0
 	 */
 	private void decodeUserComment(FlacInputStream input) throws IOException, FlacException {
 

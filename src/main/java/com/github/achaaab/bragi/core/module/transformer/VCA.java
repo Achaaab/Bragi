@@ -44,6 +44,7 @@ public class VCA extends Module {
 
 	/**
 	 * @param name VCA name
+	 * @since 0.2.0
 	 */
 	public VCA(String name) {
 
@@ -89,6 +90,7 @@ public class VCA extends Module {
 
 	/**
 	 * @return gain gain input
+	 * @since 0.2.0
 	 */
 	public Input gain() {
 		return gain;
@@ -96,6 +98,7 @@ public class VCA extends Module {
 
 	/**
 	 * @return initial gain in decibels
+	 * @since 0.2.0
 	 */
 	public int getInitialGain() {
 		return initialGain;
@@ -103,6 +106,7 @@ public class VCA extends Module {
 
 	/**
 	 * @param initialGain initial gain in decibels
+	 * @since 0.2.0
 	 */
 	public void setInitialGain(int initialGain) {
 		this.initialGain = initialGain;

@@ -21,17 +21,12 @@ import static org.slf4j.LoggerFactory.getLogger;
 /**
  * ADSR is an envelope generator. It produces a signal that can be sent to the gain input of an VCA or to
  * the modulation input of a VCF.
- * <p>
  * ADSR means Attack, Decay, Sustain and Release.
- * <p>
  * Attack is the time taken for initial run-up of level from nil to peak, beginning when a positive value is read
  * on the gate input.
- * <p>
  * Decay is the time taken for the subsequent run down from the attack level to the designated sustain level.
- * <p>
  * Sustain is the level during the main sequence of the sound's duration, until a negative value is read on the gate
  * port.
- * <p>
  * Release is the time taken for the level to decay from the sustain level to zero after a negative value is read
  * on the gate port.
  *
@@ -75,6 +70,7 @@ public class ADSR extends Module {
 	 * Creates an ADSR module with specified name.
 	 *
 	 * @param name ADSR name
+	 * @since 0.2.0
 	 */
 	public ADSR(String name) {
 
@@ -135,9 +131,10 @@ public class ADSR extends Module {
 	}
 
 	/**
-	 * @param targetGain  target gain in Volts
-	 * @param speed       gain change speed in Volts per second
+	 * @param targetGain target gain in Volts
+	 * @param speed gain change speed in Volts per second
 	 * @param targetState new state to set when target gain is reached
+	 * @since 0.2.0
 	 */
 	private void step(double targetGain, double speed, ADSRState targetState) {
 
@@ -154,6 +151,7 @@ public class ADSR extends Module {
 
 	/**
 	 * @return ADSR gate input
+	 * @since 0.2.0
 	 */
 	public Input gate() {
 		return gate;
@@ -161,6 +159,7 @@ public class ADSR extends Module {
 
 	/**
 	 * @return attack speed in Volts per second
+	 * @since 0.2.0
 	 */
 	public double getAttack() {
 		return attack;
@@ -170,6 +169,7 @@ public class ADSR extends Module {
 	 * Attack speed must be strictly positive.
 	 *
 	 * @param attack attack speed in Volts per second
+	 * @since 0.2.0
 	 */
 	public void setAttack(double attack) {
 		this.attack = attack;
@@ -177,6 +177,7 @@ public class ADSR extends Module {
 
 	/**
 	 * @return decay speed in Volts per second
+	 * @since 0.2.0
 	 */
 	public double getDecay() {
 		return decay;
@@ -186,6 +187,7 @@ public class ADSR extends Module {
 	 * Decay speed must be strictly positive.
 	 *
 	 * @param decay decay speed in Volts per second
+	 * @since 0.2.0
 	 */
 	public void setDecay(double decay) {
 		this.decay = decay;
@@ -193,6 +195,7 @@ public class ADSR extends Module {
 
 	/**
 	 * @return sustain gain in Volts
+	 * @since 0.2.0
 	 */
 	public double getSustain() {
 		return sustain;
@@ -204,6 +207,7 @@ public class ADSR extends Module {
 	 * @param sustain sustain gain in Volts
 	 * @see #MINIMAL_GAIN
 	 * @see #MAXIMAL_GAIN
+	 * @since 0.2.0
 	 */
 	public void setSustain(double sustain) {
 		this.sustain = sustain;
@@ -211,6 +215,7 @@ public class ADSR extends Module {
 
 	/**
 	 * @return release speed in Volts per second
+	 * @since 0.2.0
 	 */
 	public double getRelease() {
 		return release;
@@ -220,6 +225,7 @@ public class ADSR extends Module {
 	 * Release speed must be strictly positive.
 	 *
 	 * @param release release speed in Volts per second
+	 * @since 0.2.0
 	 */
 	public void setRelease(double release) {
 		this.release = release;

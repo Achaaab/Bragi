@@ -1,9 +1,9 @@
 package com.github.achaaab.bragi.core.module.producer;
 
 import com.github.achaaab.bragi.core.connection.Output;
+import com.github.achaaab.bragi.core.module.Module;
 import com.github.achaaab.bragi.core.module.producer.wave.Wave;
 import com.github.achaaab.bragi.core.module.producer.wave.Waveform;
-import com.github.achaaab.bragi.core.module.Module;
 
 /**
  * oscillator
@@ -14,25 +14,25 @@ import com.github.achaaab.bragi.core.module.Module;
 public abstract class Oscillator extends Module {
 
 	protected final Output output;
-
 	protected final Wave wave;
 
 	/**
-	 * @param name             name of the oscillator to create
-	 * @param initialWaveform  initial waveform
+	 * @param name name of the oscillator to create
+	 * @param initialWaveform initial waveform
 	 * @param initialFrequency initial frequency in hertz
+	 * @since 0.2.0
 	 */
 	public Oscillator(String name, Waveform initialWaveform, double initialFrequency) {
 
 		super(name);
 
 		output = addPrimaryOutput(name + "_output");
-
 		wave = new Wave(initialWaveform, initialFrequency);
 	}
 
 	/**
 	 * @return waveform of this oscillator
+	 * @since 0.2.0
 	 */
 	public Waveform getWaveform() {
 		return wave.getWaveform();
@@ -40,6 +40,7 @@ public abstract class Oscillator extends Module {
 
 	/**
 	 * @param waveform waveform of this oscillator
+	 * @since 0.2.0
 	 */
 	public void setWaveform(Waveform waveform) {
 		wave.setWaveform(waveform);
@@ -47,6 +48,7 @@ public abstract class Oscillator extends Module {
 
 	/**
 	 * @return frequency of the LFO in hertz
+	 * @since 0.2.0
 	 */
 	public double getFrequency() {
 		return wave.getFrequency();
@@ -54,6 +56,7 @@ public abstract class Oscillator extends Module {
 
 	/**
 	 * @param frequency frequency of the LFO in hertz
+	 * @since 0.2.0
 	 */
 	public void setFrequency(double frequency) {
 		wave.setFrequency(frequency);

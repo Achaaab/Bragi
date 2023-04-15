@@ -34,13 +34,13 @@ public class PinkNoiseGenerator extends Module {
 
 	private static final Normalizer NORMALIZER = new Normalizer(
 			0.0f, WHITE_NOISE_COUNT,
-			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage()
-	);
+			Settings.INSTANCE.minimalVoltage(), Settings.INSTANCE.maximalVoltage());
 
 	/**
 	 * Creates a pink noise, summing white noises.
 	 *
 	 * @return created pink noise
+	 * @since 0.2.0
 	 */
 	private static CircularFloatArray createPinkNoise() {
 
@@ -90,11 +90,10 @@ public class PinkNoiseGenerator extends Module {
 	}
 
 	private final Output output;
-
 	private final CircularFloatArray pinkNoise;
 
 	/**
-	 * Creates an pink noise generator with default name.
+	 * Creates a pink noise generator with default name.
 	 *
 	 * @see #DEFAULT_NAME
 	 * @since 0.0.9
@@ -105,13 +104,13 @@ public class PinkNoiseGenerator extends Module {
 
 	/**
 	 * @param name pink noise generator name
+	 * @since 0.2.0
 	 */
 	public PinkNoiseGenerator(String name) {
 
 		super(name);
 
 		output = addPrimaryOutput(name + "_output");
-
 		pinkNoise = createPinkNoise();
 	}
 

@@ -34,6 +34,7 @@ public class HighPassVCF extends VCF {
 
 	/**
 	 * @param name name of the high-pass filter
+	 * @since 0.2.0
 	 */
 	public HighPassVCF(String name) {
 		super(name);
@@ -68,7 +69,7 @@ public class HighPassVCF extends VCF {
 			var scale = exp(exponent);
 			var r = emphasis * scale;
 
-			// inverted feed back for corner peaking (emphasis)
+			// inverted feedback for corner peaking (emphasis)
 			var x = NORMALIZER.normalize(inputSamples[sampleIndex]) - r * y4;
 
 			// four cascaded one-pole filters (bilinear transform)

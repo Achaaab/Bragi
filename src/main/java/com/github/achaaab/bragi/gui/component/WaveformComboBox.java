@@ -13,6 +13,8 @@ public class WaveformComboBox extends JComboBox<Waveform> {
 
 	/**
 	 * Create a combo box for waveform selection.
+	 *
+	 * @since 0.2.0
 	 */
 	public WaveformComboBox() {
 
@@ -23,6 +25,7 @@ public class WaveformComboBox extends JComboBox<Waveform> {
 
 	/**
 	 * @return selected waveform
+	 * @since 0.2.0
 	 */
 	public Waveform getSelectedWaveform() {
 		return getItemAt(getSelectedIndex());

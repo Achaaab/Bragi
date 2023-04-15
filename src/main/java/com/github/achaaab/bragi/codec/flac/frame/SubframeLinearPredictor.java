@@ -24,15 +24,16 @@ public abstract class SubframeLinearPredictor extends Subframe {
 	 * Creates an abstract FLAC subframe with its header.
 	 *
 	 * @param frameHeader header of the enclosing frame
-	 * @param header      header of this subframe
-	 * @param input       FLAC input stream from which to read this subframe
-	 * @param order       order of the linear predictor used to encode this subframe
-	 * @param extraBit    whether to add an extra bit (used for difference channel)
-	 * @throws IOException   I/O exception while reading from the given FLAC input stream
+	 * @param header header of this subframe
+	 * @param input FLAC input stream from which to read this subframe
+	 * @param order order of the linear predictor used to encode this subframe
+	 * @param extraBit whether to add an extra bit (used for difference channel)
+	 * @throws IOException I/O exception while reading from the given FLAC input stream
 	 * @throws FlacException if invalid subframe is decoded
+	 * @since 0.2.0
 	 */
 	public SubframeLinearPredictor(FrameHeader frameHeader, SubframeHeader header, FlacInputStream input,
-	                               int order, boolean extraBit) throws IOException, FlacException {
+			int order, boolean extraBit) throws IOException, FlacException {
 
 		super(frameHeader, header, input, extraBit);
 
@@ -53,12 +54,15 @@ public abstract class SubframeLinearPredictor extends Subframe {
 	/**
 	 * Configures the linear predictor.
 	 * Get coefficients and optional shift in bits.
+	 *
+	 * @since 0.2.0
 	 */
 	protected abstract void configure() throws IOException;
 
 	/**
-	 * @throws IOException   I/O exception while reading from the FLAC input stream
+	 * @throws IOException I/O exception while reading from the FLAC input stream
 	 * @throws FlacException if invalid method or residuals are decoded
+	 * @since 0.2.0
 	 */
 	protected void decodeResiduals() throws IOException, FlacException {
 
@@ -68,6 +72,8 @@ public abstract class SubframeLinearPredictor extends Subframe {
 
 	/**
 	 * Restores linear prediction.
+	 *
+	 * @since 0.2.0
 	 */
 	protected void restoreLinearPrediction() {
 

@@ -38,6 +38,7 @@ public class Sampler extends Module {
 
 	/**
 	 * @param name sampler name
+	 * @since 0.2.0
 	 */
 	public Sampler(String name) {
 

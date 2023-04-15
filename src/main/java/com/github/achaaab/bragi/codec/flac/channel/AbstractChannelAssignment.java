@@ -2,7 +2,6 @@ package com.github.achaaab.bragi.codec.flac.channel;
 
 /**
  * abstract FLAC channel assignment
- * <p>
  * <a href="https://xiph.org/flac/format.html#frame_header">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -17,6 +16,7 @@ public abstract class AbstractChannelAssignment implements ChannelAssignment {
 	 * The number of descriptions defines the number of channels.
 	 *
 	 * @param descriptions description of each channel
+	 * @since 0.2.0
 	 */
 	AbstractChannelAssignment(String... descriptions) {
 

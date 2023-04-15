@@ -46,6 +46,7 @@ public class OscilloscopeView extends PaintedView {
 
 	/**
 	 * @param model oscilloscope model
+	 * @since 0.2.0
 	 */
 	public OscilloscopeView(Oscilloscope model) {
 

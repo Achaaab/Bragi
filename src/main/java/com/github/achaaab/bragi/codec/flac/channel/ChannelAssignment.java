@@ -9,7 +9,6 @@ import java.io.IOException;
 /**
  * FLAC channel assignment
  * Where defined, the channel order follows SMPTE/ITU-R recommendations.
- * <p>
  * <a href="https://xiph.org/flac/format.html#frame_header">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -66,8 +65,9 @@ public interface ChannelAssignment {
 	 *
 	 * @param input FLAC input stream from which to decode a channel assignment
 	 * @return decoded channel assignment
-	 * @throws IOException          I/O exception while reading from the given FLAC input stream
+	 * @throws IOException I/O exception while reading from the given FLAC input stream
 	 * @throws FlacException if the read code is unknown
+	 * @since 0.2.0
 	 */
 	static ChannelAssignment decode(FlacInputStream input) throws IOException, FlacException {
 
@@ -82,24 +82,28 @@ public interface ChannelAssignment {
 
 	/**
 	 * @return number of channels
+	 * @since 0.2.0
 	 */
 	int channelCount();
 
 	/**
 	 * @param channelIndex index of a channel
 	 * @return description of the specified channel
+	 * @since 0.2.0
 	 */
 	String description(int channelIndex);
 
 	/**
 	 * @param channelIndex index of a channel
 	 * @return whether samples of the specified channel have an extra bit (difference channel)
+	 * @since 0.2.0
 	 */
 	boolean extraBit(int channelIndex);
 
 	/**
 	 * @param frame decoded FLAC frame
 	 * @return assembled samples of the frame
+	 * @since 0.2.0
 	 */
 	int[][] assembleSubFrames(Frame frame);
 }

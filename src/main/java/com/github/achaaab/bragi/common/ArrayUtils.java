@@ -1,6 +1,7 @@
 package com.github.achaaab.bragi.common;
 
 import static java.util.Arrays.fill;
+import static java.util.Arrays.stream;
 
 /**
  * @author Jonathan Guéhenneux
@@ -15,14 +16,12 @@ public class ArrayUtils {
 	 * @param dimension1 dimension 1 of the array, array[row].length
 	 * @param initialValue value to be stored in all elements of the array
 	 * @return created array
+	 * @since 0.2.0
 	 */
 	public static float[][] createFloatArray(int dimension0, int dimension1, float initialValue) {
 
 		var array = new float[dimension0][dimension1];
-
-		for (var row : array) {
-			fill(row, initialValue);
-		}
+		stream(array).forEach(row -> fill(row, initialValue));
 
 		return array;
 	}
@@ -30,12 +29,13 @@ public class ArrayUtils {
 	/**
 	 * @param array array to sum
 	 * @return sum of elements in the given array
+	 * @since 0.2.0
 	 */
 	public static float sum(float[] array) {
 
 		var sum = 0.0f;
 
-		for (float element : array) {
+		for (var element : array) {
 			sum += element;
 		}
 

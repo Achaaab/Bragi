@@ -21,7 +21,7 @@ public class PrimaryInput extends AbstractInput {
 	 * Create a primary input, initially not connected.
 	 *
 	 * @param module module that will contain the created input
-	 * @param name   name of the primary input to create
+	 * @param name name of the primary input to create
 	 * @since 0.1.8
 	 */
 	public PrimaryInput(Module module, String name) {
@@ -33,6 +33,7 @@ public class PrimaryInput extends AbstractInput {
 	 *
 	 * @return read chunk
 	 * @throws InterruptedException if interrupted while waiting for a chunk
+	 * @since 0.2.0
 	 */
 	public float[] read() throws InterruptedException {
 

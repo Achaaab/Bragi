@@ -1,6 +1,5 @@
 package com.github.achaaab.bragi.core.configuration;
 
-import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.core.Synthesizer;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -31,6 +30,7 @@ public class Configuration {
 	 * Creates a new configuration for the given synthesizer.
 	 *
 	 * @param synthesizer synthesizer on which to apply the created configuration
+	 * @since 0.2.0
 	 */
 	public Configuration(Synthesizer synthesizer) {
 
@@ -42,6 +42,7 @@ public class Configuration {
 
 	/**
 	 * @return configuration of the input line
+	 * @since 0.2.0
 	 */
 	public LineConfiguration getInputConfiguration() {
 		return inputConfiguration.copy();
@@ -49,6 +50,7 @@ public class Configuration {
 
 	/**
 	 * @param inputConfiguration configuration of the input line to set
+	 * @since 0.2.0
 	 */
 	public void setInputConfiguration(LineConfiguration inputConfiguration) {
 
@@ -59,6 +61,7 @@ public class Configuration {
 
 	/**
 	 * @return configuration of the output line
+	 * @since 0.2.0
 	 */
 	public LineConfiguration getOutputConfiguration() {
 		return outputConfiguration.copy();
@@ -66,6 +69,7 @@ public class Configuration {
 
 	/**
 	 * @param outputConfiguration configuration of the output line to set
+	 * @since 0.2.0
 	 */
 	public void setOutputConfiguration(LineConfiguration outputConfiguration) {
 
@@ -76,6 +80,7 @@ public class Configuration {
 
 	/**
 	 * @return configured input line
+	 * @since 0.2.0
 	 */
 	public TargetDataLine inputLine() {
 
@@ -101,6 +106,7 @@ public class Configuration {
 
 	/**
 	 * @return configured output line
+	 * @since 0.2.0
 	 */
 	public SourceDataLine outputLine() {
 

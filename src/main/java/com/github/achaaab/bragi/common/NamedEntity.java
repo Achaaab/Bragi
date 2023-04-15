@@ -10,6 +10,7 @@ public interface NamedEntity {
 
 	/**
 	 * @return name of this entity
+	 * @since 0.2.0
 	 */
 	String name();
 }

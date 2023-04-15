@@ -18,7 +18,8 @@ public class Buffer {
 	 * Create a new empty buffer between specified output and input with a capacity of 1 chunk.
 	 *
 	 * @param output output that will write to this buffer
-	 * @param input  input that will read from this buffer
+	 * @param input input that will read from this buffer
+	 * @since 0.2.0
 	 */
 	public Buffer(Output output, Input input) {
 
@@ -33,6 +34,7 @@ public class Buffer {
 	 *
 	 * @param chunk chunk to write in this buffer
 	 * @throws InterruptedException if interrupted while waiting for available space
+	 * @since 0.2.0
 	 */
 	public void write(float[] chunk) throws InterruptedException {
 		chunks.put(chunk);
@@ -42,6 +44,7 @@ public class Buffer {
 	 * Write the given chunk in this buffer, if there is available space.
 	 *
 	 * @param chunk chunk to try to write in this buffer
+	 * @since 0.2.0
 	 */
 	public void tryWrite(float[] chunk) {
 		chunks.add(chunk);
@@ -52,6 +55,7 @@ public class Buffer {
 	 *
 	 * @return read chunk
 	 * @throws InterruptedException if interrupted while waiting for an available chunk
+	 * @since 0.2.0
 	 */
 	public float[] read() throws InterruptedException {
 		return chunks.take();
@@ -61,6 +65,7 @@ public class Buffer {
 	 * Read a chunk from this buffer, if there is an available chunk.
 	 *
 	 * @return read chunk, if there was an available chunk, {@code null} otherwise
+	 * @since 0.2.0
 	 */
 	public float[] tryRead() {
 		return chunks.poll();
@@ -68,6 +73,8 @@ public class Buffer {
 
 	/**
 	 * Disconnects the output from the input.
+	 *
+	 * @since 0.2.0
 	 */
 	public void disconnect() {
 

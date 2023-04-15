@@ -12,6 +12,7 @@ public class ModuleExecutionException extends RuntimeException {
 
 	/**
 	 * @param cause cause of module execution failure
+	 * @since 0.2.0
 	 */
 	public ModuleExecutionException(Exception cause) {
 		super(DEFAULT_MESSAGE, cause);

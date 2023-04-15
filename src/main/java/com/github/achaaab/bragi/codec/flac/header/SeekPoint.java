@@ -6,7 +6,6 @@ import java.io.IOException;
 
 /**
  * FLAC SEEKPOINT
- * <p>
  * <a href="https://xiph.org/flac/format.html#seekpoint">FLAC specifications</a>
  *
  * @author Jonathan Guéhenneux
@@ -28,6 +27,7 @@ public class SeekPoint {
 	 *
 	 * @param input FLAC input stream to decode
 	 * @throws IOException I/O exception while decoding a seek point
+	 * @since 0.2.0
 	 */
 	public SeekPoint(FlacInputStream input) throws IOException {
 
@@ -38,6 +38,7 @@ public class SeekPoint {
 
 	/**
 	 * @return sample number of the first sample in the target frame, or 0xFFFFFFFFFFFFFFFF for a placeholder point
+	 * @since 0.2.0
 	 */
 	public long sampleNumber() {
 		return sampleNumber;
@@ -46,6 +47,7 @@ public class SeekPoint {
 	/**
 	 * @return offset in bytes from the first byte of the first frame header
 	 * to the first byte of the target frame's header
+	 * @since 0.2.0
 	 */
 	public long offset() {
 		return offset;
@@ -53,6 +55,7 @@ public class SeekPoint {
 
 	/**
 	 * @return number of samples in the target frame
+	 * @since 0.2.0
 	 */
 	public int sampleCount() {
 		return sampleCount;

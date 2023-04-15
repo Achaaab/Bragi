@@ -28,11 +28,11 @@ public class Key extends AbstractNamedEntity {
 	 * Creates a new key.
 	 *
 	 * @param keyboard where to which associate the key to create
-	 * @param note     note to play when the key will be pressed
-	 * @param name     name of the key to create
-	 * @param sharp    whether the note to play is a sharp note
-	 * @param voltage  voltage to output when the key will be pressed
-	 * @param code     code associated to this key
+	 * @param note note to play when the key will be pressed
+	 * @param name name of the key to create
+	 * @param sharp whether the note to play is a sharp note
+	 * @param voltage voltage to output when the key will be pressed
+	 * @param code code associated to this key
 	 * @since 0.1.8
 	 */
 	public Key(Keyboard keyboard, Note note, String name, boolean sharp, float voltage, int code) {
@@ -56,6 +56,7 @@ public class Key extends AbstractNamedEntity {
 
 	/**
 	 * @return note associated to this key
+	 * @since 0.2.0
 	 */
 	public Note note() {
 		return note;
@@ -63,6 +64,7 @@ public class Key extends AbstractNamedEntity {
 
 	/**
 	 * @return whether the note associated to this key is a sharp note
+	 * @since 0.2.0
 	 */
 	public boolean sharp() {
 		return sharp;
@@ -70,6 +72,7 @@ public class Key extends AbstractNamedEntity {
 
 	/**
 	 * @return voltage associated to this key
+	 * @since 0.2.0
 	 */
 	public float voltage() {
 		return voltage;
@@ -77,6 +80,7 @@ public class Key extends AbstractNamedEntity {
 
 	/**
 	 * @return key code
+	 * @since 0.2.0
 	 */
 	public int code() {
 		return code;
@@ -84,13 +88,16 @@ public class Key extends AbstractNamedEntity {
 
 	/**
 	 * @return view of this key
+	 * @since 0.2.0
 	 */
 	public KeyView view() {
 		return view;
 	}
 
 	/**
-	 * Pressed this key.
+	 * Presses this key.
+	 *
+	 * @since 0.2.0
 	 */
 	public void press() {
 
@@ -101,6 +108,8 @@ public class Key extends AbstractNamedEntity {
 
 	/**
 	 * Releases this key.
+	 *
+	 * @since 0.2.0
 	 */
 	public void release() {
 
@@ -111,6 +120,7 @@ public class Key extends AbstractNamedEntity {
 
 	/**
 	 * @param pressed whether this key is pressed
+	 * @since 0.2.0
 	 */
 	public void setPressed(boolean pressed) {
 
