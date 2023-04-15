@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
 
+import static java.awt.Toolkit.getDefaultToolkit;
 import static java.lang.Math.round;
 
 /**
@@ -17,7 +18,26 @@ import static java.lang.Math.round;
  */
 public class ViewScale {
 
-	private static final float SCALE_FACTOR = 1.5f;
+	private static final int BASE_RESOLUTION = 72;
+	private static final int RESOLUTION = getDefaultToolkit().getScreenResolution();
+
+	/**
+	 * @param size normalized size for 72 DPI resolution
+	 * @return scaled size
+	 * @since 0.0.0
+	 */
+	public static float scale(float size) {
+		return size * RESOLUTION / BASE_RESOLUTION;
+	}
+
+	/**
+	 * @param size normalized size for 72 DPI resolution
+	 * @return scaled and rounded size
+	 * @since 0.0.0
+	 */
+	public static int scaleAndRound(float size) {
+		return round(scale(size));
+	}
 
 	/**
 	 * Scales the given component.
@@ -71,39 +91,11 @@ public class ViewScale {
 	 * @since 0.2.0
 	 */
 	public static Font scale(Font font) {
-		return scale(font, SCALE_FACTOR);
-	}
-
-	/**
-	 * @param font   font to scale
-	 * @param factor scale factor
-	 * @return scaled font
-	 * @since 0.2.0
-	 */
-	public static Font scale(Font font, float factor) {
 
 		var fontSize = font.getSize();
-		var scaledFontSize = factor * fontSize;
+		var scaledFontSize = scale(fontSize);
 
 		return font.deriveFont(scaledFontSize);
-	}
-
-	/**
-	 * @param size size to scale
-	 * @return scaled size
-	 * @since 0.2.0
-	 */
-	public static int scale(int size) {
-		return round(SCALE_FACTOR * size);
-	}
-
-	/**
-	 * @param size size to scale
-	 * @return scaled size
-	 * @since 0.2.0
-	 */
-	public static float scale(float size) {
-		return SCALE_FACTOR * size;
 	}
 
 	/**
@@ -113,8 +105,8 @@ public class ViewScale {
 	 */
 	public static Dimension scale(Dimension dimension) {
 
-		dimension.width = scale(dimension.width);
-		dimension.height = scale(dimension.height);
+		dimension.width = scaleAndRound(dimension.width);
+		dimension.height = scaleAndRound(dimension.height);
 
 		return dimension;
 	}
@@ -128,8 +120,8 @@ public class ViewScale {
 	 */
 	public static Point scale(Point point) {
 
-		point.x = scale(point.x);
-		point.y = scale(point.y);
+		point.x = scaleAndRound(point.x);
+		point.y = scaleAndRound(point.y);
 
 		return point;
 	}

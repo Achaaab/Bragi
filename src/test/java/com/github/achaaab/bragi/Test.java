@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import static com.github.achaaab.bragi.ResourceUtils.getPath;
 import static com.github.achaaab.bragi.core.module.producer.wave.Waveform.SAWTOOTH_TRIANGULAR;
 import static com.github.achaaab.bragi.core.module.producer.wave.Waveform.TRIANGLE;
+import static javax.swing.SwingUtilities.invokeLater;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -52,7 +53,7 @@ public class Test {
 	 * @since 0.0.9
 	 */
 	public static void main(String... arguments) {
-		testFlacPlayer();
+		testTremolo();
 	}
 
 	/**
@@ -489,7 +490,7 @@ public class Test {
 	}
 
 	/**
-	 * Test computing frame rate. When there is no speaker to pace the other modules but we still want modules to
+	 * Test computing frame rate. When there is no speaker to pace the other modules, but we still want modules to
 	 * respect a given frame rate, we can set a computing frame rate on one of the modules.
 	 *
 	 * @since 0.0.9
@@ -532,10 +533,13 @@ public class Test {
 	 * Also adds recursively every module connected directly or not to the given module.
 	 *
 	 * @param module module to add to the created synthesizer
+	 * @since 0.2.0
 	 */
 	private static void createSynthesizer(Module module) {
 
 		var synthesizer = new Synthesizer();
 		synthesizer.addChain(module);
+
+		invokeLater(() -> synthesizer.getView().flowLayout(null));
 	}
 }

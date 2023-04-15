@@ -1,5 +1,6 @@
 package com.github.achaaab.bragi.common;
 
+import static java.util.Arrays.asList;
 import static java.util.Arrays.fill;
 import static java.util.Arrays.stream;
 
@@ -40,5 +41,18 @@ public class ArrayUtils {
 		}
 
 		return sum;
+	}
+
+	/**
+	 * Tests if an array contains an element.
+	 *
+	 * @param array array to test
+	 * @param element element to find
+	 * @param <E> elements type
+	 * @return whether the given array contains at least 1 element equals to the given element
+	 * @since 0.2.0
+	 */
+	public static <E> boolean contains(E[] array, E element) {
+		return asList(array).contains(element);
 	}
 }

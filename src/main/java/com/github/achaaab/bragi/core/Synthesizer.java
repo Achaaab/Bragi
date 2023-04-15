@@ -4,6 +4,8 @@ import com.github.achaaab.bragi.common.AbstractNamedEntity;
 import com.github.achaaab.bragi.core.configuration.Configuration;
 import com.github.achaaab.bragi.core.module.Module;
 import com.github.achaaab.bragi.gui.SynthesizerView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -11,13 +13,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static java.lang.Thread.currentThread;
 import static javax.swing.SwingUtilities.invokeAndWait;
+import static javax.swing.SwingUtilities.invokeLater;
 
 /**
  * @author Jonathan Guéhenneux
  * @since 0.1.8
  */
 public class Synthesizer extends AbstractNamedEntity {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(Synthesizer.class);
 
 	private static final String DEFAULT_NAME = "synthesizer";
 
@@ -39,9 +45,17 @@ public class Synthesizer extends AbstractNamedEntity {
 		modules = new ArrayList<>();
 
 		try {
+
 			invokeAndWait(() -> view = new SynthesizerView(this));
-		} catch (InterruptedException | InvocationTargetException cause) {
+
+		} catch (InvocationTargetException cause) {
+
 			throw new SynthesizerCreationException(cause);
+
+		} catch (InterruptedException interruptedException) {
+
+			LOGGER.error("interrupted", interruptedException);
+			currentThread().interrupt();
 		}
 	}
 
@@ -75,7 +89,7 @@ public class Synthesizer extends AbstractNamedEntity {
 		module.setSynthesizer(this);
 		module.start();
 
-		view.display(module);
+		invokeLater(() -> view.display(module));
 	}
 
 	/**
@@ -110,5 +124,13 @@ public class Synthesizer extends AbstractNamedEntity {
 				addChain(outputModule, addedModules);
 			}
 		}
+	}
+
+	/**
+	 * @return view of this synthesizer
+	 * @since 0.2.0
+	 */
+	public SynthesizerView getView() {
+		return view;
 	}
 }

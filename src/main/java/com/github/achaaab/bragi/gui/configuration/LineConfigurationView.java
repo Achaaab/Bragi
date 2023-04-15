@@ -19,7 +19,7 @@ import java.awt.event.ItemEvent;
 import java.nio.ByteOrder;
 import java.util.function.Consumer;
 
-import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
+import static com.github.achaaab.bragi.gui.common.ViewScale.scaleAndRound;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.SOUTH;
 import static java.awt.GridBagConstraints.HORIZONTAL;
@@ -95,7 +95,7 @@ public class LineConfigurationView extends JPanel {
 
 		var constraints = new GridBagConstraints();
 		constraints.fill = HORIZONTAL;
-		constraints.insets = new Insets(scale(3), scale(3), scale(3), scale(3));
+		constraints.insets = new Insets(scaleAndRound(3), scaleAndRound(3), scaleAndRound(3), scaleAndRound(3));
 
 		constraints.anchor = WEST;
 		constraints.gridx = 0;

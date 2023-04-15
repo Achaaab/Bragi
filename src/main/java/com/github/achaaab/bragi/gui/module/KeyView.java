@@ -22,7 +22,7 @@ import static java.awt.event.InputEvent.BUTTON1_DOWN_MASK;
  */
 public class KeyView extends JButton implements MouseListener {
 
-	private static final Dimension SIZE = scale(new Dimension(40, 200));
+	private static final Dimension SIZE = scale(new Dimension(30, 150));
 
 	private final Key model;
 	private final Color background;

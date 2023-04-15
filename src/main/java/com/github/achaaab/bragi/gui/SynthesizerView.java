@@ -20,8 +20,10 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 
 import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
+import static com.github.achaaab.bragi.gui.common.ViewScale.scaleAndRound;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
+import static java.lang.Math.max;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -44,6 +46,7 @@ public class SynthesizerView extends JPanel {
 	private final JFrame inputConfigurationFrame;
 	private final JFrame outputConfigurationFrame;
 
+	private final JScrollPane scrollPanel;
 	private final JDesktopPane modulesPanel;
 
 	/**
@@ -59,17 +62,16 @@ public class SynthesizerView extends JPanel {
 		var menuBar = new JMenuBar();
 
 		var configurationMenu = new JMenu("Configuration");
-		configurationMenu.setMnemonic('C');
 		menuBar.add(configurationMenu);
+		var inputConfigurationItem = new JMenuItem("Input");
+		var outputConfigurationItem = new JMenuItem("Output");
+		configurationMenu.add(inputConfigurationItem);
+		configurationMenu.add(outputConfigurationItem);
 
-		var inputConfigurationInput = new JMenuItem("Input");
-		var outputConfigurationInput = new JMenuItem("Output");
-
-		inputConfigurationInput.setMnemonic('I');
-		outputConfigurationInput.setMnemonic('O');
-
-		configurationMenu.add(inputConfigurationInput);
-		configurationMenu.add(outputConfigurationInput);
+		var layoutMenu = new JMenu(("Layout"));
+		menuBar.add(layoutMenu);
+		var flowLayoutItem = new JMenuItem("Flow");
+		layoutMenu.add(flowLayoutItem);
 
 		inputConfigurationView = new LineConfigurationView();
 		outputConfigurationView = new LineConfigurationView();
@@ -80,8 +82,9 @@ public class SynthesizerView extends JPanel {
 		outputConfigurationFrame = new JFrame("Output configuration");
 		outputConfigurationFrame.setContentPane(outputConfigurationView);
 
-		inputConfigurationInput.addActionListener(this::inputConfigurationSelected);
-		outputConfigurationInput.addActionListener(this::outputConfigurationSelected);
+		inputConfigurationItem.addActionListener(this::inputConfigurationSelected);
+		outputConfigurationItem.addActionListener(this::outputConfigurationSelected);
+		flowLayoutItem.addActionListener(this::flowLayout);
 
 		inputConfigurationView.onOk(this::inputConfigurationChanged);
 		outputConfigurationView.onOk(this::outputConfigurationChanged);
@@ -93,10 +96,12 @@ public class SynthesizerView extends JPanel {
 		modulesPanel.setPreferredSize(MODULES_PANEL_DIMENSION);
 		modulesPanel.setBackground(MODULES_PANEL_BACKGROUND_COLOR);
 
+		scrollPanel = new JScrollPane(modulesPanel);
+
 		var layout = new BorderLayout();
 		setLayout(layout);
 		add(menuBar, NORTH);
-		add(new JScrollPane(modulesPanel), CENTER);
+		add(scrollPanel, CENTER);
 
 		scale(this);
 		scale(inputConfigurationFrame);
@@ -127,12 +132,12 @@ public class SynthesizerView extends JPanel {
 
 			var moduleFrame = new JInternalFrame(module.name());
 			moduleFrame.add(moduleView);
-			modulesPanel.add(moduleFrame);
 			scale(moduleFrame);
-
 			moduleFrame.pack();
 			moduleFrame.setResizable(true);
 			moduleFrame.setVisible(true);
+
+			modulesPanel.add(moduleFrame);
 
 			LOGGER.info("view of the module {} added", module);
 		}
@@ -182,5 +187,47 @@ public class SynthesizerView extends JPanel {
 		outputConfigurationView.display(model.configuration().getOutputConfiguration());
 		outputConfigurationFrame.pack();
 		outputConfigurationFrame.setVisible(true);
+	}
+
+	/**
+	 * Roughly layouts module views.
+	 *
+	 * @param actionEvent action event, {@code null} when called manually
+	 * @since 0.2.0
+	 */
+	public void flowLayout(ActionEvent actionEvent) {
+
+		var width = scrollPanel.getWidth();
+
+		var moduleFrames = modulesPanel.getAllFrames();
+
+		var gap = scaleAndRound(10);
+
+		var x = gap;
+		var y = gap;
+
+		var rowHeight = 0;
+
+		for (var moduleFrame : moduleFrames) {
+
+			var frameWidth = moduleFrame.getWidth();
+			var frameHeight = moduleFrame.getHeight();
+
+			if (x > gap) {
+
+				if (x + frameWidth + gap > width) {
+
+					// full row, we start a new row
+					x = gap;
+					y += rowHeight + gap;
+					rowHeight = 0;
+				}
+			}
+
+			moduleFrame.setLocation(x, y);
+
+			x += frameWidth + gap;
+			rowHeight = max(rowHeight, frameHeight);
+		}
 	}
 }

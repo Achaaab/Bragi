@@ -12,10 +12,12 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static com.github.achaaab.bragi.common.ArrayUtils.contains;
 import static java.nio.ByteOrder.BIG_ENDIAN;
 import static java.nio.ByteOrder.LITTLE_ENDIAN;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
+import static javax.sound.sampled.AudioFormat.Encoding.PCM_SIGNED;
 import static javax.sound.sampled.AudioSystem.getMixerInfo;
 
 /**
@@ -26,8 +28,24 @@ import static javax.sound.sampled.AudioSystem.getMixerInfo;
  */
 public class LineConfiguration {
 
+	private static final int PREFERRED_CHANNEL_COUNT = 2;
+	private static final int PREFERRED_SAMPLE_RATE = 96_000;
+	private static final int PREFERRED_SAMPLE_SIZE = 24;
+	private static final Encoding PREFERRED_ENCODING = PCM_SIGNED;
+	private static final ByteOrder PREFERRED_BYTE_ORDER = BIG_ENDIAN;
+
 	private static final Integer[] SAMPLE_RATES = {
-			8000, 11025, 16000, 22050, 32000, 44100, 48000, 88200, 96000, 176400, 192000 };
+			8_000,
+			11_025,
+			16_000,
+			22_050,
+			32_000,
+			44_100,
+			48_000,
+			88_200,
+			96_000,
+			176_400,
+			192_000 };
 
 	/**
 	 * @return available mixers
@@ -74,8 +92,6 @@ public class LineConfiguration {
 
 		// TODO find the default mixer
 		setMixer(mixers[0]);
-
-		sampleRate = sampleRates()[0];
 	}
 
 	/**
@@ -159,6 +175,8 @@ public class LineConfiguration {
 	}
 
 	/**
+	 * Sets the mixer to use and presets audio format based on preferences and mixer supported formats.
+	 *
 	 * @param mixer mixer to set
 	 * @since 0.2.0
 	 */
@@ -168,10 +186,44 @@ public class LineConfiguration {
 
 		formats = getFormats(mixer);
 
-		channelCount = channelCounts()[0];
-		sampleSize = sampleSizes()[0];
-		encoding = encodings()[0];
-		byteOrder = byteOrders()[0];
+		// set channel count
+		var channelCounts = channelCounts();
+		channelCount = contains(channelCounts, PREFERRED_CHANNEL_COUNT) ?
+				PREFERRED_CHANNEL_COUNT :
+				channelCounts[0];
+
+		formats = formats.stream().
+				filter(format -> format.getChannels() == channelCount).
+				toList();
+
+		// set sample size
+		var sampleSizes = sampleSizes();
+		sampleSize = contains(sampleSizes, PREFERRED_SAMPLE_SIZE) ?
+				PREFERRED_SAMPLE_SIZE :
+				sampleSizes[0];
+
+		formats = formats.stream().
+				filter(format -> format.getSampleSizeInBits() == sampleSize).
+				toList();
+
+		// set sample rate
+		sampleRate = PREFERRED_SAMPLE_RATE;
+
+		// set encoding
+		var encodings = encodings();
+		encoding = contains(encodings, PREFERRED_ENCODING) ?
+				PREFERRED_ENCODING :
+				encodings[0];
+
+		formats = formats.stream().
+				filter(format -> format.getEncoding() == encoding).
+				toList();
+
+		// set byte order
+		var byteOrders = byteOrders();
+		byteOrder = contains(byteOrders, PREFERRED_BYTE_ORDER) ?
+				PREFERRED_BYTE_ORDER :
+				byteOrders[0];
 	}
 
 	/**
