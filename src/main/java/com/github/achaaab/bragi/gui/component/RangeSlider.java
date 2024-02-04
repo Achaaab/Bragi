@@ -29,7 +29,7 @@ public class RangeSlider extends JSlider {
 	@Override
 	public void updateUI() {
 
-		setUI(new RangeSliderUI(this));
+		setUI(new RangeSliderUi(this));
 		updateLabelUIs();
 	}
 

@@ -4,7 +4,7 @@ import com.github.achaaab.bragi.core.connection.Input;
 import com.github.achaaab.bragi.core.connection.Output;
 import com.github.achaaab.bragi.core.module.Module;
 import com.github.achaaab.bragi.core.module.ModuleCreationException;
-import com.github.achaaab.bragi.gui.module.VCAView;
+import com.github.achaaab.bragi.gui.module.VcaView;
 import org.slf4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -19,9 +19,9 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Jonathan Guéhenneux
  * @since 0.0.9
  */
-public class VCA extends Module {
+public class Vca extends Module {
 
-	private static final Logger LOGGER = getLogger(VCA.class);
+	private static final Logger LOGGER = getLogger(Vca.class);
 
 	public static final String DEFAULT_NAME = "vca";
 	public static final float DECIBELS_PER_VOLT = 10.0f;
@@ -38,7 +38,7 @@ public class VCA extends Module {
 	 * @see #DEFAULT_NAME
 	 * @since 0.0.9
 	 */
-	public VCA() {
+	public Vca() {
 		this(DEFAULT_NAME);
 	}
 
@@ -46,7 +46,7 @@ public class VCA extends Module {
 	 * @param name VCA name
 	 * @since 0.2.0
 	 */
-	public VCA(String name) {
+	public Vca(String name) {
 
 		super(name);
 
@@ -57,7 +57,7 @@ public class VCA extends Module {
 		initialGain = 0;
 
 		try {
-			invokeAndWait(() -> view = new VCAView(this));
+			invokeAndWait(() -> view = new VcaView(this));
 		} catch (InterruptedException | InvocationTargetException cause) {
 			throw new ModuleCreationException(cause);
 		}

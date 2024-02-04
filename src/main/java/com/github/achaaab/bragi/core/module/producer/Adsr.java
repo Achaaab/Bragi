@@ -5,14 +5,14 @@ import com.github.achaaab.bragi.core.connection.Input;
 import com.github.achaaab.bragi.core.connection.Output;
 import com.github.achaaab.bragi.core.module.Module;
 import com.github.achaaab.bragi.core.module.ModuleCreationException;
-import com.github.achaaab.bragi.gui.module.ADSRView;
+import com.github.achaaab.bragi.gui.module.AdsrView;
 import org.slf4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 
-import static com.github.achaaab.bragi.core.module.producer.ADSRState.DECAY;
-import static com.github.achaaab.bragi.core.module.producer.ADSRState.IDLE;
-import static com.github.achaaab.bragi.core.module.producer.ADSRState.SUSTAIN;
+import static com.github.achaaab.bragi.core.module.producer.AdsrState.DECAY;
+import static com.github.achaaab.bragi.core.module.producer.AdsrState.IDLE;
+import static com.github.achaaab.bragi.core.module.producer.AdsrState.SUSTAIN;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static javax.swing.SwingUtilities.invokeAndWait;
@@ -33,9 +33,9 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Jonathan Guéhenneux
  * @since 0.0.6
  */
-public class ADSR extends Module {
+public class Adsr extends Module {
 
-	private static final Logger LOGGER = getLogger(ADSR.class);
+	private static final Logger LOGGER = getLogger(Adsr.class);
 
 	public static final String DEFAULT_NAME = "adsr";
 	public static final float MINIMAL_GAIN = Settings.INSTANCE.minimalVoltage();
@@ -54,7 +54,7 @@ public class ADSR extends Module {
 
 	private float previousGateSample;
 
-	private ADSRState state;
+	private AdsrState state;
 
 	/**
 	 * Creates an ADSR with default name.
@@ -62,7 +62,7 @@ public class ADSR extends Module {
 	 * @see #DEFAULT_NAME
 	 * @since 0.0.9
 	 */
-	public ADSR() {
+	public Adsr() {
 		this(DEFAULT_NAME);
 	}
 
@@ -72,7 +72,7 @@ public class ADSR extends Module {
 	 * @param name ADSR name
 	 * @since 0.2.0
 	 */
-	public ADSR(String name) {
+	public Adsr(String name) {
 
 		super(name);
 
@@ -89,7 +89,7 @@ public class ADSR extends Module {
 		previousGateSample = 0.0f;
 
 		try {
-			invokeAndWait(() -> view = new ADSRView(this));
+			invokeAndWait(() -> view = new AdsrView(this));
 		} catch (InterruptedException | InvocationTargetException cause) {
 			throw new ModuleCreationException(cause);
 		}
@@ -105,9 +105,9 @@ public class ADSR extends Module {
 		var gains = new float[sampleCount];
 
 		if (gateSample > 0 && previousGateSample <= 0) {
-			state = ADSRState.ATTACK;
+			state = AdsrState.ATTACK;
 		} else if (gateSample < 0 && previousGateSample >= 0) {
-			state = ADSRState.RELEASE;
+			state = AdsrState.RELEASE;
 		}
 
 		previousGateSample = gateSample;
@@ -136,7 +136,7 @@ public class ADSR extends Module {
 	 * @param targetState new state to set when target gain is reached
 	 * @since 0.2.0
 	 */
-	private void step(double targetGain, double speed, ADSRState targetState) {
+	private void step(double targetGain, double speed, AdsrState targetState) {
 
 		if (gain < targetGain) {
 			gain = min(gain + speed * sampleLength, targetGain);

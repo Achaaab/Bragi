@@ -3,7 +3,7 @@ package com.github.achaaab.bragi.core.module.producer;
 import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.core.module.ModuleCreationException;
 import com.github.achaaab.bragi.core.module.producer.wave.Waveform;
-import com.github.achaaab.bragi.gui.module.LFOView;
+import com.github.achaaab.bragi.gui.module.LfoView;
 import org.slf4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -18,9 +18,9 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Jonathan Guéhenneux
  * @since 0.0.9
  */
-public class LFO extends Oscillator {
+public class Lfo extends Oscillator {
 
-	private static final Logger LOGGER = getLogger(LFO.class);
+	private static final Logger LOGGER = getLogger(Lfo.class);
 
 	public static final String DEFAULT_NAME = "lfo";
 	public static final Waveform INITIAL_WAVEFORM = SINE;
@@ -34,7 +34,7 @@ public class LFO extends Oscillator {
 	 * @see #DEFAULT_NAME
 	 * @since 0.0.9
 	 */
-	public LFO() {
+	public Lfo() {
 		this(DEFAULT_NAME);
 	}
 
@@ -42,7 +42,7 @@ public class LFO extends Oscillator {
 	 * @param name name of the LFO
 	 * @since 0.2.0
 	 */
-	public LFO(String name) {
+	public Lfo(String name) {
 
 		super(name, INITIAL_WAVEFORM, INITIAL_FREQUENCY);
 
@@ -50,7 +50,7 @@ public class LFO extends Oscillator {
 		setUpperPeak(INITIAL_UPPER_PEAK);
 
 		try {
-			invokeAndWait(() -> view = new LFOView(this));
+			invokeAndWait(() -> view = new LfoView(this));
 		} catch (InterruptedException | InvocationTargetException cause) {
 			throw new ModuleCreationException(cause);
 		}

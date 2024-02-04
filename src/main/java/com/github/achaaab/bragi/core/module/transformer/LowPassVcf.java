@@ -11,32 +11,32 @@ import static java.lang.Math.pow;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * Voltage-Controlled Filter with high-pass response
+ * Voltage-Controlled Filter with low-pass response
  *
  * @author Jonathan Guéhenneux
  * @since 0.0.9
  */
-public class HighPassVCF extends VCF {
+public class LowPassVcf extends Vcf {
 
-	private static final Logger LOGGER = getLogger(HighPassVCF.class);
+	private static final Logger LOGGER = getLogger(LowPassVcf.class);
 
-	public static final String DEFAULT_NAME = "high_pass_vcf";
+	public static final String DEFAULT_NAME = "low_pass_vcf";
 
 	/**
-	 * Creates a high-pass VCF with default name.
+	 * Creates a low-pass VCF with default name.
 	 *
 	 * @see #DEFAULT_NAME
 	 * @since 0.0.9
 	 */
-	public HighPassVCF() {
+	public LowPassVcf() {
 		this(DEFAULT_NAME);
 	}
 
 	/**
-	 * @param name name of the high-pass filter
+	 * @param name name of the low-pass filter
 	 * @since 0.2.0
 	 */
-	public HighPassVCF(String name) {
+	public LowPassVcf(String name) {
 		super(name);
 	}
 
@@ -92,9 +92,9 @@ public class HighPassVCF extends VCF {
 			to deteriorate the filter.
 			 */
 
-			y4 = min(1.5f, max(-1.5f, y4));
+			y4 = min(1.5, max(-1.5, y4));
 
-			outputSamples[sampleIndex] = NORMALIZER.inverseNormalize(oldX - y4);
+			outputSamples[sampleIndex] = NORMALIZER.inverseNormalize(y4);
 		}
 	}
 }

@@ -1,6 +1,6 @@
 package com.github.achaaab.bragi.gui.module;
 
-import com.github.achaaab.bragi.core.module.producer.DCG;
+import com.github.achaaab.bragi.core.module.producer.Dcg;
 import com.github.achaaab.bragi.gui.component.LinearSlider;
 
 import javax.swing.BorderFactory;
@@ -16,7 +16,7 @@ import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
  * @author Jonathan Guéhenneux
  * @since 0.1.6
  */
-public class DCGView extends JPanel {
+public class DcgView extends JPanel {
 
 	private static final Dimension SLIDERS_SIZE = scale(new Dimension(350, 60));
 
@@ -24,7 +24,7 @@ public class DCGView extends JPanel {
 	 * @param model DCG model
 	 * @since 0.2.0
 	 */
-	public DCGView(DCG model) {
+	public DcgView(Dcg model) {
 
 		var minimalVoltage = model.getMinimalVoltage();
 		var maximalVoltage = model.getMaximalVoltage();

@@ -95,7 +95,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	 * @since 0.2.0
 	 */
 	public Input input() {
-		return inputs.isEmpty() ? null : inputs.get(0);
+		return inputs.isEmpty() ? null : inputs.getFirst();
 	}
 
 	/**
@@ -103,7 +103,7 @@ public abstract class Module extends AbstractNamedEntity implements Runnable {
 	 * @since 0.2.0
 	 */
 	public Output output() {
-		return outputs.isEmpty() ? null : outputs.get(0);
+		return outputs.isEmpty() ? null : outputs.getFirst();
 	}
 
 	/**

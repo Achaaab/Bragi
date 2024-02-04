@@ -42,8 +42,7 @@ public class SpectrumAnalyzerView extends PaintedView {
 
 	private static final Normalizer NORMALIZER = new Normalizer(
 			MINIMAL_DECIBELS, MAXIMAL_DECIBELS,
-			0, SEGMENT_COUNT
-	);
+			0, SEGMENT_COUNT);
 
 	private static final Color BACKGROUND_COLOR = new Color(24, 24, 24);
 

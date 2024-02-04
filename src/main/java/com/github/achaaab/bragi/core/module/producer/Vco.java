@@ -4,7 +4,7 @@ import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.core.connection.Input;
 import com.github.achaaab.bragi.core.module.ModuleCreationException;
 import com.github.achaaab.bragi.core.module.producer.wave.Waveform;
-import com.github.achaaab.bragi.gui.module.VCOView;
+import com.github.achaaab.bragi.gui.module.VcoView;
 import org.slf4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -19,9 +19,9 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Jonathan Guéhenneux
  * @since 0.0.9
  */
-public class VCO extends Oscillator {
+public class Vco extends Oscillator {
 
-	private static final Logger LOGGER = getLogger(VCO.class);
+	private static final Logger LOGGER = getLogger(Vco.class);
 
 	public static final String DEFAULT_NAME = "vco";
 	public static final Waveform INITIAL_WAVEFORM = SINE;
@@ -37,7 +37,7 @@ public class VCO extends Oscillator {
 	 * @see #DEFAULT_NAME
 	 * @since 0.0.9
 	 */
-	public VCO() {
+	public Vco() {
 		this(DEFAULT_NAME);
 	}
 
@@ -45,7 +45,7 @@ public class VCO extends Oscillator {
 	 * @param name name of the VCO
 	 * @since 0.2.0
 	 */
-	public VCO(String name) {
+	public Vco(String name) {
 
 		super(name, INITIAL_WAVEFORM, BASE_FREQUENCY);
 
@@ -54,7 +54,7 @@ public class VCO extends Oscillator {
 		octave = 0;
 
 		try {
-			invokeAndWait(() -> view = new VCOView(this));
+			invokeAndWait(() -> view = new VcoView(this));
 		} catch (InterruptedException | InvocationTargetException cause) {
 			throw new ModuleCreationException(cause);
 		}

@@ -1,6 +1,6 @@
 package com.github.achaaab.bragi.gui.module;
 
-import com.github.achaaab.bragi.core.module.transformer.VCA;
+import com.github.achaaab.bragi.core.module.transformer.Vca;
 
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -16,7 +16,7 @@ import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
  * @author Jonathan Guéhenneux
  * @since 0.0.4
  */
-public class VCAView extends JPanel {
+public class VcaView extends JPanel {
 
 	private static final Dimension SLIDERS_SIZE = scale(new Dimension(350, 60));
 
@@ -24,7 +24,7 @@ public class VCAView extends JPanel {
 	 * @param model VCA model
 	 * @since 0.2.0
 	 */
-	public VCAView(VCA model) {
+	public VcaView(Vca model) {
 
 		var initialGainSlider = new JSlider(-60, 20);
 		initialGainSlider.setMajorTickSpacing(10);

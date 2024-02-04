@@ -1,6 +1,6 @@
 package com.github.achaaab.bragi.gui.module;
 
-import com.github.achaaab.bragi.core.module.transformer.VCF;
+import com.github.achaaab.bragi.core.module.transformer.Vcf;
 import com.github.achaaab.bragi.gui.component.FrequencySlider;
 
 import javax.swing.JPanel;
@@ -19,7 +19,7 @@ import static javax.swing.SwingConstants.HORIZONTAL;
  * @author Jonathan Guéhenneux
  * @since 0.0.4
  */
-public class VCFView extends JPanel {
+public class VcfView extends JPanel {
 
 	private static final Dimension SLIDERS_SIZE = scale(new Dimension(700, 60));
 
@@ -27,7 +27,7 @@ public class VCFView extends JPanel {
 	 * @param model VCF model
 	 * @since 0.2.0
 	 */
-	public VCFView(VCF model) {
+	public VcfView(Vcf model) {
 
 		var cutOffFrequencySlider = new FrequencySlider(10, 11);
 		cutOffFrequencySlider.setDecimalValue(model.getCutoffFrequency());

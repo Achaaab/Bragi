@@ -1,6 +1,6 @@
 package com.github.achaaab.bragi.gui.module;
 
-import com.github.achaaab.bragi.core.module.producer.LFO;
+import com.github.achaaab.bragi.core.module.producer.Lfo;
 import com.github.achaaab.bragi.gui.component.FrequencySlider;
 import com.github.achaaab.bragi.gui.component.LinearRangeSlider;
 import com.github.achaaab.bragi.gui.component.WaveformComboBox;
@@ -18,7 +18,7 @@ import static com.github.achaaab.bragi.gui.common.ViewScale.scale;
  * @author Jonathan Guéhenneux
  * @since 0.1.0
  */
-public class LFOView extends JPanel {
+public class LfoView extends JPanel {
 
 	private static final Dimension SLIDERS_SIZE = scale(new Dimension(700, 60));
 
@@ -26,7 +26,7 @@ public class LFOView extends JPanel {
 	 * @param model LFO model
 	 * @since 0.2.0
 	 */
-	public LFOView(LFO model) {
+	public LfoView(Lfo model) {
 
 		var waveformComboBox = new WaveformComboBox();
 

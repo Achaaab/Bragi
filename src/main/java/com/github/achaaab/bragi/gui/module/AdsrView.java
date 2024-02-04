@@ -1,6 +1,6 @@
 package com.github.achaaab.bragi.gui.module;
 
-import com.github.achaaab.bragi.core.module.producer.ADSR;
+import com.github.achaaab.bragi.core.module.producer.Adsr;
 import com.github.achaaab.bragi.gui.component.LinearSlider;
 import com.github.achaaab.bragi.gui.component.LogarithmicSlider;
 
@@ -17,7 +17,7 @@ import static javax.swing.BorderFactory.createTitledBorder;
  * @author Jonathan Guéhenneux
  * @since 0.0.6
  */
-public class ADSRView extends JPanel {
+public class AdsrView extends JPanel {
 
 	private static final Dimension SLIDERS_SIZE = scale(new Dimension(350, 60));
 
@@ -25,7 +25,7 @@ public class ADSRView extends JPanel {
 	 * @param model ADSR model
 	 * @since 0.2.0
 	 */
-	public ADSRView(ADSR model) {
+	public AdsrView(Adsr model) {
 
 		var attackSlider = new LogarithmicSlider(0.1, 10000, 50);
 		var decaySlider = new LogarithmicSlider(0.1, 10000, 50);

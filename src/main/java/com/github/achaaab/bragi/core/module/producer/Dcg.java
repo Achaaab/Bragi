@@ -4,7 +4,7 @@ import com.github.achaaab.bragi.common.Settings;
 import com.github.achaaab.bragi.core.connection.Output;
 import com.github.achaaab.bragi.core.module.Module;
 import com.github.achaaab.bragi.core.module.ModuleCreationException;
-import com.github.achaaab.bragi.gui.module.DCGView;
+import com.github.achaaab.bragi.gui.module.DcgView;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -17,7 +17,7 @@ import static javax.swing.SwingUtilities.invokeAndWait;
  * @author Jonathan Guéhenneux
  * @since 0.1.6
  */
-public class DCG extends Module {
+public class Dcg extends Module {
 
 	public static final String DEFAULT_NAME = "dcg";
 
@@ -34,7 +34,7 @@ public class DCG extends Module {
 	 * @see #DEFAULT_NAME
 	 * @since 0.2.0
 	 */
-	public DCG() {
+	public Dcg() {
 		this(DEFAULT_NAME);
 	}
 
@@ -44,7 +44,7 @@ public class DCG extends Module {
 	 * @param name name of the DCG to create
 	 * @since 0.2.0
 	 */
-	public DCG(String name) {
+	public Dcg(String name) {
 
 		super(name);
 
@@ -56,7 +56,7 @@ public class DCG extends Module {
 		voltage = (minimalVoltage + maximalVoltage) / 2;
 
 		try {
-			invokeAndWait(() -> view = new DCGView(this));
+			invokeAndWait(() -> view = new DcgView(this));
 		} catch (InterruptedException | InvocationTargetException cause) {
 			throw new ModuleCreationException(cause);
 		}

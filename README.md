@@ -26,9 +26,9 @@ user interface. Following modules are provided:
 These instructions will get you a copy of the project up and running on your local machine
 for development and testing purposes.
 ### Prerequisites
-* Java 17+
-* Maven 3.6.1
-* Git 2.17.1
+* Java 21+
+* Maven 3.6.3+
+* Git 2.34.1+
 ### Installing
 * Clone the repository from GitHub:
 ```

@@ -6,7 +6,7 @@ import com.github.achaaab.bragi.core.connection.Input;
 import com.github.achaaab.bragi.core.connection.Output;
 import com.github.achaaab.bragi.core.module.Module;
 import com.github.achaaab.bragi.core.module.ModuleCreationException;
-import com.github.achaaab.bragi.gui.module.VCFView;
+import com.github.achaaab.bragi.gui.module.VcfView;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -18,7 +18,7 @@ import static javax.swing.SwingUtilities.invokeAndWait;
  * @author Jonathan Guéhenneux
  * @since 0.0.9
  */
-public abstract class VCF extends Module {
+public abstract class Vcf extends Module {
 
 	protected static final double VOLTS_PER_OCTAVE = 5.0;
 
@@ -52,7 +52,7 @@ public abstract class VCF extends Module {
 	 * @param name name of the VCF to create
 	 * @since 0.0.9
 	 */
-	public VCF(String name) {
+	public Vcf(String name) {
 
 		super(name);
 
@@ -73,7 +73,7 @@ public abstract class VCF extends Module {
 		oldY3 = 0.0;
 
 		try {
-			invokeAndWait(() -> view = new VCFView(this));
+			invokeAndWait(() -> view = new VcfView(this));
 		} catch (InterruptedException | InvocationTargetException cause) {
 			throw new ModuleCreationException(cause);
 		}

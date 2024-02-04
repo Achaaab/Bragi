@@ -9,19 +9,19 @@ import com.github.achaaab.bragi.core.module.consumer.SpectrumAnalyzer;
 import com.github.achaaab.bragi.core.module.player.FlacPlayer;
 import com.github.achaaab.bragi.core.module.player.Mp3Player;
 import com.github.achaaab.bragi.core.module.player.WavPlayer;
-import com.github.achaaab.bragi.core.module.producer.ADSR;
-import com.github.achaaab.bragi.core.module.producer.DCG;
+import com.github.achaaab.bragi.core.module.producer.Adsr;
+import com.github.achaaab.bragi.core.module.producer.Dcg;
 import com.github.achaaab.bragi.core.module.producer.Keyboard;
-import com.github.achaaab.bragi.core.module.producer.LFO;
+import com.github.achaaab.bragi.core.module.producer.Lfo;
 import com.github.achaaab.bragi.core.module.producer.Microphone;
 import com.github.achaaab.bragi.core.module.producer.PinkNoiseGenerator;
 import com.github.achaaab.bragi.core.module.producer.Theremin;
-import com.github.achaaab.bragi.core.module.producer.VCO;
+import com.github.achaaab.bragi.core.module.producer.Vco;
 import com.github.achaaab.bragi.core.module.producer.WhiteNoiseGenerator;
-import com.github.achaaab.bragi.core.module.transformer.HighPassVCF;
-import com.github.achaaab.bragi.core.module.transformer.LowPassVCF;
+import com.github.achaaab.bragi.core.module.transformer.HighPassVcf;
+import com.github.achaaab.bragi.core.module.transformer.LowPassVcf;
 import com.github.achaaab.bragi.core.module.transformer.Mixer;
-import com.github.achaaab.bragi.core.module.transformer.VCA;
+import com.github.achaaab.bragi.core.module.transformer.Vca;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
@@ -96,8 +96,8 @@ public class Test {
 	public static void testBandPassFilter() {
 
 		var noise = new WhiteNoiseGenerator();
-		var low = new LowPassVCF();
-		var high = new HighPassVCF();
+		var low = new LowPassVcf();
+		var high = new HighPassVcf();
 		var speaker = new Speaker();
 		var spectrum = new SpectrumAnalyzer();
 
@@ -118,11 +118,11 @@ public class Test {
 
 		// main chain
 		var keyboard = new Keyboard();
-		var vcoHigh = new VCO("high");
-		var vcoLow = new VCO("low");
+		var vcoHigh = new Vco("high");
+		var vcoLow = new Vco("low");
 		var mixer = new Mixer();
-		var filter = new LowPassVCF();
-		var envelope = new VCA();
+		var filter = new LowPassVcf();
+		var envelope = new Vca();
 		var speaker = new Speaker();
 
 		keyboard.connect(vcoHigh, vcoLow);
@@ -134,7 +134,7 @@ public class Test {
 
 		speaker.connectInputs(envelope, envelope);
 
-		var adsr = new ADSR();
+		var adsr = new Adsr();
 		keyboard.gate().connect(adsr.gate());
 		adsr.connect(envelope.gain());
 
@@ -164,8 +164,8 @@ public class Test {
 	public static void testSelfOscillatingFilter() {
 
 		var noise = new WhiteNoiseGenerator();
-		var vca = new VCA();
-		var filter = new LowPassVCF();
+		var vca = new Vca();
+		var filter = new LowPassVcf();
 		var speaker = new Speaker();
 
 		// very low noise (-200 dB) is enough to trigger "self" oscillation of filter
@@ -189,13 +189,13 @@ public class Test {
 	 */
 	public static void testTremolo() {
 
-		var adsr = new ADSR();
+		var adsr = new Adsr();
 		var keyboard = new Keyboard();
-		var vco = new VCO();
-		var vcaEnvelope = new VCA("vca_envelope");
+		var vco = new Vco();
+		var vcaEnvelope = new Vca("vca_envelope");
 		var speaker = new Speaker();
-		var lfo = new LFO();
-		var vcaTremolo = new VCA("vca_tremolo");
+		var lfo = new Lfo();
+		var vcaTremolo = new Vca("vca_tremolo");
 
 		// main chain
 		keyboard.connect(vco);
@@ -234,13 +234,13 @@ public class Test {
 	}
 
 	/**
-	 * Tests the {@link DCG} module.
+	 * Tests the {@link Dcg} module.
 	 *
 	 * @since 0.1.6
 	 */
 	public static void testDcg() {
 
-		var dcg = new DCG();
+		var dcg = new Dcg();
 		var oscilloscope = new Oscilloscope();
 
 		dcg.setComputingFrameRate(Settings.INSTANCE.frameRate());
@@ -250,16 +250,16 @@ public class Test {
 	}
 
 	/**
-	 * Tests the {@link ADSR} module.
+	 * Tests the {@link Adsr} module.
 	 *
 	 * @since 0.1.1
 	 */
 	public static void testAdsr() {
 
-		var adsr = new ADSR();
+		var adsr = new Adsr();
 		var keyboard = new Keyboard();
-		var vco = new VCO();
-		var vca = new VCA();
+		var vco = new Vco();
+		var vca = new Vca();
 		var speaker = new Speaker();
 
 		keyboard.connect(vco);
@@ -289,14 +289,14 @@ public class Test {
 	}
 
 	/**
-	 * Tests the {@link LowPassVCF} module.
+	 * Tests the {@link LowPassVcf} module.
 	 *
 	 * @since 0.0.9
 	 */
 	public static void testLowPassVcf() {
 
 		var noise = new WhiteNoiseGenerator();
-		var filter = new LowPassVCF();
+		var filter = new LowPassVcf();
 		var spectrum = new SpectrumAnalyzer();
 		var speaker = new Speaker();
 
@@ -308,14 +308,14 @@ public class Test {
 	}
 
 	/**
-	 * Tests the {@link HighPassVCF} module.
+	 * Tests the {@link HighPassVcf} module.
 	 *
 	 * @since 0.1.6
 	 */
 	public static void testHighPassVcf() {
 
 		var noise = new WhiteNoiseGenerator();
-		var filter = new HighPassVCF();
+		var filter = new HighPassVcf();
 		var spectrum = new SpectrumAnalyzer();
 		var speaker = new Speaker();
 
@@ -359,15 +359,15 @@ public class Test {
 	}
 
 	/**
-	 * Tests the {@link LFO} module.
+	 * Tests the {@link Lfo} module.
 	 *
 	 * @since 0.0.9
 	 */
 	public static void testLfo() {
 
-		var vco = new VCO();
+		var vco = new Vco();
 		var speaker = new Speaker();
-		var lfo = new LFO();
+		var lfo = new Lfo();
 
 		speaker.connectInputs(vco, vco);
 		lfo.connect(vco);
@@ -384,8 +384,8 @@ public class Test {
 	public static void testSpectrumAnalyzer() {
 
 		var theremin = new Theremin();
-		var vco = new VCO();
-		var vca = new VCA();
+		var vco = new Vco();
+		var vca = new Vca();
 		var spectrum = new SpectrumAnalyzer();
 
 		spectrum.setComputingFrameRate(Settings.INSTANCE.frameRate());
@@ -406,7 +406,7 @@ public class Test {
 	public static void testKeyboard() {
 
 		var keyboard = new Keyboard();
-		var vco = new VCO();
+		var vco = new Vco();
 		var speaker = new Speaker();
 		var oscilloscope = new Oscilloscope();
 
@@ -425,8 +425,8 @@ public class Test {
 	public static void testTheremin() {
 
 		var theremin = new Theremin();
-		var vco = new VCO();
-		var vca = new VCA();
+		var vco = new Vco();
+		var vca = new Vca();
 		var oscilloscope = new Oscilloscope();
 
 		theremin.setComputingFrameRate(Settings.INSTANCE.frameRate());
@@ -447,7 +447,7 @@ public class Test {
 	 */
 	public static void testOscilloscope() {
 
-		var vco = new VCO();
+		var vco = new Vco();
 		var oscilloscope = new Oscilloscope();
 
 		oscilloscope.setComputingFrameRate(Settings.INSTANCE.frameRate());

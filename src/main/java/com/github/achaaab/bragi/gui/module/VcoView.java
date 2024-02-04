@@ -1,6 +1,6 @@
 package com.github.achaaab.bragi.gui.module;
 
-import com.github.achaaab.bragi.core.module.producer.VCO;
+import com.github.achaaab.bragi.core.module.producer.Vco;
 import com.github.achaaab.bragi.gui.component.WaveformComboBox;
 
 import javax.swing.JPanel;
@@ -19,7 +19,7 @@ import static java.awt.BorderLayout.NORTH;
  * @author Jonathan Guéhenneux
  * @since 0.0.4
  */
-public class VCOView extends JPanel {
+public class VcoView extends JPanel {
 
 	private static final Dimension SLIDERS_SIZE = scale(new Dimension(350, 60));
 
@@ -27,7 +27,7 @@ public class VCOView extends JPanel {
 	 * @param model VCO model
 	 * @since 0.2.0
 	 */
-	public VCOView(VCO model) {
+	public VcoView(Vco model) {
 
 		var waveform = model.getWaveform();
 		var octave = model.getOctave();

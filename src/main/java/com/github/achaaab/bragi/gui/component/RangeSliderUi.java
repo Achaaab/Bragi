@@ -32,7 +32,7 @@ import static javax.swing.SwingUtilities.computeUnion;
  * @author Jonathan Guéhenneux
  * @since 0.1.3
  */
-class RangeSliderUI extends BasicSliderUI {
+class RangeSliderUi extends BasicSliderUI {
 
 	private static final Color THUMB_COLOR = new Color(176, 192, 208);
 	private static final Color RANGE_COLOR = new Color(0, 173, 182);
@@ -56,7 +56,7 @@ class RangeSliderUI extends BasicSliderUI {
 	 * @param rangeSlider range slider to display
 	 * @since 0.2.0
 	 */
-	protected RangeSliderUI(RangeSlider rangeSlider) {
+	protected RangeSliderUi(RangeSlider rangeSlider) {
 
 		super(rangeSlider);
 
