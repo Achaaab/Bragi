@@ -18,6 +18,7 @@ import static java.nio.ByteOrder.LITTLE_ENDIAN;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static javax.sound.sampled.AudioFormat.Encoding.PCM_SIGNED;
+import static javax.sound.sampled.AudioSystem.NOT_SPECIFIED;
 import static javax.sound.sampled.AudioSystem.getMixerInfo;
 
 /**
@@ -188,12 +189,14 @@ public class LineConfiguration {
 
 		// set channel count
 		var channelCounts = channelCounts();
-		channelCount = contains(channelCounts, PREFERRED_CHANNEL_COUNT) ?
-				PREFERRED_CHANNEL_COUNT :
-				channelCounts[0];
+		channelCount = channelCounts[0];
+
+		if (channelCount == NOT_SPECIFIED || contains(channelCounts, PREFERRED_CHANNEL_COUNT)) {
+			channelCount = PREFERRED_CHANNEL_COUNT;
+		}
 
 		formats = formats.stream().
-				filter(format -> format.getChannels() == channelCount).
+				filter(format -> format.getChannels() == channelCount || format.getChannels() == NOT_SPECIFIED).
 				toList();
 
 		// set sample size

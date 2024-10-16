@@ -96,7 +96,7 @@ public class FlacFile implements AudioFile {
 			var sampleSize = frameHeader.sampleSize();
 			var samples = frame.samples();
 
-			time += (double) sampleCount / header.streamInfo().sampleRate();
+			time += (float) sampleCount / header.streamInfo().sampleRate();
 
 			chunk = new float[channelCount][sampleCount];
 
