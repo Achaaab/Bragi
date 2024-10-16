@@ -9,6 +9,7 @@ import javax.sound.sampled.Mixer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -17,6 +18,7 @@ import static java.nio.ByteOrder.BIG_ENDIAN;
 import static java.nio.ByteOrder.LITTLE_ENDIAN;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static javax.sound.sampled.AudioFormat.Encoding.PCM_SIGNED;
 import static javax.sound.sampled.AudioSystem.NOT_SPECIFIED;
 import static javax.sound.sampled.AudioSystem.getMixerInfo;
@@ -32,6 +34,7 @@ public class LineConfiguration {
 	private static final int PREFERRED_CHANNEL_COUNT = 2;
 	private static final int PREFERRED_SAMPLE_RATE = 96_000;
 	private static final int PREFERRED_SAMPLE_SIZE = 24;
+	private static final Set<Integer> SUGGESTED_CHANNEL_COUNTS = Set.of(1, 2, 3, 4, 5, 6, 7, 8);
 	private static final Encoding PREFERRED_ENCODING = PCM_SIGNED;
 	private static final ByteOrder PREFERRED_BYTE_ORDER = BIG_ENDIAN;
 
@@ -120,10 +123,17 @@ public class LineConfiguration {
 	 */
 	public Integer[] channelCounts() {
 
-		return formats.stream().
+		var channelCounts = formats.stream().
 				map(AudioFormat::getChannels).
-				distinct().sorted().
-				toArray(Integer[]::new);
+				collect(toSet());
+
+		if (channelCounts.contains(NOT_SPECIFIED)) {
+
+			channelCounts.remove(NOT_SPECIFIED);
+			channelCounts.addAll(SUGGESTED_CHANNEL_COUNTS);
+		}
+
+		return channelCounts.toArray(new Integer[0]);
 	}
 
 	/**
@@ -191,7 +201,7 @@ public class LineConfiguration {
 		var channelCounts = channelCounts();
 		channelCount = channelCounts[0];
 
-		if (channelCount == NOT_SPECIFIED || contains(channelCounts, PREFERRED_CHANNEL_COUNT)) {
+		if (contains(channelCounts, PREFERRED_CHANNEL_COUNT)) {
 			channelCount = PREFERRED_CHANNEL_COUNT;
 		}
 
